@@ -1,0 +1,5 @@
+<project-modules id="moduleCoreId" project-version="2.0">
+  <wb-module deploy-name="insync04">
+    <wb-resource deploy-path="/" source-path="src/main/flex"/>
+  </wb-module>
+</project-modules>
