@@ -10,24 +10,7 @@
 	<name>Spring BlazeDS Integration Test Drive Samples</name>
 
 	<modules>
-		<module>chat</module>
-		<module>collaboration</module>
-		<module>companymgr</module>
-		<module>feedstarter</module>
-		<module>insync-air-spring</module>
-		<module>insync01</module>
-		<module>insync02</module>
-		<module>insync03</module>
-		<module>insync04</module>
-		<module>insync05</module>
-		<module>insync06</module>
-		<module>insync07</module>
-		<module>jmschat</module>
 		<module>secured</module>
-		<module>simplepush</module>
-		<module>spring-blazeds-101</module>
-		<module>spring-messaging</module>
-		<module>traderdesktop</module>
 		<module>testdrive</module>
 	</modules>
 
