@@ -5,3 +5,4 @@ mvn install
 rm -rf ~/apache-tomcat-6.0.20/webapps/testdrive
 cp testdrive/target/testdrive.war ~/apache-tomcat-6.0.20/webapps/
 ~/apache-tomcat-6.0.20/bin/startup.sh
+tail -f ~/apache-tomcat-6.0.20/logs/catalina.out
