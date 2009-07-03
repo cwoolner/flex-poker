@@ -12,6 +12,8 @@
             import mx.rpc.events.ResultEvent;
             import mx.rpc.AsyncToken;
             import mx.rpc.AsyncResponder;
+            import mx.messaging.messages.AsyncMessage;
+            import mx.messaging.messages.IMessage;
 			
 			private function applicationCompleteHandler():void
 			{
@@ -19,6 +21,8 @@
 				var channelSet:ChannelSet = new ChannelSet();
 				channelSet.addChannel(channel);
 				ro.channelSet = channelSet;
+                
+                consumer.subscribe();
 			}
 
 			private function faultHandler(event:FaultEvent):void
@@ -44,23 +48,29 @@
                 ))
             }
 
-			private function logout():void
-			{
-				ro.channelSet.logout();	
-			}
-			
+            private function send():void
+            {
+                var message:IMessage = new AsyncMessage();
+                message.body.userId = userId.text;
+                message.body.chatMessage = msg.text;
+                producer.send(message);
+                msg.text = "";
+            }
+                            
+            private function messageHandler(message:IMessage):void
+            {
+                log.text += message.body.userId + ": " + message.body.chatMessage + "\n";
+            }
 		]]>
 	</mx:Script>
 
 	<mx:RemoteObject id="ro" destination="securedProductService" fault="faultHandler(event)" result="resultHandler(event)" />
-<!-- mx:Canvas label="Home" width="100%" height="100%" borderStyle="inset">
-            <mx:Text x="10" y="10" text="Home page" width="449" height="180"/>
-        </mx:Canvas-->
 
     <mx:states>
         <mx:State name="loginState">
+            <mx:RemoveChild target="{mainApp}" />
             <mx:AddChild position="lastChild">
-                <mx:Form xmlns:mx="http://www.adobe.com/2006/mxml">
+                <mx:Form defaultButton="{loginButton}">
                     <mx:FormItem label="User Id">
                         <mx:TextInput id="userId" />
                     </mx:FormItem>
@@ -69,19 +79,31 @@
                             displayAsPassword="true" />
                     </mx:FormItem>
                     <mx:FormItem direction="horizontal">
-                        <mx:Button label="Login" click="login()" />
-                        <mx:Button label="Logout" click="logout()" />
+                        <mx:Button id="loginButton" label="Login" click="login()" />
                     </mx:FormItem>
                 </mx:Form>
             </mx:AddChild>
         </mx:State>
     </mx:states>
 
-	<mx:DataGrid dataProvider="{ro.findAll.lastResult}" width="100%" height="100%"/>
+	<!-- mx:DataGrid dataProvider="{ro.findAll.lastResult}" width="100%" height="100%"/>
 
-	<mx:Button label="Get Data" click="ro.findAll()"/>
-	<!-- mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" width="489" height="309">
-    <mx:ViewStack x="10" y="99" id="myViewStack" width="469" height="200">
+	<mx:Button label="Get Data" click="ro.findAll()"/-->
+
+    <mx:ChannelSet id="cs">
+        <!-- <mx:StreamingAMFChannel url="http://flexpoker.com/testdrive/messagebroker/streamingamf"/> -->
+        <mx:AMFChannel url="http://flexpoker.com/testdrive/messagebroker/amflongpolling"/>
+        <mx:AMFChannel url="http://flexpoker.com/testdrive/messagebroker/amfpolling"/>
+    </mx:ChannelSet>
+    
+    <mx:Producer id="producer" destination="jms-chat" channelSet="{cs}"/>
+    <mx:Consumer id="consumer" destination="jms-chat" channelSet="{cs}" message="messageHandler(event.message)"/>
+    
+
+
+    <mx:VBox id="mainApp" height="100%" width="100%">
+    <mx:LinkBar x="115.5" y="43" dataProvider="myViewStack" borderStyle="inset" />
+    <mx:ViewStack x="10" y="99" id="myViewStack">
         <mx:Canvas label="Home" width="100%" height="100%" borderStyle="inset">
             <mx:Text x="10" y="10" text="Home page" width="449" height="180"/>
         </mx:Canvas>
@@ -95,7 +117,17 @@
             <mx:Text x="10" y="10" text="Contact page" width="449" height="180"/>
         </mx:Canvas>
     </mx:ViewStack>
-    <mx:LinkBar x="115.5" y="43" dataProvider="myViewStack" borderStyle="inset">
-    </mx:LinkBar>
-</mx:Application-->
+
+    <mx:Panel title="JMS Chat" width="30%" height="30%">
+        <mx:TextArea id="log" width="100%" height="100%" />
+        <mx:ControlBar>
+            <mx:Form paddingTop="4" paddingBottom="4" paddingLeft="4" paddingRight="4">
+                <mx:FormItem label="Message:" direction="horizontal">
+                    <mx:TextInput id="msg" enter="send()"/>
+                    <mx:Button label="Send" click="send()"/> 
+                </mx:FormItem>              
+            </mx:Form>
+        </mx:ControlBar>
+    </mx:Panel>
+    </mx:VBox>
 </mx:Application>
