@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:Application xmlns:mx="http://www.adobe.com/2006/mxml"
-	applicationComplete="applicationCompleteHandler()">
+	applicationComplete="applicationCompleteHandler()" currentState="loginState">
 
 	<mx:Script>
 		<![CDATA[
@@ -10,6 +10,8 @@
 			import mx.controls.Alert;
 			import mx.rpc.events.FaultEvent;
             import mx.rpc.events.ResultEvent;
+            import mx.rpc.AsyncToken;
+            import mx.rpc.AsyncResponder;
 			
 			private function applicationCompleteHandler():void
 			{
@@ -31,8 +33,16 @@
             
 			private function login():void
 			{
-				ro.channelSet.login(userId.text, password.text);
-			}
+				var token:AsyncToken = ro.channelSet.login(userId.text, password.text);
+                token.addResponder(new AsyncResponder(
+                    function(event:ResultEvent, token:Object = null):void {
+                        currentState = "";
+                    },
+                    function(event:FaultEvent, token:Object = null):void {
+                        Alert.show("Login Failed: " + event.fault.faultString);
+                    }
+                ))
+            }
 
 			private function logout():void
 			{
@@ -43,22 +53,49 @@
 	</mx:Script>
 
 	<mx:RemoteObject id="ro" destination="securedProductService" fault="faultHandler(event)" result="resultHandler(event)" />
+<!-- mx:Canvas label="Home" width="100%" height="100%" borderStyle="inset">
+            <mx:Text x="10" y="10" text="Home page" width="449" height="180"/>
+        </mx:Canvas-->
 
-	<mx:Form>
-		<mx:FormItem label="User Id">
-			<mx:TextInput id="userId"/>
-		</mx:FormItem>
-		<mx:FormItem label="Password">
-			<mx:TextInput id="password" displayAsPassword="true"/>
-		</mx:FormItem>
-		<mx:FormItem direction="horizontal">
-			<mx:Button label="Login" click="login()"/>
-			<mx:Button label="Logout" click="logout()"/>
-		</mx:FormItem>
-	</mx:Form>
+    <mx:states>
+        <mx:State name="loginState">
+            <mx:AddChild position="lastChild">
+                <mx:Form xmlns:mx="http://www.adobe.com/2006/mxml">
+                    <mx:FormItem label="User Id">
+                        <mx:TextInput id="userId" />
+                    </mx:FormItem>
+                    <mx:FormItem label="Password">
+                        <mx:TextInput id="password"
+                            displayAsPassword="true" />
+                    </mx:FormItem>
+                    <mx:FormItem direction="horizontal">
+                        <mx:Button label="Login" click="login()" />
+                        <mx:Button label="Logout" click="logout()" />
+                    </mx:FormItem>
+                </mx:Form>
+            </mx:AddChild>
+        </mx:State>
+    </mx:states>
 
 	<mx:DataGrid dataProvider="{ro.findAll.lastResult}" width="100%" height="100%"/>
 
 	<mx:Button label="Get Data" click="ro.findAll()"/>
-	
+	<!-- mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" width="489" height="309">
+    <mx:ViewStack x="10" y="99" id="myViewStack" width="469" height="200">
+        <mx:Canvas label="Home" width="100%" height="100%" borderStyle="inset">
+            <mx:Text x="10" y="10" text="Home page" width="449" height="180"/>
+        </mx:Canvas>
+        <mx:Canvas label="Portfolio" width="100%" height="100%" borderStyle="inset">
+            <mx:Text x="10" y="10" text="Portfolio page" width="449" height="180"/>
+        </mx:Canvas>
+        <mx:Canvas label="About" width="100%" height="100%" borderStyle="inset">
+            <mx:Text x="10" y="10" text="About page" width="449" height="180"/>
+        </mx:Canvas>
+        <mx:Canvas label="Contact" width="100%" height="100%" borderStyle="inset">
+            <mx:Text x="10" y="10" text="Contact page" width="449" height="180"/>
+        </mx:Canvas>
+    </mx:ViewStack>
+    <mx:LinkBar x="115.5" y="43" dataProvider="myViewStack" borderStyle="inset">
+    </mx:LinkBar>
+</mx:Application-->
 </mx:Application>
