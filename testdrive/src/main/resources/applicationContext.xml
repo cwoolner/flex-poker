@@ -4,16 +4,66 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns:context="http://www.springframework.org/schema/context"
 	xmlns:tx="http://www.springframework.org/schema/tx"
+    xmlns:integration="http://www.springframework.org/schema/integration"
     xsi:schemaLocation="
 		http://www.springframework.org/schema/beans	http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
 		http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-2.0.4.xsd
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
-        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd"
+        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
+        http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration-1.0.xsd"
     default-autowire="byName">
+
+    <security:http auto-config="true"/>
+
+    <security:authentication-provider user-service-ref="userBso">
+        <security:password-encoder hash="sha" />
+    </security:authentication-provider>
 
     <tx:annotation-driven />
 
 	<context:component-scan base-package="org.springframework.flex.samples, com.flexpoker" />
+
+    <!-- Embedded ActiveMQ broker-->
+    <bean id="connectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
+        <property name="brokerURL" value="vm:(broker:(tcp://localhost:61616)?persistent=false)?marshal=false"/>
+    </bean>
+
+    <!--  JMS Topic -->
+    <bean id="chatTopic" class="org.apache.activemq.command.ActiveMQTopic">
+        <constructor-arg value="sampletopic.flex.jms.chat"/>
+    </bean>
+
+    <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="com.mysql.jdbc.Driver" />
+        <property name="url" value="jdbc:mysql://localhost/flexpoker" />
+        <property name="username" value="flexpoker" />
+        <property name="password" value="flexpoker" />
+    </bean>
+
+    <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean" />
+
+    <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager" />
+
+    <bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor" />
+
+    <bean name="jpaVendorAdapter" class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+        <property name="database" value="MYSQL" />
+        <property name="showSql" value="false" />
+    </bean>
+
+    <integration:channel id="toFlex"/>
+
+    <integration:channel id="fromFlex"/>
+
+    <integration:inbound-channel-adapter ref="counter" method="next" channel="toFlex">
+        <integration:poller max-messages-per-poll="1">
+            <integration:interval-trigger interval="5000"/>
+        </integration:poller>
+    </integration:inbound-channel-adapter>
+
+    <integration:service-activator input-channel="fromFlex" ref="counter" method="handle"/>
+    
+    <bean id="counter" class="org.springframework.flex.samples.integration.Counter"/>
 
 	<!-- Implementation of ProductDAO using low-level JDBC -->
 	<bean id="productService" class="org.springframework.flex.samples.product.ProductDAO">
