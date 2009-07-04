@@ -6,9 +6,8 @@
 		http://www.springframework.org/schema/beans	http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
 		http://www.springframework.org/schema/flex http://www.springframework.org/schema/flex/spring-flex-1.0.xsd">
  
-	<flex:message-broker>
-		<flex:message-service
-			default-channels="my-streaming-amf,my-longpolling-amf,my-polling-amf" />
+	<flex:message-broker services-config-path="/WEB-INF/classes/services-config.xml">
+		<flex:message-service default-channels="my-streaming-amf,my-longpolling-amf,my-polling-amf" />
 		<flex:secured />
 	</flex:message-broker>
 
@@ -21,28 +20,10 @@
 	<!-- Expost the securedProductService bean for BlazeDS remoting -->
 	<flex:remoting-destination ref="securedProductService" />
 
-	<!-- Messaging destinations -->
-	<flex:message-destination id="chat" />
-	<flex:message-destination id="simple-feed" />
-	<flex:message-destination id="market-feed" allow-subtopics="true" subtopic-separator="." />
 	<flex:jms-message-destination id="jms-chat" jms-destination="chatTopic" /> 	<!-- See configuration of "chatTopic" in /WEB-INF/spring/infrastructure-context.xml -->
-	<flex:integration-message-destination id="si-receive" message-channel="toFlex"/> <!-- See configuration of "toFlex" in /WEB-INF/spring/integration-context.xml -->
-	<flex:integration-message-destination id="si-send" message-channel="fromFlex"/> <!-- See configuration of "fromFlex" in /WEB-INF/spring/integration-context.xml -->    	
 
 	<!-- MessageTemplate makes it easy to publish messages -->
 	<bean id="defaultMessageTemplate" class="org.springframework.flex.messaging.MessageTemplate" />
 
-	<!-- Pojo used to start and stop the data feed that pushes data in the 'simple-feed' destination -->
-	<bean id="simpleFeedStarter" class="org.springframework.flex.samples.simplefeed.SimpleFeed">
-		<constructor-arg ref="defaultMessageTemplate" />
-		<flex:remoting-destination />
-	</bean>
-
-	<!-- Pojo used to start and stop the data feed that pushes data in the 'market-feed' destination -->
-	<bean id="marketFeedStarter" class="org.springframework.flex.samples.marketfeed.MarketFeed">
-		<constructor-arg ref="defaultMessageTemplate" />
-		<constructor-arg value="stocklist.xml" />
-		<flex:remoting-destination />
-	</bean>
-
 </beans>
+
