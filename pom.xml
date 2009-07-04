@@ -1,52 +1,52 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<groupId>org.springframework.flex.samples</groupId>
-	<artifactId>spring-flex-testdrive</artifactId>
-	<version>1.0.0.RELEASE</version>
-	<packaging>pom</packaging>
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.springframework.flex.samples</groupId>
+    <artifactId>spring-flex-testdrive</artifactId>
+    <version>1.0.0.RELEASE</version>
+    <packaging>pom</packaging>
 
-	<name>Spring BlazeDS Integration Test Drive Samples</name>
+    <name>Spring BlazeDS Integration Test Drive Samples</name>
 
-	<modules>
-		<module>secured</module>
-		<module>testdrive</module>
-	</modules>
+    <modules>
+        <module>secured</module>
+        <module>testdrive</module>
+    </modules>
 
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-reactor-plugin</artifactId>
-				<version>1.0</version>
-			</plugin>
-		</plugins>
-	</build>
-	
-	<repositories>
-		<repository>
-			<id>central</id>
-			<url>http://localhost:8080/artifactory-2.0.6/repo</url>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</repository>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-reactor-plugin</artifactId>
+                <version>1.0</version>
+            </plugin>
+        </plugins>
+    </build>
 
-		<repository>
-			<id>snapshot</id>
-			<url>http://localhost:8080/artifactory-2.0.6/repo</url>
-			<releases>
-				<enabled>false</enabled>
-			</releases>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-		</repository>
+    <repositories>
+        <repository>
+            <id>central</id>
+            <url>http://localhost:8080/artifactory-2.0.6/repo</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
 
-	</repositories>
+        <repository>
+            <id>snapshot</id>
+            <url>http://localhost:8080/artifactory-2.0.6/repo</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+
+    </repositories>
 
 </project>
