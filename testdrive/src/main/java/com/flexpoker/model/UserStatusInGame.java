@@ -2,14 +2,18 @@ package com.flexpoker.model;
 
 import java.util.Date;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 @Entity
 @Table(name = "userStatusInGames")
 public class UserStatusInGame {
+
+    private Integer id;
 
     private User user;
 
@@ -23,8 +27,18 @@ public class UserStatusInGame {
 
     private Date exitTime;
 
+    @Id
+    @GeneratedValue
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
     @OneToOne
-    @Column(name = "userId")
+    @JoinColumn(name = "userId")
     public User getUser() {
         return user;
     }
@@ -34,7 +48,7 @@ public class UserStatusInGame {
     }
 
     @OneToOne
-    @Column(name = "gameId")
+    @JoinColumn(name = "gameId")
     public Game getGame() {
         return game;
     }

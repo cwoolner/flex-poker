@@ -3,7 +3,6 @@ package com.flexpoker.model;
 
 import java.util.List;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -32,7 +31,7 @@ public class Table {
     }
 
     @OneToOne
-    @Column(name = "gameId")
+    @JoinColumn(name = "gameId")
     public Game getGame() {
         return game;
     }

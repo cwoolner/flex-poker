@@ -1,8 +1,9 @@
-
 package com.flexpoker.model;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
@@ -10,14 +11,26 @@ import javax.persistence.Table;
 @Table(name = "seats")
 public class Seat {
 
+    private Integer id;
+
     private com.flexpoker.model.Table table;
 
     private User user;
 
     private Integer position;
 
+    @Id
+    @GeneratedValue
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
     @OneToOne
-    @Column(name = "tableId")
+    @JoinColumn(name = "tableId")
     public com.flexpoker.model.Table getTable() {
         return table;
     }
@@ -27,7 +40,7 @@ public class Seat {
     }
 
     @OneToOne
-    @Column(name = "userId")
+    @JoinColumn(name = "userId")
     public User getUser() {
         return user;
     }

@@ -2,10 +2,10 @@ package com.flexpoker.model;
 
 import java.util.Date;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -45,7 +45,7 @@ public class Game {
     }
 
     @ManyToOne
-    @Column(name = "gameTypeId")
+    @JoinColumn(name = "gameTypeId")
     public GameType getGameType() {
         return gameType;
     }
@@ -71,7 +71,7 @@ public class Game {
     }
 
     @OneToOne
-    @Column(name = "winner")
+    @JoinColumn(name = "winner")
     public User getWinningUser() {
         return winningUser;
     }
@@ -81,7 +81,7 @@ public class Game {
     }
 
     @OneToOne
-    @Column(name = "createdBy")
+    @JoinColumn(name = "createdBy")
     public User getCreatedByUser() {
         return createdByUser;
     }
