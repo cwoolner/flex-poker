@@ -8,7 +8,7 @@
         <version>1.0.0.RELEASE</version>
     </parent>
 
-    <artifactId>testdrive</artifactId>
+    <artifactId>poker-war</artifactId>
     <packaging>war</packaging>
 
     <name>Spring BlazeDS Integration Test Drive Web Application</name>
@@ -18,7 +18,7 @@
     </properties>
 
     <build>
-        <finalName>testdrive</finalName>
+        <finalName>poker</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

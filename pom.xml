@@ -10,8 +10,8 @@
     <name>Spring BlazeDS Integration Test Drive Samples</name>
 
     <modules>
-        <module>secured</module>
-        <module>testdrive</module>
+        <module>swf</module>
+        <module>java</module>
     </modules>
 
     <build>
