@@ -52,36 +52,4 @@
         <property name="generateDdl" value="true" />
     </bean>
 
-    <integration:channel id="toFlex"/>
-
-    <integration:channel id="fromFlex"/>
-
-    <integration:inbound-channel-adapter ref="counter" method="next" channel="toFlex">
-        <integration:poller max-messages-per-poll="1">
-            <integration:interval-trigger interval="5000"/>
-        </integration:poller>
-    </integration:inbound-channel-adapter>
-
-    <integration:service-activator input-channel="fromFlex" ref="counter" method="handle"/>
-    
-    <bean id="counter" class="org.springframework.flex.samples.integration.Counter"/>
-
-	<!-- Implementation of ProductDAO using low-level JDBC -->
-	<bean id="productService" class="org.springframework.flex.samples.product.ProductDAO">
-		<constructor-arg ref="dataSource" />
-	</bean>
-
-	<!-- Implementation of ContactDAO using Spring's JdbcTemplate -->
-	<bean id="contactService" class="org.springframework.flex.samples.contact.ContactDAO">
-		<constructor-arg ref="dataSource" />
-	</bean>
-
-	<!-- A secured implementation of ProductDAO -->
-	<bean id="securedProductService" class="org.springframework.flex.samples.product.ProductDAO">
-		<constructor-arg ref="dataSource" />
-		<security:intercept-methods>
-			<security:protect method="find*" access="ROLE_USER" />
-		</security:intercept-methods>
-	</bean>
-
 </beans>

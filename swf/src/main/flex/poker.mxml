@@ -64,7 +64,7 @@
 		]]>
 	</mx:Script>
 
-	<mx:RemoteObject id="ro" destination="securedProductService" fault="faultHandler(event)" result="resultHandler(event)" />
+	<mx:RemoteObject id="ro" fault="faultHandler(event)" result="resultHandler(event)" />
 
     <mx:states>
         <mx:State name="loginState">
@@ -125,9 +125,6 @@
             </mx:Form>
         </mx:ControlBar>
     </mx:Panel>
-    <mx:DataGrid dataProvider="{ro.findAll.lastResult}" width="100%" height="100%"/>
-
-    <mx:Button label="Get Data" click="ro.findAll()"/>
 
     </mx:VBox>
 </mx:Application>
