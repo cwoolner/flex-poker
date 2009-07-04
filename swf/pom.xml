@@ -26,7 +26,7 @@
                 <extensions>true</extensions>
                 <configuration>
                     <output>${basedir}/../java/src/main/webapp/${project.build.finalName}.swf</output>
-                    <services>${basedir}/../java/src/main/webapp/WEB-INF/flex/services-config.xml</services>
+                    <services>${basedir}/../java/src/main/resources/services-config.xml</services>
                     <contextRoot>/</contextRoot>
                     <locales>
                         <locale>en_US</locale>
