@@ -17,7 +17,7 @@
 			
 			private function applicationCompleteHandler():void
 			{
-				var channel:AMFChannel = new AMFChannel("my-amf", "http://flexpoker.com/testdrive/messagebroker/amf");
+				var channel:AMFChannel = new AMFChannel("my-amf", "http://flexpoker.com/poker/messagebroker/amf");
 				var channelSet:ChannelSet = new ChannelSet();
 				channelSet.addChannel(channel);
 				ro.channelSet = channelSet;
@@ -87,9 +87,9 @@
     </mx:states>
 
     <mx:ChannelSet id="cs">
-        <!-- <mx:StreamingAMFChannel url="http://flexpoker.com/testdrive/messagebroker/streamingamf"/> -->
-        <mx:AMFChannel url="http://flexpoker.com/testdrive/messagebroker/amflongpolling"/>
-        <mx:AMFChannel url="http://flexpoker.com/testdrive/messagebroker/amfpolling"/>
+        <!-- <mx:StreamingAMFChannel url="http://flexpoker.com/poker/messagebroker/streamingamf"/> -->
+        <mx:AMFChannel url="http://flexpoker.com/poker/messagebroker/amflongpolling"/>
+        <mx:AMFChannel url="http://flexpoker.com/poker/messagebroker/amfpolling"/>
     </mx:ChannelSet>
     
     <mx:Producer id="producer" destination="jms-chat" channelSet="{cs}"/>
