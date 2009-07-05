@@ -18,7 +18,7 @@ import flex.messaging.FlexContext;
 
 @Transactional
 @Service("gameBso")
-@RemotingDestination(channels = { "my-amf" })
+@RemotingDestination
 public class GameBsoImpl implements GameBso {
 
     private MessageTemplate messageTemplate;
@@ -29,11 +29,13 @@ public class GameBsoImpl implements GameBso {
 
     @Override
     public List<Game> fetchAllGames() {
+        System.out.println("fetchAllGames()");
         return gameDao.findAll();
     }
 
     @Override
     public void createGame() {
+        System.out.println("createGame()");
         GameType gameType = gameTypeDao.findById(1);
         
         Game game = new Game();
