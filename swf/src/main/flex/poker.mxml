@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml"
-	applicationComplete="applicationCompleteHandler()" currentState="loginState">
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" currentState="loginState">
 
 	<mx:Script>
 		<![CDATA[
@@ -28,11 +27,6 @@
                 return ro;   
             }   
 
-			private function applicationCompleteHandler():void
-			{
-                consumer.subscribe();
-			}
-
 			private function faultHandler(event:FaultEvent):void
 			{
 				Alert.show(event.fault.faultString, "Error ccessing RemoteObject");
@@ -49,6 +43,7 @@
                 token.addResponder(new AsyncResponder(
                     function(event:ResultEvent, token:Object = null):void {
                         currentState = "";
+                        consumer.subscribe();
                     },
                     function(event:FaultEvent, token:Object = null):void {
                         Alert.show("Login Failed: " + event.fault.faultString);
