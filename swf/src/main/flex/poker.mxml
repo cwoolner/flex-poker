@@ -14,14 +14,22 @@
             import mx.rpc.AsyncResponder;
             import mx.messaging.messages.AsyncMessage;
             import mx.messaging.messages.IMessage;
+            import mx.rpc.remoting.RemoteObject;
 			
+            var ro1:RemoteObject = createRemoteObject("securedProductService", "c1");   
+            var ro2:RemoteObject = createRemoteObject("gameBso", "c2");   
+  
+            public static function createRemoteObject(roDestination:String, channelId:String):RemoteObject {   
+                var channelSet:ChannelSet = new ChannelSet();   
+                var channel:AMFChannel = new AMFChannel(channelId, "http://flexpoker.com/poker/messagebroker/amf");   
+                channelSet.addChannel(channel);   
+                var ro:RemoteObject = new RemoteObject(roDestination);   
+                ro.channelSet = channelSet;   
+                return ro;   
+            }   
+
 			private function applicationCompleteHandler():void
 			{
-				var channel:AMFChannel = new AMFChannel("my-amf", "http://flexpoker.com/poker/messagebroker/amf");
-				var channelSet:ChannelSet = new ChannelSet();
-				channelSet.addChannel(channel);
-				ro.channelSet = channelSet;
-                
                 consumer.subscribe();
 			}
 
@@ -37,7 +45,7 @@
             
 			private function login():void
 			{
-				var token:AsyncToken = ro.channelSet.login(userId.text, password.text);
+				var token:AsyncToken = ro1.channelSet.login(userId.text, password.text);
                 token.addResponder(new AsyncResponder(
                     function(event:ResultEvent, token:Object = null):void {
                         currentState = "";
@@ -63,8 +71,6 @@
             }
 		]]>
 	</mx:Script>
-
-	<mx:RemoteObject id="ro" destination="securedProductService" fault="faultHandler(event)" result="resultHandler(event)" />
 
     <mx:states>
         <mx:State name="loginState">
@@ -125,9 +131,13 @@
             </mx:Form>
         </mx:ControlBar>
     </mx:Panel>
-    <mx:DataGrid dataProvider="{ro.findAll.lastResult}" width="100%" height="100%"/>
+    <mx:DataGrid dataProvider="{ro1.findAll.lastResult}" width="100%" height="100%"/>
 
-    <mx:Button label="Get Data" click="ro.findAll()"/>
+    <mx:Button label="Get Data" click="ro1.findAll()"/>
+    
+    <mx:DataGrid dataProvider="{ro2.fetchAllGames.lastResult}" width="100%" height="100%"/>
+
+    <mx:Button label="Get Data" click="ro2.fetchAllGames()"/>
 
     </mx:VBox>
 </mx:Application>
