@@ -131,9 +131,6 @@
             </mx:Form>
         </mx:ControlBar>
     </mx:Panel>
-    <mx:DataGrid dataProvider="{ro1.findAll.lastResult}" width="100%" height="100%"/>
-
-    <mx:Button label="Get Data" click="ro1.findAll()"/>
     
     <mx:DataGrid dataProvider="{ro2.fetchAllGames.lastResult}" width="100%" height="100%"/>
 

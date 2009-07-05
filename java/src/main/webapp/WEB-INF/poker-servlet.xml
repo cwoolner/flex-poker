@@ -11,15 +11,6 @@
 		<flex:secured />
 	</flex:message-broker>
 
-	<!-- Expose the productService bean for BlazeDS remoting -->
-	<flex:remoting-destination ref="productService" />
-
-	<!-- Expose the contactService bean for BlazeDS remoting -->
-	<flex:remoting-destination ref="contactService" />
-
-	<!-- Expost the securedProductService bean for BlazeDS remoting -->
-	<flex:remoting-destination ref="securedProductService" />
-
 	<flex:jms-message-destination id="jms-chat" jms-destination="chatTopic" /> 	<!-- See configuration of "chatTopic" in /WEB-INF/spring/infrastructure-context.xml -->
 
 	<!-- MessageTemplate makes it easy to publish messages -->
