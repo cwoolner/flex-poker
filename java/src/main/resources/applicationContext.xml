@@ -5,12 +5,14 @@
 	xmlns:context="http://www.springframework.org/schema/context"
 	xmlns:tx="http://www.springframework.org/schema/tx"
     xmlns:integration="http://www.springframework.org/schema/integration"
+    xmlns:flex="http://www.springframework.org/schema/flex"
     xsi:schemaLocation="
 		http://www.springframework.org/schema/beans	http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
 		http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-2.0.4.xsd
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
         http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
-        http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration-1.0.xsd"
+        http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration-1.0.xsd
+        http://www.springframework.org/schema/flex http://www.springframework.org/schema/flex/spring-flex-1.0.xsd"
     default-autowire="byName">
 
     <security:http auto-config="true"/>
@@ -22,6 +24,17 @@
     <tx:annotation-driven />
 
 	<context:component-scan base-package="com.flexpoker" />
+
+    <flex:message-broker services-config-path="/WEB-INF/classes/services-config.xml">
+        <flex:message-service default-channels="my-streaming-amf,my-longpolling-amf,my-polling-amf" />
+        <flex:secured />
+    </flex:message-broker>
+
+    <flex:message-destination id="gamesUpdated" />
+    <flex:jms-message-destination id="jms-chat" jms-destination="chatTopic" />  <!-- See configuration of "chatTopic" in /WEB-INF/spring/infrastructure-context.xml -->
+
+    <!-- MessageTemplate makes it easy to publish messages -->
+    <bean id="defaultMessageTemplate" class="org.springframework.flex.messaging.MessageTemplate" />
 
     <!-- Embedded ActiveMQ broker-->
     <bean id="connectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
