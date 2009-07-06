@@ -1,5 +1,7 @@
 package com.flexpoker.model;
 
+import java.security.Principal;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -12,7 +14,7 @@ import org.springframework.security.userdetails.UserDetails;
 
 @Entity
 @Table(name = "users")
-public class User implements UserDetails {
+public class User implements UserDetails, Principal {
 
     private Integer id;
 
@@ -77,6 +79,12 @@ public class User implements UserDetails {
     @Transient
     public boolean isEnabled() {
         return true;
+    }
+
+    @Override
+    @Transient
+    public String getName() {
+        return username;
     }
 
 }
