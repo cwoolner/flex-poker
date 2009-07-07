@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" currentState="loginState">
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" currentState="loginState"
+                xmlns:comp="components.*">
 
 	<mx:Script>
 		<![CDATA[
@@ -40,7 +41,8 @@
             
 			private function login():void
 			{
-				var token:AsyncToken = ro1.channelSet.login(userId.text, password.text);
+				var token:AsyncToken = ro1.channelSet.login(
+                        loginForm.userId.text, loginForm.password.text);
                 token.addResponder(new AsyncResponder(
                     function(event:ResultEvent, token:Object = null):void {
                         currentState = "";
@@ -56,7 +58,7 @@
             private function send():void
             {
                 var message:IMessage = new AsyncMessage();
-                message.body.userId = userId.text;
+                message.body.userId = loginForm.userId.text;
                 message.body.chatMessage = msg.text;
                 producer.send(message);
                 msg.text = "";
@@ -80,18 +82,7 @@
         <mx:State name="loginState">
             <mx:RemoveChild target="{mainApp}" />
             <mx:AddChild position="lastChild">
-                <mx:Form defaultButton="{loginButton}">
-                    <mx:FormItem label="User Id">
-                        <mx:TextInput id="userId" />
-                    </mx:FormItem>
-                    <mx:FormItem label="Password">
-                        <mx:TextInput id="password"
-                            displayAsPassword="true" />
-                    </mx:FormItem>
-                    <mx:FormItem direction="horizontal">
-                        <mx:Button id="loginButton" label="Login" click="login()" />
-                    </mx:FormItem>
-                </mx:Form>
+                <comp:LoginForm id="loginForm" loginButtonClick="login()" />    
             </mx:AddChild>
         </mx:State>
     </mx:states>

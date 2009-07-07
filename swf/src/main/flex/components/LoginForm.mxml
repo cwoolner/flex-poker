@@ -1,0 +1,15 @@
+<mx:Form xmlns:mx="http://www.adobe.com/2006/mxml" defaultButton="{loginButton}">
+    <mx:Metadata>
+        [Event(name="loginButtonClick", type="flash.events.Event")]
+    </mx:Metadata>
+    <mx:FormItem label="User Id">
+        <mx:TextInput id="userId" />
+    </mx:FormItem>
+    <mx:FormItem label="Password">
+        <mx:TextInput id="password" displayAsPassword="true" />
+    </mx:FormItem>
+    <mx:FormItem direction="horizontal">
+        <mx:Button id="loginButton" label="Login"
+                   click="dispatchEvent(new Event('loginButtonClick', true));" />
+    </mx:FormItem>
+</mx:Form>
