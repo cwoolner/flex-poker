@@ -1,89 +1,84 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" currentState="loginState" applicationComplete="initApplication()"
-                xmlns:comp="components.*">
+<mx:Application
+    xmlns:mx="http://www.adobe.com/2006/mxml"
+    xmlns:comp="components.*"
+    currentState="loginState"
+    applicationComplete="initApplication()">
 
-	<mx:Script>
-		<![CDATA[
+    <mx:Script>
+    <![CDATA[
 
-			import mx.messaging.ChannelSet;
-			import mx.messaging.channels.AMFChannel;
-			import mx.controls.Alert;
-			import mx.rpc.events.FaultEvent;
-            import mx.rpc.events.ResultEvent;
-            import mx.rpc.AsyncToken;
-            import mx.rpc.AsyncResponder;
-            import mx.messaging.messages.AsyncMessage;
-            import mx.messaging.messages.IMessage;
-            import mx.rpc.remoting.RemoteObject;
-			import mx.messaging.messages.IMessage;
-            import com.flexpoker.events.LoginAttemptEvent;
+        import mx.messaging.ChannelSet;
+        import mx.messaging.channels.AMFChannel;
+        import mx.controls.Alert;
+        import mx.rpc.events.FaultEvent;
+        import mx.rpc.events.ResultEvent;
+        import mx.rpc.AsyncToken;
+        import mx.rpc.AsyncResponder;
+        import mx.messaging.messages.AsyncMessage;
+        import mx.messaging.messages.IMessage;
+        import mx.rpc.remoting.RemoteObject;
+        import mx.messaging.messages.IMessage;
+        import com.flexpoker.events.LoginAttemptEvent;
 
-            public function initApplication():void {
-                loginForm.addEventListener(LoginAttemptEvent.NAME, login);
-            }
+        public function initApplication():void {
+            loginForm.addEventListener(LoginAttemptEvent.NAME, login);
+        }
 
+        var ro1:RemoteObject = createRemoteObject("securedProductService", "c1");   
+        var ro2:RemoteObject = createRemoteObject("gameBso", "c2");   
 
-            var ro1:RemoteObject = createRemoteObject("securedProductService", "c1");   
-            var ro2:RemoteObject = createRemoteObject("gameBso", "c2");   
-  
-            public static function createRemoteObject(roDestination:String, channelId:String):RemoteObject {   
-                var channelSet:ChannelSet = new ChannelSet();   
-                var channel:AMFChannel = new AMFChannel(channelId, "http://flexpoker.com/poker/messagebroker/amf");   
-                channelSet.addChannel(channel);   
-                var ro:RemoteObject = new RemoteObject(roDestination);   
-                ro.channelSet = channelSet;   
-                return ro;   
-            }   
+        public static function createRemoteObject(roDestination:String, channelId:String):RemoteObject {   
+            var channelSet:ChannelSet = new ChannelSet();   
+            var channel:AMFChannel = new AMFChannel(channelId, "http://flexpoker.com/poker/messagebroker/amf");   
+            channelSet.addChannel(channel);   
+            var ro:RemoteObject = new RemoteObject(roDestination);   
+            ro.channelSet = channelSet;   
+            return ro;   
+        }   
 
-			private function faultHandler(event:FaultEvent):void
-			{
-				Alert.show(event.fault.faultString, "Error ccessing RemoteObject");
-			}
+        private function faultHandler(event:FaultEvent):void {
+            Alert.show(event.fault.faultString, "Error ccessing RemoteObject");
+        }
 			
-            private function resultHandler(event:ResultEvent):void
-            {
-                Alert.show("Success!");
-            }
-            
-			private function login(event:LoginAttemptEvent):void
-			{
-				var token:AsyncToken = ro1.channelSet.login(
-                        event.getUsername(), event.getPassword());
-                token.addResponder(new AsyncResponder(
-                    function(event:ResultEvent, token:Object = null):void {
-                        currentState = "";
-                        consumer.subscribe();
-                        gameGridConsumer.subscribe();
-                    },
-                    function(event:FaultEvent, token:Object = null):void {
-                        Alert.show("Login Failed: " + event.fault.faultString);
-                    }
-                ))
-            }
+        private function resultHandler(event:ResultEvent):void {
+            Alert.show("Success!");
+        }
 
-            private function send():void
-            {
-                var message:IMessage = new AsyncMessage();
-                message.body.userId = loginForm.userId.text;
-                message.body.chatMessage = msg.text;
-                producer.send(message);
-                msg.text = "";
-            }
-                            
-            private function messageHandler(message:IMessage):void
-            {
-                log.text += message.body.userId + ": " + message.body.chatMessage + "\n";
-            }
-            
-             private function gamePushHandler(message:IMessage):void {
-                 Alert.show("Game created!");
-                 ro2.fetchAllGames();
-             }
+        private function login(event:LoginAttemptEvent):void {
+            var token:AsyncToken = ro1.channelSet.login(event.getUsername(), event.getPassword());
 
-            
-            
-		]]>
-	</mx:Script>
+            token.addResponder(new AsyncResponder(
+                function(event:ResultEvent, token:Object = null):void {
+                    currentState = "";
+                    consumer.subscribe();
+                    gameGridConsumer.subscribe();
+                },
+                function(event:FaultEvent, token:Object = null):void {
+                    Alert.show("Login Failed: " + event.fault.faultString);
+                }
+            ))
+        }
+
+        private function send():void {
+            var message:IMessage = new AsyncMessage();
+            message.body.userId = loginForm.userId.text;
+            message.body.chatMessage = msg.text;
+            producer.send(message);
+            msg.text = "";
+        }
+
+        private function messageHandler(message:IMessage):void {
+            log.text += message.body.userId + ": " + message.body.chatMessage + "\n";
+        }
+
+        private function gamePushHandler(message:IMessage):void {
+            Alert.show("Game created!");
+            ro2.fetchAllGames();
+        }
+
+    ]]>
+    </mx:Script>
 
     <mx:states>
         <mx:State name="loginState">
@@ -95,7 +90,6 @@
     </mx:states>
 
     <mx:ChannelSet id="cs">
-        <!-- <mx:StreamingAMFChannel url="http://flexpoker.com/poker/messagebroker/streamingamf"/> -->
         <mx:AMFChannel url="http://flexpoker.com/poker/messagebroker/amflongpolling"/>
         <mx:AMFChannel url="http://flexpoker.com/poker/messagebroker/amfpolling"/>
     </mx:ChannelSet>
@@ -141,4 +135,5 @@
     <mx:Button label="Create Game" click="ro2.createGame()"/>
 
     </mx:VBox>
+
 </mx:Application>
