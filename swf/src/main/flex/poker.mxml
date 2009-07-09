@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" currentState="loginState"
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" currentState="loginState" applicationComplete="initApplication()"
                 xmlns:comp="components.*">
 
 	<mx:Script>
@@ -16,6 +16,12 @@
             import mx.messaging.messages.IMessage;
             import mx.rpc.remoting.RemoteObject;
 			import mx.messaging.messages.IMessage;
+            import com.flexpoker.events.LoginAttemptEvent;
+
+            public function initApplication():void {
+                loginForm.addEventListener(LoginAttemptEvent.NAME, login);
+            }
+
 
             var ro1:RemoteObject = createRemoteObject("securedProductService", "c1");   
             var ro2:RemoteObject = createRemoteObject("gameBso", "c2");   
@@ -39,10 +45,10 @@
                 Alert.show("Success!");
             }
             
-			private function login():void
+			private function login(event:LoginAttemptEvent):void
 			{
 				var token:AsyncToken = ro1.channelSet.login(
-                        loginForm.userId.text, loginForm.password.text);
+                        event.getUsername(), event.getPassword());
                 token.addResponder(new AsyncResponder(
                     function(event:ResultEvent, token:Object = null):void {
                         currentState = "";
@@ -73,6 +79,7 @@
                  Alert.show("Game created!");
                  ro2.fetchAllGames();
              }
+
             
             
 		]]>
@@ -82,7 +89,7 @@
         <mx:State name="loginState">
             <mx:RemoveChild target="{mainApp}" />
             <mx:AddChild position="lastChild">
-                <comp:LoginForm id="loginForm" loginButtonClick="login()" />    
+                <comp:LoginForm id="loginForm" />    
             </mx:AddChild>
         </mx:State>
     </mx:states>

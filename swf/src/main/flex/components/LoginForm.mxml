@@ -1,7 +1,10 @@
 <mx:Form xmlns:mx="http://www.adobe.com/2006/mxml" defaultButton="{loginButton}">
-    <mx:Metadata>
-        [Event(name="loginButtonClick", type="flash.events.Event")]
-    </mx:Metadata>
+    <mx:Script>
+    <![CDATA[
+        import com.flexpoker.events.LoginAttemptEvent;
+    ]]>
+    </mx:Script>
+
     <mx:FormItem label="User Id">
         <mx:TextInput id="userId" />
     </mx:FormItem>
@@ -10,6 +13,6 @@
     </mx:FormItem>
     <mx:FormItem direction="horizontal">
         <mx:Button id="loginButton" label="Login"
-                   click="dispatchEvent(new Event('loginButtonClick', true));" />
+                   click="dispatchEvent(new LoginAttemptEvent(userId.text, password.text))" />
     </mx:FormItem>
 </mx:Form>
