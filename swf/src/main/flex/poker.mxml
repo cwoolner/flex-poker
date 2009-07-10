@@ -39,14 +39,6 @@
             return ro;   
         }   
 
-        private function faultHandler(event:FaultEvent):void {
-            Alert.show(event.fault.faultString, "Error ccessing RemoteObject");
-        }
-			
-        private function resultHandler(event:ResultEvent):void {
-            Alert.show("Success!");
-        }
-
         private function login(event:LoginAttemptEvent):void {
             var token:AsyncToken = ro1.channelSet.login(event.getUsername(), event.getPassword());
 
@@ -75,7 +67,6 @@
         }
 
         private function gamePushHandler(message:IMessage):void {
-            Alert.show("Game created!");
             ro2.fetchAllGames();
         }
 
