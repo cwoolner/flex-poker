@@ -20,9 +20,11 @@
         import mx.rpc.remoting.RemoteObject;
         import mx.messaging.messages.IMessage;
         import com.flexpoker.events.LoginAttemptEvent;
+        import com.flexpoker.events.SendChatMessageEvent
 
         public function initApplication():void {
             loginForm.addEventListener(LoginAttemptEvent.NAME, login);
+            chatPanel.addEventListener(SendChatMessageEvent.NAME, sendChatMessage);
         }
 
         var ro1:RemoteObject = createRemoteObject("securedProductService", "c1");   
@@ -60,16 +62,16 @@
             ))
         }
 
-        private function send():void {
+        private function sendChatMessage(event:SendChatMessageEvent):void {
             var message:IMessage = new AsyncMessage();
             message.body.userId = loginForm.userId.text;
-            message.body.chatMessage = msg.text;
+            message.body.chatMessage = event.getMessageText();
             producer.send(message);
-            msg.text = "";
+            chatPanel.message.text = "";
         }
 
         private function messageHandler(message:IMessage):void {
-            log.text += message.body.userId + ": " + message.body.chatMessage + "\n";
+            chatPanel.log.text += message.body.userId + ": " + message.body.chatMessage + "\n";
         }
 
         private function gamePushHandler(message:IMessage):void {
@@ -118,17 +120,7 @@
         </mx:Canvas>
     </mx:ViewStack>
 
-    <mx:Panel title="JMS Chat" width="30%" height="30%">
-        <mx:TextArea id="log" width="100%" height="100%" />
-        <mx:ControlBar>
-            <mx:Form paddingTop="4" paddingBottom="4" paddingLeft="4" paddingRight="4">
-                <mx:FormItem label="Message:" direction="horizontal">
-                    <mx:TextInput id="msg" enter="send()"/>
-                    <mx:Button label="Send" click="send()"/> 
-                </mx:FormItem>              
-            </mx:Form>
-        </mx:ControlBar>
-    </mx:Panel>
+    <comp:ChatPanel id="chatPanel" />
     
     </mx:VBox>
 

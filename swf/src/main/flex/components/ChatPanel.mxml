@@ -1,0 +1,19 @@
+<mx:Panel xmlns:mx="http://www.adobe.com/2006/mxml">
+    <mx:Script>
+    <![CDATA[
+        import com.flexpoker.events.SendChatMessageEvent;
+    ]]>
+    </mx:Script>
+    <mx:TextArea id="log" width="100%" height="100%"
+        valueCommit="log.verticalScrollPosition = log.maxVerticalScrollPosition" />
+    <mx:ControlBar>
+        <mx:Form paddingTop="4" paddingBottom="4" paddingLeft="4"
+            paddingRight="4" defaultButton="{sendButton}">
+            <mx:FormItem label="Message:" direction="horizontal">
+                <mx:TextInput id="message" />
+                <mx:Button id="sendButton" label="Send"
+                    click="dispatchEvent(new SendChatMessageEvent(message.text))" />
+            </mx:FormItem>
+        </mx:Form>
+    </mx:ControlBar>
+</mx:Panel>
