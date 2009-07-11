@@ -1,0 +1,30 @@
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml"
+    showCloseButton="true"
+    close="removeMe();">
+
+    <mx:Form defaultButton="{loginButton}">
+
+        <mx:Script>
+        <![CDATA[
+            import com.flexpoker.events.LoginAttemptEvent;
+            import com.flexpoker.events.GameFormCanceledEvent;
+
+            private function removeMe():void {
+                dispatchEvent(new GameFormCanceledEvent(this));
+            }
+        ]]>
+        </mx:Script>
+
+        <mx:FormItem label="User Id">
+            <mx:TextInput id="userId" />
+        </mx:FormItem>
+        <mx:FormItem label="Password">
+            <mx:TextInput id="password" displayAsPassword="true" />
+        </mx:FormItem>
+        <mx:FormItem direction="horizontal">
+            <mx:Button id="loginButton" label="Login"
+                click="dispatchEvent(new LoginAttemptEvent(userId.text, password.text))" />
+            <mx:Button label="Cancel" click="removeMe();" />
+        </mx:FormItem>
+    </mx:Form>
+</mx:TitleWindow>
