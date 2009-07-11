@@ -3,7 +3,8 @@
     xmlns:mx="http://www.adobe.com/2006/mxml"
     xmlns:comp="components.*"
     currentState="loginState"
-    applicationComplete="initApplication()">
+    applicationComplete="initApplication()"
+    verticalAlign="middle">
 
     <mx:Script>
     <![CDATA[
