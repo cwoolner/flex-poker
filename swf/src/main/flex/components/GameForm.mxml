@@ -2,18 +2,31 @@
     showCloseButton="true"
     close="removeMe();">
 
-    <mx:Form defaultButton="{loginButton}">
+    <mx:Script>
+    <![CDATA[
 
-        <mx:Script>
-        <![CDATA[
-            import com.flexpoker.events.LoginAttemptEvent;
-            import com.flexpoker.events.GameFormCanceledEvent;
+        import com.flexpoker.events.GameFormSavedEvent;
+        import com.flexpoker.events.GameFormCanceledEvent;
+        import mx.collections.ArrayCollection;
+        import com.flexpoker.model.Game;
 
-            private function removeMe():void {
-                dispatchEvent(new GameFormCanceledEvent(this));
-            }
-        ]]>
-        </mx:Script>
+        [Bindable] private var game:Game;
+
+        [Bindable] private var gameTypes:ArrayCollection;
+
+        private function removeMe():void {
+            dispatchEvent(new GameFormCanceledEvent(this));
+        }
+
+        private function saveGame():void {
+            dispatchEvent(new GameFormSavedEvent(game));
+        }
+
+    ]]>
+    </mx:Script>
+
+    <mx:Form defaultButton="{saveButton}">
+
 
         <mx:FormItem label="User Id">
             <mx:TextInput id="userId" />
@@ -22,8 +35,7 @@
             <mx:TextInput id="password" displayAsPassword="true" />
         </mx:FormItem>
         <mx:FormItem direction="horizontal">
-            <mx:Button id="loginButton" label="Login"
-                click="dispatchEvent(new LoginAttemptEvent(userId.text, password.text))" />
+            <mx:Button id="saveButton" label="Save" click="saveGame();" />
             <mx:Button label="Cancel" click="removeMe();" />
         </mx:FormItem>
     </mx:Form>
