@@ -6,5 +6,5 @@ mvn install
 rm -rf ~/apache-tomcat-6.0.20/webapps/poker
 rm ~/apache-tomcat-6.0.20/webapps/poker.war
 cp java/target/poker.war ~/apache-tomcat-6.0.20/webapps/
-~/apache-tomcat-6.0.20/bin/startup.sh
+~/apache-tomcat-6.0.20/bin/catalina.sh jpda start
 tail -f ~/apache-tomcat-6.0.20/logs/catalina.out
