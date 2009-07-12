@@ -28,20 +28,14 @@
 
         public function initApplication():void {
             loginForm.addEventListener(LoginAttemptEvent.NAME, login);
-            chatPanel.addEventListener(SendChatMessageEvent.NAME, sendChatMessage);
+
+            var channelSet:ChannelSet = new ChannelSet();
+            var channel:AMFChannel = new AMFChannel("ch1", "http://flexpoker.com/poker/messagebroker/amf");
+            channelSet.addChannel(channel);
+
+            ro1.channelSet = channelSet;
+            ro2.channelSet = channelSet;
         }
-
-        var ro1:RemoteObject = createRemoteObject("securedProductService", "c1");   
-        var ro2:RemoteObject = createRemoteObject("gameBso", "c2");   
-
-        public static function createRemoteObject(roDestination:String, channelId:String):RemoteObject {   
-            var channelSet:ChannelSet = new ChannelSet();   
-            var channel:AMFChannel = new AMFChannel(channelId, "http://flexpoker.com/poker/messagebroker/amf");   
-            channelSet.addChannel(channel);   
-            var ro:RemoteObject = new RemoteObject(roDestination);   
-            ro.channelSet = channelSet;   
-            return ro;   
-        }   
 
         private function login(event:LoginAttemptEvent):void {
             var token:AsyncToken = ro1.channelSet.login(event.getUsername(), event.getPassword());
@@ -51,6 +45,8 @@
                     currentState = "";
                     consumer.subscribe();
                     gameGridConsumer.subscribe();
+                    gamePushHandler(null);
+                    chatPanel.addEventListener(SendChatMessageEvent.NAME, sendChatMessage);
                 },
                 function(event:FaultEvent, token:Object = null):void {
                     Alert.show("Login Failed: " + event.fault.faultString);
@@ -98,15 +94,17 @@
         </mx:State>
     </mx:states>
 
-    <mx:ChannelSet id="cs">
+    <mx:ChannelSet id="messageChannelSet">
         <mx:AMFChannel url="http://flexpoker.com/poker/messagebroker/amflongpolling"/>
         <mx:AMFChannel url="http://flexpoker.com/poker/messagebroker/amfpolling"/>
     </mx:ChannelSet>
     
-    <mx:Producer id="producer" destination="jms-chat" channelSet="{cs}"/>
-    <mx:Consumer id="consumer" destination="jms-chat" channelSet="{cs}" message="messageHandler(event.message)"/>
-    
-    <mx:Consumer id="gameGridConsumer" destination="gamesUpdated" channelSet="{cs}" message="gamePushHandler(event.message)"/>
+    <mx:Producer id="producer" destination="jms-chat" channelSet="{messageChannelSet}"/>
+    <mx:Consumer id="consumer" destination="jms-chat" channelSet="{messageChannelSet}" message="messageHandler(event.message)"/>
+    <mx:Consumer id="gameGridConsumer" destination="gamesUpdated" channelSet="{messageChannelSet}" message="gamePushHandler(event.message)"/>
+
+    <mx:RemoteObject id="ro1" destination="securedProductService" />
+    <mx:RemoteObject id="ro2" destination="gameBso" />
 
     <mx:VBox id="mainApp" height="100%" width="100%">
         <mx:LinkBar x="115.5" y="43" dataProvider="myViewStack" borderStyle="inset" />
