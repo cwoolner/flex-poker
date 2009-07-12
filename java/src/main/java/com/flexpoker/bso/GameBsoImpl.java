@@ -53,6 +53,11 @@ public class GameBsoImpl implements GameBso {
         defaultMessageTemplate.send("gamesUpdated", true);
     }
 
+    @Override
+    public List<GameType> fetchAllGameTypes() {
+        return gameTypeDao.findAll();
+    }
+
     public GameDao getGameDao() {
         return gameDao;
     }
