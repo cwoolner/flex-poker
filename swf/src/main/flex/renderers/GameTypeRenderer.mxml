@@ -1,0 +1,17 @@
+<mx:HBox xmlns:mx="http://www.adobe.com/2006/mxml" dataChange="renderGameType(data.gameType)">
+    <mx:Script>
+        <![CDATA[
+            import mx.controls.Label;
+            import mx.collections.ArrayCollection;
+            import com.flexpoker.model.GameType;
+
+            public function renderGameType(gameType:GameType):void {
+                removeAllChildren();
+                var gameTypeLabel:Label = new Label();
+                gameTypeLabel.text = gameType.name;
+                addChild(gameTypeLabel);
+            }
+        ]]>
+    </mx:Script>
+
+</mx:HBox>

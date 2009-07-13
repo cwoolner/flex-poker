@@ -8,6 +8,8 @@ package com.flexpoker.model {
 
         public var gameType:GameType;
 
+        public var createdByUser:User;
+
         public var startTime:Date;
 
         public var endTime:Date;
