@@ -28,6 +28,7 @@
         import com.flexpoker.model.Game;
         import mx.managers.PopUpManager;
         import components.GameForm;
+        import components.Table;
         import mx.collections.ArrayCollection;
 
         [Bindable] private var gameTypes:ArrayCollection;
@@ -105,6 +106,13 @@
             Alert.show("Game created.");
         }
 
+        private function openGame(game:Game):void {
+            var table:Table = new Table();
+            table.game = game;
+            table.channelSet = messageChannelSet;
+            myViewStack.addChild(table);
+            myViewStack.selectedChild = table;
+        }
     ]]>
     </mx:Script>
 
@@ -123,7 +131,7 @@
     </mx:ChannelSet>
 
     <mx:Producer id="producer" destination="jms-chat" channelSet="{messageChannelSet}"/>
-    <mx:Consumer id="consumer" destination="jms-chat" channelSet="{messageChannelSet}" message="messageHandler(event.message)"/>
+    <mx:Consumer id="consumer" destination="jms-chat" channelSet="{messageChannelSet}" message="messageHandler(event.message)" />
     <mx:Consumer id="gameGridConsumer" destination="gamesUpdated" channelSet="{messageChannelSet}" message="ro2.fetchAllGames()"/>
 
     <mx:RemoteObject id="ro1" />
@@ -135,10 +143,12 @@
     <mx:VBox id="mainApp" height="100%" width="100%">
         <mx:LinkBar x="115.5" y="43" dataProvider="myViewStack" borderStyle="inset" />
         <mx:ViewStack x="10" y="99" id="myViewStack" height="100%" width="100%">
-            <mx:Canvas label="Games" width="100%" height="100%" borderStyle="inset">
+            <mx:Canvas label="Game Room" width="100%" height="100%" borderStyle="inset">
                 <mx:VBox width="100%" height="100%">
                     <mx:Button label="Create Game" click="showCreateGameForm()"/>
-                    <mx:DataGrid dataProvider="{ro2.fetchAllGames.lastResult}" width="100%" height="100%">
+                    <mx:DataGrid id="gamesGrid" dataProvider="{ro2.fetchAllGames.lastResult}"
+                            width="100%" height="100%" doubleClickEnabled="true"
+                            doubleClick="openGame(gamesGrid.selectedItem as Game)">
                         <mx:columns>
                             <mx:DataGridColumn headerText="ID" dataField="id" />
                             <mx:DataGridColumn headerText="Type" dataField="gameType">

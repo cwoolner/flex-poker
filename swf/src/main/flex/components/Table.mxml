@@ -1,0 +1,57 @@
+<mx:Panel xmlns:mx="http://www.adobe.com/2006/mxml"
+        label="Game {game.id}"
+        creationComplete="initializeTable()">
+    <mx:Script>
+    <![CDATA[
+
+        import com.flexpoker.events.SendChatMessageEvent;
+        import com.flexpoker.model.Game;
+        import mx.messaging.Consumer;
+        import mx.messaging.ChannelSet;
+        import mx.messaging.messages.IMessage;
+        import mx.controls.Alert;
+        import mx.rpc.events.FaultEvent;
+        import mx.rpc.events.ResultEvent;
+        import mx.messaging.messages.AsyncMessage;
+
+        public var game:Game;
+        
+        public var channelSet:ChannelSet;
+        
+        private function initializeTable() {
+            consumer.subtopic = "gameStatusUpdates." + game.id.toString();
+            consumer.subscribe();
+        }
+        
+        private function messageHandler(message:IMessage):void {
+            Alert.show("acknowledge");
+        }
+        
+        private function produceMessage():void {
+            var message:AsyncMessage = new AsyncMessage();
+            producer.subtopic = "gameStatusUpdates." + game.id.toString();
+            message.body = "wow";
+            producer.send(message);
+        }
+
+    ]]>
+    </mx:Script>
+
+    <mx:Producer id="producer" destination="gameStatusUpdates" channelSet="{channelSet}" />
+    <mx:Consumer id="consumer" destination="gameStatusUpdates" channelSet="{channelSet}" message="messageHandler(event.message)" />
+    
+    <mx:TextArea id="log" width="100%" height="100%" editable="false"
+        valueCommit="log.verticalScrollPosition = log.maxVerticalScrollPosition" />
+    <mx:ControlBar>
+        <mx:Form paddingTop="4" paddingBottom="4" paddingLeft="4"
+            paddingRight="4" defaultButton="{sendButton}">
+            <mx:FormItem label="Message:" direction="horizontal">
+                <mx:TextInput id="message" />
+                <mx:Button id="sendButton" label="Send"
+                    click="dispatchEvent(new SendChatMessageEvent(message.text))" />
+                <mx:Button id="messageButton" label="Message"
+                    click="produceMessage()" />
+            </mx:FormItem>
+        </mx:Form>
+    </mx:ControlBar>
+</mx:Panel>

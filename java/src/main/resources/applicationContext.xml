@@ -31,6 +31,7 @@
     </flex:message-broker>
 
     <flex:message-destination id="gamesUpdated" />
+    <flex:message-destination id="gameStatusUpdates" allow-subtopics="true" />
     <flex:jms-message-destination id="jms-chat" jms-destination="chatTopic" />  <!-- See configuration of "chatTopic" in /WEB-INF/spring/infrastructure-context.xml -->
 
     <!-- MessageTemplate makes it easy to publish messages -->
