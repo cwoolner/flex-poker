@@ -27,7 +27,7 @@
     </mx:Script>
 
     <mx:Form defaultButton="{saveButton}">
-        <mx:FormItem label="User Id">
+        <mx:FormItem label="Type">
             <comp:ComboBox id="gameType" dataProvider="{gameTypes}" labelField="name" valueField="id" value="{game.gameType.id}" />
         </mx:FormItem>
         <mx:FormItem direction="horizontal">
