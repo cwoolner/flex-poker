@@ -50,16 +50,6 @@ package com.flexpoker.components {
             }
         }
       
-        override protected function createChildren():void
-        {
-            super.createChildren();
-        }
-        
-        override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void
-        {
-            super.updateDisplayList(unscaledWidth, unscaledHeight);
-        }
-
     }
 
 }
