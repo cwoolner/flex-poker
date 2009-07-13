@@ -10,6 +10,8 @@
         import com.flexpoker.events.GameFormCanceledEvent;
         import mx.collections.ArrayCollection;
         import com.flexpoker.model.Game;
+        import com.flexpoker.model.GameType;
+        import mx.controls.Alert;
 
         [Bindable] public var game:Game;
 
@@ -20,7 +22,8 @@
         }
 
         private function saveGame():void {
-            dispatchEvent(new GameFormSavedEvent(game));
+            game.gameType = gameType.selectedItem as GameType;
+            dispatchEvent(new GameFormSavedEvent(game, this));
         }
 
     ]]>

@@ -9,7 +9,7 @@ public interface GameBso {
 
     List<Game> fetchAllGames();
 
-    void createGame();
+    void createGame(Game game);
 
     List<GameType> fetchAllGameTypes();
 

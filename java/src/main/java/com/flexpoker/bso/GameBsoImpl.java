@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.springframework.flex.messaging.MessageTemplate;
 import org.springframework.flex.remoting.RemotingDestination;
-import org.springframework.security.context.SecurityContext;
 import org.springframework.security.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,8 +14,6 @@ import com.flexpoker.dao.GameTypeDao;
 import com.flexpoker.model.Game;
 import com.flexpoker.model.GameType;
 import com.flexpoker.model.User;
-
-import flex.messaging.FlexContext;
 
 @Transactional
 @Service("gameBso")
@@ -37,16 +34,11 @@ public class GameBsoImpl implements GameBso {
     }
 
     @Override
-    public void createGame() {
-        GameType gameType = gameTypeDao.findById(1);
-
-        Game game = new Game();
-        
-        
+    public void createGame(Game game) {
+        game.setGameType(gameTypeDao.findById(game.getGameType().getId()));
         game.setCreatedByUser((User) SecurityContextHolder.getContext()
                 .getAuthentication().getPrincipal());
         game.setCreatedOn(new Date());
-        game.setGameType(gameType);
 
         gameDao.save(game.getId(), game);
 
