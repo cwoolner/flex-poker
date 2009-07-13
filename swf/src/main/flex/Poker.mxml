@@ -126,7 +126,7 @@
     <mx:Consumer id="consumer" destination="jms-chat" channelSet="{messageChannelSet}" message="messageHandler(event.message)"/>
     <mx:Consumer id="gameGridConsumer" destination="gamesUpdated" channelSet="{messageChannelSet}" message="ro2.fetchAllGames()"/>
 
-    <mx:RemoteObject id="ro1" destination="securedProductService" />
+    <mx:RemoteObject id="ro1" />
     <mx:RemoteObject id="ro2" destination="gameBso">
         <mx:method name="fetchAllGameTypes" result="fetchAllGameTypesResultHandler(event)" />
         <mx:method name="createGame" result="createGameResultHandler(event)" />
