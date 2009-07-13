@@ -50,6 +50,7 @@
                     gameGridConsumer.subscribe();
                     gamePushHandler(null);
                     chatPanel.addEventListener(SendChatMessageEvent.NAME, sendChatMessage);
+                    ro2.fetchAllGameTypes();
                 },
                 function(event:FaultEvent, token:Object = null):void {
                     Alert.show("Login Failed: " + event.fault.faultString);
@@ -76,7 +77,6 @@
         private function showCreateGameForm():void {
             var gameForm:GameForm = new GameForm();
             gameForm.title = "Create New Game";
-            ro2.fetchAllGameTypes();
             gameForm.gameTypes = gameTypes;
             gameForm.addEventListener(GameFormCanceledEvent.NAME, removeGameForm);
             PopUpManager.addPopUp(gameForm, this, true, null);
