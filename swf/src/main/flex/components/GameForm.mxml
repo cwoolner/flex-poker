@@ -1,4 +1,5 @@
 <mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml"
+    xmlns:comp="com.flexpoker.components.*"
     showCloseButton="true"
     close="removeMe();">
 
@@ -10,9 +11,9 @@
         import mx.collections.ArrayCollection;
         import com.flexpoker.model.Game;
 
-        [Bindable] private var game:Game;
+        [Bindable] public var game:Game;
 
-        [Bindable] private var gameTypes:ArrayCollection;
+        [Bindable] public var gameTypes:ArrayCollection;
 
         private function removeMe():void {
             dispatchEvent(new GameFormCanceledEvent(this));
@@ -26,13 +27,8 @@
     </mx:Script>
 
     <mx:Form defaultButton="{saveButton}">
-
-
         <mx:FormItem label="User Id">
-            <mx:TextInput id="userId" />
-        </mx:FormItem>
-        <mx:FormItem label="Password">
-            <mx:TextInput id="password" displayAsPassword="true" />
+            <comp:ComboBox id="gameType" dataProvider="{gameTypes}" labelField="name" valueField="id" value="{game.gameType.id}" />
         </mx:FormItem>
         <mx:FormItem direction="horizontal">
             <mx:Button id="saveButton" label="Save" click="saveGame();" />

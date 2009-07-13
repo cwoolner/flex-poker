@@ -25,6 +25,9 @@
         import com.flexpoker.events.GameFormCanceledEvent;
         import mx.managers.PopUpManager;
         import components.GameForm;
+        import mx.collections.ArrayCollection;
+
+        [Bindable] private var gameTypes:ArrayCollection;
 
         public function initApplication():void {
             loginForm.addEventListener(LoginAttemptEvent.NAME, login);
@@ -73,6 +76,8 @@
         private function showCreateGameForm():void {
             var gameForm:GameForm = new GameForm();
             gameForm.title = "Create New Game";
+            ro2.fetchAllGameTypes();
+            gameForm.gameTypes = gameTypes;
             gameForm.addEventListener(GameFormCanceledEvent.NAME, removeGameForm);
             PopUpManager.addPopUp(gameForm, this, true, null);
             PopUpManager.centerPopUp(gameForm);
@@ -80,6 +85,10 @@
         
         private function removeGameForm(event:GameFormCanceledEvent):void {
             PopUpManager.removePopUp(event.getForm());
+        }
+
+        private function fetchAllGameTypesResultHandler(event:ResultEvent):void {
+	    gameTypes = event.result as ArrayCollection;
         }
 
     ]]>
@@ -104,7 +113,9 @@
     <mx:Consumer id="gameGridConsumer" destination="gamesUpdated" channelSet="{messageChannelSet}" message="gamePushHandler(event.message)"/>
 
     <mx:RemoteObject id="ro1" destination="securedProductService" />
-    <mx:RemoteObject id="ro2" destination="gameBso" />
+    <mx:RemoteObject id="ro2" destination="gameBso">
+        <mx:method name="fetchAllGameTypes" result="fetchAllGameTypesResultHandler(event)" />
+    </mx:RemoteObject>
 
     <mx:VBox id="mainApp" height="100%" width="100%">
         <mx:LinkBar x="115.5" y="43" dataProvider="myViewStack" borderStyle="inset" />
