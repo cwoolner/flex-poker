@@ -1,6 +1,8 @@
 <mx:Panel xmlns:mx="http://www.adobe.com/2006/mxml"
         label="Game {game.id}"
-        creationComplete="initializeTable()">
+        creationComplete="initializeTable()"
+        backgroundImage="{TableSvg}"
+        layout="horizontal">
     <mx:Script>
     <![CDATA[
 
@@ -33,6 +35,10 @@
             message.body = "wow";
             producer.send(message);
         }
+        
+        [Embed(source="/assets/Table.svg")]
+        [Bindable]
+        public var TableSvg:Class; 
 
     ]]>
     </mx:Script>
@@ -40,18 +46,4 @@
     <mx:Producer id="producer" destination="gameStatusUpdates" channelSet="{channelSet}" />
     <mx:Consumer id="consumer" destination="gameStatusUpdates" channelSet="{channelSet}" message="messageHandler(event.message)" />
     
-    <mx:TextArea id="log" width="100%" height="100%" editable="false"
-        valueCommit="log.verticalScrollPosition = log.maxVerticalScrollPosition" />
-    <mx:ControlBar>
-        <mx:Form paddingTop="4" paddingBottom="4" paddingLeft="4"
-            paddingRight="4" defaultButton="{sendButton}">
-            <mx:FormItem label="Message:" direction="horizontal">
-                <mx:TextInput id="message" />
-                <mx:Button id="sendButton" label="Send"
-                    click="dispatchEvent(new SendChatMessageEvent(message.text))" />
-                <mx:Button id="messageButton" label="Message"
-                    click="produceMessage()" />
-            </mx:FormItem>
-        </mx:Form>
-    </mx:ControlBar>
 </mx:Panel>

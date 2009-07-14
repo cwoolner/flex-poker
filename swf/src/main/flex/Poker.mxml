@@ -142,7 +142,7 @@
 
     <mx:VBox id="mainApp" height="100%" width="100%">
         <mx:LinkBar x="115.5" y="43" dataProvider="myViewStack" borderStyle="inset" />
-        <mx:ViewStack x="10" y="99" id="myViewStack" height="100%" width="100%">
+        <mx:ViewStack x="10" y="99" id="myViewStack" height="80%" width="100%">
             <mx:Canvas label="Game Room" width="100%" height="100%" borderStyle="inset">
                 <mx:VBox width="100%" height="100%">
                     <mx:Button label="Create Game" click="showCreateGameForm()"/>
@@ -172,7 +172,7 @@
             </mx:Canvas>
         </mx:ViewStack>
 
-        <comp:ChatPanel id="chatPanel" height="100%" width="100%" />
+        <comp:ChatPanel id="chatPanel" height="20%" width="100%" />
 
     </mx:VBox>
 
