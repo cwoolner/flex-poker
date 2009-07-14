@@ -1,7 +1,6 @@
 <mx:Panel xmlns:mx="http://www.adobe.com/2006/mxml"
         label="Game {game.id}"
         creationComplete="initializeTable()"
-        backgroundImage="{TableSvg}"
         layout="horizontal">
     <mx:Script>
     <![CDATA[
@@ -44,6 +43,63 @@
     </mx:Script>
 
     <mx:Producer id="producer" destination="gameStatusUpdates" channelSet="{channelSet}" />
-    <mx:Consumer id="consumer" destination="gameStatusUpdates" channelSet="{channelSet}" message="messageHandler(event.message)" />
-    
+    <mx:Consumer id="consumer" destination="gameStatusUpdates"
+    channelSet="{channelSet}" message="messageHandler(event.message)" />
+
+    <mx:VBox verticalAlign="middle" horizontalAlign="middle" height="100%"
+        width="80%" backgroundImage="{TableSvg}">
+
+        <mx:Spacer height="100%" />
+        <mx:HBox width="100%">
+            <mx:Spacer width="100%" />
+            <mx:Label text="2" />
+            <mx:Spacer width="25%" />
+            <mx:Label text="3" />
+            <mx:Spacer width="100%" />
+        </mx:HBox>
+        <mx:Spacer height="45%" />
+        <mx:HBox width="100%">
+            <mx:Spacer width="100%" />
+            <mx:Label text="1" />
+            <mx:Spacer width="100%" />
+            <mx:Label text="4" />
+            <mx:Spacer width="100%" />
+        </mx:HBox>
+        <mx:Spacer height="100%" />
+        <mx:HBox width="100%">
+            <mx:Spacer width="60%" />
+            <mx:Label text="10" />
+            <mx:Spacer width="100%" />
+            <mx:Label text="5" />
+            <mx:Spacer width="60%" />
+        </mx:HBox>
+        <mx:Spacer height="100%" />
+        <mx:HBox width="100%">
+            <mx:Spacer width="100%" />
+            <mx:Label text="9" />
+            <mx:Spacer width="100%" />
+            <mx:Label text="6" />
+            <mx:Spacer width="100%" />
+        </mx:HBox>
+        <mx:Spacer height="45%" />
+        <mx:HBox width="100%">
+            <mx:Spacer width="100%" />
+            <mx:Label text="8" />
+            <mx:Spacer width="25%" />
+            <mx:Label text="7" />
+            <mx:Spacer width="100%" />
+        </mx:HBox>
+        <mx:Spacer height="100%" />
+
+    </mx:VBox>
+
+    <mx:VBox height="100%" width="20%">
+        <mx:HSlider id="betSlider" tickInterval="2" labels="['0', '100']" maximum="100"
+                minimum="0" height="150" />
+        <mx:Text text="{Math.round(betSlider.value)}" />
+        <mx:Button label="Bet" />
+        <mx:Button label="Check" />
+        <mx:Button label="Fold" />
+    </mx:VBox>
+
 </mx:Panel>
