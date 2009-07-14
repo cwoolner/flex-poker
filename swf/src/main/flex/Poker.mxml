@@ -28,7 +28,7 @@
         import com.flexpoker.model.Game;
         import mx.managers.PopUpManager;
         import components.GameForm;
-        import components.Table;
+        import components.GamePanel;
         import mx.collections.ArrayCollection;
 
         [Bindable] private var gameTypes:ArrayCollection;
@@ -107,11 +107,11 @@
         }
 
         private function openGame(game:Game):void {
-            var table:Table = new Table();
-            table.game = game;
-            table.channelSet = messageChannelSet;
-            myViewStack.addChild(table);
-            myViewStack.selectedChild = table;
+            var gamePanel:GamePanel = new GamePanel();
+            gamePanel.game = game;
+            gamePanel.channelSet = messageChannelSet;
+            myViewStack.addChild(gamePanel);
+            myViewStack.selectedChild = gamePanel;
         }
     ]]>
     </mx:Script>
