@@ -3,8 +3,6 @@ package com.flexpoker.bso;
 import java.util.Date;
 import java.util.List;
 
-import org.springframework.flex.messaging.MessageTemplate;
-import org.springframework.flex.remoting.RemotingDestination;
 import org.springframework.security.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,10 +13,7 @@ import com.flexpoker.model.User;
 
 @Transactional
 @Service("gameBso")
-@RemotingDestination
 public class GameBsoImpl implements GameBso {
-
-    private MessageTemplate defaultMessageTemplate;
 
     private GameDao gameDao;
 
@@ -36,8 +31,6 @@ public class GameBsoImpl implements GameBso {
         game.setCreatedOn(new Date());
 
         gameDao.save(game.getId(), game);
-
-        defaultMessageTemplate.send("gamesUpdated", true);
     }
 
     public GameDao getGameDao() {
@@ -48,19 +41,10 @@ public class GameBsoImpl implements GameBso {
         this.gameDao = gameDao;
     }
 
-    public MessageTemplate getDefaultMessageTemplate() {
-        return defaultMessageTemplate;
-    }
-
-    public void setDefaultMessageTemplate(MessageTemplate defaultMessageTemplate) {
-        this.defaultMessageTemplate = defaultMessageTemplate;
-    }
-
     public UserBso getUserBso() {
         return userBso;
     }
 
-    
     public void setUserBso(UserBso userBso) {
         this.userBso = userBso;
     }
