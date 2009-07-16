@@ -7,7 +7,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -48,7 +47,7 @@ public class GameEvent {
         this.game = game;
     }
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "gameEventTypeId")
     public GameEventType getGameEventType() {
         return gameEventType;
@@ -58,7 +57,7 @@ public class GameEvent {
         this.gameEventType = gameEventType;
     }
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "userId")
     public User getUser() {
         return user;
