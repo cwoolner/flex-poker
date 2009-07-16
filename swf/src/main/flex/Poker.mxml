@@ -31,8 +31,6 @@
         import components.GamePanel;
         import mx.collections.ArrayCollection;
 
-        [Bindable] private var gameTypes:ArrayCollection;
-
         public function initApplication():void {
             loginForm.addEventListener(LoginAttemptEvent.NAME, login);
 
@@ -54,7 +52,6 @@
                     gameGridConsumer.subscribe();
                     chatPanel.addEventListener(SendChatMessageEvent.NAME, sendChatMessage);
                     ro2.fetchAllGames();
-                    ro2.fetchAllGameTypes();
                 },
                 function(event:FaultEvent, token:Object = null):void {
                     Alert.show("Login Failed: " + event.fault.faultString);
@@ -81,7 +78,6 @@
         private function showCreateGameForm():void {
             var gameForm:GameForm = new GameForm();
             gameForm.title = "Create New Game";
-            gameForm.gameTypes = gameTypes;
             gameForm.game = new Game();
             gameForm.addEventListener(GameFormCanceledEvent.NAME, removeGameForm);
             gameForm.addEventListener(GameFormSavedEvent.NAME, saveGame);
@@ -91,10 +87,6 @@
         
         private function removeGameForm(event:GameFormCanceledEvent):void {
             PopUpManager.removePopUp(event.getForm());
-        }
-
-        private function fetchAllGameTypesResultHandler(event:ResultEvent):void {
-	    gameTypes = event.result as ArrayCollection;
         }
 
         private function saveGame(event:GameFormSavedEvent):void {
@@ -136,7 +128,6 @@
 
     <mx:RemoteObject id="ro1" />
     <mx:RemoteObject id="ro2" destination="gameBso">
-        <mx:method name="fetchAllGameTypes" result="fetchAllGameTypesResultHandler(event)" />
         <mx:method name="createGame" result="createGameResultHandler(event)" />
     </mx:RemoteObject>
 
@@ -151,13 +142,6 @@
                             doubleClick="openGame(gamesGrid.selectedItem as Game)">
                         <mx:columns>
                             <mx:DataGridColumn headerText="ID" dataField="id" />
-                            <mx:DataGridColumn headerText="Type" dataField="gameType">
-                                <mx:itemRenderer>
-                                    <mx:Component>
-                                        <rend:GameTypeRenderer />
-                                    </mx:Component>
-                                </mx:itemRenderer>
-                            </mx:DataGridColumn>
                             <mx:DataGridColumn headerText="Creator" dataField="createdByUser">
                                 <mx:itemRenderer>
                                     <mx:Component>

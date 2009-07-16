@@ -10,19 +10,15 @@
         import com.flexpoker.events.GameFormCanceledEvent;
         import mx.collections.ArrayCollection;
         import com.flexpoker.model.Game;
-        import com.flexpoker.model.GameType;
         import mx.controls.Alert;
 
         [Bindable] public var game:Game;
-
-        [Bindable] public var gameTypes:ArrayCollection;
 
         private function removeMe():void {
             dispatchEvent(new GameFormCanceledEvent(this));
         }
 
         private function saveGame():void {
-            game.gameType = gameType.selectedItem as GameType;
             dispatchEvent(new GameFormSavedEvent(game, this));
         }
 
@@ -30,9 +26,6 @@
     </mx:Script>
 
     <mx:Form defaultButton="{saveButton}">
-        <mx:FormItem label="Type">
-            <comp:ComboBox id="gameType" dataProvider="{gameTypes}" labelField="name" valueField="id" value="{game.gameType.id}" />
-        </mx:FormItem>
         <mx:FormItem direction="horizontal">
             <mx:Button id="saveButton" label="Save" click="saveGame();" />
             <mx:Button label="Cancel" click="removeMe();" />

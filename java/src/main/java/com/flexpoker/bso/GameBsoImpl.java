@@ -10,9 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.flexpoker.dao.GameDao;
-import com.flexpoker.dao.GameTypeDao;
 import com.flexpoker.model.Game;
-import com.flexpoker.model.GameType;
 import com.flexpoker.model.User;
 
 @Transactional
@@ -24,8 +22,6 @@ public class GameBsoImpl implements GameBso {
 
     private GameDao gameDao;
 
-    private GameTypeDao gameTypeDao;
-    
     private UserBso userBso;
 
     @Override
@@ -35,7 +31,6 @@ public class GameBsoImpl implements GameBso {
 
     @Override
     public void createGame(Game game) {
-        game.setGameType(gameTypeDao.findById(game.getGameType().getId()));
         game.setCreatedByUser((User) SecurityContextHolder.getContext()
                 .getAuthentication().getPrincipal());
         game.setCreatedOn(new Date());
@@ -43,11 +38,6 @@ public class GameBsoImpl implements GameBso {
         gameDao.save(game.getId(), game);
 
         defaultMessageTemplate.send("gamesUpdated", true);
-    }
-
-    @Override
-    public List<GameType> fetchAllGameTypes() {
-        return gameTypeDao.findAll();
     }
 
     public GameDao getGameDao() {
@@ -66,15 +56,6 @@ public class GameBsoImpl implements GameBso {
         this.defaultMessageTemplate = defaultMessageTemplate;
     }
 
-    public GameTypeDao getGameTypeDao() {
-        return gameTypeDao;
-    }
-
-    public void setGameTypeDao(GameTypeDao gameTypeDao) {
-        this.gameTypeDao = gameTypeDao;
-    }
-
-    
     public UserBso getUserBso() {
         return userBso;
     }

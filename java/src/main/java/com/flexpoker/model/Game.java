@@ -16,8 +16,6 @@ public class Game {
 
     private Integer id;
 
-    private GameType gameType;
-
     private Date startTime;
 
     private Date endTime;
@@ -42,16 +40,6 @@ public class Game {
 
     public void setId(Integer id) {
         this.id = id;
-    }
-
-    @ManyToOne
-    @JoinColumn(name = "gameTypeId")
-    public GameType getGameType() {
-        return gameType;
-    }
-
-    public void setGameType(GameType gameType) {
-        this.gameType = gameType;
     }
 
     public Date getStartTime() {
