@@ -20,7 +20,7 @@
         public var channelSet:ChannelSet;
         
         private function initializeTable() {
-            consumer.subtopic = "gameStatusUpdates." + game.id.toString();
+            consumer.subtopic = "gameStatusUpdates." + game.id.toString() + ".*";
             consumer.subscribe();
         }
         
