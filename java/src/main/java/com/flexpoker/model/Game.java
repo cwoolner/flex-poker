@@ -1,12 +1,14 @@
 package com.flexpoker.model;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
@@ -31,6 +33,16 @@ public class Game {
     private Integer totalPlayers;
 
     private Integer playersRemaining;
+
+    private Integer minimumPlayers;
+
+    private Integer maximumPlayers;
+
+    private Boolean allowRebuys;
+
+    private List<UserStatusInGame> userStatusInGames;
+
+    private GameStage gameStage;
 
     @Id
     @GeneratedValue
@@ -108,6 +120,50 @@ public class Game {
 
     public void setPlayersRemaining(Integer playersRemaining) {
         this.playersRemaining = playersRemaining;
+    }
+
+    public Integer getMinimumPlayers() {
+        return minimumPlayers;
+    }
+
+    public void setMinimumPlayers(Integer minimumPlayers) {
+        this.minimumPlayers = minimumPlayers;
+    }
+
+    public Integer getMaximumPlayers() {
+        return maximumPlayers;
+    }
+
+    public void setMaximumPlayers(Integer maximumPlayers) {
+        this.maximumPlayers = maximumPlayers;
+    }
+
+    public Boolean getAllowRebuys() {
+        return allowRebuys;
+    }
+
+    public void setAllowRebuys(Boolean allowRebuys) {
+        this.allowRebuys = allowRebuys;
+    }
+
+    @OneToMany
+    @JoinColumn(name = "gameId")
+    public List<UserStatusInGame> getUserStatusInGames() {
+        return userStatusInGames;
+    }
+
+    public void setUserStatusInGames(List<UserStatusInGame> userStatusInGames) {
+        this.userStatusInGames = userStatusInGames;
+    }
+
+    @ManyToOne
+    @JoinColumn(name = "gameStageId")
+    public GameStage getGameStage() {
+        return gameStage;
+    }
+
+    public void setGameStage(GameStage gameStage) {
+        this.gameStage = gameStage;
     }
 
     @Override
