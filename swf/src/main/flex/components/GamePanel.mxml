@@ -114,7 +114,7 @@
         <mx:VBox height="50%" width="100%">
             <mx:HSlider id="betSlider" tickInterval="2" labels="['0', '100']" maximum="100"
                     minimum="0" height="150" />
-            <mx:Text text="{Math.round(betSlider.value)}" />
+            <mx:Text text="{betSlider.value}" />
             <mx:Button label="Bet" />
             <mx:Button label="Check" />
             <mx:Button label="Fold" />
