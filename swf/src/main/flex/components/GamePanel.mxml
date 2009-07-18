@@ -6,6 +6,7 @@
     <![CDATA[
 
         import com.flexpoker.events.SendChatMessageEvent;
+        import com.flexpoker.events.GamePanelCanceledEvent;
         import com.flexpoker.model.Game;
         import com.flexpoker.model.User;
         import mx.messaging.Consumer;
@@ -42,6 +43,7 @@
         private function joinGameFaultHandler(event:FaultEvent):void {
             var errorMessage:ErrorMessage = event.message as ErrorMessage;
             Alert.show(errorMessage.rootCause.message);
+            dispatchEvent(new GamePanelCanceledEvent(this));
         }
 
         [Embed(source="/assets/Table.svg")]

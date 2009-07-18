@@ -23,6 +23,7 @@
         import com.flexpoker.events.SendChatMessageEvent;
         import com.flexpoker.events.GameFormCanceledEvent;
         import com.flexpoker.events.GameFormSavedEvent;
+        import com.flexpoker.events.GamePanelCanceledEvent
         import com.flexpoker.model.Game;
         import mx.managers.PopUpManager;
         import components.GameForm;
@@ -97,9 +98,16 @@
             gamePanel.game = game;
             gamePanel.channelSet = messageChannelSet;
             gamePanel.addEventListener(SendChatMessageEvent.NAME, sendChatMessage);
+            gamePanel.addEventListener(GamePanelCanceledEvent.NAME, removeGamePanel);
             myViewStack.addChild(gamePanel);
             myViewStack.selectedChild = gamePanel;
         }
+
+        private function removeGamePanel(event:GamePanelCanceledEvent) {
+            myViewStack.removeChild(event.getPanel());        
+            myViewStack.selectedChild = gameRoom;
+        }
+
     ]]>
     </mx:Script>
 
@@ -129,7 +137,7 @@
     <mx:VBox id="mainApp" height="100%" width="100%">
         <mx:LinkBar x="115.5" y="43" dataProvider="myViewStack" borderStyle="inset" />
         <mx:ViewStack x="10" y="99" id="myViewStack" height="80%" width="100%">
-            <mx:Canvas label="Game Room" width="100%" height="100%" borderStyle="inset">
+            <mx:Canvas id="gameRoom" label="Game Room" width="100%" height="100%" borderStyle="inset">
                 <mx:VBox width="100%" height="100%">
                     <mx:Button label="Create Game" click="showCreateGameForm()"/>
                     <mx:DataGrid id="gamesGrid" dataProvider="{mainRemoteObject.fetchAllGames.lastResult}"
