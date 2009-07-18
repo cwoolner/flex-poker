@@ -23,8 +23,6 @@
         
         public var channelSet:ChannelSet;
 
-        private var usersInGame:ArrayCollection;
-        
         private function initializeTable() {
             consumer.subtopic = game.id.toString() + ".*";
             consumer.subscribe();
