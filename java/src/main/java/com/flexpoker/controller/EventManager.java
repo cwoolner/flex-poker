@@ -9,4 +9,6 @@ public interface EventManager {
 
     void sendUserJoinedEvent(User user, Game game);
 
+    void sendChatEvent(String username, String text) ;
+
 }

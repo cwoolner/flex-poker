@@ -41,6 +41,8 @@ public class FlexControllerImpl implements FlexController {
         synchronized (this) {
             gameEventBso.addUserToGame(user, game);
             eventManager.sendUserJoinedEvent(user, game);
+            eventManager.sendChatEvent("System", user.getUsername()
+                    + " joined Game " + game.getId() + ".");
         }
     }
     

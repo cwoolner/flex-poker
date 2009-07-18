@@ -97,7 +97,6 @@
             var gamePanel:GamePanel = new GamePanel();
             gamePanel.game = game;
             gamePanel.channelSet = messageChannelSet;
-            gamePanel.addEventListener(SendChatMessageEvent.NAME, sendChatMessage);
             gamePanel.addEventListener(GamePanelCanceledEvent.NAME, removeGamePanel);
             myViewStack.addChild(gamePanel);
             myViewStack.selectedChild = gamePanel;
