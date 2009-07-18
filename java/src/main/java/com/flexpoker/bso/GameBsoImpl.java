@@ -33,6 +33,11 @@ public class GameBsoImpl implements GameBso {
         gameDao.save(game.getId(), game);
     }
 
+    @Override
+    public Game fetchById(Integer id) {
+        return gameDao.findById(id);
+    }
+
     public GameDao getGameDao() {
         return gameDao;
     }

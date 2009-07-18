@@ -10,4 +10,6 @@ public interface GameBso {
 
     void createGame(Game game);
 
+    Game fetchById(Integer id);
+
 }
