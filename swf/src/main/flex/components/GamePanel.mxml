@@ -29,12 +29,6 @@
         private function messageHandler(message:IMessage):void {
             Alert.show("acknowledge");
         }
-        
-        private function produceMessage():void {
-            var message:AsyncMessage = new AsyncMessage();
-            producer.subtopic = "gameStatusUpdates." + game.id.toString();
-            message.body = "wow";
-            producer.send(message);
         }
         
         [Embed(source="/assets/Table.svg")]
@@ -44,9 +38,7 @@
     ]]>
     </mx:Script>
 
-    <mx:Producer id="producer" destination="gameStatusUpdates" channelSet="{channelSet}" />
-    <mx:Consumer id="consumer" destination="gameStatusUpdates"
-    channelSet="{channelSet}" message="messageHandler(event.message)" />
+    <mx:Consumer id="consumer" destination="gameStatusUpdates" channelSet="{channelSet}" message="messageHandler(event.message)" />
     
     <mx:RemoteObject id="mainRemoteObject" destination="flexController">
         <mx:method name="joinGame" fault="joinGameFaultHandler(event)" />
