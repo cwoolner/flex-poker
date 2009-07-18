@@ -26,6 +26,7 @@
 	<context:component-scan base-package="com.flexpoker" />
 
     <flex:message-broker services-config-path="/WEB-INF/classes/services-config.xml">
+        <flex:exception-translator ref="flexPokerExceptionTranslator" />
         <flex:message-service default-channels="my-streaming-amf,my-longpolling-amf,my-polling-amf" />
         <flex:secured />
     </flex:message-broker>

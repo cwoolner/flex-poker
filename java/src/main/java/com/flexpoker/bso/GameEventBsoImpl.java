@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.flexpoker.dao.GameDao;
+import com.flexpoker.exception.FlexPokerException;
 import com.flexpoker.model.Game;
 import com.flexpoker.model.GameStage;
 import com.flexpoker.model.User;
@@ -25,18 +26,18 @@ public class GameEventBsoImpl implements GameEventBso {
 
         if (GameStage.STARTING.equals(gameStage)
             || GameStage.IN_PROGRESS.equals(gameStage)) {
-            throw new IllegalStateException("The game has already started");
+            throw new FlexPokerException("The game has already started");
         }
 
         if (GameStage.FINISHED.equals(gameStage)) {
-            throw new IllegalStateException("The game is already finished.");
+            throw new FlexPokerException("The game is already finished.");
         }
 
         List<UserStatusInGame> userStatuses = game.getUserStatusInGames();
         
         for (UserStatusInGame userStatus : userStatuses) {
             if (user.equals(userStatus.getUser())) {
-                throw new IllegalStateException("You are already in this game.");
+                throw new FlexPokerException("You are already in this game.");
             }
         }
         
@@ -44,7 +45,7 @@ public class GameEventBsoImpl implements GameEventBso {
         Integer currentNumberOfPlayers = game.getUserStatusInGames().size();
         
         if (maximumPlayers <= currentNumberOfPlayers) {
-            throw new IllegalStateException("This game is full.");
+            throw new FlexPokerException("This game is full.");
         }
         
     }
