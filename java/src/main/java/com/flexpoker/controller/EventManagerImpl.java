@@ -30,8 +30,8 @@ public class EventManagerImpl implements EventManager {
         messageTemplate.send(new AsyncMessageCreator() {
             @Override
             public AsyncMessage createMessage() {
-                AsyncMessage message = new AsyncMessage();
-                message.setDestination(GAME_STATUS_UPDATES);
+                AsyncMessage message = messageTemplate
+                        .createMessageForDestination(GAME_STATUS_UPDATES);
                 message.setHeader(AsyncMessage.SUBTOPIC_HEADER_NAME,
                         game.getId() + "." + USER_JOINED_GAME);
                message.setBody(user);
