@@ -1,10 +1,13 @@
 package com.flexpoker.controller;
 
+import org.springframework.flex.messaging.AsyncMessageCreator;
 import org.springframework.flex.messaging.MessageTemplate;
 import org.springframework.stereotype.Controller;
 
 import com.flexpoker.model.Game;
 import com.flexpoker.model.User;
+
+import flex.messaging.messages.AsyncMessage;
 
 @Controller("eventManager")
 public class EventManagerImpl implements EventManager {
@@ -23,9 +26,18 @@ public class EventManagerImpl implements EventManager {
     }
 
     @Override
-    public void sendUserJoinedEvent(User user, Game game) {
-        messageTemplate.send(GAME_STATUS_UPDATES + "." + game.getId() + "."
-                + USER_JOINED_GAME, user);
+    public void sendUserJoinedEvent(final User user, final Game game) {
+        messageTemplate.send(new AsyncMessageCreator() {
+            @Override
+            public AsyncMessage createMessage() {
+                AsyncMessage message = new AsyncMessage();
+                message.setDestination(GAME_STATUS_UPDATES);
+                message.setHeader(AsyncMessage.SUBTOPIC_HEADER_NAME,
+                        game.getId() + "." + USER_JOINED_GAME);
+               message.setBody(user);
+               return message;
+            }
+        });
     }
 
     public MessageTemplate getMessageTemplate() {
