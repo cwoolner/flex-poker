@@ -31,7 +31,7 @@
         }
         
         private function messageHandler(message:IMessage):void {
-            if (message.headers.DSSubtopic.search("userJoinedGame") != -1)) {
+            if (message.headers.DSSubtopic.search("userJoinedGame") != -1) {
                 Alert.show("Yeah!");
                 var newUser:User = message.body as User;
                 dispatchEvent(new SendChatMessageEvent("New user joined the game."));
