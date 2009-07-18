@@ -1,11 +1,13 @@
 package com.flexpoker.bso;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.flexpoker.dao.GameDao;
+import com.flexpoker.dao.UserStatusInGameDao;
 import com.flexpoker.exception.FlexPokerException;
 import com.flexpoker.model.Game;
 import com.flexpoker.model.GameStage;
@@ -17,6 +19,8 @@ import com.flexpoker.model.UserStatusInGame;
 public class GameEventBsoImpl implements GameEventBso {
 
     private GameDao gameDao;
+
+    private UserStatusInGameDao userStatusInGameDao;
 
     @Override
     public void addUserToGame(User user, Game game) {
@@ -47,7 +51,12 @@ public class GameEventBsoImpl implements GameEventBso {
         if (maximumPlayers <= currentNumberOfPlayers) {
             throw new FlexPokerException("This game is full.");
         }
-        
+
+        UserStatusInGame userStatusInGame = new UserStatusInGame();
+        userStatusInGame.setEnterTime(new Date());
+        userStatusInGame.setGame(game);
+        userStatusInGame.setUser(user);
+        userStatusInGameDao.save(userStatusInGame.getId(), userStatusInGame);
     }
 
     public GameDao getGameDao() {
@@ -56,6 +65,16 @@ public class GameEventBsoImpl implements GameEventBso {
 
     public void setGameDao(GameDao gameDao) {
         this.gameDao = gameDao;
+    }
+
+    
+    public UserStatusInGameDao getUserStatusInGameDao() {
+        return userStatusInGameDao;
+    }
+
+    
+    public void setUserStatusInGameDao(UserStatusInGameDao userStatusInGameDao) {
+        this.userStatusInGameDao = userStatusInGameDao;
     }
 
 }
