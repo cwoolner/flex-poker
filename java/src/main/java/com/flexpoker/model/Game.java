@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -146,7 +147,7 @@ public class Game {
         this.allowRebuys = allowRebuys;
     }
 
-    @OneToMany
+    @OneToMany(fetch = FetchType.EAGER)
     @JoinColumn(name = "gameId")
     public List<UserStatusInGame> getUserStatusInGames() {
         return userStatusInGames;

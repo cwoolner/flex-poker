@@ -10,6 +10,7 @@ import com.flexpoker.bso.GameBso;
 import com.flexpoker.bso.GameEventBso;
 import com.flexpoker.model.Game;
 import com.flexpoker.model.User;
+import com.flexpoker.model.UserStatusInGame;
 
 @Controller("flexController")
 @RemotingDestination
@@ -41,6 +42,12 @@ public class FlexControllerImpl implements FlexController {
             gameEventBso.addUserToGame(user, game);
             eventManager.sendUserJoinedEvent(user, game);
         }
+    }
+    
+    @Override
+    public List<UserStatusInGame> fetchAllUserStatusesForGame(Game game) {
+        game = gameBso.fetchById(game.getId());
+        return game.getUserStatusInGames();
     }
 
     public GameBso getGameBso() {
