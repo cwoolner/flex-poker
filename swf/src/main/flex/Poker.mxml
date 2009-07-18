@@ -10,8 +10,6 @@
     <mx:Script>
     <![CDATA[
 
-        import mx.messaging.ChannelSet;
-        import mx.messaging.channels.AMFChannel;
         import mx.controls.Alert;
         import mx.rpc.events.FaultEvent;
         import mx.rpc.events.ResultEvent;
@@ -30,20 +28,16 @@
         import components.GameForm;
         import components.GamePanel;
         import mx.collections.ArrayCollection;
+        import com.flexpoker.util.RemoteObjectUtils;
 
         public function initApplication():void {
             loginForm.addEventListener(LoginAttemptEvent.NAME, login);
-
-            var channelSet:ChannelSet = new ChannelSet();
-            var channel:AMFChannel = new AMFChannel("ch1", "http://flexpoker.com/poker/messagebroker/amf");
-            channelSet.addChannel(channel);
-
-            ro1.channelSet = channelSet;
-            ro2.channelSet = channelSet;
+            RemoteObjectUtils.addChannelSetToRemoteObject(loginRemoteObject);
+            RemoteObjectUtils.addChannelSetToRemoteObject(mainRemoteObject);
         }
 
         private function login(event:LoginAttemptEvent):void {
-            var token:AsyncToken = ro1.channelSet.login(event.getUsername(), event.getPassword());
+            var token:AsyncToken = loginRemoteObject.channelSet.login(event.getUsername(), event.getPassword());
 
             token.addResponder(new AsyncResponder(
                 function(event:ResultEvent, token:Object = null):void {
@@ -51,7 +45,7 @@
                     consumer.subscribe();
                     gameGridConsumer.subscribe();
                     chatPanel.addEventListener(SendChatMessageEvent.NAME, sendChatMessage);
-                    ro2.fetchAllGames();
+                    mainRemoteObject.fetchAllGames();
                 },
                 function(event:FaultEvent, token:Object = null):void {
                     Alert.show("Login Failed: " + event.fault.faultString);
@@ -72,7 +66,7 @@
         }
 
         private function gamePushHandler():void {
-            ro2.fetchAllGames();
+            mainRemoteObject.fetchAllGames();
         }
 
         private function showCreateGameForm():void {
@@ -91,7 +85,7 @@
 
         private function saveGame(event:GameFormSavedEvent):void {
             PopUpManager.removePopUp(event.getForm());
-            ro2.createGame(event.getGame());
+            mainRemoteObject.createGame(event.getGame());
         }
 
         private function createGameResultHandler(event:ResultEvent):void {
@@ -102,6 +96,7 @@
             var gamePanel:GamePanel = new GamePanel();
             gamePanel.game = game;
             gamePanel.channelSet = messageChannelSet;
+            gamePanel.addEventListener(SendChatMessageEvent.NAME, sendChatMessage);
             myViewStack.addChild(gamePanel);
             myViewStack.selectedChild = gamePanel;
         }
@@ -124,10 +119,10 @@
 
     <mx:Producer id="producer" destination="jms-chat" channelSet="{messageChannelSet}"/>
     <mx:Consumer id="consumer" destination="jms-chat" channelSet="{messageChannelSet}" message="messageHandler(event.message)" />
-    <mx:Consumer id="gameGridConsumer" destination="gamesUpdated" channelSet="{messageChannelSet}" message="ro2.fetchAllGames()"/>
+    <mx:Consumer id="gameGridConsumer" destination="gamesUpdated" channelSet="{messageChannelSet}" message="mainRemoteObject.fetchAllGames()"/>
 
-    <mx:RemoteObject id="ro1" />
-    <mx:RemoteObject id="ro2" destination="gameBso">
+    <mx:RemoteObject id="loginRemoteObject" />
+    <mx:RemoteObject id="mainRemoteObject" destination="flexController">
         <mx:method name="createGame" result="createGameResultHandler(event)" />
     </mx:RemoteObject>
 
@@ -137,7 +132,7 @@
             <mx:Canvas label="Game Room" width="100%" height="100%" borderStyle="inset">
                 <mx:VBox width="100%" height="100%">
                     <mx:Button label="Create Game" click="showCreateGameForm()"/>
-                    <mx:DataGrid id="gamesGrid" dataProvider="{ro2.fetchAllGames.lastResult}"
+                    <mx:DataGrid id="gamesGrid" dataProvider="{mainRemoteObject.fetchAllGames.lastResult}"
                             width="100%" height="100%" doubleClickEnabled="true"
                             doubleClick="openGame(gamesGrid.selectedItem as Game)">
                         <mx:columns>

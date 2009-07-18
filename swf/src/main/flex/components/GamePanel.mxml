@@ -14,6 +14,7 @@
         import mx.rpc.events.FaultEvent;
         import mx.rpc.events.ResultEvent;
         import mx.messaging.messages.AsyncMessage;
+        import com.flexpoker.util.RemoteObjectUtils;
 
         public var game:Game;
         
@@ -22,6 +23,7 @@
         private function initializeTable() {
             consumer.subtopic = "gameStatusUpdates." + game.id.toString() + ".*";
             consumer.subscribe();
+            RemoteObjectUtils.addChannelSetToRemoteObject(mainRemoteObject);
         }
         
         private function messageHandler(message:IMessage):void {
@@ -45,6 +47,10 @@
     <mx:Producer id="producer" destination="gameStatusUpdates" channelSet="{channelSet}" />
     <mx:Consumer id="consumer" destination="gameStatusUpdates"
     channelSet="{channelSet}" message="messageHandler(event.message)" />
+    
+    <mx:RemoteObject id="mainRemoteObject" destination="flexController">
+        <mx:method name="joinGame" fault="joinGameFaultHandler(event)" />
+    </mx:RemoteObject>
 
     <mx:VBox verticalAlign="middle" horizontalAlign="middle" height="100%"
         width="80%" backgroundImage="{TableSvg}">
