@@ -143,7 +143,20 @@
                             width="100%" height="100%" doubleClickEnabled="true"
                             doubleClick="openGame(gamesGrid.selectedItem as Game)">
                         <mx:columns>
-                            <mx:DataGridColumn headerText="ID" dataField="id" />
+                            <mx:DataGridColumn headerText="ID" dataField="id">
+                                <mx:itemRenderer>
+                                    <mx:Component>
+                                        <rend:GameIdRenderer />
+                                    </mx:Component>
+                                </mx:itemRenderer>
+                            </mx:DataGridColumn>
+                            <mx:DataGridColumn headerText="Stage" dataField="gameStage">
+                                <mx:itemRenderer>
+                                    <mx:Component>
+                                        <rend:GameStageRenderer />
+                                    </mx:Component>
+                                </mx:itemRenderer>
+                            </mx:DataGridColumn>
                             <mx:DataGridColumn headerText="Creator" dataField="createdByUser">
                                 <mx:itemRenderer>
                                     <mx:Component>
