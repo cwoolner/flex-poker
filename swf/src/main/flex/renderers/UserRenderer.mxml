@@ -1,0 +1,16 @@
+<mx:HBox xmlns:mx="http://www.adobe.com/2006/mxml" dataChange="renderUser(data.user)">
+    <mx:Script>
+        <![CDATA[
+            import mx.controls.Label;
+            import com.flexpoker.model.User;
+
+            public function renderUser(user:User):void {
+                removeAllChildren();
+                var userLabel:Label = new Label();
+                userLabel.text = user.username;
+                addChild(userLabel);
+            }
+        ]]>
+    </mx:Script>
+
+</mx:HBox>
