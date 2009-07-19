@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.flexpoker.dao.GameDao;
+import com.flexpoker.dao.GameStageDao;
 import com.flexpoker.model.Game;
 import com.flexpoker.model.User;
 
@@ -18,6 +19,8 @@ public class GameBsoImpl implements GameBso {
     private GameDao gameDao;
 
     private UserBso userBso;
+
+    private GameStageDao gameStageDao;
 
     @Override
     public List<Game> fetchAllGames() {
@@ -38,6 +41,13 @@ public class GameBsoImpl implements GameBso {
         return gameDao.findById(id);
     }
 
+    @Override
+    public void changeGameStage(Game game, String gameStageName) {
+        game = fetchById(game.getId());
+        game.setGameStage(gameStageDao.findByName(gameStageName));
+        gameDao.save(game.getId(), game);
+    }
+
     public GameDao getGameDao() {
         return gameDao;
     }
@@ -52,6 +62,14 @@ public class GameBsoImpl implements GameBso {
 
     public void setUserBso(UserBso userBso) {
         this.userBso = userBso;
+    }
+
+    public GameStageDao getGameStageDao() {
+        return gameStageDao;
+    }
+
+    public void setGameStageDao(GameStageDao gameStageDao) {
+        this.gameStageDao = gameStageDao;
     }
 
 }

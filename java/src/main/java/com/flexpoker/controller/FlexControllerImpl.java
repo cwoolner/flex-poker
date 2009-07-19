@@ -9,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import com.flexpoker.bso.GameBso;
 import com.flexpoker.bso.GameEventBso;
 import com.flexpoker.model.Game;
+import com.flexpoker.model.GameStage;
 import com.flexpoker.model.User;
 import com.flexpoker.model.UserStatusInGame;
 
@@ -43,7 +44,14 @@ public class FlexControllerImpl implements FlexController {
             eventManager.sendUserJoinedEvent(user, game);
             eventManager.sendChatEvent("System", user.getUsername()
                     + " joined Game " + game.getId() + ".");
+
+            if (gameEventBso.isGameAtMaxPlayers(game)) {
+                gameBso.changeGameStage(game, GameStage.STARTING);
+                eventManager.sendGamesUpdatedEvent();
+                eventManager.sendGameStartingEvent(game);
+            }
         }
+
     }
     
     @Override

@@ -8,4 +8,6 @@ public interface GameEventBso {
 
     void addUserToGame(User user, Game game);
 
+    boolean isGameAtMaxPlayers(Game game);
+
 }

@@ -36,6 +36,10 @@
                 mainRemoteObject.fetchAllUserStatusesForGame(game);
                 return;
             }
+
+            if (message.headers.DSSubtopic.search("gameIsStarting") != -1) {
+                return;
+            }
         }
 
         private function joinGameFaultHandler(event:FaultEvent):void {

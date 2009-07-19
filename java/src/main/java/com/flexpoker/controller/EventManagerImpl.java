@@ -24,6 +24,8 @@ public class EventManagerImpl implements EventManager {
 
     private static final String JMS_CHAT = "jms-chat";
 
+    private static final String GAME_IS_STARTING = "gameIsStarting";
+
     private MessageTemplate messageTemplate;
 
     @Override
@@ -49,6 +51,11 @@ public class EventManagerImpl implements EventManager {
         }
 
         messageTemplate.send(JMS_CHAT, mapMessage);
+    }
+
+    @Override
+    public void sendGameStartingEvent(final Game game) {
+        messageTemplate.send(new GameStatusMessageCreator(game, GAME_IS_STARTING));
     }
 
     public MessageTemplate getMessageTemplate() {

@@ -59,6 +59,12 @@ public class GameEventBsoImpl implements GameEventBso {
         userStatusInGameDao.save(userStatusInGame.getId(), userStatusInGame);
     }
 
+    @Override
+    public boolean isGameAtMaxPlayers(Game game) {
+        game = gameDao.findById(game.getId());
+        return game.getUserStatusInGames().size() == game.getMaximumPlayers();
+    }
+
     public GameDao getGameDao() {
         return gameDao;
     }

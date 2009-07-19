@@ -11,4 +11,6 @@ public interface EventManager {
 
     void sendChatEvent(String username, String text) ;
 
+    void sendGameStartingEvent(Game game);
+
 }

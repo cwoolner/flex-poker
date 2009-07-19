@@ -12,4 +12,6 @@ public interface GameBso {
 
     Game fetchById(Integer id);
 
+    void changeGameStage(Game game, String gameStageName);
+
 }
