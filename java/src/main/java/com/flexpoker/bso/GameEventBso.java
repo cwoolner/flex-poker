@@ -10,4 +10,8 @@ public interface GameEventBso {
 
     boolean isGameAtMaxPlayers(Game game);
 
+    void verifyRegistration(User user, Game game);
+
+    boolean areAllPlayerRegistrationsVerified(Game game);
+
 }

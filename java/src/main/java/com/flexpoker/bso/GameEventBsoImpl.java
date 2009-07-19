@@ -1,8 +1,10 @@
 package com.flexpoker.bso;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang.BooleanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -63,6 +65,37 @@ public class GameEventBsoImpl implements GameEventBso {
     public boolean isGameAtMaxPlayers(Game game) {
         game = gameDao.findById(game.getId());
         return game.getUserStatusInGames().size() == game.getMaximumPlayers();
+    }
+
+    @Override
+    public void verifyRegistration(User user, Game game) {
+        game = gameDao.findById(game.getId());
+
+        List<UserStatusInGame> userList = game.getUserStatusInGames();
+
+        for (UserStatusInGame userInGame : userList) {
+            if (userInGame.getUser().equals(user)) {
+                userInGame.setVerified(true);
+                userStatusInGameDao.save(userInGame.getId(), userInGame);
+                break;
+            }
+        }
+    }
+
+    @Override
+    public boolean areAllPlayerRegistrationsVerified(Game game) {
+        game = gameDao.findById(game.getId());
+
+        List<UserStatusInGame> verifiedUsers = new ArrayList<UserStatusInGame>();
+        List<UserStatusInGame> usersInGame = game.getUserStatusInGames();
+
+        for (UserStatusInGame userInGame : usersInGame) {
+            if (BooleanUtils.isTrue(userInGame.getVerified())) {
+                verifiedUsers.add(userInGame);
+            }
+        }
+
+        return verifiedUsers.size() == usersInGame.size();
     }
 
     public GameDao getGameDao() {

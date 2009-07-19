@@ -23,10 +23,14 @@
         import com.flexpoker.util.RemoteObjectUtils;
         import mx.collections.ArrayCollection;
         import mx.messaging.messages.ErrorMessage;
+        import flash.utils.Timer;
+        import flash.events.TimerEvent;
 
         public var game:Game;
         
         public var channelSet:ChannelSet;
+
+        private var startingTimer:Timer;
 
         [Bindable]
         private var userStatusesForGame:ArrayCollection;
@@ -45,7 +49,16 @@
             }
 
             if (message.headers.DSSubtopic.search("gameIsStarting") != -1) {
+                startingTimer = new Timer(1000, 5);
+                startingTimer.addEventListener("timer", timerHandler);
+                startingTimer.addEventListener("timerComplete", timerCompleteHandler);
+                startingTimer.start();
                 currentState = "startingState";
+                return;
+            }
+
+            if (message.headers.DSSubtopic.search("gameInProgress") != -1) {
+                currentState = "inProgressState";
                 return;
             }
         }
@@ -58,6 +71,15 @@
             var errorMessage:ErrorMessage = event.message as ErrorMessage;
             Alert.show(errorMessage.rootCause.message);
             dispatchEvent(new GamePanelCanceledEvent(this));
+        }
+
+        private function timerHandler(event:TimerEvent):void {
+            var timeLeft:int = 5 - startingTimer.currentCount
+            startingLabel.text = timeLeft.toString();
+        }
+
+        private function timerCompleteHandler(event:TimerEvent):void {
+            mainRemoteObject.verifyRegistrationForGame(game);
         }
 
         [Embed(source="/assets/Table.svg")]
@@ -127,7 +149,10 @@
     <mx:VBox id="startingMain" verticalAlign="middle" horizontalAlign="middle"
         height="100%" width="80%">
         <mx:HBox width="100%">
-            <mx:Spacer width="100%"/><mx:Label text="Starting..." /><mx:Spacer width="100%"/>
+            <mx:Spacer width="100%"/>
+                <mx:Label text="Starting in " />
+                <mx:Label id="startingLabel" text="5" />
+            <mx:Spacer width="100%"/>
         </mx:HBox>
     </mx:VBox>
 

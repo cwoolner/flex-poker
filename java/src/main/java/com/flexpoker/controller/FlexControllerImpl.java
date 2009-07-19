@@ -41,7 +41,7 @@ public class FlexControllerImpl implements FlexController {
 
         synchronized (this) {
             gameEventBso.addUserToGame(user, game);
-            eventManager.sendUserJoinedEvent(user, game);
+            eventManager.sendUserJoinedEvent(game);
             eventManager.sendChatEvent("System", user.getUsername()
                     + " joined Game " + game.getId() + ".");
 
@@ -58,6 +58,20 @@ public class FlexControllerImpl implements FlexController {
     public List<UserStatusInGame> fetchAllUserStatusesForGame(Game game) {
         game = gameBso.fetchById(game.getId());
         return game.getUserStatusInGames();
+    }
+
+    @Override
+    public void verifyRegistrationForGame(Game game) {
+        User user = (User) SecurityContextHolder.getContext()
+                .getAuthentication().getPrincipal();
+
+        synchronized (this) {
+            gameEventBso.verifyRegistration(user, game);
+
+            if (gameEventBso.areAllPlayerRegistrationsVerified(game)) {
+                eventManager.sendGameInProgressEvent(game);
+            }
+        }
     }
 
     public GameBso getGameBso() {

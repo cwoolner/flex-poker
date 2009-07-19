@@ -15,4 +15,6 @@ public interface FlexController {
 
     List<UserStatusInGame> fetchAllUserStatusesForGame(Game game);
 
+    void verifyRegistrationForGame(Game game);
+
 }
