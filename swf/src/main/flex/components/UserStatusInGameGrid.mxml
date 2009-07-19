@@ -1,0 +1,24 @@
+<mx:DataGrid xmlns:mx="http://www.adobe.com/2006/mxml"
+    xmlns:rend="renderers.*"
+    dataProvider="{userStatusesForGame}">
+
+    <mx:Script>
+    <![CDATA[
+        import mx.collections.ArrayCollection;
+
+        [Bindable]
+        public var userStatusesForGame:ArrayCollection;
+    ]]>
+    </mx:Script>
+
+    <mx:columns>
+        <mx:DataGridColumn headerText="Player" dataField="user">
+            <mx:itemRenderer>
+                <mx:Component>
+                    <rend:UserRenderer />
+                </mx:Component>
+            </mx:itemRenderer>
+        </mx:DataGridColumn>
+        <mx:DataGridColumn headerText="Chips" dataField="chips" />
+    </mx:columns>
+</mx:DataGrid>

@@ -1,8 +1,11 @@
-<mx:Panel xmlns:mx="http://www.adobe.com/2006/mxml"
-        xmlns:rend="renderers.*"
-        label="Game {game.id}"
-        creationComplete="initializeTable()"
-        layout="horizontal">
+<mx:Panel
+   xmlns:mx="http://www.adobe.com/2006/mxml"
+   xmlns:rend="renderers.*"
+   xmlns:comp="components.*"
+   label="Game {game.id}"
+   creationComplete="initializeTable()"
+   layout="horizontal"
+   currentState="registeringState">
     <mx:Script>
     <![CDATA[
 
@@ -25,6 +28,9 @@
         
         public var channelSet:ChannelSet;
 
+        [Bindable]
+        private var userStatusesForGame:ArrayCollection;
+
         private function initializeTable() {
             consumer.subtopic = game.id.toString() + ".*";
             consumer.subscribe();
@@ -39,8 +45,13 @@
             }
 
             if (message.headers.DSSubtopic.search("gameIsStarting") != -1) {
+                currentState = "startingState";
                 return;
             }
+        }
+
+        private function fetchAllUserStatusesForGameHandler(event:ResultEvent):void {
+            userStatusesForGame = event.result as ArrayCollection;
         }
 
         private function joinGameFaultHandler(event:FaultEvent):void {
@@ -56,13 +67,71 @@
     ]]>
     </mx:Script>
 
+    <mx:states>
+        <mx:State name="registeringState">
+            <mx:RemoveChild target="{startingMain}" />
+            <mx:RemoveChild target="{inProgressMain}" />
+            <mx:RemoveChild target="{finishedMain}" />
+            <mx:RemoveChild target="{startingRightPanel}" />
+            <mx:RemoveChild target="{inProgressRightPanel}" />
+            <mx:RemoveChild target="{finishedRightPanel}" />
+            <mx:AddChild target="{registeringMain}" />
+            <mx:AddChild target="{registeringRightPanel}" />
+        </mx:State>
+        <mx:State name="startingState">
+            <mx:RemoveChild target="{registeringMain}" />
+            <mx:RemoveChild target="{inProgressMain}" />
+            <mx:RemoveChild target="{finishedMain}" />
+            <mx:RemoveChild target="{registeringRightPanel}" />
+            <mx:RemoveChild target="{inProgressRightPanel}" />
+            <mx:RemoveChild target="{finishedRightPanel}" />
+            <mx:AddChild target="{startingMain}" />
+            <mx:AddChild target="{startingRightPanel}" />
+        </mx:State>
+        <mx:State name="inProgressState">
+            <mx:RemoveChild target="{registeringMain}" />
+            <mx:RemoveChild target="{startingMain}" />
+            <mx:RemoveChild target="{finishedMain}" />
+            <mx:RemoveChild target="{registeringRightPanel}" />
+            <mx:RemoveChild target="{startingRightPanel}" />
+            <mx:RemoveChild target="{finishedRightPanel}" />
+            <mx:AddChild target="{inProgressMain}" />
+            <mx:AddChild target="{inProgressRightPanel}" />
+        </mx:State>
+        <mx:State name="finishedState">
+            <mx:RemoveChild target="{registeringMain}" />
+            <mx:RemoveChild target="{startingMain}" />
+            <mx:RemoveChild target="{inProgressMain}" />
+            <mx:RemoveChild target="{registeringRightPanel}" />
+            <mx:RemoveChild target="{startingRightPanel}" />
+            <mx:RemoveChild target="{inProgressRightPanel}" />
+            <mx:AddChild target="{finishedMain}" />
+            <mx:AddChild target="{finishedRightPanel}" />
+        </mx:State>
+    </mx:states>
+
     <mx:Consumer id="consumer" destination="gameStatusUpdates" channelSet="{channelSet}" message="messageHandler(event.message)" />
-    
+
     <mx:RemoteObject id="mainRemoteObject" destination="flexController">
         <mx:method name="joinGame" fault="joinGameFaultHandler(event)" />
+        <mx:method name="fetchAllUserStatusesForGame" result="fetchAllUserStatusesForGameHandler(event)" />
     </mx:RemoteObject>
 
-    <mx:VBox verticalAlign="middle" horizontalAlign="middle" height="100%"
+    <mx:VBox id="registeringMain" verticalAlign="middle" horizontalAlign="middle"
+        height="100%" width="80%">
+        <mx:HBox width="100%">
+            <mx:Spacer width="100%"/><mx:Label text="Registering..." /><mx:Spacer width="100%"/>
+        </mx:HBox>
+    </mx:VBox>
+
+    <mx:VBox id="startingMain" verticalAlign="middle" horizontalAlign="middle"
+        height="100%" width="80%">
+        <mx:HBox width="100%">
+            <mx:Spacer width="100%"/><mx:Label text="Starting..." /><mx:Spacer width="100%"/>
+        </mx:HBox>
+    </mx:VBox>
+
+    <mx:VBox id="inProgressMain" verticalAlign="middle" horizontalAlign="middle" height="100%"
         width="80%" backgroundImage="{TableSvg}">
 
         <mx:Spacer height="100%" />
@@ -109,31 +178,31 @@
 
     </mx:VBox>
 
-    <mx:VBox height="100%" width="20%">
-        <mx:VBox height="50%" width="100%">
-            <mx:DataGrid id="gamesGrid" dataProvider="{mainRemoteObject.fetchAllUserStatusesForGame.lastResult}" width="100%" height="100%">
-                <mx:columns>
-                    <mx:DataGridColumn headerText="Player" dataField="user">
-                        <mx:itemRenderer>
-                            <mx:Component>
-                                <rend:UserRenderer />
-                            </mx:Component>
-                        </mx:itemRenderer>
-                    </mx:DataGridColumn>
-                    <mx:DataGridColumn headerText="Chips" dataField="chips" />
-                </mx:columns>
-            </mx:DataGrid>
-        </mx:VBox>
+    <mx:VBox id="finishedMain" verticalAlign="middle" horizontalAlign="middle"
+        height="100%" width="80%">
+        <mx:HBox width="100%">
+            <mx:Spacer width="100%"/><mx:Label text="Finished..." /><mx:Spacer width="100%"/>
+        </mx:HBox>
+    </mx:VBox>
 
-        <mx:VBox height="50%" width="100%">
-            <mx:HSlider id="betSlider" tickInterval="2" labels="['0', '100']" maximum="100"
-                    minimum="0" height="150" />
-            <mx:Text text="{betSlider.value}" />
-            <mx:Button label="Bet" />
-            <mx:Button label="Check" />
-            <mx:Button label="Fold" />
-        </mx:VBox>
+    <mx:VBox id="registeringRightPanel" height="100%" width="20%">
+        <comp:UserStatusInGameGrid height="50%" width="100%" userStatusesForGame="{userStatusesForGame}" />
+        <mx:Spacer height="50%" width="100%" />
+    </mx:VBox>
 
+    <mx:VBox id="startingRightPanel" height="100%" width="20%">
+        <comp:UserStatusInGameGrid height="50%" width="100%" userStatusesForGame="{userStatusesForGame}" />
+        <mx:Spacer height="50%" width="100%" />
+    </mx:VBox>
+
+    <mx:VBox id="inProgressRightPanel" height="100%" width="20%">
+        <comp:UserStatusInGameGrid height="50%" width="100%" userStatusesForGame="{userStatusesForGame}" />
+        <comp:PokerActionBox height="50%" width="100%" />
+    </mx:VBox>
+
+    <mx:VBox id="finishedRightPanel" height="100%" width="20%">
+        <comp:UserStatusInGameGrid height="50%" width="100%" userStatusesForGame="{userStatusesForGame}" />
+        <mx:Spacer height="50%" width="100%" />
     </mx:VBox>
 
 </mx:Panel>
