@@ -33,17 +33,7 @@ public class EventManagerImpl implements EventManager {
 
     @Override
     public void sendUserJoinedEvent(final User user, final Game game) {
-        messageTemplate.send(new AsyncMessageCreator() {
-            @Override
-            public AsyncMessage createMessage() {
-                AsyncMessage message = messageTemplate
-                        .createMessageForDestination(GAME_STATUS_UPDATES);
-                message.setHeader(AsyncMessage.SUBTOPIC_HEADER_NAME,
-                        game.getId() + "." + USER_JOINED_GAME);
-               message.setBody(user);
-               return message;
-            }
-        });
+        messageTemplate.send(new GameStatusMessageCreator(game, USER_JOINED_GAME));
     }
 
     @Override
@@ -67,6 +57,28 @@ public class EventManagerImpl implements EventManager {
 
     public void setMessageTemplate(MessageTemplate messageTemplate) {
         this.messageTemplate = messageTemplate;
+    }
+
+    private class GameStatusMessageCreator implements AsyncMessageCreator {
+
+        private Game game;
+
+        private String subtopic;
+
+        public GameStatusMessageCreator(Game game, String subtopic) {
+            this.game = game;
+            this.subtopic = subtopic;
+        }
+
+        @Override
+        public AsyncMessage createMessage() {
+            AsyncMessage message = messageTemplate
+                    .createMessageForDestination(GAME_STATUS_UPDATES);
+            message.setHeader(AsyncMessage.SUBTOPIC_HEADER_NAME,
+                    game.getId() + "." + subtopic);
+            return message;
+        }
+
     }
 
 }
