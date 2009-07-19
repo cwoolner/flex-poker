@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.flexpoker.dao.GameDao;
 import com.flexpoker.dao.GameStageDao;
 import com.flexpoker.model.Game;
+import com.flexpoker.model.GameStage;
 import com.flexpoker.model.User;
 
 @Transactional
@@ -32,6 +33,7 @@ public class GameBsoImpl implements GameBso {
         game.setCreatedByUser((User) SecurityContextHolder.getContext()
                 .getAuthentication().getPrincipal());
         game.setCreatedOn(new Date());
+        game.setGameStage(gameStageDao.findByName(GameStage.REGISTERING));
 
         gameDao.save(game.getId(), game);
     }
