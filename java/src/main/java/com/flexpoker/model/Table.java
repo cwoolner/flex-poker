@@ -18,6 +18,12 @@ public class Table {
 
     private Game game;
 
+    private Seat button;
+
+    private Seat smallBlind;
+
+    private Seat bigBlind;
+
     private List<Seat> seats;
 
     @Id
@@ -38,6 +44,36 @@ public class Table {
 
     public void setGame(Game game) {
         this.game = game;
+    }
+
+    @OneToOne
+    @JoinColumn(name = "buttonId")
+    public Seat getButton() {
+        return button;
+    }
+
+    public void setButton(Seat button) {
+        this.button = button;
+    }
+
+    @OneToOne
+    @JoinColumn(name = "smallBlindId")
+    public Seat getSmallBlind() {
+        return smallBlind;
+    }
+
+    public void setSmallBlind(Seat smallBlind) {
+        this.smallBlind = smallBlind;
+    }
+
+    @OneToOne
+    @JoinColumn(name = "bigBlindId")
+    public Seat getBigBlind() {
+        return bigBlind;
+    }
+
+    public void setBigBlind(Seat bigBlind) {
+        this.bigBlind = bigBlind;
     }
 
     @OneToMany
