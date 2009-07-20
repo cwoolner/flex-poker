@@ -47,10 +47,10 @@ public class GameEventBsoImpl implements GameEventBso {
             }
         }
         
-        Integer maximumPlayers = game.getMaximumPlayers();
+        Integer totalPlayers = game.getTotalPlayers();
         Integer currentNumberOfPlayers = game.getUserStatusInGames().size();
         
-        if (maximumPlayers <= currentNumberOfPlayers) {
+        if (totalPlayers <= currentNumberOfPlayers) {
             throw new FlexPokerException("This game is full.");
         }
 
@@ -64,7 +64,7 @@ public class GameEventBsoImpl implements GameEventBso {
     @Override
     public boolean isGameAtMaxPlayers(Game game) {
         game = gameDao.findById(game.getId());
-        return game.getUserStatusInGames().size() == game.getMaximumPlayers();
+        return game.getUserStatusInGames().size() == game.getTotalPlayers();
     }
 
     @Override

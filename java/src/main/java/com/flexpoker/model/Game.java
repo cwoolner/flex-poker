@@ -35,10 +35,6 @@ public class Game {
 
     private Integer playersRemaining;
 
-    private Integer minimumPlayers;
-
-    private Integer maximumPlayers;
-
     private Boolean allowRebuys;
 
     private List<UserStatusInGame> userStatusInGames;
@@ -121,22 +117,6 @@ public class Game {
 
     public void setPlayersRemaining(Integer playersRemaining) {
         this.playersRemaining = playersRemaining;
-    }
-
-    public Integer getMinimumPlayers() {
-        return minimumPlayers;
-    }
-
-    public void setMinimumPlayers(Integer minimumPlayers) {
-        this.minimumPlayers = minimumPlayers;
-    }
-
-    public Integer getMaximumPlayers() {
-        return maximumPlayers;
-    }
-
-    public void setMaximumPlayers(Integer maximumPlayers) {
-        this.maximumPlayers = maximumPlayers;
     }
 
     public Boolean getAllowRebuys() {
