@@ -10,7 +10,7 @@ public interface GameBso {
 
     List<Game> fetchAllGames();
 
-    void createGame(Game game);
+    void createGame(User user, Game game);
 
     Game fetchById(Integer id);
 

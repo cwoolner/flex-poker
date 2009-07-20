@@ -32,9 +32,8 @@ public class GameBsoImpl implements GameBso {
     }
 
     @Override
-    public void createGame(Game game) {
-        game.setCreatedByUser((User) SecurityContextHolder.getContext()
-                .getAuthentication().getPrincipal());
+    public void createGame(User user, Game game) {
+        game.setCreatedByUser(user);
         game.setCreatedOn(new Date());
         game.setGameStage(gameStageDao.findByName(GameStage.REGISTERING));
 

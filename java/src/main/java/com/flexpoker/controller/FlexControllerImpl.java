@@ -26,7 +26,7 @@ public class FlexControllerImpl implements FlexController {
 
     @Override
     public void createGame(Game game) {
-        gameBso.createGame(game);
+        gameBso.createGame(user, game);
         eventManager.sendGamesUpdatedEvent();
     }
 
