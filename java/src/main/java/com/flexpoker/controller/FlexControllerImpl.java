@@ -10,6 +10,7 @@ import com.flexpoker.bso.GameBso;
 import com.flexpoker.bso.GameEventBso;
 import com.flexpoker.model.Game;
 import com.flexpoker.model.GameStage;
+import com.flexpoker.model.PocketCards;
 import com.flexpoker.model.User;
 import com.flexpoker.model.UserStatusInGame;
 
@@ -73,6 +74,14 @@ public class FlexControllerImpl implements FlexController {
                 eventManager.sendGameInProgressEvent(game);
             }
         }
+    }
+
+    @Override
+    public PocketCards fetchPocketCards(Game game) {
+        User user = (User) SecurityContextHolder.getContext()
+                .getAuthentication().getPrincipal();
+
+        return gameEventBso.fetchPocketCards(user, game);
     }
 
     public GameBso getGameBso() {

@@ -1,6 +1,7 @@
 package com.flexpoker.bso;
 
 import com.flexpoker.model.Game;
+import com.flexpoker.model.PocketCards;
 import com.flexpoker.model.User;
 
 
@@ -13,5 +14,7 @@ public interface GameEventBso {
     void verifyRegistration(User user, Game game);
 
     boolean areAllPlayerRegistrationsVerified(Game game);
+
+    PocketCards fetchPocketCards(User user, Game game);
 
 }

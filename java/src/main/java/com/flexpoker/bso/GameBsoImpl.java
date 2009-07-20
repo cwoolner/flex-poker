@@ -9,8 +9,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.flexpoker.dao.GameDao;
 import com.flexpoker.dao.GameStageDao;
+import com.flexpoker.exception.FlexPokerException;
 import com.flexpoker.model.Game;
 import com.flexpoker.model.GameStage;
+import com.flexpoker.model.Seat;
+import com.flexpoker.model.Table;
 import com.flexpoker.model.User;
 
 @Transactional
@@ -48,6 +51,20 @@ public class GameBsoImpl implements GameBso {
         game = fetchById(game.getId());
         game.setGameStage(gameStageDao.findByName(gameStageName));
         gameDao.save(game.getId(), game);
+    }
+
+    @Override
+    public Table fetchPlayersCurrentTable(User user, Game game) {
+        // TODO: this should be done in a SQL query for performance reasons
+        for (Table table : game.getTables()) {
+            for (Seat seat : table.getSeats()) {
+                if (seat.getUser().equals(user)) {
+                    return table;
+                }
+            }
+        }
+
+        throw new FlexPokerException("Player is not at any table.");
     }
 
     public GameDao getGameDao() {

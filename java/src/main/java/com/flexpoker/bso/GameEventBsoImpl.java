@@ -13,6 +13,8 @@ import com.flexpoker.dao.UserStatusInGameDao;
 import com.flexpoker.exception.FlexPokerException;
 import com.flexpoker.model.Game;
 import com.flexpoker.model.GameStage;
+import com.flexpoker.model.PocketCards;
+import com.flexpoker.model.Table;
 import com.flexpoker.model.User;
 import com.flexpoker.model.UserStatusInGame;
 
@@ -23,6 +25,8 @@ public class GameEventBsoImpl implements GameEventBso {
     private GameBso gameBso;
 
     private UserStatusInGameDao userStatusInGameDao;
+
+    private DeckBso deckBso;
 
     @Override
     public void addUserToGame(User user, Game game) {
@@ -98,6 +102,11 @@ public class GameEventBsoImpl implements GameEventBso {
         return verifiedUsers.size() == usersInGame.size();
     }
 
+    @Override
+    public PocketCards fetchPocketCards(User user, Game game) {
+        game = gameBso.fetchById(game.getId());
+        Table table = gameBso.fetchPlayersCurrentTable(user, game);
+        return deckBso.fetchPocketCards(user, table);
     }
 
     public UserStatusInGameDao getUserStatusInGameDao() {
@@ -114,6 +123,14 @@ public class GameEventBsoImpl implements GameEventBso {
 
     public void setGameBso(GameBso gameBso) {
         this.gameBso = gameBso;
+    }
+
+    public DeckBso getDeckBso() {
+        return deckBso;
+    }
+
+    public void setDeckBso(DeckBso deckBso) {
+        this.deckBso = deckBso;
     }
 
 }

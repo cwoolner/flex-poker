@@ -3,6 +3,7 @@ package com.flexpoker.controller;
 import java.util.List;
 
 import com.flexpoker.model.Game;
+import com.flexpoker.model.PocketCards;
 import com.flexpoker.model.UserStatusInGame;
 
 public interface FlexController {
@@ -16,5 +17,7 @@ public interface FlexController {
     List<UserStatusInGame> fetchAllUserStatusesForGame(Game game);
 
     void verifyRegistrationForGame(Game game);
+
+    PocketCards fetchPocketCards(Game game);
 
 }
