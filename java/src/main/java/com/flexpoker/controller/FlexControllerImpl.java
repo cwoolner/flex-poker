@@ -26,6 +26,7 @@ public class FlexControllerImpl implements FlexController {
 
     @Override
     public void createGame(Game game) {
+        User user = extractCurrentUser();
         gameBso.createGame(user, game);
         eventManager.sendGamesUpdatedEvent();
     }
@@ -37,8 +38,7 @@ public class FlexControllerImpl implements FlexController {
 
     @Override
     public void joinGame(Game game) {
-        User user = (User) SecurityContextHolder.getContext()
-                .getAuthentication().getPrincipal();
+        User user = extractCurrentUser();
 
         synchronized (this) {
             gameEventBso.addUserToGame(user, game);
@@ -63,8 +63,7 @@ public class FlexControllerImpl implements FlexController {
 
     @Override
     public void verifyRegistrationForGame(Game game) {
-        User user = (User) SecurityContextHolder.getContext()
-                .getAuthentication().getPrincipal();
+        User user = extractCurrentUser();
 
         synchronized (this) {
             gameEventBso.verifyRegistration(user, game);
@@ -78,10 +77,12 @@ public class FlexControllerImpl implements FlexController {
 
     @Override
     public PocketCards fetchPocketCards(Game game) {
-        User user = (User) SecurityContextHolder.getContext()
-                .getAuthentication().getPrincipal();
-
+        User user = extractCurrentUser();
         return gameEventBso.fetchPocketCards(user, game);
+    }
+
+    private User extractCurrentUser() {
+        return (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
 
     public GameBso getGameBso() {
