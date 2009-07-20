@@ -41,6 +41,8 @@ public class Game {
 
     private GameStage gameStage;
 
+    private List<com.flexpoker.model.Table> tables;
+
     @Id
     @GeneratedValue
     public Integer getId() {
@@ -145,6 +147,16 @@ public class Game {
 
     public void setGameStage(GameStage gameStage) {
         this.gameStage = gameStage;
+    }
+
+    @OneToMany
+    @JoinColumn(name = "gameId")
+    public List<com.flexpoker.model.Table> getTables() {
+        return tables;
+    }
+
+    public void setTables(List<com.flexpoker.model.Table> tables) {
+        this.tables = tables;
     }
 
     @Override
