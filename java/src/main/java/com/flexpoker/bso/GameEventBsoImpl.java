@@ -20,13 +20,13 @@ import com.flexpoker.model.UserStatusInGame;
 @Service("gameEventBso")
 public class GameEventBsoImpl implements GameEventBso {
 
-    private GameDao gameDao;
+    private GameBso gameBso;
 
     private UserStatusInGameDao userStatusInGameDao;
 
     @Override
     public void addUserToGame(User user, Game game) {
-        game = gameDao.findById(game.getId());
+        game = gameBso.fetchById(game.getId());
 
         String gameStage = game.getGameStage().getName();
 
@@ -63,13 +63,13 @@ public class GameEventBsoImpl implements GameEventBso {
 
     @Override
     public boolean isGameAtMaxPlayers(Game game) {
-        game = gameDao.findById(game.getId());
+        game = gameBso.fetchById(game.getId());
         return game.getUserStatusInGames().size() == game.getTotalPlayers();
     }
 
     @Override
     public void verifyRegistration(User user, Game game) {
-        game = gameDao.findById(game.getId());
+        game = gameBso.fetchById(game.getId());
 
         List<UserStatusInGame> userList = game.getUserStatusInGames();
 
@@ -84,7 +84,7 @@ public class GameEventBsoImpl implements GameEventBso {
 
     @Override
     public boolean areAllPlayerRegistrationsVerified(Game game) {
-        game = gameDao.findById(game.getId());
+        game = gameBso.fetchById(game.getId());
 
         List<UserStatusInGame> verifiedUsers = new ArrayList<UserStatusInGame>();
         List<UserStatusInGame> usersInGame = game.getUserStatusInGames();
@@ -98,22 +98,22 @@ public class GameEventBsoImpl implements GameEventBso {
         return verifiedUsers.size() == usersInGame.size();
     }
 
-    public GameDao getGameDao() {
-        return gameDao;
     }
 
-    public void setGameDao(GameDao gameDao) {
-        this.gameDao = gameDao;
-    }
-
-    
     public UserStatusInGameDao getUserStatusInGameDao() {
         return userStatusInGameDao;
     }
 
-    
     public void setUserStatusInGameDao(UserStatusInGameDao userStatusInGameDao) {
         this.userStatusInGameDao = userStatusInGameDao;
+    }
+
+    public GameBso getGameBso() {
+        return gameBso;
+    }
+
+    public void setGameBso(GameBso gameBso) {
+        this.gameBso = gameBso;
     }
 
 }
