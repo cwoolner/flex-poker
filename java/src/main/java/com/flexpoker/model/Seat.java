@@ -9,7 +9,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "seats")
-public class Seat {
+public class Seat implements Comparable<Seat> {
 
     private Integer id;
 
@@ -55,6 +55,11 @@ public class Seat {
 
     public void setPosition(Integer position) {
         this.position = position;
+    }
+
+    @Override
+    public int compareTo(Seat seat) {
+        return position.compareTo(seat.getPosition());
     }
 
 }
