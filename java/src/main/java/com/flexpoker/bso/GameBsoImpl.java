@@ -46,7 +46,8 @@ public class GameBsoImpl implements GameBso {
         game.setCreatedByUser(user);
         game.setCreatedOn(new Date());
         game.setGameStage(gameStageDao.findByName(GameStage.REGISTERING));
-
+        game.setTotalPlayers(2);
+        game.setAllowRebuys(false);
         gameDao.save(game.getId(), game);
     }
 
