@@ -150,7 +150,7 @@ public class Game {
         this.gameStage = gameStage;
     }
 
-    @OneToMany
+    @OneToMany(fetch = FetchType.EAGER)
     @JoinColumn(name = "gameId")
     public Set<com.flexpoker.model.Table> getTables() {
         return tables;
