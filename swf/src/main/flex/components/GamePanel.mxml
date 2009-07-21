@@ -40,13 +40,13 @@
         private var userStatusesForGame:ArrayCollection;
 
         private function initializeTable() {
-            consumer.subtopic = game.id.toString() + ".*";
-            consumer.subscribe();
+            gameEventConsumer.subtopic = game.id.toString() + ".*";
+            gameEventConsumer.subscribe();
             RemoteObjectUtils.addChannelSetToRemoteObject(mainRemoteObject);
             mainRemoteObject.joinGame(game);
         }
         
-        private function messageHandler(message:IMessage):void {
+        private function gameEventMessageHandler(message:IMessage):void {
             if (message.headers.DSSubtopic.search("userJoinedGame") != -1) {
                 mainRemoteObject.fetchAllUserStatusesForGame(game);
                 return;
@@ -64,6 +64,14 @@
             if (message.headers.DSSubtopic.search("gameInProgress") != -1) {
                 mainRemoteObject.fetchTable(game);
                 currentState = "inProgressState";
+                return;
+            }
+
+        }
+
+        private function tableEventMessageHandler(message:IMessage):void {
+            if (message.headers.DSSubtopic.search("newHandStarting") != -1) {
+                mainRemoteObject.fetchPocketCards(table);
                 return;
             }
         }
@@ -89,6 +97,8 @@
 
         private function fetchTableHandler(event:ResultEvent):void {
             table = event.result as Table;
+            tableEventConsumer.subtopic = table.id.toString() + ".*";
+            tableEventConsumer.subscribe();
         }
 
         [Embed(source="/assets/Table.svg")]
@@ -141,7 +151,8 @@
         </mx:State>
     </mx:states>
 
-    <mx:Consumer id="consumer" destination="gameStatusUpdates" channelSet="{channelSet}" message="messageHandler(event.message)" />
+    <mx:Consumer id="gameEventConsumer" destination="gameStatusUpdates" channelSet="{channelSet}" message="gameEventMessageHandler(event.message)" />
+    <mx:Consumer id="tableEventConsumer" destination="tableStatusUpdates" channelSet="{channelSet}" message="tableEventMessageHandler(event.message)" />
 
     <mx:RemoteObject id="mainRemoteObject" destination="flexController">
         <mx:method name="joinGame" fault="joinGameFaultHandler(event)" />
