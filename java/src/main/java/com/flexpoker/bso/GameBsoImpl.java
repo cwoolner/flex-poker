@@ -65,7 +65,8 @@ public class GameBsoImpl implements GameBso {
 
     @Override
     public Table fetchPlayersCurrentTable(User user, Game game) {
-        // TODO: this should be done in a SQL query for performance reasons
+        game = fetchById(game.getId());
+
         for (Table table : game.getTables()) {
             for (Seat seat : table.getSeats()) {
                 if (seat.getUser().equals(user)) {
