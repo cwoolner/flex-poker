@@ -1,20 +1,26 @@
 package com.flexpoker.bso;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
+import java.util.Set;
 
-import org.springframework.security.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.flexpoker.dao.GameDao;
 import com.flexpoker.dao.GameStageDao;
+import com.flexpoker.dao.SeatDao;
+import com.flexpoker.dao.TableDao;
 import com.flexpoker.exception.FlexPokerException;
 import com.flexpoker.model.Game;
 import com.flexpoker.model.GameStage;
 import com.flexpoker.model.Seat;
 import com.flexpoker.model.Table;
 import com.flexpoker.model.User;
+import com.flexpoker.model.UserStatusInGame;
 
 @Transactional
 @Service("gameBso")
@@ -25,6 +31,10 @@ public class GameBsoImpl implements GameBso {
     private UserBso userBso;
 
     private GameStageDao gameStageDao;
+
+    private TableDao tableDao;
+
+    private SeatDao seatDao;
 
     @Override
     public List<Game> fetchAllGames() {
@@ -66,6 +76,34 @@ public class GameBsoImpl implements GameBso {
         throw new FlexPokerException("Player is not at any table.");
     }
 
+    @Override
+    public void intializePlayersAndTables(Game game) {
+        game = fetchById(game.getId());
+
+        List<Integer> randomPlayerPositions = new ArrayList<Integer>();
+
+        for (int i = 1; i <= game.getTotalPlayers(); i++) {
+            randomPlayerPositions.add(i);
+        }
+
+        Collections.shuffle(randomPlayerPositions, new Random());
+
+        Table table = new Table();
+        table.setGame(game);
+        tableDao.save(table.getId(), table);
+
+        int i = 0;
+        for (UserStatusInGame userStatusInGame : game.getUserStatusInGames()) {
+            Seat seat = new Seat();
+            seat.setPosition(randomPlayerPositions.get(i));
+            seat.setTable(table);
+            seat.setUser(userStatusInGame.getUser());
+            seatDao.save(seat.getId(), seat);
+            i++;
+        }
+
+    }
+
     public GameDao getGameDao() {
         return gameDao;
     }
@@ -88,6 +126,22 @@ public class GameBsoImpl implements GameBso {
 
     public void setGameStageDao(GameStageDao gameStageDao) {
         this.gameStageDao = gameStageDao;
+    }
+
+    public TableDao getTableDao() {
+        return tableDao;
+    }
+
+    public void setTableDao(TableDao tableDao) {
+        this.tableDao = tableDao;
+    }
+
+    public SeatDao getSeatDao() {
+        return seatDao;
+    }
+
+    public void setSeatDao(SeatDao seatDao) {
+        this.seatDao = seatDao;
     }
 
 }

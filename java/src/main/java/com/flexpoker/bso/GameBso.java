@@ -18,4 +18,6 @@ public interface GameBso {
 
     Table fetchPlayersCurrentTable(User user, Game game);
 
+    void intializePlayersAndTables(Game game);
+
 }

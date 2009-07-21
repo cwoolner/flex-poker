@@ -69,6 +69,7 @@ public class FlexControllerImpl implements FlexController {
             gameEventBso.verifyRegistration(user, game);
 
             if (gameEventBso.areAllPlayerRegistrationsVerified(game)) {
+                gameBso.intializePlayersAndTables(game);
                 gameBso.changeGameStage(game, GameStage.IN_PROGRESS);
                 eventManager.sendGameInProgressEvent(game);
             }
