@@ -9,6 +9,7 @@ import org.springframework.flex.messaging.MessageTemplate;
 import org.springframework.stereotype.Controller;
 
 import com.flexpoker.model.Game;
+import com.flexpoker.model.Table;
 import com.flexpoker.model.User;
 
 import flex.messaging.messages.AsyncMessage;
@@ -19,8 +20,10 @@ public class EventManagerImpl implements EventManager {
     private static final String GAMES_UPDATED = "gamesUpdated";
 
     private static final String USER_JOINED_GAME = "userJoinedGame";
-    
+
     private static final String GAME_STATUS_UPDATES = "gameStatusUpdates";
+
+    private static final String TABLE_STATUS_UPDATES = "tableStatusUpdates";
 
     private static final String JMS_CHAT = "jms-chat";
 
@@ -73,24 +76,37 @@ public class EventManagerImpl implements EventManager {
         this.messageTemplate = messageTemplate;
     }
 
-    private class GameStatusMessageCreator implements AsyncMessageCreator {
+    private abstract class FlexPokerMessageCreator implements AsyncMessageCreator {
 
-        private Game game;
+        protected String fullSubtopic;
 
-        private String subtopic;
-
-        public GameStatusMessageCreator(Game game, String subtopic) {
-            this.game = game;
-            this.subtopic = subtopic;
-        }
+        protected String destination;
 
         @Override
         public AsyncMessage createMessage() {
             AsyncMessage message = messageTemplate
-                    .createMessageForDestination(GAME_STATUS_UPDATES);
-            message.setHeader(AsyncMessage.SUBTOPIC_HEADER_NAME,
-                    game.getId() + "." + subtopic);
+                    .createMessageForDestination(destination);
+            message.setHeader(AsyncMessage.SUBTOPIC_HEADER_NAME, fullSubtopic);
             return message;
+        }
+
+    }
+
+    private class TableStatusMessageCreator extends FlexPokerMessageCreator {
+
+        public TableStatusMessageCreator(Table table, String subtopic) {
+            super();
+            fullSubtopic = table.getId() + "." + subtopic;
+            destination = TABLE_STATUS_UPDATES;
+        }
+
+    }
+
+    private class GameStatusMessageCreator extends FlexPokerMessageCreator {
+
+        public GameStatusMessageCreator(Game game, String subtopic) {
+            fullSubtopic = game.getId() + "." + subtopic;
+            destination = GAME_STATUS_UPDATES;
         }
 
     }
