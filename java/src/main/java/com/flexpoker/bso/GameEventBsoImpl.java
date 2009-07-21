@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.flexpoker.dao.GameDao;
+import com.flexpoker.dao.TableDao;
 import com.flexpoker.dao.UserStatusInGameDao;
 import com.flexpoker.exception.FlexPokerException;
 import com.flexpoker.model.Game;
@@ -28,6 +29,8 @@ public class GameEventBsoImpl implements GameEventBso {
     private UserStatusInGameDao userStatusInGameDao;
 
     private DeckBso deckBso;
+
+    private TableDao tableDao;
 
     @Override
     public void addUserToGame(User user, Game game) {
@@ -104,9 +107,8 @@ public class GameEventBsoImpl implements GameEventBso {
     }
 
     @Override
-    public PocketCards fetchPocketCards(User user, Game game) {
-        game = gameBso.fetchById(game.getId());
-        Table table = gameBso.fetchPlayersCurrentTable(user, game);
+    public PocketCards fetchPocketCards(User user, Table table) {
+        table = tableDao.findById(table.getId());
         return deckBso.fetchPocketCards(user, table);
     }
 
@@ -132,6 +134,14 @@ public class GameEventBsoImpl implements GameEventBso {
 
     public void setDeckBso(DeckBso deckBso) {
         this.deckBso = deckBso;
+    }
+
+    public TableDao getTableDao() {
+        return tableDao;
+    }
+
+    public void setTableDao(TableDao tableDao) {
+        this.tableDao = tableDao;
     }
 
 }

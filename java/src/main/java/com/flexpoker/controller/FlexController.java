@@ -5,6 +5,7 @@ import java.util.Set;
 
 import com.flexpoker.model.Game;
 import com.flexpoker.model.PocketCards;
+import com.flexpoker.model.Table;
 import com.flexpoker.model.UserStatusInGame;
 
 public interface FlexController {
@@ -19,6 +20,8 @@ public interface FlexController {
 
     void verifyRegistrationForGame(Game game);
 
-    PocketCards fetchPocketCards(Game game);
+    PocketCards fetchPocketCards(Table table);
+
+    Table fetchTable(Game game);
 
 }

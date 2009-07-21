@@ -12,6 +12,7 @@ import com.flexpoker.bso.GameEventBso;
 import com.flexpoker.model.Game;
 import com.flexpoker.model.GameStage;
 import com.flexpoker.model.PocketCards;
+import com.flexpoker.model.Table;
 import com.flexpoker.model.User;
 import com.flexpoker.model.UserStatusInGame;
 
@@ -78,9 +79,15 @@ public class FlexControllerImpl implements FlexController {
     }
 
     @Override
-    public PocketCards fetchPocketCards(Game game) {
+    public Table fetchTable(Game game) {
         User user = extractCurrentUser();
-        return gameEventBso.fetchPocketCards(user, game);
+        return gameBso.fetchPlayersCurrentTable(user, game);
+    }
+
+    @Override
+    public PocketCards fetchPocketCards(Table table) {
+        User user = extractCurrentUser();
+        return gameEventBso.fetchPocketCards(user, table);
     }
 
     private User extractCurrentUser() {
