@@ -3,6 +3,7 @@ package com.flexpoker.bso;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.lang.BooleanUtils;
 import org.springframework.stereotype.Service;
@@ -43,7 +44,7 @@ public class GameEventBsoImpl implements GameEventBso {
             throw new FlexPokerException("The game is already finished.");
         }
 
-        List<UserStatusInGame> userStatuses = game.getUserStatusInGames();
+        Set<UserStatusInGame> userStatuses = game.getUserStatusInGames();
         
         for (UserStatusInGame userStatus : userStatuses) {
             if (user.equals(userStatus.getUser())) {
@@ -75,7 +76,7 @@ public class GameEventBsoImpl implements GameEventBso {
     public void verifyRegistration(User user, Game game) {
         game = gameBso.fetchById(game.getId());
 
-        List<UserStatusInGame> userList = game.getUserStatusInGames();
+        Set<UserStatusInGame> userList = game.getUserStatusInGames();
 
         for (UserStatusInGame userInGame : userList) {
             if (userInGame.getUser().equals(user)) {
@@ -91,7 +92,7 @@ public class GameEventBsoImpl implements GameEventBso {
         game = gameBso.fetchById(game.getId());
 
         List<UserStatusInGame> verifiedUsers = new ArrayList<UserStatusInGame>();
-        List<UserStatusInGame> usersInGame = game.getUserStatusInGames();
+        Set<UserStatusInGame> usersInGame = game.getUserStatusInGames();
 
         for (UserStatusInGame userInGame : usersInGame) {
             if (BooleanUtils.isTrue(userInGame.getVerified())) {

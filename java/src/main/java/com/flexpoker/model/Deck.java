@@ -6,8 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.flexpoker.model.Table;
-
 public class Deck {
 
     private List<Card> deckOfCards = new ArrayList<Card>(52);
@@ -23,7 +21,7 @@ public class Deck {
     public Deck(List<Card> cardList, Table table) {
         Collections.copy(deckOfCards, cardList);
 
-        List<Seat> seats = table.getSeats();
+        List<Seat> seats = new ArrayList<Seat>(table.getSeats());
         Collections.sort(seats);
 
         int dealerIndex = seats.indexOf(table.getButton());

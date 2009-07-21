@@ -1,6 +1,7 @@
 package com.flexpoker.controller;
 
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.flex.remoting.RemotingDestination;
 import org.springframework.security.context.SecurityContextHolder;
@@ -56,7 +57,7 @@ public class FlexControllerImpl implements FlexController {
     }
     
     @Override
-    public List<UserStatusInGame> fetchAllUserStatusesForGame(Game game) {
+    public Set<UserStatusInGame> fetchAllUserStatusesForGame(Game game) {
         game = gameBso.fetchById(game.getId());
         return game.getUserStatusInGames();
     }

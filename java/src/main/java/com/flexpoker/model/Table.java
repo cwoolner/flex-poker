@@ -1,7 +1,7 @@
 
 package com.flexpoker.model;
 
-import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -24,7 +24,7 @@ public class Table {
 
     private Seat bigBlind;
 
-    private List<Seat> seats;
+    private Set<Seat> seats;
 
     @Id
     @GeneratedValue
@@ -78,11 +78,11 @@ public class Table {
 
     @OneToMany
     @JoinColumn(name = "tableId")
-    public List<Seat> getSeats() {
+    public Set<Seat> getSeats() {
         return seats;
     }
 
-    public void setSeats(List<Seat> seats) {
+    public void setSeats(Set<Seat> seats) {
         this.seats = seats;
     }
 

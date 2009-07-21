@@ -2,6 +2,7 @@ package com.flexpoker.model;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -37,11 +38,11 @@ public class Game {
 
     private Boolean allowRebuys;
 
-    private List<UserStatusInGame> userStatusInGames;
+    private Set<UserStatusInGame> userStatusInGames;
 
     private GameStage gameStage;
 
-    private List<com.flexpoker.model.Table> tables;
+    private Set<com.flexpoker.model.Table> tables;
 
     @Id
     @GeneratedValue
@@ -131,11 +132,11 @@ public class Game {
 
     @OneToMany(fetch = FetchType.EAGER)
     @JoinColumn(name = "gameId")
-    public List<UserStatusInGame> getUserStatusInGames() {
+    public Set<UserStatusInGame> getUserStatusInGames() {
         return userStatusInGames;
     }
 
-    public void setUserStatusInGames(List<UserStatusInGame> userStatusInGames) {
+    public void setUserStatusInGames(Set<UserStatusInGame> userStatusInGames) {
         this.userStatusInGames = userStatusInGames;
     }
 
@@ -151,11 +152,11 @@ public class Game {
 
     @OneToMany
     @JoinColumn(name = "gameId")
-    public List<com.flexpoker.model.Table> getTables() {
+    public Set<com.flexpoker.model.Table> getTables() {
         return tables;
     }
 
-    public void setTables(List<com.flexpoker.model.Table> tables) {
+    public void setTables(Set<com.flexpoker.model.Table> tables) {
         this.tables = tables;
     }
 
