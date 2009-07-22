@@ -19,7 +19,7 @@ public class Deck {
     private RiverCard riverCard;
 
     public Deck(List<Card> cardList, Table table) {
-        Collections.copy(deckOfCards, cardList);
+        deckOfCards.addAll(cardList);
 
         List<Seat> seats = new ArrayList<Seat>(table.getSeats());
         Collections.sort(seats);
