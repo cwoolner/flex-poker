@@ -10,7 +10,6 @@ import org.springframework.stereotype.Controller;
 
 import com.flexpoker.model.Game;
 import com.flexpoker.model.Table;
-import com.flexpoker.model.User;
 
 import flex.messaging.messages.AsyncMessage;
 
@@ -30,6 +29,8 @@ public class EventManagerImpl implements EventManager {
     private static final String GAME_IS_STARTING = "gameIsStarting";
 
     private static final String GAME_IN_PROGRESS = "gameInProgress";
+
+    private static final String NEW_HAND_STARTING = "newHandStarting";
 
     private MessageTemplate messageTemplate;
 
@@ -66,6 +67,11 @@ public class EventManagerImpl implements EventManager {
     @Override
     public void sendGameInProgressEvent(Game game) {
         messageTemplate.send(new GameStatusMessageCreator(game, GAME_IN_PROGRESS));
+    }
+
+    @Override
+    public void sendNewHandStartingEvent(Table table) {
+        messageTemplate.send(new TableStatusMessageCreator(table, NEW_HAND_STARTING));
     }
 
     public MessageTemplate getMessageTemplate() {

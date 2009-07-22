@@ -1,6 +1,7 @@
 package com.flexpoker.controller;
 
 import com.flexpoker.model.Game;
+import com.flexpoker.model.Table;
 
 public interface EventManager {
 
@@ -13,5 +14,7 @@ public interface EventManager {
     void sendGameStartingEvent(Game game);
 
     void sendGameInProgressEvent(Game game);
+
+    void sendNewHandStartingEvent(Table table);
 
 }

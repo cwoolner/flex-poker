@@ -14,6 +14,7 @@
         import com.flexpoker.model.Game;
         import com.flexpoker.model.Table;
         import com.flexpoker.model.User;
+        import com.flexpoker.model.PocketCards;
         import mx.messaging.Consumer;
         import mx.messaging.ChannelSet;
         import mx.messaging.messages.IMessage;
@@ -32,6 +33,9 @@
         [Bindable]
         private var table:Table;
 
+        [Bindable]
+        private var pocketCards:PocketCards;
+
         public var channelSet:ChannelSet;
 
         private var startingTimer:Timer;
@@ -42,6 +46,7 @@
         private function initializeTable() {
             gameEventConsumer.subtopic = game.id.toString() + ".*";
             gameEventConsumer.subscribe();
+            tableEventConsumer.subscribe();
             RemoteObjectUtils.addChannelSetToRemoteObject(mainRemoteObject);
             mainRemoteObject.joinGame(game);
         }
@@ -70,10 +75,14 @@
         }
 
         private function tableEventMessageHandler(message:IMessage):void {
+            Alert.show("Before if");
             if (message.headers.DSSubtopic.search("newHandStarting") != -1) {
+                Alert.show("Before fetchPocketCards");
                 mainRemoteObject.fetchPocketCards(table);
+                Alert.show("Before return");
                 return;
             }
+            Alert.show("After if");
         }
 
         private function fetchAllUserStatusesForGameHandler(event:ResultEvent):void {
@@ -98,7 +107,13 @@
         private function fetchTableHandler(event:ResultEvent):void {
             table = event.result as Table;
             tableEventConsumer.subtopic = table.id.toString() + ".*";
-            tableEventConsumer.subscribe();
+        }
+
+        private function fetchPocketCardsHandler(event:ResultEvent):void {
+            Alert.show("Before assignment");
+            pocketCards = event.result as PocketCards;
+            Alert.show(pocketCards.card1.id.toString());
+            Alert.show(pocketCards.card2.id.toString());
         }
 
         [Embed(source="/assets/Table.svg")]
@@ -158,6 +173,7 @@
         <mx:method name="joinGame" fault="joinGameFaultHandler(event)" />
         <mx:method name="fetchAllUserStatusesForGame" result="fetchAllUserStatusesForGameHandler(event)" />
         <mx:method name="fetchTable" result="fetchTableHandler(event)" />
+        <mx:method name="fetchPocketCards" result="fetchPocketCardsHandler(event)" />
     </mx:RemoteObject>
 
     <mx:VBox id="registeringMain" verticalAlign="middle" horizontalAlign="middle"
@@ -242,8 +258,12 @@
     </mx:VBox>
 
     <mx:VBox id="inProgressRightPanel" height="100%" width="20%">
-        <comp:UserStatusInGameGrid height="50%" width="100%" userStatusesForGame="{userStatusesForGame}" />
-        <comp:PokerActionBox height="50%" width="100%" />
+        <comp:UserStatusInGameGrid height="45%" width="100%" userStatusesForGame="{userStatusesForGame}" />
+        <comp:PokerActionBox height="45%" width="100%" />
+        <mx:HBox height="10%" width="100%">
+            <mx:Label height="50%" width="50%" text="{pocketCards.card1.id}" />
+            <mx:Label height="50%" width="50%" text="{pocketCards.card2.id}" />
+        </mx:HBox>
     </mx:VBox>
 
     <mx:VBox id="finishedRightPanel" height="100%" width="20%">

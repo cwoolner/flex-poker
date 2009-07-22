@@ -74,6 +74,8 @@ public class FlexControllerImpl implements FlexController {
                 gameBso.intializePlayersAndTables(game);
                 gameBso.changeGameStage(game, GameStage.IN_PROGRESS);
                 eventManager.sendGameInProgressEvent(game);
+                gameEventBso.startNewHandForAllTables(game);
+                sentNewHandStatingEventForAllTables(game);
             }
         }
     }
@@ -92,6 +94,14 @@ public class FlexControllerImpl implements FlexController {
 
     private User extractCurrentUser() {
         return (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    }
+
+    private void sentNewHandStatingEventForAllTables(Game game) {
+        game = gameBso.fetchById(game.getId());
+
+        for (Table table : game.getTables()) {
+            eventManager.sendNewHandStartingEvent(table);
+        }
     }
 
     public GameBso getGameBso() {

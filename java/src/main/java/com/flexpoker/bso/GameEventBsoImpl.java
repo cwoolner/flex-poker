@@ -3,6 +3,7 @@ package com.flexpoker.bso;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 import java.util.Set;
 
 import org.apache.commons.lang.BooleanUtils;
@@ -16,6 +17,7 @@ import com.flexpoker.exception.FlexPokerException;
 import com.flexpoker.model.Game;
 import com.flexpoker.model.GameStage;
 import com.flexpoker.model.PocketCards;
+import com.flexpoker.model.Seat;
 import com.flexpoker.model.Table;
 import com.flexpoker.model.User;
 import com.flexpoker.model.UserStatusInGame;
@@ -110,6 +112,45 @@ public class GameEventBsoImpl implements GameEventBso {
     public PocketCards fetchPocketCards(User user, Table table) {
         table = tableDao.findById(table.getId());
         return deckBso.fetchPocketCards(user, table);
+    }
+
+    @Override
+    public void startNewHand(Table table) {
+        if (table.getButton() == null) {
+            assignNewButton(table);
+        } else {
+            moveButton(table);
+        }
+
+        deckBso.shuffleDeck(table);
+    }
+
+    private void moveButton(Table table) {
+        // TODO Auto-generated method stub
+    }
+
+    private void assignNewButton(Table table) {
+        int numberOfPlayersAtTable = table.getSeats().size();
+        int dealerPosition = new Random().nextInt(numberOfPlayersAtTable) + 1;
+
+        for (Seat seat : table.getSeats()) {
+            if (seat.getPosition().equals(dealerPosition)) {
+                table.setButton(seat);
+                break;
+            }
+        }
+
+        tableDao.save(table.getId(), table);
+    }
+
+    @Override
+    public void startNewHandForAllTables(Game game) {
+        game = gameBso.fetchById(game.getId());
+
+        for (Table table : game.getTables()) {
+            startNewHand(table);
+        }
+
     }
 
     public UserStatusInGameDao getUserStatusInGameDao() {

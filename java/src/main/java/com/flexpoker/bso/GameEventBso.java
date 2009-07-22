@@ -5,7 +5,6 @@ import com.flexpoker.model.PocketCards;
 import com.flexpoker.model.Table;
 import com.flexpoker.model.User;
 
-
 public interface GameEventBso {
 
     void addUserToGame(User user, Game game);
@@ -17,5 +16,9 @@ public interface GameEventBso {
     boolean areAllPlayerRegistrationsVerified(Game game);
 
     PocketCards fetchPocketCards(User user, Table table);
+
+    void startNewHand(Table table);
+
+    void startNewHandForAllTables(Game game);
 
 }
