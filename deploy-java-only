@@ -1,0 +1,12 @@
+#!/bin/bash
+
+export CATALINA_PID=~/apache-tomcat-6.0.20/catalina.pid
+kill -9 `cat $CATALINA_PID`
+cd java/
+mvn install
+rm -rf ~/apache-tomcat-6.0.20/webapps/poker
+rm ~/apache-tomcat-6.0.20/webapps/poker.war
+cd ../
+cp java/target/poker.war ~/apache-tomcat-6.0.20/webapps/
+~/apache-tomcat-6.0.20/bin/catalina.sh jpda start
+tail -f ~/apache-tomcat-6.0.20/logs/catalina.out
