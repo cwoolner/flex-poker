@@ -21,4 +21,8 @@ public interface GameEventBso {
 
     void startNewHandForAllTables(Game game);
 
+    void verifyGameInProgress(User user, Game game);
+
+    boolean haveAllPlayersVerifiedGameInProgress(Game game);
+
 }

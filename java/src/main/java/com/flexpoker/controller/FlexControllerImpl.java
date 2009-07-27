@@ -76,6 +76,18 @@ public class FlexControllerImpl implements FlexController {
                 gameBso.intializePlayersAndTables(game);
                 gameBso.changeGameStage(game, GameStage.IN_PROGRESS);
                 eventManager.sendGameInProgressEvent(game);
+            }
+        }
+    }
+
+    @Override
+    public void verifyGameInProgress(Game game) {
+        User user = extractCurrentUser();
+
+        synchronized (this) {
+            gameEventBso.verifyGameInProgress(user, game);
+
+            if (gameEventBso.haveAllPlayersVerifiedGameInProgress(game)) {
                 gameEventBso.startNewHandForAllTables(game);
                 sentNewHandStatingEventForAllTables(game);
             }

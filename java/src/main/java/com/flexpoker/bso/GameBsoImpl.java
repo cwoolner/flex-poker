@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
-import java.util.Set;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,6 +16,7 @@ import com.flexpoker.dao.TableDao;
 import com.flexpoker.exception.FlexPokerException;
 import com.flexpoker.model.Game;
 import com.flexpoker.model.GameStage;
+import com.flexpoker.model.RealTimeGame;
 import com.flexpoker.model.Seat;
 import com.flexpoker.model.Table;
 import com.flexpoker.model.User;
@@ -36,6 +36,8 @@ public class GameBsoImpl implements GameBso {
 
     private SeatDao seatDao;
 
+    private RealTimeGameBso realTimeGameBso;
+
     @Override
     public List<Game> fetchAllGames() {
         return gameDao.findAll();
@@ -49,6 +51,8 @@ public class GameBsoImpl implements GameBso {
         game.setTotalPlayers(2);
         game.setAllowRebuys(false);
         gameDao.save(game.getId(), game);
+
+        realTimeGameBso.put(game, new RealTimeGame());
     }
 
     @Override
@@ -94,6 +98,7 @@ public class GameBsoImpl implements GameBso {
         table.setGame(game);
         tableDao.save(table.getId(), table);
 
+        List<User> userList = new ArrayList<User>();
         int i = 0;
         for (UserStatusInGame userStatusInGame : game.getUserStatusInGames()) {
             Seat seat = new Seat();
@@ -102,8 +107,12 @@ public class GameBsoImpl implements GameBso {
             seat.setUser(userStatusInGame.getUser());
             seatDao.save(seat.getId(), seat);
             i++;
+
+            userList.add(userStatusInGame.getUser());
         }
 
+        RealTimeGame realTimeGame = realTimeGameBso.get(game);
+        realTimeGame.setUsers(userList);
     }
 
     public GameDao getGameDao() {
@@ -144,6 +153,14 @@ public class GameBsoImpl implements GameBso {
 
     public void setSeatDao(SeatDao seatDao) {
         this.seatDao = seatDao;
+    }
+
+    public RealTimeGameBso getRealTimeGameBso() {
+        return realTimeGameBso;
+    }
+
+    public void setRealTimeGameBso(RealTimeGameBso realTimeGameBso) {
+        this.realTimeGameBso = realTimeGameBso;
     }
 
 }

@@ -27,6 +27,8 @@
         import mx.messaging.messages.ErrorMessage;
         import flash.utils.Timer;
         import flash.events.TimerEvent;
+        import mx.rpc.AsyncToken;
+        import mx.rpc.AsyncResponder;
 
         public var game:Game;
 
@@ -46,7 +48,6 @@
         private function initializeTable() {
             gameEventConsumer.subtopic = game.id.toString() + ".*";
             gameEventConsumer.subscribe();
-            tableEventConsumer.subscribe();
             RemoteObjectUtils.addChannelSetToRemoteObject(mainRemoteObject);
             mainRemoteObject.joinGame(game);
         }
@@ -67,7 +68,18 @@
             }
 
             if (message.headers.DSSubtopic.search("gameInProgress") != -1) {
-                mainRemoteObject.fetchTable(game);
+                var token:AsyncToken = mainRemoteObject.fetchTable(game);
+                token.addResponder(new AsyncResponder(
+                    function(event:ResultEvent, token:Object = null):void {
+                        table = event.result as Table;
+                        tableEventConsumer.subtopic = table.id.toString() + ".*";
+                        tableEventConsumer.subscribe();
+                        mainRemoteObject.verifyGameInProgress(game);
+                    },
+                    function(event:FaultEvent, token:Object = null):void {
+                        Alert.show("Send Failed: " + event.fault.faultString);
+                    }
+                ))
                 currentState = "inProgressState";
                 return;
             }
@@ -102,11 +114,6 @@
 
         private function timerCompleteHandler(event:TimerEvent):void {
             mainRemoteObject.verifyRegistrationForGame(game);
-        }
-
-        private function fetchTableHandler(event:ResultEvent):void {
-            table = event.result as Table;
-            tableEventConsumer.subtopic = table.id.toString() + ".*";
         }
 
         private function fetchPocketCardsHandler(event:ResultEvent):void {
@@ -172,7 +179,6 @@
     <mx:RemoteObject id="mainRemoteObject" destination="flexController">
         <mx:method name="joinGame" fault="joinGameFaultHandler(event)" />
         <mx:method name="fetchAllUserStatusesForGame" result="fetchAllUserStatusesForGameHandler(event)" />
-        <mx:method name="fetchTable" result="fetchTableHandler(event)" />
         <mx:method name="fetchPocketCards" result="fetchPocketCardsHandler(event)" />
     </mx:RemoteObject>
 

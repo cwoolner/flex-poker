@@ -24,4 +24,6 @@ public interface FlexController {
 
     Table fetchTable(Game game);
 
+    void verifyGameInProgress(Game game);
+
 }

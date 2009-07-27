@@ -2,7 +2,9 @@ package com.flexpoker.bso;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
@@ -10,13 +12,13 @@ import org.apache.commons.lang.BooleanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.flexpoker.dao.GameDao;
 import com.flexpoker.dao.TableDao;
 import com.flexpoker.dao.UserStatusInGameDao;
 import com.flexpoker.exception.FlexPokerException;
 import com.flexpoker.model.Game;
 import com.flexpoker.model.GameStage;
 import com.flexpoker.model.PocketCards;
+import com.flexpoker.model.RealTimeGame;
 import com.flexpoker.model.Seat;
 import com.flexpoker.model.Table;
 import com.flexpoker.model.User;
@@ -33,6 +35,8 @@ public class GameEventBsoImpl implements GameEventBso {
     private DeckBso deckBso;
 
     private TableDao tableDao;
+
+    private RealTimeGameBso realTimeGameBso;
 
     @Override
     public void addUserToGame(User user, Game game) {
@@ -153,6 +157,18 @@ public class GameEventBsoImpl implements GameEventBso {
 
     }
 
+    @Override
+    public boolean haveAllPlayersVerifiedGameInProgress(Game game) {
+        RealTimeGame realTimeGame = realTimeGameBso.get(game);
+        return realTimeGame.isEventVerified("gameInProgress");
+    }
+
+    @Override
+    public void verifyGameInProgress(User user, Game game) {
+        RealTimeGame realTimeGame = realTimeGameBso.get(game);
+        realTimeGame.verifyEvent(user, "gameInProgress");
+    }
+
     public UserStatusInGameDao getUserStatusInGameDao() {
         return userStatusInGameDao;
     }
@@ -183,6 +199,14 @@ public class GameEventBsoImpl implements GameEventBso {
 
     public void setTableDao(TableDao tableDao) {
         this.tableDao = tableDao;
+    }
+
+    public RealTimeGameBso getRealTimeGameBso() {
+        return realTimeGameBso;
+    }
+
+    public void setRealTimeGameBso(RealTimeGameBso realTimeGameBso) {
+        this.realTimeGameBso = realTimeGameBso;
     }
 
 }
