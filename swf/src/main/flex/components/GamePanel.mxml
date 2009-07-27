@@ -87,14 +87,11 @@
         }
 
         private function tableEventMessageHandler(message:IMessage):void {
-            Alert.show("Before if");
             if (message.headers.DSSubtopic.search("newHandStarting") != -1) {
-                Alert.show("Before fetchPocketCards");
+                mainRemoteObject.fetchAllUserStatusesForGame(game);
                 mainRemoteObject.fetchPocketCards(table);
-                Alert.show("Before return");
                 return;
             }
-            Alert.show("After if");
         }
 
         private function fetchAllUserStatusesForGameHandler(event:ResultEvent):void {
