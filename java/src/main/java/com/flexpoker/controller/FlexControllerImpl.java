@@ -29,6 +29,8 @@ public class FlexControllerImpl implements FlexController {
     @Override
     public void createGame(Game game) {
         User user = extractCurrentUser();
+        // the id is set to 0 when it comes from Flex, explicitly set it to null
+        game.setId(null);
         gameBso.createGame(user, game);
         eventManager.sendGamesUpdatedEvent();
     }
