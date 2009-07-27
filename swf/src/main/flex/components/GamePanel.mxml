@@ -15,6 +15,7 @@
         import com.flexpoker.model.Table;
         import com.flexpoker.model.User;
         import com.flexpoker.model.PocketCards;
+        import com.flexpoker.model.Deck;
         import mx.messaging.Consumer;
         import mx.messaging.ChannelSet;
         import mx.messaging.messages.IMessage;
@@ -114,15 +115,21 @@
         }
 
         private function fetchPocketCardsHandler(event:ResultEvent):void {
-            Alert.show("Before assignment");
             pocketCards = event.result as PocketCards;
-            Alert.show(pocketCards.card1.id.toString());
-            Alert.show(pocketCards.card2.id.toString());
+            var deck:Deck = Deck.getInstance();
+            pocketCardImage1 = deck.getCardImage(pocketCards.card1);
+            pocketCardImage2 = deck.getCardImage(pocketCards.card2);
         }
 
         [Embed(source="/assets/Table.svg")]
         [Bindable]
         public var TableSvg:Class; 
+
+        [Bindable]
+        public var pocketCardImage1:Class;
+
+        [Bindable]
+        public var pocketCardImage2:Class;
 
     ]]>
     </mx:Script>
@@ -261,11 +268,11 @@
     </mx:VBox>
 
     <mx:VBox id="inProgressRightPanel" height="100%" width="20%">
-        <comp:UserStatusInGameGrid height="45%" width="100%" userStatusesForGame="{userStatusesForGame}" />
-        <comp:PokerActionBox height="45%" width="100%" />
-        <mx:HBox height="10%" width="100%">
-            <mx:Label height="50%" width="50%" text="{pocketCards.card1.id}" />
-            <mx:Label height="50%" width="50%" text="{pocketCards.card2.id}" />
+        <comp:UserStatusInGameGrid height="35%" width="100%" userStatusesForGame="{userStatusesForGame}" />
+        <comp:PokerActionBox height="35%" width="100%" />
+        <mx:HBox height="30%" width="100%">
+            <mx:Image id="myPocketCard1" height="100%" width="100%" source="{pocketCardImage1}" maintainAspectRatio="true" />
+            <mx:Image id="myPocketCard2" height="100%" width="100%" source="{pocketCardImage2}" maintainAspectRatio="true" />
         </mx:HBox>
     </mx:VBox>
 
