@@ -106,6 +106,9 @@ public class GameBsoImpl implements GameBso {
             seat.setTable(table);
             seat.setUser(userStatusInGame.getUser());
             seatDao.save(seat.getId(), seat);
+
+            userStatusInGame.setChips(1000);
+
             i++;
 
             userList.add(userStatusInGame.getUser());
