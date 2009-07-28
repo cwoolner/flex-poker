@@ -14,7 +14,7 @@ import com.flexpoker.model.GameStage;
 import com.flexpoker.model.PocketCards;
 import com.flexpoker.model.Table;
 import com.flexpoker.model.User;
-import com.flexpoker.model.UserStatusInGame;
+import com.flexpoker.model.UserGameStatus;
 
 @Controller("flexController")
 @RemotingDestination
@@ -60,9 +60,9 @@ public class FlexControllerImpl implements FlexController {
     }
     
     @Override
-    public Set<UserStatusInGame> fetchAllUserStatusesForGame(Game game) {
+    public Set<UserGameStatus> fetchAllUserGameStatuses(Game game) {
         game = gameBso.fetchById(game.getId());
-        return game.getUserStatusInGames();
+        return game.getUserGameStatuses();
     }
 
     @Override

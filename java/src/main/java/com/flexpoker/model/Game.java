@@ -38,7 +38,7 @@ public class Game {
 
     private Boolean allowRebuys;
 
-    private Set<UserStatusInGame> userStatusInGames;
+    private Set<UserGameStatus> userGameStatuses;
 
     private GameStage gameStage;
 
@@ -132,12 +132,12 @@ public class Game {
 
     @OneToMany(fetch = FetchType.EAGER)
     @JoinColumn(name = "gameId")
-    public Set<UserStatusInGame> getUserStatusInGames() {
-        return userStatusInGames;
+    public Set<UserGameStatus> getUserGameStatuses() {
+        return userGameStatuses;
     }
 
-    public void setUserStatusInGames(Set<UserStatusInGame> userStatusInGames) {
-        this.userStatusInGames = userStatusInGames;
+    public void setUserGameStatuses(Set<UserGameStatus> userGameStatuses) {
+        this.userGameStatuses = userGameStatuses;
     }
 
     @ManyToOne

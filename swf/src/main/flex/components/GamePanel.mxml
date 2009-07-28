@@ -44,7 +44,7 @@
         private var startingTimer:Timer;
 
         [Bindable]
-        private var userStatusesForGame:ArrayCollection;
+        private var userGameStatuses:ArrayCollection;
 
         private function initializeTable() {
             gameEventConsumer.subtopic = game.id.toString() + ".*";
@@ -55,7 +55,7 @@
         
         private function gameEventMessageHandler(message:IMessage):void {
             if (message.headers.DSSubtopic.search("userJoinedGame") != -1) {
-                mainRemoteObject.fetchAllUserStatusesForGame(game);
+                mainRemoteObject.fetchAllUserGameStatuses(game);
                 return;
             }
 
@@ -89,14 +89,14 @@
 
         private function tableEventMessageHandler(message:IMessage):void {
             if (message.headers.DSSubtopic.search("newHandStarting") != -1) {
-                mainRemoteObject.fetchAllUserStatusesForGame(game);
+                mainRemoteObject.fetchAllUserGameStatuses(game);
                 mainRemoteObject.fetchPocketCards(table);
                 return;
             }
         }
 
-        private function fetchAllUserStatusesForGameHandler(event:ResultEvent):void {
-            userStatusesForGame = event.result as ArrayCollection;
+        private function fetchAllUserGameStatusesHandler(event:ResultEvent):void {
+            userGameStatuses = event.result as ArrayCollection;
         }
 
         private function joinGameFaultHandler(event:FaultEvent):void {
@@ -182,7 +182,7 @@
 
     <mx:RemoteObject id="mainRemoteObject" destination="flexController">
         <mx:method name="joinGame" fault="joinGameFaultHandler(event)" />
-        <mx:method name="fetchAllUserStatusesForGame" result="fetchAllUserStatusesForGameHandler(event)" />
+        <mx:method name="fetchAllUserGameStatuses" result="fetchAllUserGameStatusesHandler(event)" />
         <mx:method name="fetchPocketCards" result="fetchPocketCardsHandler(event)" />
     </mx:RemoteObject>
 
@@ -258,17 +258,17 @@
     </mx:VBox>
 
     <mx:VBox id="registeringRightPanel" height="100%" width="20%">
-        <comp:UserStatusInGameGrid height="50%" width="100%" userStatusesForGame="{userStatusesForGame}" />
+        <comp:UserGameStatusGrid height="50%" width="100%" userGameStatuses="{userGameStatuses}" />
         <mx:Spacer height="50%" width="100%" />
     </mx:VBox>
 
     <mx:VBox id="startingRightPanel" height="100%" width="20%">
-        <comp:UserStatusInGameGrid height="50%" width="100%" userStatusesForGame="{userStatusesForGame}" />
+        <comp:UserGameStatusGrid height="50%" width="100%" userGameStatuses="{userGameStatuses}" />
         <mx:Spacer height="50%" width="100%" />
     </mx:VBox>
 
     <mx:VBox id="inProgressRightPanel" height="100%" width="20%">
-        <comp:UserStatusInGameGrid height="35%" width="100%" userStatusesForGame="{userStatusesForGame}" />
+        <comp:UserGameStatusGrid height="35%" width="100%" userGameStatuses="{userGameStatuses}" />
         <comp:PokerActionBox height="35%" width="100%" />
         <mx:HBox height="30%" width="100%">
             <mx:Image id="myPocketCard1" height="100%" width="100%" source="{pocketCardImage1}" maintainAspectRatio="true" />
@@ -277,7 +277,7 @@
     </mx:VBox>
 
     <mx:VBox id="finishedRightPanel" height="100%" width="20%">
-        <comp:UserStatusInGameGrid height="50%" width="100%" userStatusesForGame="{userStatusesForGame}" />
+        <comp:UserGameStatusGrid height="50%" width="100%" userGameStatuses="{userGameStatuses}" />
         <mx:Spacer height="50%" width="100%" />
     </mx:VBox>
 

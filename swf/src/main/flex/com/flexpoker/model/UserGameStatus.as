@@ -1,8 +1,8 @@
 package com.flexpoker.model {
 
-    [RemoteClass(alias="com.flexpoker.model.UserStatusInGame")]
+    [RemoteClass(alias="com.flexpoker.model.UserGameStatus")]
     [Bindable]
-    public class UserStatusInGame {
+    public class UserGameStatus {
 
         public var id:int;
 

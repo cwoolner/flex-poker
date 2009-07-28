@@ -20,7 +20,7 @@ import com.flexpoker.model.RealTimeGame;
 import com.flexpoker.model.Seat;
 import com.flexpoker.model.Table;
 import com.flexpoker.model.User;
-import com.flexpoker.model.UserStatusInGame;
+import com.flexpoker.model.UserGameStatus;
 
 @Transactional
 @Service("gameBso")
@@ -100,18 +100,18 @@ public class GameBsoImpl implements GameBso {
 
         List<User> userList = new ArrayList<User>();
         int i = 0;
-        for (UserStatusInGame userStatusInGame : game.getUserStatusInGames()) {
+        for (UserGameStatus userGameStatus : game.getUserGameStatuses()) {
             Seat seat = new Seat();
             seat.setPosition(randomPlayerPositions.get(i));
             seat.setTable(table);
-            seat.setUser(userStatusInGame.getUser());
+            seat.setUser(userGameStatus.getUser());
             seatDao.save(seat.getId(), seat);
 
-            userStatusInGame.setChips(1000);
+            userGameStatus.setChips(1000);
 
             i++;
 
-            userList.add(userStatusInGame.getUser());
+            userList.add(userGameStatus.getUser());
         }
 
         RealTimeGame realTimeGame = realTimeGameBso.get(game);

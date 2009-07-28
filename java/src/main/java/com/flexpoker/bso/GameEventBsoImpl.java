@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.flexpoker.dao.TableDao;
-import com.flexpoker.dao.UserStatusInGameDao;
+import com.flexpoker.dao.UserGameStatusDao;
 import com.flexpoker.exception.FlexPokerException;
 import com.flexpoker.model.Game;
 import com.flexpoker.model.GameStage;
@@ -22,7 +22,7 @@ import com.flexpoker.model.RealTimeGame;
 import com.flexpoker.model.Seat;
 import com.flexpoker.model.Table;
 import com.flexpoker.model.User;
-import com.flexpoker.model.UserStatusInGame;
+import com.flexpoker.model.UserGameStatus;
 
 @Transactional
 @Service("gameEventBso")
@@ -30,7 +30,7 @@ public class GameEventBsoImpl implements GameEventBso {
 
     private GameBso gameBso;
 
-    private UserStatusInGameDao userStatusInGameDao;
+    private UserGameStatusDao userGameStatusDao;
 
     private DeckBso deckBso;
 
@@ -53,44 +53,44 @@ public class GameEventBsoImpl implements GameEventBso {
             throw new FlexPokerException("The game is already finished.");
         }
 
-        Set<UserStatusInGame> userStatuses = game.getUserStatusInGames();
+        Set<UserGameStatus> userGameStatuses = game.getUserGameStatuses();
         
-        for (UserStatusInGame userStatus : userStatuses) {
-            if (user.equals(userStatus.getUser())) {
+        for (UserGameStatus userGameStatus : userGameStatuses) {
+            if (user.equals(userGameStatus.getUser())) {
                 throw new FlexPokerException("You are already in this game.");
             }
         }
         
         Integer totalPlayers = game.getTotalPlayers();
-        Integer currentNumberOfPlayers = game.getUserStatusInGames().size();
+        Integer currentNumberOfPlayers = game.getUserGameStatuses().size();
         
         if (totalPlayers <= currentNumberOfPlayers) {
             throw new FlexPokerException("This game is full.");
         }
 
-        UserStatusInGame userStatusInGame = new UserStatusInGame();
-        userStatusInGame.setEnterTime(new Date());
-        userStatusInGame.setGame(game);
-        userStatusInGame.setUser(user);
-        userStatusInGameDao.save(userStatusInGame.getId(), userStatusInGame);
+        UserGameStatus userGameStatus = new UserGameStatus();
+        userGameStatus.setEnterTime(new Date());
+        userGameStatus.setGame(game);
+        userGameStatus.setUser(user);
+        userGameStatusDao.save(userGameStatus.getId(), userGameStatus);
     }
 
     @Override
     public boolean isGameAtMaxPlayers(Game game) {
         game = gameBso.fetchById(game.getId());
-        return game.getUserStatusInGames().size() == game.getTotalPlayers();
+        return game.getUserGameStatuses().size() == game.getTotalPlayers();
     }
 
     @Override
     public void verifyRegistration(User user, Game game) {
         game = gameBso.fetchById(game.getId());
 
-        Set<UserStatusInGame> userList = game.getUserStatusInGames();
+        Set<UserGameStatus> userGameStatusList = game.getUserGameStatuses();
 
-        for (UserStatusInGame userInGame : userList) {
-            if (userInGame.getUser().equals(user)) {
-                userInGame.setVerified(true);
-                userStatusInGameDao.save(userInGame.getId(), userInGame);
+        for (UserGameStatus userGameStatus : userGameStatusList) {
+            if (userGameStatus.getUser().equals(user)) {
+                userGameStatus.setVerified(true);
+                userGameStatusDao.save(userGameStatus.getId(), userGameStatus);
                 break;
             }
         }
@@ -100,16 +100,16 @@ public class GameEventBsoImpl implements GameEventBso {
     public boolean areAllPlayerRegistrationsVerified(Game game) {
         game = gameBso.fetchById(game.getId());
 
-        List<UserStatusInGame> verifiedUsers = new ArrayList<UserStatusInGame>();
-        Set<UserStatusInGame> usersInGame = game.getUserStatusInGames();
+        List<UserGameStatus> verifiedUserGameStatuses = new ArrayList<UserGameStatus>();
+        Set<UserGameStatus> allUserGameStatuses = game.getUserGameStatuses();
 
-        for (UserStatusInGame userInGame : usersInGame) {
+        for (UserGameStatus userInGame : allUserGameStatuses) {
             if (BooleanUtils.isTrue(userInGame.getVerified())) {
-                verifiedUsers.add(userInGame);
+                verifiedUserGameStatuses.add(userInGame);
             }
         }
 
-        return verifiedUsers.size() == usersInGame.size();
+        return verifiedUserGameStatuses.size() == allUserGameStatuses.size();
     }
 
     @Override
@@ -169,12 +169,12 @@ public class GameEventBsoImpl implements GameEventBso {
         realTimeGame.verifyEvent(user, "gameInProgress");
     }
 
-    public UserStatusInGameDao getUserStatusInGameDao() {
-        return userStatusInGameDao;
+    public UserGameStatusDao getUserGameStatusDao() {
+        return userGameStatusDao;
     }
 
-    public void setUserStatusInGameDao(UserStatusInGameDao userStatusInGameDao) {
-        this.userStatusInGameDao = userStatusInGameDao;
+    public void setUserGameStatusDao(UserGameStatusDao userGameStatusDao) {
+        this.userGameStatusDao = userGameStatusDao;
     }
 
     public GameBso getGameBso() {

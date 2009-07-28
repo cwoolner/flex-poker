@@ -1,13 +1,13 @@
 <mx:DataGrid xmlns:mx="http://www.adobe.com/2006/mxml"
     xmlns:rend="renderers.*"
-    dataProvider="{userStatusesForGame}">
+    dataProvider="{userGameStatuses}">
 
     <mx:Script>
     <![CDATA[
         import mx.collections.ArrayCollection;
 
         [Bindable]
-        public var userStatusesForGame:ArrayCollection;
+        public var userGameStatuses:ArrayCollection;
     ]]>
     </mx:Script>
 

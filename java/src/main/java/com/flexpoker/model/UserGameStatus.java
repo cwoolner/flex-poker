@@ -10,8 +10,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "userStatusInGames")
-public class UserStatusInGame {
+@Table(name = "userGameStatuses")
+public class UserGameStatus {
 
     private Integer id;
 

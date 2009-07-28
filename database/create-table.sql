@@ -97,7 +97,7 @@ CREATE TABLE `tables` (
   KEY `FKCB773E652E9F436E` (`smallBlindId`)
 ) ENGINE=InnoDB;
 
-CREATE TABLE `userStatusInGames` (
+CREATE TABLE `userGameStatuses` (
   `id` int(11) NOT NULL auto_increment,
   `chips` int(11) default NULL,
   `enterTime` datetime default NULL,

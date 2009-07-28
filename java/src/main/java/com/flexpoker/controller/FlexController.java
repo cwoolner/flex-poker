@@ -6,7 +6,7 @@ import java.util.Set;
 import com.flexpoker.model.Game;
 import com.flexpoker.model.PocketCards;
 import com.flexpoker.model.Table;
-import com.flexpoker.model.UserStatusInGame;
+import com.flexpoker.model.UserGameStatus;
 
 public interface FlexController {
 
@@ -16,7 +16,7 @@ public interface FlexController {
 
     void joinGame(Game game);
 
-    Set<UserStatusInGame> fetchAllUserStatusesForGame(Game game);
+    Set<UserGameStatus> fetchAllUserGameStatuses(Game game);
 
     void verifyRegistrationForGame(Game game);
 
