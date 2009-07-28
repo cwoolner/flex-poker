@@ -209,41 +209,41 @@
         <mx:Spacer height="100%" />
         <mx:HBox width="100%">
             <mx:Spacer width="100%" />
-            <mx:Label text="{table.seats.getItemAt(1).user.username}" />
+            <comp:SeatPanel userGameStatus="{table.seats.getItemAt(1).userGameStatus}" dealer="true" />
             <mx:Spacer width="25%" />
-            <mx:Label text="{table.seats.getItemAt(2).user.username}" />
+            <comp:SeatPanel userGameStatus="{table.seats.getItemAt(2).userGameStatus}" dealer="true" />
             <mx:Spacer width="100%" />
         </mx:HBox>
         <mx:Spacer height="45%" />
         <mx:HBox width="100%">
             <mx:Spacer width="100%" />
-            <mx:Label text="{table.seats.getItemAt(0).user.username}" />
+            <comp:SeatPanel userGameStatus="{table.seats.getItemAt(0).userGameStatus}" dealer="true" />
             <mx:Spacer width="100%" />
-            <mx:Label text="{table.seats.getItemAt(3).user.username}" />
+            <comp:SeatPanel userGameStatus="{table.seats.getItemAt(3).userGameStatus}" dealer="true" />
             <mx:Spacer width="100%" />
         </mx:HBox>
         <mx:Spacer height="100%" />
         <mx:HBox width="100%">
             <mx:Spacer width="60%" />
-            <mx:Label text="{table.seats.getItemAt(9).user.username}" />
+            <comp:SeatPanel userGameStatus="{table.seats.getItemAt(9).userGameStatus}" dealer="true" />
             <mx:Spacer width="100%" />
-            <mx:Label text="{table.seats.getItemAt(4).user.username}" />
+            <comp:SeatPanel userGameStatus="{table.seats.getItemAt(4).userGameStatus}" dealer="true" />
             <mx:Spacer width="60%" />
         </mx:HBox>
         <mx:Spacer height="100%" />
         <mx:HBox width="100%">
             <mx:Spacer width="100%" />
-            <mx:Label text="{table.seats.getItemAt(8).user.username}" />
+            <comp:SeatPanel userGameStatus="{table.seats.getItemAt(8).userGameStatus}" dealer="true" />
             <mx:Spacer width="100%" />
-            <mx:Label text="{table.seats.getItemAt(5).user.username}" />
+            <comp:SeatPanel userGameStatus="{table.seats.getItemAt(5).userGameStatus}" dealer="true" />
             <mx:Spacer width="100%" />
         </mx:HBox>
         <mx:Spacer height="45%" />
         <mx:HBox width="100%">
             <mx:Spacer width="100%" />
-            <mx:Label text="{table.seats.getItemAt(7).user.username}" />
+            <comp:SeatPanel userGameStatus="{table.seats.getItemAt(7).userGameStatus}" dealer="true" />
             <mx:Spacer width="25%" />
-            <mx:Label text="{table.seats.getItemAt(6).user.username}" />
+            <comp:SeatPanel userGameStatus="{table.seats.getItemAt(6).userGameStatus}" dealer="true" />
             <mx:Spacer width="100%" />
         </mx:HBox>
         <mx:Spacer height="100%" />

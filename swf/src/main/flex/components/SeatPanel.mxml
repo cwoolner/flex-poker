@@ -1,0 +1,30 @@
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml">
+    <mx:Script>
+    <![CDATA[
+        import com.flexpoker.model.UserGameStatus;
+        import com.flexpoker.model.TableImages;
+
+        [Bindable]
+        public var userGameStatus:UserGameStatus;
+
+        [Bindable]
+        public var dealer:Boolean;
+
+        [Bindable]
+        public var smallBlind:Boolean;
+
+        [Bindable]
+        public var bigBlind:Boolean;
+    ]]>
+    </mx:Script>
+
+    <mx:Label text="{userGameStatus.user.username}" />
+    <mx:Label text="{userGameStatus.chips}" />
+    <mx:HBox>
+        <mx:Spacer width="100%" />
+        <mx:Image source="{TableImages.getInstance().getButtonImage()}" visible="{dealer}" />
+        <mx:Image source="{TableImages.getInstance().getSmallBlindImage()}" visible="{smallBlind}" />
+        <mx:Image source="{TableImages.getInstance().getBigBlindImage()}" visible="{bigBlind}" />
+        <mx:Spacer width="100%" />
+    </mx:HBox>
+</mx:VBox>
