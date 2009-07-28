@@ -8,7 +8,7 @@ package com.flexpoker.model {
 
         public var table:Table;
 
-        public var user:User;
+        public var userGameStatus:UserGameStatus;
 
         public var position:int;
 

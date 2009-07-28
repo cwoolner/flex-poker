@@ -73,7 +73,7 @@ public class GameBsoImpl implements GameBso {
 
         for (Table table : game.getTables()) {
             for (Seat seat : table.getSeats()) {
-                if (seat.getUser().equals(user)) {
+                if (seat.getUserGameStatus().getUser().equals(user)) {
                     return table;
                 }
             }
@@ -104,7 +104,7 @@ public class GameBsoImpl implements GameBso {
             Seat seat = new Seat();
             seat.setPosition(randomPlayerPositions.get(i));
             seat.setTable(table);
-            seat.setUser(userGameStatus.getUser());
+            seat.setUserGameStatus(userGameStatus);
             seatDao.save(seat.getId(), seat);
 
             userGameStatus.setChips(1000);

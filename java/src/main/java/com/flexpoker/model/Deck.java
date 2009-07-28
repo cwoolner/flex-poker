@@ -47,7 +47,7 @@ public class Deck {
             Card pocketCard1 = deckOfCards.get(j);
             Card pocketCard2 = deckOfCards.get(j + numberOfPlayers);
             PocketCards pocketCards = new PocketCards(pocketCard1, pocketCard2);
-            pocketCardsMap.put(seats.get(i).getUser(), pocketCards);
+            pocketCardsMap.put(seats.get(i).getUserGameStatus().getUser(), pocketCards);
 
             i++;
             j++;
@@ -58,7 +58,7 @@ public class Deck {
             Card pocketCard1 = deckOfCards.get(j);
             Card pocketCard2 = deckOfCards.get(j + numberOfPlayers);
             PocketCards pocketCards = new PocketCards(pocketCard1, pocketCard2);
-            pocketCardsMap.put(seats.get(i).getUser(), pocketCards);
+            pocketCardsMap.put(seats.get(i).getUserGameStatus().getUser(), pocketCards);
 
             i++;
             j++;

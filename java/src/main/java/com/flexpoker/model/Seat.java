@@ -15,7 +15,7 @@ public class Seat implements Comparable<Seat> {
 
     private com.flexpoker.model.Table table;
 
-    private User user;
+    private UserGameStatus userGameStatus;
 
     private Integer position;
 
@@ -40,13 +40,13 @@ public class Seat implements Comparable<Seat> {
     }
 
     @OneToOne
-    @JoinColumn(name = "userId")
-    public User getUser() {
-        return user;
+    @JoinColumn(name = "userGameStatusId")
+    public UserGameStatus getUserGameStatus() {
+        return userGameStatus;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setUserGameStatus(UserGameStatus userGameStatus) {
+        this.userGameStatus = userGameStatus;
     }
 
     public Integer getPosition() {
