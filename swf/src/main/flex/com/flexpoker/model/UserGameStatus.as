@@ -10,7 +10,7 @@ package com.flexpoker.model {
 
         public var game:Game;
 
-        public var chips:Integer;
+        public var chips:int;
 
         public var money:Number;
 
