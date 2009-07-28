@@ -209,41 +209,41 @@
         <mx:Spacer height="100%" />
         <mx:HBox width="100%">
             <mx:Spacer width="100%" />
-            <comp:SeatPanel userGameStatus="{table.seats.getItemAt(1).userGameStatus}" dealer="true" />
+            <comp:SeatPanel userGameStatus="{table.seats.getItemAt(1).userGameStatus}" />
             <mx:Spacer width="25%" />
-            <comp:SeatPanel userGameStatus="{table.seats.getItemAt(2).userGameStatus}" dealer="true" />
+            <comp:SeatPanel userGameStatus="{table.seats.getItemAt(2).userGameStatus}" />
             <mx:Spacer width="100%" />
         </mx:HBox>
         <mx:Spacer height="45%" />
         <mx:HBox width="100%">
             <mx:Spacer width="100%" />
-            <comp:SeatPanel userGameStatus="{table.seats.getItemAt(0).userGameStatus}" dealer="true" />
+            <comp:SeatPanel userGameStatus="{table.seats.getItemAt(0).userGameStatus}" />
             <mx:Spacer width="100%" />
-            <comp:SeatPanel userGameStatus="{table.seats.getItemAt(3).userGameStatus}" dealer="true" />
+            <comp:SeatPanel userGameStatus="{table.seats.getItemAt(3).userGameStatus}" />
             <mx:Spacer width="100%" />
         </mx:HBox>
         <mx:Spacer height="100%" />
         <mx:HBox width="100%">
             <mx:Spacer width="60%" />
-            <comp:SeatPanel userGameStatus="{table.seats.getItemAt(9).userGameStatus}" dealer="true" />
+            <comp:SeatPanel userGameStatus="{table.seats.getItemAt(9).userGameStatus}" />
             <mx:Spacer width="100%" />
-            <comp:SeatPanel userGameStatus="{table.seats.getItemAt(4).userGameStatus}" dealer="true" />
+            <comp:SeatPanel userGameStatus="{table.seats.getItemAt(4).userGameStatus}" />
             <mx:Spacer width="60%" />
         </mx:HBox>
         <mx:Spacer height="100%" />
         <mx:HBox width="100%">
             <mx:Spacer width="100%" />
-            <comp:SeatPanel userGameStatus="{table.seats.getItemAt(8).userGameStatus}" dealer="true" />
+            <comp:SeatPanel userGameStatus="{table.seats.getItemAt(8).userGameStatus}" />
             <mx:Spacer width="100%" />
-            <comp:SeatPanel userGameStatus="{table.seats.getItemAt(5).userGameStatus}" dealer="true" />
+            <comp:SeatPanel userGameStatus="{table.seats.getItemAt(5).userGameStatus}" />
             <mx:Spacer width="100%" />
         </mx:HBox>
         <mx:Spacer height="45%" />
         <mx:HBox width="100%">
             <mx:Spacer width="100%" />
-            <comp:SeatPanel userGameStatus="{table.seats.getItemAt(7).userGameStatus}" dealer="true" />
+            <comp:SeatPanel userGameStatus="{table.seats.getItemAt(7).userGameStatus}" />
             <mx:Spacer width="25%" />
-            <comp:SeatPanel userGameStatus="{table.seats.getItemAt(6).userGameStatus}" dealer="true" />
+            <comp:SeatPanel userGameStatus="{table.seats.getItemAt(6).userGameStatus}" />
             <mx:Spacer width="100%" />
         </mx:HBox>
         <mx:Spacer height="100%" />
