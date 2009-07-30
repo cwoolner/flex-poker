@@ -1,10 +1,40 @@
-<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml">
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml"
+   creationComplete="initializeEvents()">
+
+    <mx:Style>
+        .actionOnTrue {
+            background-color:#369336;
+        }
+        .actionOnFalse {
+            background-color:#bc2e2e;
+        }
+    </mx:Style>
+
     <mx:Script>
     <![CDATA[
         import com.flexpoker.model.UserGameStatus;
+        import com.flexpoker.events.ActionOnChangedEvent;
+        import mx.controls.Alert;
 
         [Bindable]
         public var userGameStatus:UserGameStatus;
+
+        [Bindable(ActionOnChangedEvent.NAME)]
+        public var actionOn:Boolean;
+
+        private function initializeEvents():void {
+            addEventListener(ActionOnChangedEvent.NAME, actionOnChanged);
+            styleName = "actionOnFalse";
+        }
+
+        private function actionOnChanged(event:ActionOnChangedEvent):void {
+            Alert.show("Woah");
+            if (actionOn) {
+                styleName = "actionOnTrue";
+            } else {
+                styleName = "actionOnFalse";
+            }
+        }
 
     ]]>
     </mx:Script>

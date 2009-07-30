@@ -46,6 +46,9 @@
         [Bindable]
         private var userGameStatuses:ArrayCollection;
 
+        [Bindable]
+        private var actionOn:ArrayCollection = new ArrayCollection(new Array(false, false, false, false, false, false, false, false, false, false));
+
         private function initializeTable() {
             gameEventConsumer.subtopic = game.id.toString() + ".*";
             gameEventConsumer.subscribe();
@@ -89,6 +92,17 @@
 
         private function tableEventMessageHandler(message:IMessage):void {
             if (message.headers.DSSubtopic.search("newHandStarting") != -1) {
+                var token:AsyncToken = mainRemoteObject.fetchTable(game);
+                token.addResponder(new AsyncResponder(
+                    function(event:ResultEvent, token:Object = null):void {
+                        table = event.result as Table;
+                        actionOn.setItemAt(true, table.actionOn.position - 1);
+                    },
+                    function(event:FaultEvent, token:Object = null):void {
+                        Alert.show("Send Failed: " + event.fault.faultString);
+                    }
+                ))
+
                 mainRemoteObject.fetchAllUserGameStatuses(game);
                 mainRemoteObject.fetchPocketCards(table);
                 return;
@@ -209,41 +223,41 @@
         <mx:Spacer height="100%" />
         <mx:HBox width="100%">
             <mx:Spacer width="100%" />
-            <comp:SeatPanel userGameStatus="{table.seats.getItemAt(1).userGameStatus}" />
+            <comp:SeatPanel actionOn="{actionOn.getItemAt(1)}" userGameStatus="{table.seats.getItemAt(1).userGameStatus}" />
             <mx:Spacer width="25%" />
-            <comp:SeatPanel userGameStatus="{table.seats.getItemAt(2).userGameStatus}" />
+            <comp:SeatPanel actionOn="{actionOn.getItemAt(2)}" userGameStatus="{table.seats.getItemAt(2).userGameStatus}" />
             <mx:Spacer width="100%" />
         </mx:HBox>
         <mx:Spacer height="45%" />
         <mx:HBox width="100%">
             <mx:Spacer width="100%" />
-            <comp:SeatPanel userGameStatus="{table.seats.getItemAt(0).userGameStatus}" />
+            <comp:SeatPanel actionOn="{actionOn.getItemAt(0)}" userGameStatus="{table.seats.getItemAt(0).userGameStatus}" />
             <mx:Spacer width="100%" />
-            <comp:SeatPanel userGameStatus="{table.seats.getItemAt(3).userGameStatus}" />
+            <comp:SeatPanel actionOn="{actionOn.getItemAt(3)}" userGameStatus="{table.seats.getItemAt(3).userGameStatus}" />
             <mx:Spacer width="100%" />
         </mx:HBox>
         <mx:Spacer height="100%" />
         <mx:HBox width="100%">
             <mx:Spacer width="60%" />
-            <comp:SeatPanel userGameStatus="{table.seats.getItemAt(9).userGameStatus}" />
+            <comp:SeatPanel actionOn="{actionOn.getItemAt(9)}" userGameStatus="{table.seats.getItemAt(9).userGameStatus}" />
             <mx:Spacer width="100%" />
-            <comp:SeatPanel userGameStatus="{table.seats.getItemAt(4).userGameStatus}" />
+            <comp:SeatPanel actionOn="{actionOn.getItemAt(4)}" userGameStatus="{table.seats.getItemAt(4).userGameStatus}" />
             <mx:Spacer width="60%" />
         </mx:HBox>
         <mx:Spacer height="100%" />
         <mx:HBox width="100%">
             <mx:Spacer width="100%" />
-            <comp:SeatPanel userGameStatus="{table.seats.getItemAt(8).userGameStatus}" />
+            <comp:SeatPanel actionOn="{actionOn.getItemAt(8)}" userGameStatus="{table.seats.getItemAt(8).userGameStatus}" />
             <mx:Spacer width="100%" />
-            <comp:SeatPanel userGameStatus="{table.seats.getItemAt(5).userGameStatus}" />
+            <comp:SeatPanel actionOn="{actionOn.getItemAt(5)}" userGameStatus="{table.seats.getItemAt(5).userGameStatus}" />
             <mx:Spacer width="100%" />
         </mx:HBox>
         <mx:Spacer height="45%" />
         <mx:HBox width="100%">
             <mx:Spacer width="100%" />
-            <comp:SeatPanel userGameStatus="{table.seats.getItemAt(7).userGameStatus}" />
+            <comp:SeatPanel actionOn="{actionOn.getItemAt(7)}" userGameStatus="{table.seats.getItemAt(7).userGameStatus}" />
             <mx:Spacer width="25%" />
-            <comp:SeatPanel userGameStatus="{table.seats.getItemAt(6).userGameStatus}" />
+            <comp:SeatPanel actionOn="{actionOn.getItemAt(6)}" userGameStatus="{table.seats.getItemAt(6).userGameStatus}" />
             <mx:Spacer width="100%" />
         </mx:HBox>
         <mx:Spacer height="100%" />
