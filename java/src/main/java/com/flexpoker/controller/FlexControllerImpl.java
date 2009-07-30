@@ -89,7 +89,7 @@ public class FlexControllerImpl implements FlexController {
 
             if (gameEventBso.haveAllPlayersVerifiedGameInProgress(game)) {
                 gameEventBso.startNewHandForAllTables(game);
-                sentNewHandStatingEventForAllTables(game);
+                sendNewHandStartingEventForAllTables(game);
             }
         }
     }
@@ -110,7 +110,7 @@ public class FlexControllerImpl implements FlexController {
         return (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
 
-    private void sentNewHandStatingEventForAllTables(Game game) {
+    private void sendNewHandStartingEventForAllTables(Game game) {
         game = gameBso.fetchById(game.getId());
 
         for (Table table : game.getTables()) {
