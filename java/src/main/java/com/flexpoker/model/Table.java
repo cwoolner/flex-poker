@@ -25,6 +25,8 @@ public class Table {
 
     private Seat bigBlind;
 
+    private Seat actionOn;
+
     private Set<Seat> seats;
 
     @Id
@@ -75,6 +77,16 @@ public class Table {
 
     public void setBigBlind(Seat bigBlind) {
         this.bigBlind = bigBlind;
+    }
+
+    @OneToOne
+    @JoinColumn(name = "actionOnId")
+    public Seat getActionOn() {
+        return actionOn;
+    }
+
+    public void setActionOn(Seat actionOn) {
+        this.actionOn = actionOn;
     }
 
     @OneToMany(fetch = FetchType.EAGER)

@@ -16,6 +16,8 @@ package com.flexpoker.model {
 
         public var bigBlind:Seat;
 
+        public var actionOn:Seat;
+
         public var seats:ArrayCollection;
 
     }
