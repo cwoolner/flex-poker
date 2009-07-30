@@ -102,7 +102,7 @@
             myViewStack.selectedChild = gamePanel;
         }
 
-        private function removeGamePanel(event:GamePanelCanceledEvent) {
+        private function removeGamePanel(event:GamePanelCanceledEvent):void {
             myViewStack.removeChild(event.getPanel());        
             myViewStack.selectedChild = gameRoom;
         }
