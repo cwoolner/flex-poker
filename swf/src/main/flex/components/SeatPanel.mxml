@@ -19,8 +19,12 @@
         [Bindable]
         public var userGameStatus:UserGameStatus;
 
-        [Bindable(ActionOnChangedEvent.NAME)]
-        public var actionOn:Boolean;
+        private var _actionOn:Boolean;
+
+        public function set actionOn(actionOn:Boolean):void {
+            _actionOn = actionOn;
+            dispatchEvent(new ActionOnChangedEvent());
+        }
 
         private function initializeEvents():void {
             addEventListener(ActionOnChangedEvent.NAME, actionOnChanged);
@@ -28,8 +32,7 @@
         }
 
         private function actionOnChanged(event:ActionOnChangedEvent):void {
-            Alert.show("Woah");
-            if (actionOn) {
+            if (_actionOn) {
                 styleName = "actionOnTrue";
             } else {
                 styleName = "actionOnFalse";
