@@ -1,9 +1,9 @@
 package com.flexpoker.bso;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import java.util.Random;
 import java.util.Set;
 
 import org.apache.commons.lang.BooleanUtils;
@@ -118,31 +118,43 @@ public class GameEventBsoImpl implements GameEventBso {
 
     @Override
     public void startNewHand(Table table) {
-        if (table.getButton() == null) {
-            assignNewButton(table);
-        } else {
-            moveButton(table);
-        }
-
+        assignSeatStates(table);
         deckBso.shuffleDeck(table);
     }
 
-    private void moveButton(Table table) {
-        // TODO Auto-generated method stub
+    private void assignSeatStates(Table table) {
+        List<Seat> seats = new ArrayList<Seat>(table.getSeats());
+        Collections.sort(seats);
+        assignButton(table, seats);
+        assignSmallBlind(table, seats);
+        assignBigBlind(table, seats);
+        assignActionOn(table, seats);
+        tableDao.save(table.getId(), table);
     }
 
-    private void assignNewButton(Table table) {
-        int numberOfPlayersAtTable = table.getSeats().size();
-        int dealerPosition = new Random().nextInt(numberOfPlayersAtTable) + 1;
+    private void assignActionOn(Table table, List<Seat> seats) {
+        table.setActionOn(seats.get(1));
+    }
 
-        for (Seat seat : table.getSeats()) {
-            if (seat.getPosition().equals(dealerPosition)) {
-                table.setButton(seat);
-                break;
-            }
-        }
+    private void assignBigBlind(Table table, List<Seat> seats) {
+        table.setBigBlind(seats.get(0));
+    }
 
-        tableDao.save(table.getId(), table);
+    private void assignSmallBlind(Table table, List<Seat> seats) {
+        table.setSmallBlind(seats.get(1));
+    }
+
+    private void assignButton(Table table, List<Seat> seats) {
+        table.setButton(seats.get(0));
+//        int numberOfPlayersAtTable = table.getSeats().size();
+//        int dealerPosition = new Random().nextInt(numberOfPlayersAtTable) + 1;
+
+//        for (Seat seat : table.getSeats()) {
+//            if (seat.getPosition().equals(dealerPosition)) {
+//                table.setButton(seat);
+//                break;
+//            }
+//        }
     }
 
     @Override
