@@ -47,7 +47,16 @@
         private var userGameStatuses:ArrayCollection;
 
         [Bindable]
-        private var actionOn:ArrayCollection = new ArrayCollection(new Array(false, false, false, false, false, false, false, false, false, false));
+        private var actionOnArray:ArrayCollection = new ArrayCollection(new Array(false, false, false, false, false, false, false, false, false, false));
+
+        [Bindable]
+        private var dealerArray:ArrayCollection = new ArrayCollection(new Array(false, false, false, false, false, false, false, false, false, false));
+
+        [Bindable]
+        private var smallBlindArray:ArrayCollection = new ArrayCollection(new Array(false, false, false, false, false, false, false, false, false, false));
+
+        [Bindable]
+        private var bigBlindArray:ArrayCollection = new ArrayCollection(new Array(false, false, false, false, false, false, false, false, false, false));
 
         private function initializeTable() {
             gameEventConsumer.subtopic = game.id.toString() + ".*";
@@ -96,7 +105,10 @@
                 token.addResponder(new AsyncResponder(
                     function(event:ResultEvent, token:Object = null):void {
                         table = event.result as Table;
-                        actionOn.setItemAt(true, table.actionOn.position - 1);
+                        actionOnArray.setItemAt(true, table.actionOn.position - 1);
+                        dealerArray.setItemAt(true, table.button.position -1);
+                        smallBlindArray.setItemAt(true, table.smallBlind.position -1);
+                        bigBlindArray.setItemAt(true, table.bigBlind.position -1);
                     },
                     function(event:FaultEvent, token:Object = null):void {
                         Alert.show("Send Failed: " + event.fault.faultString);
@@ -223,41 +235,61 @@
         <mx:Spacer height="100%" />
         <mx:HBox width="100%">
             <mx:Spacer width="100%" />
-            <comp:SeatPanel actionOn="{actionOn.getItemAt(1)}" userGameStatus="{table.seats.getItemAt(1).userGameStatus}" />
+            <comp:SeatPanel actionOn="{actionOnArray.getItemAt(1)}" dealer="{dealerArray.getItemAt(1)}"
+                smallBlind="{smallBlindArray.getItemAt(1)}" bigBlind="{bigBlindArray.getItemAt(1)}"
+                userGameStatus="{table.seats.getItemAt(1).userGameStatus}" />
             <mx:Spacer width="25%" />
-            <comp:SeatPanel actionOn="{actionOn.getItemAt(2)}" userGameStatus="{table.seats.getItemAt(2).userGameStatus}" />
+            <comp:SeatPanel actionOn="{actionOnArray.getItemAt(2)}" dealer="{dealerArray.getItemAt(2)}"
+                smallBlind="{smallBlindArray.getItemAt(2)}" bigBlind="{bigBlindArray.getItemAt(2)}"
+                userGameStatus="{table.seats.getItemAt(2).userGameStatus}" />
             <mx:Spacer width="100%" />
         </mx:HBox>
         <mx:Spacer height="45%" />
         <mx:HBox width="100%">
             <mx:Spacer width="100%" />
-            <comp:SeatPanel actionOn="{actionOn.getItemAt(0)}" userGameStatus="{table.seats.getItemAt(0).userGameStatus}" />
+            <comp:SeatPanel actionOn="{actionOnArray.getItemAt(0)}" dealer="{dealerArray.getItemAt(0)}"
+                smallBlind="{smallBlindArray.getItemAt(0)}" bigBlind="{bigBlindArray.getItemAt(0)}"
+                userGameStatus="{table.seats.getItemAt(0).userGameStatus}" />
             <mx:Spacer width="100%" />
-            <comp:SeatPanel actionOn="{actionOn.getItemAt(3)}" userGameStatus="{table.seats.getItemAt(3).userGameStatus}" />
+            <comp:SeatPanel actionOn="{actionOnArray.getItemAt(3)}" dealer="{dealerArray.getItemAt(3)}"
+                smallBlind="{smallBlindArray.getItemAt(3)}" bigBlind="{bigBlindArray.getItemAt(3)}"
+                userGameStatus="{table.seats.getItemAt(3).userGameStatus}" />
             <mx:Spacer width="100%" />
         </mx:HBox>
         <mx:Spacer height="100%" />
         <mx:HBox width="100%">
             <mx:Spacer width="60%" />
-            <comp:SeatPanel actionOn="{actionOn.getItemAt(9)}" userGameStatus="{table.seats.getItemAt(9).userGameStatus}" />
+            <comp:SeatPanel actionOn="{actionOnArray.getItemAt(9)}" dealer="{dealerArray.getItemAt(9)}"
+                smallBlind="{smallBlindArray.getItemAt(9)}" bigBlind="{bigBlindArray.getItemAt(9)}"
+                userGameStatus="{table.seats.getItemAt(9).userGameStatus}" />
             <mx:Spacer width="100%" />
-            <comp:SeatPanel actionOn="{actionOn.getItemAt(4)}" userGameStatus="{table.seats.getItemAt(4).userGameStatus}" />
+            <comp:SeatPanel actionOn="{actionOnArray.getItemAt(4)}" dealer="{dealerArray.getItemAt(4)}"
+                smallBlind="{smallBlindArray.getItemAt(4)}" bigBlind="{bigBlindArray.getItemAt(4)}"
+                userGameStatus="{table.seats.getItemAt(4).userGameStatus}" />
             <mx:Spacer width="60%" />
         </mx:HBox>
         <mx:Spacer height="100%" />
         <mx:HBox width="100%">
             <mx:Spacer width="100%" />
-            <comp:SeatPanel actionOn="{actionOn.getItemAt(8)}" userGameStatus="{table.seats.getItemAt(8).userGameStatus}" />
+            <comp:SeatPanel actionOn="{actionOnArray.getItemAt(8)}" dealer="{dealerArray.getItemAt(8)}"
+                smallBlind="{smallBlindArray.getItemAt(8)}" bigBlind="{bigBlindArray.getItemAt(8)}"
+                userGameStatus="{table.seats.getItemAt(8).userGameStatus}" />
             <mx:Spacer width="100%" />
-            <comp:SeatPanel actionOn="{actionOn.getItemAt(5)}" userGameStatus="{table.seats.getItemAt(5).userGameStatus}" />
+            <comp:SeatPanel actionOn="{actionOnArray.getItemAt(5)}" dealer="{dealerArray.getItemAt(5)}"
+                smallBlind="{smallBlindArray.getItemAt(5)}" bigBlind="{bigBlindArray.getItemAt(5)}"
+                userGameStatus="{table.seats.getItemAt(5).userGameStatus}" />
             <mx:Spacer width="100%" />
         </mx:HBox>
         <mx:Spacer height="45%" />
         <mx:HBox width="100%">
             <mx:Spacer width="100%" />
-            <comp:SeatPanel actionOn="{actionOn.getItemAt(7)}" userGameStatus="{table.seats.getItemAt(7).userGameStatus}" />
+            <comp:SeatPanel actionOn="{actionOnArray.getItemAt(7)}" dealer="{dealerArray.getItemAt(7)}"
+                smallBlind="{smallBlindArray.getItemAt(7)}" bigBlind="{bigBlindArray.getItemAt(7)}"
+                userGameStatus="{table.seats.getItemAt(7).userGameStatus}" />
             <mx:Spacer width="25%" />
-            <comp:SeatPanel actionOn="{actionOn.getItemAt(6)}" userGameStatus="{table.seats.getItemAt(6).userGameStatus}" />
+            <comp:SeatPanel actionOn="{actionOnArray.getItemAt(6)}" dealer="{dealerArray.getItemAt(6)}"
+                smallBlind="{smallBlindArray.getItemAt(6)}" bigBlind="{bigBlindArray.getItemAt(6)}"
+                userGameStatus="{table.seats.getItemAt(6).userGameStatus}" />
             <mx:Spacer width="100%" />
         </mx:HBox>
         <mx:Spacer height="100%" />
