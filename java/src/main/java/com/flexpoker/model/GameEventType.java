@@ -31,6 +31,8 @@ public class GameEventType {
 
     public static final String RIVER_DEALT = "river dealt";
 
+    public static final String BLINDS_INCREASED = "blinds increased";
+
     private Integer id;
 
     private String name;

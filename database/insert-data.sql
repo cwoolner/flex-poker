@@ -1,4 +1,4 @@
-INSERT INTO `gameEventTypes` VALUES (1,'hand dealt'),(2,'check'),(3,'fold'),(4,'bet'),(5,'raise'),(6,'hand complete'),(7,'won hand'),(8,'player out');
+INSERT INTO `gameEventTypes` VALUES (1,'hand dealt'),(2,'check'),(3,'fold'),(4,'bet'),(5,'raise'),(6,'hand complete'),(7,'won hand'),(8,'player out'), (9,'blinds increased');
 
 INSERT INTO `gameStages` VALUES (1,'registering'),(2,'starting'),(3,'in progress'),(4,'finished');
 
