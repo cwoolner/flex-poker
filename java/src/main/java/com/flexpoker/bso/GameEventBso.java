@@ -25,4 +25,12 @@ public interface GameEventBso {
 
     boolean haveAllPlayersVerifiedGameInProgress(Game game);
 
+    boolean isUserAllowedToPerformAction(String action, User user, Table table);
+
+    void check(User user, Table table);
+
+    boolean isRoundComplete(Table table);
+
+    boolean isHandComplete(Table table);
+
 }

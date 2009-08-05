@@ -10,13 +10,19 @@ import org.apache.commons.lang.BooleanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.flexpoker.dao.GameEventDao;
+import com.flexpoker.dao.GameEventTypeDao;
 import com.flexpoker.dao.TableDao;
 import com.flexpoker.dao.UserGameStatusDao;
 import com.flexpoker.exception.FlexPokerException;
+import com.flexpoker.model.Blinds;
 import com.flexpoker.model.Game;
+import com.flexpoker.model.GameEvent;
+import com.flexpoker.model.GameEventType;
 import com.flexpoker.model.GameStage;
 import com.flexpoker.model.PocketCards;
 import com.flexpoker.model.RealTimeGame;
+import com.flexpoker.model.RealTimeHand;
 import com.flexpoker.model.Seat;
 import com.flexpoker.model.Table;
 import com.flexpoker.model.User;
@@ -35,6 +41,12 @@ public class GameEventBsoImpl implements GameEventBso {
     private TableDao tableDao;
 
     private RealTimeGameBso realTimeGameBso;
+
+    private GameEventTypeDao gameEventTypeDao;
+
+    private GameEventDao gameEventDao;
+
+    private RealTimeHandBso realTimeHandBso;
 
     @Override
     public void addUserToGame(User user, Game game) {
@@ -81,6 +93,7 @@ public class GameEventBsoImpl implements GameEventBso {
 
     @Override
     public void verifyRegistration(User user, Game game) {
+        // TODO: Change to use the verification as a part of the real-time game
         game = gameBso.fetchById(game.getId());
 
         Set<UserGameStatus> userGameStatusList = game.getUserGameStatuses();
@@ -120,6 +133,33 @@ public class GameEventBsoImpl implements GameEventBso {
     public void startNewHand(Table table) {
         assignSeatStates(table);
         deckBso.shuffleDeck(table);
+        createNewRealTimeHand(table);
+    }
+
+    private void createNewRealTimeHand(Table table) {
+        Blinds currentBlinds = realTimeGameBso.get(table.getGame()).getCurrentBlinds();
+        int smallBlind = currentBlinds.getSmallBlind();
+        int bigBlind = currentBlinds.getBigBlind();
+
+        RealTimeHand realTimeHand = new RealTimeHand(table.getSeats());
+
+        for (Seat seat : table.getSeats()) {
+            int amountNeededToCall = bigBlind;
+            int amountNeededToRaise = bigBlind * 2;
+
+            if (seat.equals(table.getBigBlind())) {
+                amountNeededToCall = 0;
+                amountNeededToRaise = bigBlind;
+            } else if (seat.equals(table.getSmallBlind())) {
+                amountNeededToCall = smallBlind;
+                amountNeededToRaise = bigBlind + smallBlind;
+            }
+
+            realTimeHand.setAmountNeededToCall(seat, amountNeededToCall);
+            realTimeHand.setAmountNeededToRaise(seat, amountNeededToRaise);
+        }
+
+        realTimeHandBso.put(table, realTimeHand);
     }
 
     private void assignSeatStates(Table table) {
@@ -179,6 +219,47 @@ public class GameEventBsoImpl implements GameEventBso {
         realTimeGame.verifyEvent(user, "gameInProgress");
     }
 
+    @Override
+    public void check(User user, Table table) {
+        table = tableDao.findById(table.getId());
+
+        GameEvent checkEvent = new GameEvent();
+        checkEvent.setEventTime(new Date());
+        checkEvent.setGame(table.getGame());
+        checkEvent.setTable(table);
+        checkEvent.setUser(user);
+        checkEvent.setGameEventType(gameEventTypeDao.findByName(GameEventType.CHECK));
+        gameEventDao.save(checkEvent.getId(), checkEvent);
+    }
+
+    @Override
+    public boolean isHandComplete(Table table) {
+        return realTimeHandBso.get(table).isHandComplete();
+    }
+
+    @Override
+    public boolean isRoundComplete(Table table) {
+        return realTimeHandBso.get(table).isRoundComplete();
+    }
+
+    @Override
+    public boolean isUserAllowedToPerformAction(String action, User user,
+            Table table) {
+        table = tableDao.findById(table.getId());
+
+        Seat usersSeat = null;
+
+        for (Seat seat : table.getSeats()) {
+            if (seat.getUserGameStatus() != null
+                && user.equals(seat.getUserGameStatus().getUser())) {
+                usersSeat = seat;
+                break;
+            }
+        }
+
+        return realTimeHandBso.get(table).isUserAllowedToPerformAction(action, usersSeat);
+    }
+
     public UserGameStatusDao getUserGameStatusDao() {
         return userGameStatusDao;
     }
@@ -217,6 +298,30 @@ public class GameEventBsoImpl implements GameEventBso {
 
     public void setRealTimeGameBso(RealTimeGameBso realTimeGameBso) {
         this.realTimeGameBso = realTimeGameBso;
+    }
+
+    public GameEventTypeDao getGameEventTypeDao() {
+        return gameEventTypeDao;
+    }
+
+    public void setGameEventTypeDao(GameEventTypeDao gameEventTypeDao) {
+        this.gameEventTypeDao = gameEventTypeDao;
+    }
+
+    public GameEventDao getGameEventDao() {
+        return gameEventDao;
+    }
+
+    public void setGameEventDao(GameEventDao gameEventDao) {
+        this.gameEventDao = gameEventDao;
+    }
+
+    public RealTimeHandBso getRealTimeHandBso() {
+        return realTimeHandBso;
+    }
+
+    public void setRealTimeHandBso(RealTimeHandBso realTimeHandBso) {
+        this.realTimeHandBso = realTimeHandBso;
     }
 
 }
