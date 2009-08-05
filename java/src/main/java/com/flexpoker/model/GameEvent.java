@@ -17,6 +17,8 @@ public class GameEvent {
 
     private Game game;
 
+    private com.flexpoker.model.Table table;
+
     private GameEventType gameEventType;
 
     private User user;
@@ -41,6 +43,16 @@ public class GameEvent {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    @ManyToOne
+    @JoinColumn(name = "tableId")
+    public com.flexpoker.model.Table getTable() {
+        return table;
+    }
+
+    public void setTable(com.flexpoker.model.Table table) {
+        this.table = table;
     }
 
     @ManyToOne
