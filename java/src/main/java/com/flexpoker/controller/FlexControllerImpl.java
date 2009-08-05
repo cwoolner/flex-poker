@@ -10,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import com.flexpoker.bso.GameBso;
 import com.flexpoker.bso.GameEventBso;
 import com.flexpoker.model.Game;
+import com.flexpoker.model.GameEventType;
 import com.flexpoker.model.GameStage;
 import com.flexpoker.model.PocketCards;
 import com.flexpoker.model.Table;
@@ -104,6 +105,33 @@ public class FlexControllerImpl implements FlexController {
     public PocketCards fetchPocketCards(Table table) {
         User user = extractCurrentUser();
         return gameEventBso.fetchPocketCards(user, table);
+    }
+
+    @Override
+    public void check(Table table) {
+        User user = extractCurrentUser();
+
+        synchronized (this) {
+            if (gameEventBso.isUserAllowedToPerformAction(GameEventType.CHECK,
+                    user, table)) {
+                gameEventBso.check(user, table);
+                eventManager.sendChatEvent("System", user.getUsername()
+                    + " checks.");
+                determineNextEvent(table);
+            }
+        }
+    }
+
+    private void determineNextEvent(Table table) {
+        if (gameEventBso.isRoundComplete(table)) {
+            if (gameEventBso.isHandComplete(table)) {
+                // TODO: Implement
+            } else {
+                // TODO: Implement
+            }
+        } else {
+            // TODO: Implement
+        }
     }
 
     private User extractCurrentUser() {

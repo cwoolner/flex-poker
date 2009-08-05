@@ -26,4 +26,6 @@ public interface FlexController {
 
     void verifyGameInProgress(Game game);
 
+    void check(Table table);
+
 }
