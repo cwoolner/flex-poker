@@ -93,34 +93,14 @@ public class GameEventBsoImpl implements GameEventBso {
 
     @Override
     public void verifyRegistration(User user, Game game) {
-        // TODO: Change to use the verification as a part of the real-time game
-        game = gameBso.fetchById(game.getId());
-
-        Set<UserGameStatus> userGameStatusList = game.getUserGameStatuses();
-
-        for (UserGameStatus userGameStatus : userGameStatusList) {
-            if (userGameStatus.getUser().equals(user)) {
-                userGameStatus.setVerified(true);
-                userGameStatusDao.save(userGameStatus.getId(), userGameStatus);
-                break;
-            }
-        }
+        RealTimeGame realTimeGame = realTimeGameBso.get(game);
+        realTimeGame.verifyEvent(user, "registration");
     }
 
     @Override
-    public boolean areAllPlayerRegistrationsVerified(Game game) {
-        game = gameBso.fetchById(game.getId());
-
-        List<UserGameStatus> verifiedUserGameStatuses = new ArrayList<UserGameStatus>();
-        Set<UserGameStatus> allUserGameStatuses = game.getUserGameStatuses();
-
-        for (UserGameStatus userInGame : allUserGameStatuses) {
-            if (BooleanUtils.isTrue(userInGame.getVerified())) {
-                verifiedUserGameStatuses.add(userInGame);
-            }
-        }
-
-        return verifiedUserGameStatuses.size() == allUserGameStatuses.size();
+    public boolean haveAllPlayersVerifiedRegistration(Game game) {
+        RealTimeGame realTimeGame = realTimeGameBso.get(game);
+        return realTimeGame.isEventVerified("registration");
     }
 
     @Override

@@ -52,6 +52,7 @@ public class FlexControllerImpl implements FlexController {
                     + " joined Game " + game.getId() + ".");
 
             if (gameEventBso.isGameAtMaxPlayers(game)) {
+                gameBso.createRealTimeGame(game);
                 gameBso.changeGameStage(game, GameStage.STARTING);
                 eventManager.sendGamesUpdatedEvent();
                 eventManager.sendGameStartingEvent(game);
@@ -73,7 +74,7 @@ public class FlexControllerImpl implements FlexController {
         synchronized (this) {
             gameEventBso.verifyRegistration(user, game);
 
-            if (gameEventBso.areAllPlayerRegistrationsVerified(game)) {
+            if (gameEventBso.haveAllPlayersVerifiedRegistration(game)) {
                 gameBso.intializePlayersAndTables(game);
                 gameBso.changeGameStage(game, GameStage.IN_PROGRESS);
                 eventManager.sendGameInProgressEvent(game);

@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -51,8 +52,6 @@ public class GameBsoImpl implements GameBso {
         game.setTotalPlayers(2);
         game.setAllowRebuys(false);
         gameDao.save(game.getId(), game);
-
-        realTimeGameBso.put(game, new RealTimeGame());
     }
 
     @Override
@@ -98,7 +97,6 @@ public class GameBsoImpl implements GameBso {
         table.setGame(game);
         tableDao.save(table.getId(), table);
 
-        List<User> userList = new ArrayList<User>();
         int i = 0;
         for (UserGameStatus userGameStatus : game.getUserGameStatuses()) {
             Seat seat = new Seat();
@@ -110,12 +108,18 @@ public class GameBsoImpl implements GameBso {
             userGameStatus.setChips(1000);
 
             i++;
+        }
+    }
 
+    @Override
+    public void createRealTimeGame(Game game) {
+        Set<UserGameStatus> userGameStatuses = game.getUserGameStatuses();
+
+        List<User> userList = new ArrayList<User>();
+        for (UserGameStatus userGameStatus : userGameStatuses) {
             userList.add(userGameStatus.getUser());
         }
-
-        RealTimeGame realTimeGame = realTimeGameBso.get(game);
-        realTimeGame.setUsers(userList);
+        realTimeGameBso.put(game, new RealTimeGame(userList));
     }
 
     public GameDao getGameDao() {

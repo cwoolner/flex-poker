@@ -13,6 +13,10 @@ public class RealTimeGame {
 
     private Blinds currentBlinds;
 
+    public RealTimeGame(List<User> users) {
+        this.users = users;
+    }
+
     public boolean isEventVerified(String event) {
         synchronized (this) {
             return eventVerificationMap.get(event) == users.size();
@@ -29,16 +33,8 @@ public class RealTimeGame {
         }
     }
 
-    public void setUsers(List<User> users) {
-        this.users = users;
-    }
-
     public Blinds getCurrentBlinds() {
         return currentBlinds;
-    }
-
-    public void setCurrentBlinds(Blinds currentBlinds) {
-        this.currentBlinds = currentBlinds;
     }
 
 }

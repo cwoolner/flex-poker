@@ -20,4 +20,6 @@ public interface GameBso {
 
     void intializePlayersAndTables(Game game);
 
+    void createRealTimeGame(Game game);
+
 }

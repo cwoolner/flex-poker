@@ -13,7 +13,7 @@ public interface GameEventBso {
 
     void verifyRegistration(User user, Game game);
 
-    boolean areAllPlayerRegistrationsVerified(Game game);
+    boolean haveAllPlayersVerifiedRegistration(Game game);
 
     PocketCards fetchPocketCards(User user, Table table);
 

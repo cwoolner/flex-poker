@@ -27,8 +27,6 @@ public class UserGameStatus {
 
     private Date exitTime;
 
-    private Boolean verified;
-
     @Id
     @GeneratedValue
     public Integer getId() {
@@ -89,14 +87,6 @@ public class UserGameStatus {
 
     public void setExitTime(Date exitTime) {
         this.exitTime = exitTime;
-    }
-
-    public Boolean getVerified() {
-        return verified;
-    }
-
-    public void setVerified(Boolean verified) {
-        this.verified = verified;
     }
 
 }
