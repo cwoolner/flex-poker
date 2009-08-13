@@ -19,7 +19,13 @@ public class RealTimeGame {
 
     public boolean isEventVerified(String event) {
         synchronized (this) {
-            return eventVerificationMap.get(event) == users.size();
+            Integer numberOfVerified = eventVerificationMap.get(event);
+
+            if (numberOfVerified == null) {
+                return false;
+            }
+
+            return numberOfVerified == users.size();
         }
     }
 
