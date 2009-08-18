@@ -7,7 +7,7 @@ import org.junit.Test;
 import com.flexpoker.util.Context;
 
 
-public class UserDaoImplTest {
+public class UserDaoImplIntTest {
 
     private UserDao userDao = (UserDao) Context.instance().getBean("userDao");
 
