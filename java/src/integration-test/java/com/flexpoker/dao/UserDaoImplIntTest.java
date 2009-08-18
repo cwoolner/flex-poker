@@ -4,12 +4,12 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-import com.flexpoker.util.Context;
+import com.flexpoker.util.IntegrationContext;
 
 
 public class UserDaoImplIntTest {
 
-    private UserDao userDao = (UserDao) Context.instance().getBean("userDao");
+    private UserDao userDao = (UserDao) IntegrationContext.instance().getBean("userDao");
 
     @Test
     public void testFindByUsername() {

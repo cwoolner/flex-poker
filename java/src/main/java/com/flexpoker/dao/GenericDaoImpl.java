@@ -11,7 +11,7 @@ public abstract class GenericDaoImpl<T, ID extends Serializable> implements Gene
 
     protected EntityManager entityManager;
     
-    private Class<T> persistentClass;
+    protected Class<T> persistentClass;
 
     @SuppressWarnings("unchecked")
     public GenericDaoImpl() {
@@ -43,10 +43,6 @@ public abstract class GenericDaoImpl<T, ID extends Serializable> implements Gene
         } else {
             entityManager.merge(entity);
         }
-    }
-
-    public EntityManager getEntityManager() {
-        return entityManager;
     }
 
     @PersistenceContext

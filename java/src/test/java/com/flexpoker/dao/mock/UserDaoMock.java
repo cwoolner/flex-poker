@@ -3,6 +3,8 @@ package com.flexpoker.dao.mock;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.EntityManager;
+
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Repository;
 
@@ -46,6 +48,12 @@ public class UserDaoMock implements UserDao {
 
     @Override
     public void save(Integer id, User entity) {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void setEntityManager(EntityManager entityManager) {
         // TODO Auto-generated method stub
 
     }

@@ -3,6 +3,8 @@ package com.flexpoker.dao;
 import java.io.Serializable;
 import java.util.List;
 
+import javax.persistence.EntityManager;
+
 public interface GenericDao<T, ID extends Serializable> {
 
     /**
@@ -28,4 +30,5 @@ public interface GenericDao<T, ID extends Serializable> {
      */
     void remove(T entity);
 
+    void setEntityManager(EntityManager entityManager);
 }
