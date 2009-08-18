@@ -29,6 +29,12 @@ public class RealTimeHand {
 
     private boolean handComplete;
 
+    private boolean flopDealt;
+
+    private boolean turnDealt;
+
+    private boolean riverDealt;
+
     public RealTimeHand(Set<Seat> seats) {
         for (Seat seat : seats) {
             possibleSeatActionsMap.put(seat, new HashSet<String>());
@@ -87,6 +93,40 @@ public class RealTimeHand {
 
     public boolean isUserAllowedToPerformAction(String action, Seat seat) {
         return possibleSeatActionsMap.get(seat).contains(action);
+    }
+
+    public boolean isFlopDealt() {
+        return flopDealt;
+    }
+
+    public void setFlopDealt(boolean flopDealt) {
+        this.flopDealt = flopDealt;
+    }
+
+    public boolean isTurnDealt() {
+        return turnDealt;
+    }
+
+    public void setTurnDealt(boolean turnDealt) {
+        this.turnDealt = turnDealt;
+    }
+
+    public boolean isRiverDealt() {
+        return riverDealt;
+    }
+
+    public void setRiverDealt(boolean riverDealt) {
+        this.riverDealt = riverDealt;
+    }
+
+    public Seat getLastToAct() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public Seat getNextToAct() {
+        // TODO Auto-generated method stub
+        return null;
     }
 
 }

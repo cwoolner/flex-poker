@@ -116,6 +116,7 @@ public class FlexControllerImpl implements FlexController {
             if (gameEventBso.isUserAllowedToPerformAction(GameEventType.CHECK,
                     user, table)) {
                 gameEventBso.check(user, table);
+                gameEventBso.updateState(table);
                 eventManager.sendChatEvent("System", user.getUsername()
                     + " checks.");
                 determineNextEvent(table);

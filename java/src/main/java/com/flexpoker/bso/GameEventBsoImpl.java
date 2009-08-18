@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.flexpoker.dao.GameEventDao;
 import com.flexpoker.dao.GameEventTypeDao;
+import com.flexpoker.dao.SeatDao;
 import com.flexpoker.dao.TableDao;
 import com.flexpoker.dao.UserGameStatusDao;
 import com.flexpoker.exception.FlexPokerException;
@@ -45,6 +46,8 @@ public class GameEventBsoImpl implements GameEventBso {
     private GameEventTypeDao gameEventTypeDao;
 
     private GameEventDao gameEventDao;
+
+    private SeatDao seatDao;
 
     private RealTimeHandBso realTimeHandBso;
 
@@ -240,6 +243,31 @@ public class GameEventBsoImpl implements GameEventBso {
         return realTimeHandBso.get(table).isUserAllowedToPerformAction(action, usersSeat);
     }
 
+    @Override
+    public void updateState(Table table) {
+        table = tableDao.findById(table.getId());
+        Game game = table.getGame();
+
+        RealTimeHand realTimeHand = realTimeHandBso.get(table);
+        GameEvent gameEvent = gameEventDao.findLatestTableEvent(table);
+
+        if (gameEvent.getGameEventType().getName().equals(GameEventType.CHECK)) {
+            updateCheckState(table, realTimeHand, gameEvent);
+        }
+    }
+
+    private void updateCheckState(Table table, RealTimeHand realTimeHand,
+            GameEvent gameEvent) {
+        if (table.getActionOn().equals(realTimeHand.getLastToAct())) {
+            realTimeHand.setRoundComplete(true);
+            if (realTimeHand.isRiverDealt()) {
+                realTimeHand.setHandComplete(true);
+            }
+        } else {
+            table.setActionOn(seatDao.findById(realTimeHand.getNextToAct().getId()));
+        }
+    }
+
     public UserGameStatusDao getUserGameStatusDao() {
         return userGameStatusDao;
     }
@@ -302,6 +330,14 @@ public class GameEventBsoImpl implements GameEventBso {
 
     public void setRealTimeHandBso(RealTimeHandBso realTimeHandBso) {
         this.realTimeHandBso = realTimeHandBso;
+    }
+
+    public SeatDao getSeatDao() {
+        return seatDao;
+    }
+
+    public void setSeatDao(SeatDao seatDao) {
+        this.seatDao = seatDao;
     }
 
 }

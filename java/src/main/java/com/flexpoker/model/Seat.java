@@ -19,6 +19,8 @@ public class Seat implements Comparable<Seat> {
 
     private Integer position;
 
+    private Boolean stillInHand;
+
     @Id
     @GeneratedValue
     public Integer getId() {
@@ -55,6 +57,14 @@ public class Seat implements Comparable<Seat> {
 
     public void setPosition(Integer position) {
         this.position = position;
+    }
+
+    public Boolean getStillInHand() {
+        return stillInHand;
+    }
+
+    public void setStillInHand(Boolean stillInHand) {
+        this.stillInHand = stillInHand;
     }
 
     @Override

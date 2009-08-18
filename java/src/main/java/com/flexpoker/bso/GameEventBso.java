@@ -33,4 +33,6 @@ public interface GameEventBso {
 
     boolean isHandComplete(Table table);
 
+    void updateState(Table table);
+
 }
