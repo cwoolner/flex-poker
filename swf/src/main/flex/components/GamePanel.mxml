@@ -109,6 +109,12 @@
                         dealerArray.setItemAt(true, table.button.position -1);
                         smallBlindArray.setItemAt(true, table.smallBlind.position -1);
                         bigBlindArray.setItemAt(true, table.bigBlind.position -1);
+
+                        if (table.actionOn.userGameStatus.user.username == username) {
+                            pokerActionBox.visible = true;
+                        } else {
+                            pokerActionBox.visible = false;
+                        }
                     },
                     function(event:FaultEvent, token:Object = null):void {
                         Alert.show("Send Failed: " + event.fault.faultString);
@@ -156,6 +162,8 @@
 
         [Bindable]
         public var pocketCardImage2:Class;
+
+        public var username:String;
 
     ]]>
     </mx:Script>
@@ -313,9 +321,12 @@
         <mx:Spacer height="50%" width="100%" />
     </mx:VBox>
 
+    <mx:Zoom id="zoom" />
+
     <mx:VBox id="inProgressRightPanel" height="100%" width="20%">
         <comp:UserGameStatusGrid height="35%" width="100%" userGameStatuses="{userGameStatuses}" />
-        <comp:PokerActionBox height="35%" width="100%" />
+        <comp:PokerActionBox id="pokerActionBox" height="35%" width="100%"
+                showEffect="{zoom}" hideEffect="{zoom}" />
         <mx:HBox height="30%" width="100%">
             <mx:Image id="myPocketCard1" height="100%" width="100%" source="{pocketCardImage1}" maintainAspectRatio="true" />
             <mx:Image id="myPocketCard2" height="100%" width="100%" source="{pocketCardImage2}" maintainAspectRatio="true" />
