@@ -15,6 +15,7 @@ public class RealTimeGame {
 
     public RealTimeGame(List<User> users) {
         this.users = users;
+        currentBlinds = new Blinds(10, 20);
     }
 
     public boolean isEventVerified(String event) {
