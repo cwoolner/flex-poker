@@ -121,8 +121,8 @@
     </mx:states>
 
     <mx:ChannelSet id="messageChannelSet">
-        <mx:AMFChannel url="http://flexpoker.com/poker/messagebroker/amflongpolling"/>
-        <mx:AMFChannel url="http://flexpoker.com/poker/messagebroker/amfpolling"/>
+        <mx:SecureAMFChannel url="https://flexpoker.com/poker/messagebroker/amflongpolling"/>
+        <mx:SecureAMFChannel url="https://flexpoker.com/poker/messagebroker/amfpolling"/>
     </mx:ChannelSet>
 
     <mx:Producer id="producer" destination="jms-chat" channelSet="{messageChannelSet}"/>
