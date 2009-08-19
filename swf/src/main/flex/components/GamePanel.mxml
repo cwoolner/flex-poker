@@ -85,6 +85,7 @@
                 token.addResponder(new AsyncResponder(
                     function(event:ResultEvent, token:Object = null):void {
                         table = event.result as Table;
+                        table.sortPositions();
                         tableEventConsumer.subtopic = table.id.toString() + ".*";
                         tableEventConsumer.subscribe();
                         mainRemoteObject.verifyGameInProgress(game);
@@ -105,6 +106,7 @@
                 token.addResponder(new AsyncResponder(
                     function(event:ResultEvent, token:Object = null):void {
                         table = event.result as Table;
+                        table.sortPositions();
                         actionOnArray.setItemAt(true, table.actionOn.position - 1);
                         dealerArray.setItemAt(true, table.button.position -1);
                         smallBlindArray.setItemAt(true, table.smallBlind.position -1);
