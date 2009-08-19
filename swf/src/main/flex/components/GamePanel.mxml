@@ -30,6 +30,7 @@
         import flash.events.TimerEvent;
         import mx.rpc.AsyncToken;
         import mx.rpc.AsyncResponder;
+        import com.flexpoker.events.CheckEvent;
 
         public var game:Game;
 
@@ -114,8 +115,10 @@
 
                         if (table.actionOn.userGameStatus.user.username == username) {
                             pokerActionBox.visible = true;
+                            pokerActionBox.addEventListener(CheckEvent.NAME, check);
                         } else {
                             pokerActionBox.visible = false;
+                            pokerActionBox.removeEventListener(CheckEvent.NAME, check);
                         }
                     },
                     function(event:FaultEvent, token:Object = null):void {
@@ -153,6 +156,10 @@
             var deck:Deck = Deck.getInstance();
             pocketCardImage1 = deck.getCardImage(pocketCards.card1);
             pocketCardImage2 = deck.getCardImage(pocketCards.card2);
+        }
+
+        private function check(event:CheckEvent):void {
+            mainRemoteObject.check(table);
         }
 
         [Embed(source="/assets/Table.svg")]

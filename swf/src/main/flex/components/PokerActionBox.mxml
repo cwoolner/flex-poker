@@ -1,8 +1,13 @@
 <mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml">
+    <mx:Script>
+    <![CDATA[
+        import com.flexpoker.events.CheckEvent;
+    ]]>
+    </mx:Script>
     <mx:HSlider id="betSlider" tickInterval="2" labels="['0', '100']"
         maximum="100" minimum="0" height="150" />
     <mx:Text text="{betSlider.value}" />
     <mx:Button label="Bet" />
-    <mx:Button label="Check" />
+    <mx:Button label="Check" click="dispatchEvent(new CheckEvent())"/>
     <mx:Button label="Fold" />
 </mx:VBox>
