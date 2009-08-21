@@ -35,6 +35,10 @@ public class RealTimeHand {
 
     private boolean riverDealt;
 
+    private Seat lastToAct;
+
+    private Seat nextToAct;
+
     public RealTimeHand(Set<Seat> seats) {
         for (Seat seat : seats) {
             possibleSeatActionsMap.put(seat, new HashSet<String>());
@@ -120,13 +124,19 @@ public class RealTimeHand {
     }
 
     public Seat getLastToAct() {
-        // TODO Auto-generated method stub
-        return null;
+        return lastToAct;
+    }
+
+    public void setLastToAct(Seat lastToAct) {
+        this.lastToAct = lastToAct;
     }
 
     public Seat getNextToAct() {
-        // TODO Auto-generated method stub
-        return null;
+        return nextToAct;
+    }
+
+    public void setNextToAct(Seat nextToAct) {
+        this.nextToAct = nextToAct;
     }
 
 }

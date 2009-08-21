@@ -6,7 +6,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.lang.BooleanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -149,7 +148,52 @@ public class GameEventBsoImpl implements GameEventBso {
             realTimeHand.setAmountNeededToRaise(seat, amountNeededToRaise);
         }
 
+        determineNextToAct(table, realTimeHand);
+        determineLastToAct(table, realTimeHand);
+
         realTimeHandBso.put(table, realTimeHand);
+    }
+
+    private void determineLastToAct(Table table, RealTimeHand realTimeHand) {
+        List<Seat> seats = new ArrayList<Seat>(table.getSeats());
+        Collections.sort(seats);
+
+        int actionOnIndex = seats.indexOf(table.getActionOn());
+
+        for (int i = actionOnIndex - 1; i >= 0; i--) {
+            if (seats.get(i).getStillInHand()) {
+                realTimeHand.setLastToAct(seats.get(i));
+                return;
+            }
+        }
+
+        for (int i = seats.size() - 1; i > actionOnIndex; i--) {
+            if (seats.get(i).getStillInHand()) {
+                realTimeHand.setLastToAct(seats.get(i));
+                return;
+            }
+        }
+    }
+
+    private void determineNextToAct(Table table, RealTimeHand realTimeHand) {
+        List<Seat> seats = new ArrayList<Seat>(table.getSeats());
+        Collections.sort(seats);
+
+        int actionOnIndex = seats.indexOf(table.getActionOn());
+
+        for (int i = actionOnIndex + 1; i < seats.size(); i++) {
+            if (seats.get(i).getStillInHand()) {
+                realTimeHand.setNextToAct(seats.get(i));
+                return;
+            }
+        }
+
+        for (int i = 0; i < actionOnIndex; i++) {
+            if (seats.get(i).getStillInHand()) {
+                realTimeHand.setNextToAct(seats.get(i));
+                return;
+            }
+        }
     }
 
     private void assignSeatStates(Table table) {
