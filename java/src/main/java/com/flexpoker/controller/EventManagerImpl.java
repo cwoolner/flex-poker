@@ -40,6 +40,8 @@ public class EventManagerImpl implements EventManager {
 
     private static final String HAND_COMPLETE = "handComplete";
 
+    private static final String USER_ACTED = "userActed";
+
     private MessageTemplate messageTemplate;
 
     @Override
@@ -100,6 +102,11 @@ public class EventManagerImpl implements EventManager {
     @Override
     public void sendHandCompleteEvent(Table table) {
         messageTemplate.send(new TableStatusMessageCreator(table, HAND_COMPLETE));
+    }
+
+    @Override
+    public void sendUserActedEvent(Table table) {
+        messageTemplate.send(new TableStatusMessageCreator(table, USER_ACTED));
     }
 
     public MessageTemplate getMessageTemplate() {

@@ -25,4 +25,6 @@ public interface EventManager {
 
     void sendHandCompleteEvent(Table table);
 
+    void sendUserActedEvent(Table table);
+
 }

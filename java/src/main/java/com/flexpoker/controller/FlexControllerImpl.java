@@ -140,7 +140,7 @@ public class FlexControllerImpl implements FlexController {
                         + "events should have been sent.");
             }
         } else {
-            // TODO: Implement
+            eventManager.sendUserActedEvent(table);
         }
     }
 

@@ -108,7 +108,8 @@
                     function(event:ResultEvent, token:Object = null):void {
                         table = event.result as Table;
                         table.sortPositions();
-                        actionOnArray.setItemAt(true, table.actionOn.position - 1);
+                        currentActionOnIndex = table.actionOn.position - 1;
+                        actionOnArray.setItemAt(true, currentActionOnIndex);
                         dealerArray.setItemAt(true, table.button.position -1);
                         smallBlindArray.setItemAt(true, table.smallBlind.position -1);
                         bigBlindArray.setItemAt(true, table.bigBlind.position -1);
@@ -130,6 +131,34 @@
                 mainRemoteObject.fetchPocketCards(table);
                 return;
             }
+
+            if (message.headers.DSSubtopic.search("userActed") != -1) {
+                var token:AsyncToken = mainRemoteObject.fetchTable(game);
+                token.addResponder(new AsyncResponder(
+                    function(event:ResultEvent, token:Object = null):void {
+                        table = event.result as Table;
+                        table.sortPositions();
+                        actionOnArray.setItemAt(false, currentActionOnIndex);
+                        currentActionOnIndex = table.actionOn.position - 1;
+                        actionOnArray.setItemAt(true, currentActionOnIndex);
+
+                        if (table.actionOn.userGameStatus.user.username == username) {
+                            pokerActionBox.visible = true;
+                            pokerActionBox.addEventListener(CheckEvent.NAME, check);
+                        } else {
+                            pokerActionBox.visible = false;
+                            pokerActionBox.removeEventListener(CheckEvent.NAME, check);
+                        }
+                    },
+                    function(event:FaultEvent, token:Object = null):void {
+                        Alert.show("Send Failed: " + event.fault.faultString);
+                    }
+                ))
+
+                mainRemoteObject.fetchAllUserGameStatuses(game);
+                return;
+            }
+
         }
 
         private function fetchAllUserGameStatusesHandler(event:ResultEvent):void {
@@ -173,6 +202,8 @@
         public var pocketCardImage2:Class;
 
         public var username:String;
+
+        private var currentActionOnIndex:int;
 
     ]]>
     </mx:Script>
