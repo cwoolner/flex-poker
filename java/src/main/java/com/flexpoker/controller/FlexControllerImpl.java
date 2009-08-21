@@ -126,10 +126,18 @@ public class FlexControllerImpl implements FlexController {
 
     private void determineNextEvent(Table table) {
         if (gameEventBso.isRoundComplete(table)) {
-            if (gameEventBso.isHandComplete(table)) {
-                // TODO: Implement
+            if (!gameEventBso.isFlopDealt(table)) {
+                eventManager.sendDealFlopEvent(table);
+            } else if (!gameEventBso.isTurnDealt(table)) {
+                eventManager.sendDealTurnEvent(table);
+            } else if (!gameEventBso.isRiverDealt(table)) {
+                eventManager.sendDealRiverEvent(table);
+            } else if (gameEventBso.isHandComplete(table)) {
+                eventManager.sendHandCompleteEvent(table);
             } else {
-                // TODO: Implement
+                throw new IllegalStateException("The game is not in the "
+                        + "correct state.  One of the above round complete "
+                        + "events should have been sent.");
             }
         } else {
             // TODO: Implement

@@ -35,4 +35,10 @@ public interface GameEventBso {
 
     void updateState(Table table);
 
+    boolean isFlopDealt(Table table);
+
+    boolean isTurnDealt(Table table);
+
+    boolean isRiverDealt(Table table);
+
 }

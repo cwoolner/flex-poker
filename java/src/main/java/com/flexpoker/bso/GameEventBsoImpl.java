@@ -233,6 +233,21 @@ public class GameEventBsoImpl implements GameEventBso {
     }
 
     @Override
+    public boolean isFlopDealt(Table table) {
+        return realTimeHandBso.get(table).isFlopDealt();
+    }
+
+    @Override
+    public boolean isRiverDealt(Table table) {
+        return realTimeHandBso.get(table).isRiverDealt();
+    }
+
+    @Override
+    public boolean isTurnDealt(Table table) {
+        return realTimeHandBso.get(table).isTurnDealt();
+    }
+
+    @Override
     public boolean isUserAllowedToPerformAction(String action, User user,
             Table table) {
         table = tableDao.findById(table.getId());

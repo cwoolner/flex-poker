@@ -32,6 +32,14 @@ public class EventManagerImpl implements EventManager {
 
     private static final String NEW_HAND_STARTING = "newHandStarting";
 
+    private static final String DEAL_FLOP = "dealFlop";
+
+    private static final String DEAL_RIVER = "dealRiver";
+
+    private static final String DEAL_TURN = "dealTurn";
+
+    private static final String HAND_COMPLETE = "handComplete";
+
     private MessageTemplate messageTemplate;
 
     @Override
@@ -72,6 +80,26 @@ public class EventManagerImpl implements EventManager {
     @Override
     public void sendNewHandStartingEvent(Table table) {
         messageTemplate.send(new TableStatusMessageCreator(table, NEW_HAND_STARTING));
+    }
+
+    @Override
+    public void sendDealFlopEvent(Table table) {
+        messageTemplate.send(new TableStatusMessageCreator(table, DEAL_FLOP));
+    }
+
+    @Override
+    public void sendDealRiverEvent(Table table) {
+        messageTemplate.send(new TableStatusMessageCreator(table, DEAL_RIVER));
+    }
+
+    @Override
+    public void sendDealTurnEvent(Table table) {
+        messageTemplate.send(new TableStatusMessageCreator(table, DEAL_TURN));
+    }
+
+    @Override
+    public void sendHandCompleteEvent(Table table) {
+        messageTemplate.send(new TableStatusMessageCreator(table, HAND_COMPLETE));
     }
 
     public MessageTemplate getMessageTemplate() {

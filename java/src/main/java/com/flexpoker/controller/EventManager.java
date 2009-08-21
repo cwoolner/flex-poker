@@ -17,4 +17,12 @@ public interface EventManager {
 
     void sendNewHandStartingEvent(Table table);
 
+    void sendDealFlopEvent(Table table);
+
+    void sendDealTurnEvent(Table table);
+
+    void sendDealRiverEvent(Table table);
+
+    void sendHandCompleteEvent(Table table);
+
 }
