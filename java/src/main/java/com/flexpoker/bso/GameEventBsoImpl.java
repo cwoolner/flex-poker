@@ -203,6 +203,11 @@ public class GameEventBsoImpl implements GameEventBso {
         assignSmallBlind(table, seats);
         assignBigBlind(table, seats);
         assignActionOn(table, seats);
+
+        for (Seat seat : seats) {
+            seat.setStillInHand(true);
+        }
+
         tableDao.save(table.getId(), table);
     }
 
