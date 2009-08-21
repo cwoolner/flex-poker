@@ -253,8 +253,6 @@ public class GameEventBsoImpl implements GameEventBso {
     @Override
     public void updateState(Table table) {
         table = tableDao.findById(table.getId());
-        Game game = table.getGame();
-
         RealTimeHand realTimeHand = realTimeHandBso.get(table);
         GameEvent gameEvent = gameEventDao.findLatestTableEvent(table);
 
