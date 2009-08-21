@@ -330,12 +330,9 @@
         <mx:Spacer height="50%" width="100%" />
     </mx:VBox>
 
-    <mx:Zoom id="zoom" />
-
     <mx:VBox id="inProgressRightPanel" height="100%" width="20%">
         <comp:UserGameStatusGrid height="35%" width="100%" userGameStatuses="{userGameStatuses}" />
-        <comp:PokerActionBox id="pokerActionBox" height="35%" width="100%"
-                showEffect="{zoom}" hideEffect="{zoom}" />
+        <comp:PokerActionBox id="pokerActionBox" height="35%" width="100%" />
         <mx:HBox height="30%" width="100%">
             <mx:Image id="myPocketCard1" height="100%" width="100%" source="{pocketCardImage1}" maintainAspectRatio="true" />
             <mx:Image id="myPocketCard2" height="100%" width="100%" source="{pocketCardImage2}" maintainAspectRatio="true" />
