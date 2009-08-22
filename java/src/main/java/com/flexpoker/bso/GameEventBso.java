@@ -1,8 +1,11 @@
 package com.flexpoker.bso;
 
+import com.flexpoker.model.FlopCards;
 import com.flexpoker.model.Game;
 import com.flexpoker.model.PocketCards;
+import com.flexpoker.model.RiverCard;
 import com.flexpoker.model.Table;
+import com.flexpoker.model.TurnCard;
 import com.flexpoker.model.User;
 
 public interface GameEventBso {
@@ -40,5 +43,13 @@ public interface GameEventBso {
     boolean isTurnDealt(Table table);
 
     boolean isRiverDealt(Table table);
+
+    FlopCards fetchFlopCards(Table table);
+
+    RiverCard fetchRiverCard(Table table);
+
+    TurnCard fetchTurnCard(Table table);
+
+    void setRoundComplete(Table table, boolean b);
 
 }

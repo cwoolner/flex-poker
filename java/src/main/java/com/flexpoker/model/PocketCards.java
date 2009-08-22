@@ -11,8 +11,7 @@ public class PocketCards {
         this.card2 = card2;
     }
 
-    public PocketCards() {
-    }
+    public PocketCards() {}
 
     public Card getCard1() {
         return card1;

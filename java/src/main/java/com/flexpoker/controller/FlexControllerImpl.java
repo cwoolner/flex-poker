@@ -9,11 +9,14 @@ import org.springframework.stereotype.Controller;
 
 import com.flexpoker.bso.GameBso;
 import com.flexpoker.bso.GameEventBso;
+import com.flexpoker.model.FlopCards;
 import com.flexpoker.model.Game;
 import com.flexpoker.model.GameEventType;
 import com.flexpoker.model.GameStage;
 import com.flexpoker.model.PocketCards;
+import com.flexpoker.model.RiverCard;
 import com.flexpoker.model.Table;
+import com.flexpoker.model.TurnCard;
 import com.flexpoker.model.User;
 import com.flexpoker.model.UserGameStatus;
 
@@ -104,6 +107,7 @@ public class FlexControllerImpl implements FlexController {
 
     @Override
     public PocketCards fetchPocketCards(Table table) {
+        // TODO: This should have an additional "can they do this?" check.
         User user = extractCurrentUser();
         return gameEventBso.fetchPocketCards(user, table);
     }
@@ -124,8 +128,28 @@ public class FlexControllerImpl implements FlexController {
         }
     }
 
+    @Override
+    public FlopCards fetchFlopCards(Table table) {
+        // TODO: This should have an additional "can they do this?" check.
+        return gameEventBso.fetchFlopCards(table);
+    }
+
+    @Override
+    public RiverCard fetchRiverCard(Table table) {
+        // TODO: This should have an additional "can they do this?" check.
+        return gameEventBso.fetchRiverCard(table);
+    }
+
+    @Override
+    public TurnCard fetchTurnCard(Table table) {
+        // TODO: This should have an additional "can they do this?" check.
+        return gameEventBso.fetchTurnCard(table);
+    }
+
     private void determineNextEvent(Table table) {
         if (gameEventBso.isRoundComplete(table)) {
+            gameEventBso.setRoundComplete(table, false);
+
             if (!gameEventBso.isFlopDealt(table)) {
                 eventManager.sendDealFlopEvent(table);
             } else if (!gameEventBso.isTurnDealt(table)) {

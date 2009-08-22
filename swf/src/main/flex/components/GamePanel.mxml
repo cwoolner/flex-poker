@@ -15,6 +15,9 @@
         import com.flexpoker.model.Table;
         import com.flexpoker.model.User;
         import com.flexpoker.model.PocketCards;
+        import com.flexpoker.model.FlopCards;
+        import com.flexpoker.model.TurnCard;
+        import com.flexpoker.model.RiverCard;
         import com.flexpoker.model.Deck;
         import mx.messaging.Consumer;
         import mx.messaging.ChannelSet;
@@ -39,6 +42,15 @@
 
         [Bindable]
         private var pocketCards:PocketCards;
+
+        [Bindable]
+        private var flopCards:FlopCards;
+
+        [Bindable]
+        private var turnCard:TurnCard;
+
+        [Bindable]
+        private var riverCard:RiverCard;
 
         public var channelSet:ChannelSet;
 
@@ -133,22 +145,21 @@
             }
 
             if (message.headers.DSSubtopic.search("userActed") != -1) {
-                var token:AsyncToken = mainRemoteObject.fetchTable(game);
+                fetchTableAfterDeal();
+                mainRemoteObject.fetchAllUserGameStatuses(game);
+                return;
+            }
+
+            if (message.headers.DSSubtopic.search("dealFlop") != -1) {
+                var token:AsyncToken = mainRemoteObject.fetchFlopCards(table);
                 token.addResponder(new AsyncResponder(
                     function(event:ResultEvent, token:Object = null):void {
-                        table = event.result as Table;
-                        table.sortPositions();
-                        actionOnArray.setItemAt(false, currentActionOnIndex);
-                        currentActionOnIndex = table.actionOn.position - 1;
-                        actionOnArray.setItemAt(true, currentActionOnIndex);
-
-                        if (table.actionOn.userGameStatus.user.username == username) {
-                            pokerActionBox.visible = true;
-                            pokerActionBox.addEventListener(CheckEvent.NAME, check);
-                        } else {
-                            pokerActionBox.visible = false;
-                            pokerActionBox.removeEventListener(CheckEvent.NAME, check);
-                        }
+                        flopCards = event.result as FlopCards;
+                        var deck:Deck = Deck.getInstance();
+                        flopCardImage1 = deck.getCardImage(flopCards.card1);
+                        flopCardImage2 = deck.getCardImage(flopCards.card2);
+                        flopCardImage3 = deck.getCardImage(flopCards.card3);
+                        fetchTableAfterDeal();
                     },
                     function(event:FaultEvent, token:Object = null):void {
                         Alert.show("Send Failed: " + event.fault.faultString);
@@ -159,6 +170,84 @@
                 return;
             }
 
+            if (message.headers.DSSubtopic.search("dealTurn") != -1) {
+                var token:AsyncToken = mainRemoteObject.fetchTurnCard(table);
+                token.addResponder(new AsyncResponder(
+                    function(event:ResultEvent, token:Object = null):void {
+                        turnCard = event.result as TurnCard;
+                        var deck:Deck = Deck.getInstance();
+                        turnCardImage = deck.getCardImage(turnCard.card);
+                        fetchTableAfterDeal();
+                    },
+                    function(event:FaultEvent, token:Object = null):void {
+                        Alert.show("Send Failed: " + event.fault.faultString);
+                    }
+                ))
+
+                mainRemoteObject.fetchAllUserGameStatuses(game);
+                return;
+            }
+
+            if (message.headers.DSSubtopic.search("dealRiver") != -1) {
+                var token:AsyncToken = mainRemoteObject.fetchRiverCard(table);
+                token.addResponder(new AsyncResponder(
+                    function(event:ResultEvent, token:Object = null):void {
+                        riverCard = event.result as RiverCard;
+                        var deck:Deck = Deck.getInstance();
+                        riverCardImage = deck.getCardImage(riverCard.card);
+                        fetchTableAfterDeal();
+                    },
+                    function(event:FaultEvent, token:Object = null):void {
+                        Alert.show("Send Failed: " + event.fault.faultString);
+                    }
+                ))
+
+                mainRemoteObject.fetchAllUserGameStatuses(game);
+                return;
+            }
+
+            if (message.headers.DSSubtopic.search("handComplete") != -1) {
+                var token:AsyncToken = mainRemoteObject.fetchRiverCard(table);
+                token.addResponder(new AsyncResponder(
+                    function(event:ResultEvent, token:Object = null):void {
+                        riverCard = event.result as RiverCard;
+                        var deck:Deck = Deck.getInstance();
+                        riverCardImage = deck.getCardImage(riverCard.card);
+                        fetchTableAfterDeal();
+                    },
+                    function(event:FaultEvent, token:Object = null):void {
+                        Alert.show("Send Failed: " + event.fault.faultString);
+                    }
+                ))
+
+                mainRemoteObject.fetchAllUserGameStatuses(game);
+                return;
+            }
+
+        }
+
+        private function fetchTableAfterDeal():void {
+            var token:AsyncToken = mainRemoteObject.fetchTable(game);
+            token.addResponder(new AsyncResponder(
+                function(event:ResultEvent, token:Object = null):void {
+                    table = event.result as Table;
+                    table.sortPositions();
+                    actionOnArray.setItemAt(false, currentActionOnIndex);
+                    currentActionOnIndex = table.actionOn.position - 1;
+                    actionOnArray.setItemAt(true, currentActionOnIndex);
+
+                    if (table.actionOn.userGameStatus.user.username == username) {
+                        pokerActionBox.visible = true;
+                        pokerActionBox.addEventListener(CheckEvent.NAME, check);
+                    } else {
+                        pokerActionBox.visible = false;
+                        pokerActionBox.removeEventListener(CheckEvent.NAME, check);
+                    }
+                },
+                function(event:FaultEvent, token:Object = null):void {
+                    Alert.show("Send Failed: " + event.fault.faultString);
+                }
+            ))
         }
 
         private function fetchAllUserGameStatusesHandler(event:ResultEvent):void {
@@ -201,6 +290,21 @@
         [Bindable]
         public var pocketCardImage2:Class;
 
+        [Bindable]
+        public var flopCardImage1:Class;
+
+        [Bindable]
+        public var flopCardImage2:Class;
+
+        [Bindable]
+        public var flopCardImage3:Class;
+
+        [Bindable]
+        public var turnCardImage:Class;
+
+        [Bindable]
+        public var riverCardImage:Class;
+
         public var username:String;
 
         private var currentActionOnIndex:int;
@@ -237,6 +341,7 @@
             <mx:RemoveChild target="{startingRightPanel}" />
             <mx:RemoveChild target="{finishedRightPanel}" />
             <mx:AddChild target="{inProgressMain}" />
+            <mx:AddChild target="{inProgressCommonPanel}" />
             <mx:AddChild target="{inProgressRightPanel}" />
         </mx:State>
         <mx:State name="finishedState">
@@ -278,7 +383,7 @@
     </mx:VBox>
 
     <mx:VBox id="inProgressMain" verticalAlign="middle" horizontalAlign="middle" height="100%"
-        width="80%" backgroundImage="{TableSvg}">
+        width="60%" backgroundImage="{TableSvg}">
 
         <mx:Spacer height="100%" />
         <mx:HBox width="100%">
@@ -349,6 +454,14 @@
         <mx:HBox width="100%">
             <mx:Spacer width="100%"/><mx:Label text="Finished..." /><mx:Spacer width="100%"/>
         </mx:HBox>
+    </mx:VBox>
+
+    <mx:VBox id="inProgressCommonPanel" height="100%" width="20%">
+        <mx:Image id="flopCardImageId1" height="100%" width="100%" source="{flopCardImage1}" maintainAspectRatio="true" />
+        <mx:Image id="flopCardImageId2" height="100%" width="100%" source="{flopCardImage2}" maintainAspectRatio="true" />
+        <mx:Image id="flopCardImageId3" height="100%" width="100%" source="{flopCardImage3}" maintainAspectRatio="true" />
+        <mx:Image id="turnCardImageId" height="100%" width="100%" source="{turnCardImage}" maintainAspectRatio="true" />
+        <mx:Image id="riverCardImageId" height="100%" width="100%" source="{riverCardImage}" maintainAspectRatio="true" />
     </mx:VBox>
 
     <mx:VBox id="registeringRightPanel" height="100%" width="20%">

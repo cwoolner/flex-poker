@@ -16,6 +16,7 @@ import com.flexpoker.dao.TableDao;
 import com.flexpoker.dao.UserGameStatusDao;
 import com.flexpoker.exception.FlexPokerException;
 import com.flexpoker.model.Blinds;
+import com.flexpoker.model.FlopCards;
 import com.flexpoker.model.Game;
 import com.flexpoker.model.GameEvent;
 import com.flexpoker.model.GameEventType;
@@ -23,8 +24,10 @@ import com.flexpoker.model.GameStage;
 import com.flexpoker.model.PocketCards;
 import com.flexpoker.model.RealTimeGame;
 import com.flexpoker.model.RealTimeHand;
+import com.flexpoker.model.RiverCard;
 import com.flexpoker.model.Seat;
 import com.flexpoker.model.Table;
+import com.flexpoker.model.TurnCard;
 import com.flexpoker.model.User;
 import com.flexpoker.model.UserGameStatus;
 
@@ -107,7 +110,6 @@ public class GameEventBsoImpl implements GameEventBso {
 
     @Override
     public PocketCards fetchPocketCards(User user, Table table) {
-        table = tableDao.findById(table.getId());
         return deckBso.fetchPocketCards(user, table);
     }
 
@@ -158,21 +160,25 @@ public class GameEventBsoImpl implements GameEventBso {
         List<Seat> seats = new ArrayList<Seat>(table.getSeats());
         Collections.sort(seats);
 
-        int actionOnIndex = seats.indexOf(table.getActionOn());
+        if (realTimeHand.getOriginatingBettor() == null) {
+            int buttonIndex = seats.indexOf(table.getButton());
 
-        for (int i = actionOnIndex - 1; i >= 0; i--) {
-            if (seats.get(i).getStillInHand()) {
-                realTimeHand.setLastToAct(seats.get(i));
-                return;
+            for (int i = buttonIndex; i >= 0; i--) {
+                if (seats.get(i).getStillInHand()) {
+                    realTimeHand.setLastToAct(seats.get(i));
+                    return;
+                }
             }
+
+            for (int i = seats.size() - 1; i > buttonIndex; i--) {
+                if (seats.get(i).getStillInHand()) {
+                    realTimeHand.setLastToAct(seats.get(i));
+                    return;
+                }
+            }
+
         }
 
-        for (int i = seats.size() - 1; i > actionOnIndex; i--) {
-            if (seats.get(i).getStillInHand()) {
-                realTimeHand.setLastToAct(seats.get(i));
-                return;
-            }
-        }
     }
 
     private void determineNextToAct(Table table, RealTimeHand realTimeHand) {
@@ -329,12 +335,60 @@ public class GameEventBsoImpl implements GameEventBso {
             GameEvent gameEvent) {
         if (table.getActionOn().equals(realTimeHand.getLastToAct())) {
             realTimeHand.setRoundComplete(true);
+
             if (realTimeHand.isRiverDealt()) {
                 realTimeHand.setHandComplete(true);
             }
+
+            if (!realTimeHand.isHandComplete()) {
+                determineNewRoundActionOn(table);
+                determineNextToAct(table, realTimeHand);
+                determineLastToAct(table, realTimeHand);
+            }
+
         } else {
             table.setActionOn(seatDao.findById(realTimeHand.getNextToAct().getId()));
         }
+    }
+
+    private void determineNewRoundActionOn(Table table) {
+        List<Seat> seats = new ArrayList<Seat>(table.getSeats());
+        Collections.sort(seats);
+
+        int buttonIndex = seats.indexOf(table.getButton());
+
+        for (int i = buttonIndex + 1; i < seats.size(); i++) {
+            if (seats.get(i).getStillInHand()) {
+                table.setActionOn(seatDao.findById(seats.get(i).getId()));
+                return;
+            }
+        }
+
+        for (int i = 0; i < buttonIndex; i++) {
+            if (seats.get(i).getStillInHand()) {
+                table.setActionOn(seatDao.findById(seats.get(i).getId()));
+                return;
+            }
+        }
+
+    }
+
+    @Override
+    public FlopCards fetchFlopCards(Table table) {
+        realTimeHandBso.get(table).setFlopDealt(true);
+        return deckBso.fetchFlopCards(table);
+    }
+
+    @Override
+    public RiverCard fetchRiverCard(Table table) {
+        realTimeHandBso.get(table).setRiverDealt(true);
+        return deckBso.fetchRiverCard(table);
+    }
+
+    @Override
+    public TurnCard fetchTurnCard(Table table) {
+        realTimeHandBso.get(table).setTurnDealt(true);
+        return deckBso.fetchTurnCard(table);
     }
 
     public UserGameStatusDao getUserGameStatusDao() {
@@ -407,6 +461,12 @@ public class GameEventBsoImpl implements GameEventBso {
 
     public void setSeatDao(SeatDao seatDao) {
         this.seatDao = seatDao;
+    }
+
+    @Override
+    public void setRoundComplete(Table table, boolean b) {
+        RealTimeHand realTimeHand = realTimeHandBso.get(table);
+        realTimeHand.setRoundComplete(b);
     }
 
 }

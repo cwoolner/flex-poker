@@ -8,8 +8,14 @@ public class TurnCard {
         this.card = card;
     }
 
+    public TurnCard() {}
+
     public Card getCard() {
         return card;
+    }
+
+    public void setCard(Card card) {
+        this.card = card;
     }
 
 }
