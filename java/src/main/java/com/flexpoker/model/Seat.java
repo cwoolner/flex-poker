@@ -19,7 +19,9 @@ public class Seat implements Comparable<Seat> {
 
     private Integer position;
 
-    private Boolean stillInHand;
+    private boolean stillInHand;
+
+    private boolean allIn;
 
     @Id
     @GeneratedValue
@@ -59,12 +61,20 @@ public class Seat implements Comparable<Seat> {
         this.position = position;
     }
 
-    public Boolean getStillInHand() {
+    public boolean isStillInHand() {
         return stillInHand;
     }
 
-    public void setStillInHand(Boolean stillInHand) {
+    public void setStillInHand(boolean stillInHand) {
         this.stillInHand = stillInHand;
+    }
+
+    public boolean isAllIn() {
+        return allIn;
+    }
+
+    public void setAllIn(boolean allIn) {
+        this.allIn = allIn;
     }
 
     @Override

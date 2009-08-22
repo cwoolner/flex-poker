@@ -164,14 +164,14 @@ public class GameEventBsoImpl implements GameEventBso {
             int buttonIndex = seats.indexOf(table.getButton());
 
             for (int i = buttonIndex; i >= 0; i--) {
-                if (seats.get(i).getStillInHand()) {
+                if (seats.get(i).isStillInHand()) {
                     realTimeHand.setLastToAct(seats.get(i));
                     return;
                 }
             }
 
             for (int i = seats.size() - 1; i > buttonIndex; i--) {
-                if (seats.get(i).getStillInHand()) {
+                if (seats.get(i).isStillInHand()) {
                     realTimeHand.setLastToAct(seats.get(i));
                     return;
                 }
@@ -188,14 +188,14 @@ public class GameEventBsoImpl implements GameEventBso {
         int actionOnIndex = seats.indexOf(table.getActionOn());
 
         for (int i = actionOnIndex + 1; i < seats.size(); i++) {
-            if (seats.get(i).getStillInHand()) {
+            if (seats.get(i).isStillInHand()) {
                 realTimeHand.setNextToAct(seats.get(i));
                 return;
             }
         }
 
         for (int i = 0; i < actionOnIndex; i++) {
-            if (seats.get(i).getStillInHand()) {
+            if (seats.get(i).isStillInHand()) {
                 realTimeHand.setNextToAct(seats.get(i));
                 return;
             }
@@ -358,14 +358,14 @@ public class GameEventBsoImpl implements GameEventBso {
         int buttonIndex = seats.indexOf(table.getButton());
 
         for (int i = buttonIndex + 1; i < seats.size(); i++) {
-            if (seats.get(i).getStillInHand()) {
+            if (seats.get(i).isStillInHand()) {
                 table.setActionOn(seatDao.findById(seats.get(i).getId()));
                 return;
             }
         }
 
         for (int i = 0; i < buttonIndex; i++) {
-            if (seats.get(i).getStillInHand()) {
+            if (seats.get(i).isStillInHand()) {
                 table.setActionOn(seatDao.findById(seats.get(i).getId()));
                 return;
             }
