@@ -46,6 +46,8 @@ public class GameBsoImpl implements GameBso {
 
     @Override
     public void createGame(User user, Game game) {
+        // the id is set to 0 when it comes from Flex, explicitly set it to null
+        game.setId(null);
         game.setCreatedByUser(user);
         game.setCreatedOn(new Date());
         game.setGameStage(gameStageDao.findByName(GameStage.REGISTERING));
