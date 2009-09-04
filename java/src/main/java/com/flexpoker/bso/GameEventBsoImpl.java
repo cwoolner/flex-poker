@@ -3,7 +3,9 @@ package com.flexpoker.bso;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.springframework.stereotype.Service;
@@ -389,6 +391,22 @@ public class GameEventBsoImpl implements GameEventBso {
     public TurnCard fetchTurnCard(Table table) {
         realTimeHandBso.get(table).setTurnDealt(true);
         return deckBso.fetchTurnCard(table);
+    }
+
+    @Override
+    public Map<Integer, PocketCards> fetchOptionalShowCards(Table table) {
+        Map<Integer, PocketCards> returnMap = new HashMap<Integer, PocketCards>();
+        returnMap.put(1, new PocketCards());
+        returnMap.put(2, new PocketCards());
+        return returnMap;
+    }
+
+    @Override
+    public Map<Integer, PocketCards> fetchRequiredShowCards(Table table) {
+        Map<Integer, PocketCards> returnMap = new HashMap<Integer, PocketCards>();
+        returnMap.put(1, new PocketCards());
+        returnMap.put(2, new PocketCards());
+        return returnMap;
     }
 
     public UserGameStatusDao getUserGameStatusDao() {

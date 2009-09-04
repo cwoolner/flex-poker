@@ -1,5 +1,7 @@
 package com.flexpoker.bso;
 
+import java.util.Map;
+
 import com.flexpoker.model.FlopCards;
 import com.flexpoker.model.Game;
 import com.flexpoker.model.PocketCards;
@@ -51,5 +53,9 @@ public interface GameEventBso {
     TurnCard fetchTurnCard(Table table);
 
     void setRoundComplete(Table table, boolean b);
+
+    Map<Integer, PocketCards> fetchRequiredShowCards(Table table);
+
+    Map<Integer, PocketCards> fetchOptionalShowCards(Table table);
 
 }

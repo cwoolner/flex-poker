@@ -52,6 +52,8 @@
         [Bindable]
         private var riverCard:RiverCard;
 
+        private var requiredShowCards:Array;
+
         public var channelSet:ChannelSet;
 
         private var startingTimer:Timer;
@@ -207,7 +209,23 @@
             }
 
             if (message.headers.DSSubtopic.search("handComplete") != -1) {
-                var token:AsyncToken = mainRemoteObject.fetchRiverCard(table);
+                var token:AsyncToken = mainRemoteObject.fetchRequiredShowCards(table);
+                token.addResponder(new AsyncResponder(
+                    function(event:ResultEvent, token:Object = null):void {
+                        requiredShowCards = event.result as Array;
+                        Alert.show(requiredShowCards.toString());
+                    },
+                    function(event:FaultEvent, token:Object = null):void {
+                        Alert.show("Send Failed: " + event.fault.faultString);
+                    }
+                ))
+
+                mainRemoteObject.fetchAllUserGameStatuses(game);
+                return;
+            }
+
+            if (message.headers.DSSubtopic.search("optionalHandsShown") != -1) {
+                var token:AsyncToken = mainRemoteObject.fetchOptionalShowCards(table);
                 token.addResponder(new AsyncResponder(
                     function(event:ResultEvent, token:Object = null):void {
                         riverCard = event.result as RiverCard;
