@@ -1,14 +1,5 @@
 package com.flexpoker.model;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-
-@Entity
-@Table(name = "cards")
 public class Card {
 
     private Integer id;
@@ -19,8 +10,6 @@ public class Card {
 
     private String image;
 
-    @Id
-    @GeneratedValue
     public Integer getId() {
         return id;
     }
@@ -29,8 +18,6 @@ public class Card {
         this.id = id;
     }
 
-    @ManyToOne
-    @JoinColumn(name = "cardRankId")
     public CardRank getCardRank() {
         return cardRank;
     }
@@ -39,8 +26,6 @@ public class Card {
         this.cardRank = cardRank;
     }
 
-    @ManyToOne
-    @JoinColumn(name = "cardSuitId")
     public CardSuit getCardSuit() {
         return cardSuit;
     }
