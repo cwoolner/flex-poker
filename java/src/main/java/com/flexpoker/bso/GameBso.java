@@ -1,6 +1,7 @@
 package com.flexpoker.bso;
 
 import java.util.List;
+import java.util.Set;
 
 import com.flexpoker.model.Game;
 import com.flexpoker.model.Table;
@@ -21,5 +22,7 @@ public interface GameBso {
     void intializePlayersAndTables(Game game);
 
     void createRealTimeGame(Game game);
+
+    Set<Table> fetchTables(Game game);
 
 }

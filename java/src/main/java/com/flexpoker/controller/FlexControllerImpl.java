@@ -185,7 +185,9 @@ public class FlexControllerImpl implements FlexController {
     private void sendNewHandStartingEventForAllTables(Game game) {
         game = gameBso.fetchById(game.getId());
 
-        for (Table table : game.getTables()) {
+        Set<Table> tables = gameBso.fetchTables(game);
+
+        for (Table table : tables) {
             eventManager.sendNewHandStartingEvent(table);
         }
     }

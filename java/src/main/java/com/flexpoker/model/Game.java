@@ -1,7 +1,6 @@
 package com.flexpoker.model;
 
 import java.util.Date;
-import java.util.List;
 import java.util.Set;
 
 import javax.persistence.Entity;
@@ -41,8 +40,6 @@ public class Game {
     private Set<UserGameStatus> userGameStatuses;
 
     private GameStage gameStage;
-
-    private Set<com.flexpoker.model.Table> tables;
 
     @Id
     @GeneratedValue
@@ -148,16 +145,6 @@ public class Game {
 
     public void setGameStage(GameStage gameStage) {
         this.gameStage = gameStage;
-    }
-
-    @OneToMany(fetch = FetchType.EAGER)
-    @JoinColumn(name = "gameId")
-    public Set<com.flexpoker.model.Table> getTables() {
-        return tables;
-    }
-
-    public void setTables(Set<com.flexpoker.model.Table> tables) {
-        this.tables = tables;
     }
 
     @Override
