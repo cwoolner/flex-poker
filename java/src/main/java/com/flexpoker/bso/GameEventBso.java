@@ -4,6 +4,7 @@ import java.util.Map;
 
 import com.flexpoker.model.FlopCards;
 import com.flexpoker.model.Game;
+import com.flexpoker.model.GameEventType;
 import com.flexpoker.model.PocketCards;
 import com.flexpoker.model.RiverCard;
 import com.flexpoker.model.Table;
@@ -30,15 +31,14 @@ public interface GameEventBso {
 
     boolean haveAllPlayersVerifiedGameInProgress(Game game);
 
-    boolean isUserAllowedToPerformAction(String action, User user, Table table);
-
-    void check(User user, Table table);
+    boolean isUserAllowedToPerformAction(GameEventType action, User user,
+            Table table);
 
     boolean isRoundComplete(Table table);
 
     boolean isHandComplete(Table table);
 
-    void updateState(Table table);
+    void updateCheckState(Table table);
 
     boolean isFlopDealt(Table table);
 

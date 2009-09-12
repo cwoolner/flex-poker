@@ -16,8 +16,8 @@ import java.util.Set;
  */
 public class RealTimeHand {
 
-    private Map<Seat, Set<String>> possibleSeatActionsMap =
-            new HashMap<Seat, Set<String>>();
+    private Map<Seat, Set<GameEventType>> possibleSeatActionsMap =
+            new HashMap<Seat, Set<GameEventType>>();
 
     private Map<Seat, Integer> amountNeededToCall = new HashMap<Seat, Integer>();
 
@@ -41,13 +41,13 @@ public class RealTimeHand {
 
     public RealTimeHand(Set<Seat> seats) {
         for (Seat seat : seats) {
-            possibleSeatActionsMap.put(seat, new HashSet<String>());
+            possibleSeatActionsMap.put(seat, new HashSet<GameEventType>());
             amountNeededToCall.put(seat, null);
             amountNeededToRaise.put(seat, null);
         }
     }
 
-    public void addPossibleSeatAction(Seat Seat, String action) {
+    public void addPossibleSeatAction(Seat Seat, GameEventType action) {
         possibleSeatActionsMap.get(Seat).add(action);
     }
 
@@ -95,7 +95,8 @@ public class RealTimeHand {
         this.handComplete = handComplete;
     }
 
-    public boolean isUserAllowedToPerformAction(String action, Seat seat) {
+    public boolean isUserAllowedToPerformAction(GameEventType action,
+            Seat seat) {
         return possibleSeatActionsMap.get(seat).contains(action);
     }
 
