@@ -93,15 +93,15 @@ public class DeckTest {
         TurnCard turnCard = deck.getTurnCard();
         RiverCard riverCard = deck.getRiverCard();
 
-        assertTrue(pocketCards1.getCard1().getId().equals(2));
-        assertTrue(pocketCards1.getCard2().getId().equals(4));
-        assertTrue(pocketCards2.getCard1().getId().equals(1));
-        assertTrue(pocketCards2.getCard2().getId().equals(3));
-        assertTrue(flopCards.getCard1().getId().equals(6));
-        assertTrue(flopCards.getCard2().getId().equals(7));
-        assertTrue(flopCards.getCard3().getId().equals(8));
-        assertTrue(turnCard.getCard().getId().equals(10));
-        assertTrue(riverCard.getCard().getId().equals(12));
+        assertTrue(pocketCards1.getCard1().getId() == 2);
+        assertTrue(pocketCards1.getCard2().getId() == 4);
+        assertTrue(pocketCards2.getCard1().getId() == 1);
+        assertTrue(pocketCards2.getCard2().getId() == 3);
+        assertTrue(flopCards.getCard1().getId() == 6);
+        assertTrue(flopCards.getCard2().getId() == 7);
+        assertTrue(flopCards.getCard3().getId() == 8);
+        assertTrue(turnCard.getCard().getId() == 10);
+        assertTrue(riverCard.getCard().getId() == 12);
         
         table.setButton(seat2);
         deck = new Deck(cardList, table);
@@ -111,15 +111,15 @@ public class DeckTest {
         turnCard = deck.getTurnCard();
         riverCard = deck.getRiverCard();
 
-        assertTrue(pocketCards1.getCard1().getId().equals(1));
-        assertTrue(pocketCards1.getCard2().getId().equals(3));
-        assertTrue(pocketCards2.getCard1().getId().equals(2));
-        assertTrue(pocketCards2.getCard2().getId().equals(4));
-        assertTrue(flopCards.getCard1().getId().equals(6));
-        assertTrue(flopCards.getCard2().getId().equals(7));
-        assertTrue(flopCards.getCard3().getId().equals(8));
-        assertTrue(turnCard.getCard().getId().equals(10));
-        assertTrue(riverCard.getCard().getId().equals(12));
+        assertTrue(pocketCards1.getCard1().getId() == 1);
+        assertTrue(pocketCards1.getCard2().getId() == 3);
+        assertTrue(pocketCards2.getCard1().getId() == 2);
+        assertTrue(pocketCards2.getCard2().getId() == 4);
+        assertTrue(flopCards.getCard1().getId() == 6);
+        assertTrue(flopCards.getCard2().getId() == 7);
+        assertTrue(flopCards.getCard3().getId() == 8);
+        assertTrue(turnCard.getCard().getId() == 10);
+        assertTrue(riverCard.getCard().getId() == 12);
     }
 
 }

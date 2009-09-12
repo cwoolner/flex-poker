@@ -2,19 +2,25 @@ package com.flexpoker.model;
 
 public class Card {
 
-    private Integer id;
+    private int id;
 
     private CardRank cardRank;
 
     private CardSuit cardSuit;
 
-    private String image;
+    public Card() {}
 
-    public Integer getId() {
+    public Card(int id, CardRank cardRank, CardSuit cardSuit) {
+        this.id = id;
+        this.cardRank = cardRank;
+        this.cardSuit = cardSuit;
+    }
+
+    public int getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -22,24 +28,8 @@ public class Card {
         return cardRank;
     }
 
-    public void setCardRank(CardRank cardRank) {
-        this.cardRank = cardRank;
-    }
-
     public CardSuit getCardSuit() {
         return cardSuit;
-    }
-
-    public void setCardSuit(CardSuit cardSuit) {
-        this.cardSuit = cardSuit;
-    }
-
-    public String getImage() {
-        return image;
-    }
-
-    public void setImage(String image) {
-        this.image = image;
     }
 
 }
