@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.flexpoker.dao.TableDao;
-import com.flexpoker.dao.UserGameStatusDao;
 import com.flexpoker.exception.FlexPokerException;
 import com.flexpoker.model.Blinds;
 import com.flexpoker.model.FlopCards;
@@ -34,8 +33,6 @@ import com.flexpoker.model.UserGameStatus;
 public class GameEventBsoImpl implements GameEventBso {
 
     private GameBso gameBso;
-
-    private UserGameStatusDao userGameStatusDao;
 
     private DeckBso deckBso;
 
@@ -77,9 +74,9 @@ public class GameEventBsoImpl implements GameEventBso {
 
         UserGameStatus userGameStatus = new UserGameStatus();
         userGameStatus.setEnterTime(new Date());
-        userGameStatus.setGame(game);
         userGameStatus.setUser(user);
-        userGameStatusDao.save(userGameStatus.getId(), userGameStatus);
+        // TODO: UserGameStatusDao work.
+        // userGameStatusDao.save(userGameStatus.getId(), userGameStatus);
     }
 
     @Override
@@ -380,14 +377,6 @@ public class GameEventBsoImpl implements GameEventBso {
         returnMap.put(1, new PocketCards());
         returnMap.put(2, new PocketCards());
         return returnMap;
-    }
-
-    public UserGameStatusDao getUserGameStatusDao() {
-        return userGameStatusDao;
-    }
-
-    public void setUserGameStatusDao(UserGameStatusDao userGameStatusDao) {
-        this.userGameStatusDao = userGameStatusDao;
     }
 
     public GameBso getGameBso() {

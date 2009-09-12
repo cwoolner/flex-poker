@@ -2,22 +2,11 @@ package com.flexpoker.model;
 
 import java.util.Date;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-
-@Entity
-@Table(name = "userGameStatuses")
 public class UserGameStatus {
 
     private Integer id;
 
     private User user;
-
-    private Game game;
 
     private Integer chips;
 
@@ -27,8 +16,6 @@ public class UserGameStatus {
 
     private Date exitTime;
 
-    @Id
-    @GeneratedValue
     public Integer getId() {
         return id;
     }
@@ -37,24 +24,12 @@ public class UserGameStatus {
         this.id = id;
     }
 
-    @ManyToOne
-    @JoinColumn(name = "userId")
     public User getUser() {
         return user;
     }
 
     public void setUser(User user) {
         this.user = user;
-    }
-
-    @ManyToOne
-    @JoinColumn(name = "gameId")
-    public Game getGame() {
-        return game;
-    }
-
-    public void setGame(Game game) {
-        this.game = game;
     }
 
     public Integer getChips() {
