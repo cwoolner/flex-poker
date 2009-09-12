@@ -12,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.flexpoker.dao.GameDao;
 import com.flexpoker.dao.GameStageDao;
-import com.flexpoker.dao.SeatDao;
 import com.flexpoker.dao.TableDao;
 import com.flexpoker.exception.FlexPokerException;
 import com.flexpoker.model.Game;
@@ -34,8 +33,6 @@ public class GameBsoImpl implements GameBso {
     private GameStageDao gameStageDao;
 
     private TableDao tableDao;
-
-    private SeatDao seatDao;
 
     private RealTimeGameBso realTimeGameBso;
 
@@ -105,7 +102,7 @@ public class GameBsoImpl implements GameBso {
             seat.setPosition(randomPlayerPositions.get(i));
             seat.setTable(table);
             seat.setUserGameStatus(userGameStatus);
-            seatDao.save(seat.getId(), seat);
+            // TODO: Save the seat information in some way.
 
             userGameStatus.setChips(1000);
 
@@ -156,14 +153,6 @@ public class GameBsoImpl implements GameBso {
 
     public void setTableDao(TableDao tableDao) {
         this.tableDao = tableDao;
-    }
-
-    public SeatDao getSeatDao() {
-        return seatDao;
-    }
-
-    public void setSeatDao(SeatDao seatDao) {
-        this.seatDao = seatDao;
     }
 
     public RealTimeGameBso getRealTimeGameBso() {

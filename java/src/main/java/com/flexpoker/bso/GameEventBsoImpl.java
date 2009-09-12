@@ -11,7 +11,6 @@ import java.util.Set;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.flexpoker.dao.SeatDao;
 import com.flexpoker.dao.TableDao;
 import com.flexpoker.dao.UserGameStatusDao;
 import com.flexpoker.exception.FlexPokerException;
@@ -43,8 +42,6 @@ public class GameEventBsoImpl implements GameEventBso {
     private TableDao tableDao;
 
     private RealTimeGameBso realTimeGameBso;
-
-    private SeatDao seatDao;
 
     private RealTimeHandBso realTimeHandBso;
 
@@ -322,7 +319,8 @@ public class GameEventBsoImpl implements GameEventBso {
             }
 
         } else {
-            table.setActionOn(seatDao.findById(realTimeHand.getNextToAct().getId()));
+            // TODO: SeatDao work.
+            // table.setActionOn(seatDao.findById(realTimeHand.getNextToAct().getId()));
         }
     }
 
@@ -334,14 +332,16 @@ public class GameEventBsoImpl implements GameEventBso {
 
         for (int i = buttonIndex + 1; i < seats.size(); i++) {
             if (seats.get(i).isStillInHand()) {
-                table.setActionOn(seatDao.findById(seats.get(i).getId()));
+                // TODO: SeatDao work.
+                // table.setActionOn(seatDao.findById(seats.get(i).getId()));
                 return;
             }
         }
 
         for (int i = 0; i < buttonIndex; i++) {
             if (seats.get(i).isStillInHand()) {
-                table.setActionOn(seatDao.findById(seats.get(i).getId()));
+                // TODO: SeatDao work.
+                // table.setActionOn(seatDao.findById(seats.get(i).getId()));
                 return;
             }
         }
@@ -428,14 +428,6 @@ public class GameEventBsoImpl implements GameEventBso {
 
     public void setRealTimeHandBso(RealTimeHandBso realTimeHandBso) {
         this.realTimeHandBso = realTimeHandBso;
-    }
-
-    public SeatDao getSeatDao() {
-        return seatDao;
-    }
-
-    public void setSeatDao(SeatDao seatDao) {
-        this.seatDao = seatDao;
     }
 
     @Override

@@ -1,14 +1,5 @@
 package com.flexpoker.model;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
-
-@Entity
-@Table(name = "seats")
 public class Seat implements Comparable<Seat> {
 
     private Integer id;
@@ -23,8 +14,6 @@ public class Seat implements Comparable<Seat> {
 
     private boolean allIn;
 
-    @Id
-    @GeneratedValue
     public Integer getId() {
         return id;
     }
@@ -33,18 +22,14 @@ public class Seat implements Comparable<Seat> {
         this.id = id;
     }
 
-    @OneToOne
-    @JoinColumn(name = "tableId")
-    public com.flexpoker.model.Table getTable() {
+    public Table getTable() {
         return table;
     }
 
-    public void setTable(com.flexpoker.model.Table table) {
+    public void setTable(Table table) {
         this.table = table;
     }
 
-    @OneToOne
-    @JoinColumn(name = "userGameStatusId")
     public UserGameStatus getUserGameStatus() {
         return userGameStatus;
     }
