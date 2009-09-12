@@ -17,6 +17,8 @@ public class RealTimeGame {
 
     private Set<Table> tables = new HashSet<Table>();
 
+    private Set<UserGameStatus> userGameStatuses;
+
     public RealTimeGame(List<User> users) {
         this.users = users;
         currentBlinds = new Blinds(10, 20);
@@ -58,6 +60,14 @@ public class RealTimeGame {
 
     public void removeTable(Table table) {
         tables.remove(table);
+    }
+
+    public Set<UserGameStatus> getUserGameStatuses() {
+        return userGameStatuses;
+    }
+
+    public void setUserGameStatuses(Set<UserGameStatus> userGameStatuses) {
+        this.userGameStatuses = userGameStatuses;
     }
 
 }

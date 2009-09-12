@@ -6,6 +6,7 @@ import java.util.Set;
 import com.flexpoker.model.Game;
 import com.flexpoker.model.Table;
 import com.flexpoker.model.User;
+import com.flexpoker.model.UserGameStatus;
 
 public interface GameBso {
 
@@ -24,5 +25,7 @@ public interface GameBso {
     void createRealTimeGame(Game game);
 
     Set<Table> fetchTables(Game game);
+
+    Set<UserGameStatus> fetchUserGameStatuses(Game game);
 
 }

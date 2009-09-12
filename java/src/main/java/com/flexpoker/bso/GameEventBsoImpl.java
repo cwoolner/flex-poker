@@ -54,7 +54,7 @@ public class GameEventBsoImpl implements GameEventBso {
             throw new FlexPokerException("The game is already finished.");
         }
 
-        Set<UserGameStatus> userGameStatuses = game.getUserGameStatuses();
+        Set<UserGameStatus> userGameStatuses = gameBso.fetchUserGameStatuses(game);
         
         for (UserGameStatus userGameStatus : userGameStatuses) {
             if (user.equals(userGameStatus.getUser())) {
@@ -63,7 +63,7 @@ public class GameEventBsoImpl implements GameEventBso {
         }
         
         Integer totalPlayers = game.getTotalPlayers();
-        Integer currentNumberOfPlayers = game.getUserGameStatuses().size();
+        Integer currentNumberOfPlayers = gameBso.fetchUserGameStatuses(game).size();
         
         if (totalPlayers <= currentNumberOfPlayers) {
             throw new FlexPokerException("This game is full.");
@@ -79,7 +79,7 @@ public class GameEventBsoImpl implements GameEventBso {
     @Override
     public boolean isGameAtMaxPlayers(Game game) {
         game = gameBso.fetchById(game.getId());
-        return game.getUserGameStatuses().size() == game.getTotalPlayers();
+        return gameBso.fetchUserGameStatuses(game).size() == game.getTotalPlayers();
     }
 
     @Override

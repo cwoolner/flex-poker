@@ -96,8 +96,10 @@ public class GameBsoImpl implements GameBso {
         // TODO: TableDao work.
         // tableDao.save(table.getId(), table);
 
+        Set<UserGameStatus> userGameStatuses = fetchUserGameStatuses(game);
+
         int i = 0;
-        for (UserGameStatus userGameStatus : game.getUserGameStatuses()) {
+        for (UserGameStatus userGameStatus : userGameStatuses) {
             Seat seat = new Seat();
             seat.setPosition(randomPlayerPositions.get(i));
             seat.setTable(table);
@@ -114,7 +116,7 @@ public class GameBsoImpl implements GameBso {
     public void createRealTimeGame(Game game) {
         game = gameDao.findById(game.getId());
 
-        Set<UserGameStatus> userGameStatuses = game.getUserGameStatuses();
+        Set<UserGameStatus> userGameStatuses = fetchUserGameStatuses(game);
 
         List<User> userList = new ArrayList<User>();
         for (UserGameStatus userGameStatus : userGameStatuses) {
@@ -126,6 +128,11 @@ public class GameBsoImpl implements GameBso {
     @Override
     public Set<Table> fetchTables(Game game) {
         return realTimeGameBso.get(game).getTables();
+    }
+
+    @Override
+    public Set<UserGameStatus> fetchUserGameStatuses(Game game) {
+        return realTimeGameBso.get(game).getUserGameStatuses();
     }
 
     public GameDao getGameDao() {
