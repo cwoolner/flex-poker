@@ -11,7 +11,6 @@ import java.util.Set;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.flexpoker.dao.TableDao;
 import com.flexpoker.exception.FlexPokerException;
 import com.flexpoker.model.Blinds;
 import com.flexpoker.model.FlopCards;
@@ -35,8 +34,6 @@ public class GameEventBsoImpl implements GameEventBso {
     private GameBso gameBso;
 
     private DeckBso deckBso;
-
-    private TableDao tableDao;
 
     private RealTimeGameBso realTimeGameBso;
 
@@ -203,7 +200,8 @@ public class GameEventBsoImpl implements GameEventBso {
             seat.setStillInHand(true);
         }
 
-        tableDao.save(table.getId(), table);
+        // TODO: TableDao work.
+        // tableDao.save(table.getId(), table);
     }
 
     private void assignActionOn(Table table, List<Seat> seats) {
@@ -281,7 +279,8 @@ public class GameEventBsoImpl implements GameEventBso {
     @Override
     public boolean isUserAllowedToPerformAction(GameEventType action,
             User user, Table table) {
-        table = tableDao.findById(table.getId());
+        // TODO: TableDao work.
+        // table = tableDao.findById(table.getId());
 
         Seat usersSeat = null;
 
@@ -299,7 +298,8 @@ public class GameEventBsoImpl implements GameEventBso {
 
     @Override
     public void updateCheckState(Table table) {
-        table = tableDao.findById(table.getId());
+        // TODO: TableDao work.
+        // table = tableDao.findById(table.getId());
         RealTimeHand realTimeHand = realTimeHandBso.get(table);
 
         if (table.getActionOn().equals(realTimeHand.getLastToAct())) {
@@ -393,14 +393,6 @@ public class GameEventBsoImpl implements GameEventBso {
 
     public void setDeckBso(DeckBso deckBso) {
         this.deckBso = deckBso;
-    }
-
-    public TableDao getTableDao() {
-        return tableDao;
-    }
-
-    public void setTableDao(TableDao tableDao) {
-        this.tableDao = tableDao;
     }
 
     public RealTimeGameBso getRealTimeGameBso() {

@@ -1,18 +1,7 @@
-
 package com.flexpoker.model;
 
 import java.util.Set;
 
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-
-@Entity
-@javax.persistence.Table(name = "tables")
 public class Table {
 
     private Integer id;
@@ -29,8 +18,6 @@ public class Table {
 
     private Set<Seat> seats;
 
-    @Id
-    @GeneratedValue
     public Integer getId() {
         return id;
     }
@@ -39,8 +26,6 @@ public class Table {
         this.id = id;
     }
 
-    @OneToOne
-    @JoinColumn(name = "gameId")
     public Game getGame() {
         return game;
     }
@@ -49,8 +34,6 @@ public class Table {
         this.game = game;
     }
 
-    @OneToOne
-    @JoinColumn(name = "buttonId")
     public Seat getButton() {
         return button;
     }
@@ -59,8 +42,6 @@ public class Table {
         this.button = button;
     }
 
-    @OneToOne
-    @JoinColumn(name = "smallBlindId")
     public Seat getSmallBlind() {
         return smallBlind;
     }
@@ -69,8 +50,6 @@ public class Table {
         this.smallBlind = smallBlind;
     }
 
-    @OneToOne
-    @JoinColumn(name = "bigBlindId")
     public Seat getBigBlind() {
         return bigBlind;
     }
@@ -79,8 +58,6 @@ public class Table {
         this.bigBlind = bigBlind;
     }
 
-    @OneToOne
-    @JoinColumn(name = "actionOnId")
     public Seat getActionOn() {
         return actionOn;
     }
@@ -89,8 +66,6 @@ public class Table {
         this.actionOn = actionOn;
     }
 
-    @OneToMany(fetch = FetchType.EAGER)
-    @JoinColumn(name = "tableId")
     public Set<Seat> getSeats() {
         return seats;
     }

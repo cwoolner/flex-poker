@@ -12,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.flexpoker.dao.GameDao;
 import com.flexpoker.dao.GameStageDao;
-import com.flexpoker.dao.TableDao;
 import com.flexpoker.exception.FlexPokerException;
 import com.flexpoker.model.Game;
 import com.flexpoker.model.GameStage;
@@ -31,8 +30,6 @@ public class GameBsoImpl implements GameBso {
     private UserBso userBso;
 
     private GameStageDao gameStageDao;
-
-    private TableDao tableDao;
 
     private RealTimeGameBso realTimeGameBso;
 
@@ -94,7 +91,8 @@ public class GameBsoImpl implements GameBso {
 
         Table table = new Table();
         table.setGame(game);
-        tableDao.save(table.getId(), table);
+        // TODO: TableDao work.
+        // tableDao.save(table.getId(), table);
 
         int i = 0;
         for (UserGameStatus userGameStatus : game.getUserGameStatuses()) {
@@ -145,14 +143,6 @@ public class GameBsoImpl implements GameBso {
 
     public void setGameStageDao(GameStageDao gameStageDao) {
         this.gameStageDao = gameStageDao;
-    }
-
-    public TableDao getTableDao() {
-        return tableDao;
-    }
-
-    public void setTableDao(TableDao tableDao) {
-        this.tableDao = tableDao;
     }
 
     public RealTimeGameBso getRealTimeGameBso() {
