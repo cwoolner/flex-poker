@@ -6,8 +6,6 @@ public class Table {
 
     private Integer id;
 
-    private Game game;
-
     private Seat button;
 
     private Seat smallBlind;
@@ -24,14 +22,6 @@ public class Table {
 
     public void setId(Integer id) {
         this.id = id;
-    }
-
-    public Game getGame() {
-        return game;
-    }
-
-    public void setGame(Game game) {
-        this.game = game;
     }
 
     public Seat getButton() {

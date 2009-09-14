@@ -10,8 +10,6 @@ package com.flexpoker.model {
 
         public var id:int;
 
-        public var game:Game;
-
         public var button:Seat;
 
         public var smallBlind:Seat;
