@@ -199,9 +199,6 @@ public class GameEventBsoImpl implements GameEventBso {
         for (Seat seat : seats) {
             seat.setStillInHand(true);
         }
-
-        // TODO: TableDao work.
-        // tableDao.save(table.getId(), table);
     }
 
     private void assignActionOn(Table table, List<Seat> seats) {
