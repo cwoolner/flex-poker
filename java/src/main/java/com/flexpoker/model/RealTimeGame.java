@@ -54,7 +54,12 @@ public class RealTimeGame {
         return tables;
     }
 
+    /**
+     * Add a new table to the game.  Assign an id to the table equal to the
+     * current number of tables.
+     */
     public void addTable(Table table) {
+        table.setId(tables.size());
         tables.add(table);
     }
 
