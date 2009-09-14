@@ -33,6 +33,8 @@ public class GameBsoImpl implements GameBso {
 
     private RealTimeGameBso realTimeGameBso;
 
+    private static final int MAX_PLAYERS_PER_TABLE = 9;
+
     @Override
     public List<Game> fetchAllGames() {
         return gameDao.findAll();
@@ -84,19 +86,20 @@ public class GameBsoImpl implements GameBso {
     @Override
     public void intializePlayersAndTables(Game game) {
         game = fetchById(game.getId());
+        RealTimeGame realTimeGame = realTimeGameBso.get(game);
 
         List<Integer> randomPlayerPositions = new ArrayList<Integer>();
 
-        for (int i = 1; i <= game.getTotalPlayers(); i++) {
+        for (int i = 0; i < game.getTotalPlayers(); i++) {
             randomPlayerPositions.add(i);
         }
 
         Collections.shuffle(randomPlayerPositions, new Random());
 
-        Table table = new Table();
-        table.setGame(game);
-        // TODO: TableDao work.
-        // tableDao.save(table.getId(), table);
+        for (int i = 0; i < game.getTotalPlayers(); i += MAX_PLAYERS_PER_TABLE) {
+            Table table = new Table();
+            realTimeGame.addTable(table);
+        }
 
         Set<UserGameStatus> userGameStatuses = fetchUserGameStatuses(game);
 
