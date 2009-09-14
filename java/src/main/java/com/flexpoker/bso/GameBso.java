@@ -22,8 +22,6 @@ public interface GameBso {
 
     void intializePlayersAndTables(Game game);
 
-    void createRealTimeGame(Game game);
-
     Set<Table> fetchTables(Game game);
 
     Set<UserGameStatus> fetchUserGameStatuses(Game game);

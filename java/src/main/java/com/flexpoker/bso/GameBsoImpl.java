@@ -48,6 +48,8 @@ public class GameBsoImpl implements GameBso {
         game.setTotalPlayers(2);
         game.setAllowRebuys(false);
         gameDao.save(game.getId(), game);
+
+        createRealTimeGame(game);
     }
 
     @Override
@@ -112,8 +114,7 @@ public class GameBsoImpl implements GameBso {
         }
     }
 
-    @Override
-    public void createRealTimeGame(Game game) {
+    private void createRealTimeGame(Game game) {
         game = gameDao.findById(game.getId());
 
         Set<UserGameStatus> userGameStatuses = fetchUserGameStatuses(game);

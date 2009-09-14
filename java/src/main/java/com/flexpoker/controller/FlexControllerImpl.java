@@ -54,7 +54,6 @@ public class FlexControllerImpl implements FlexController {
                     + " joined Game " + game.getId() + ".");
 
             if (gameEventBso.isGameAtMaxPlayers(game)) {
-                gameBso.createRealTimeGame(game);
                 gameBso.changeGameStage(game, GameStage.STARTING);
                 eventManager.sendGamesUpdatedEvent();
                 eventManager.sendGameStartingEvent(game);
