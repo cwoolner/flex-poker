@@ -68,7 +68,7 @@ public class GameBsoImpl implements GameBso {
     public Table fetchPlayersCurrentTable(User user, Game game) {
         game = fetchById(game.getId());
 
-        Set<Table> tables = fetchTables(game);
+        List<Table> tables = fetchTables(game);
 
         for (Table table : tables) {
             for (Seat seat : table.getSeats()) {
@@ -127,7 +127,7 @@ public class GameBsoImpl implements GameBso {
     }
 
     @Override
-    public Set<Table> fetchTables(Game game) {
+    public List<Table> fetchTables(Game game) {
         return realTimeGameBso.get(game).getTables();
     }
 

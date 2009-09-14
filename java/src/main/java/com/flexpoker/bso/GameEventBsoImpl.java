@@ -233,7 +233,7 @@ public class GameEventBsoImpl implements GameEventBso {
     public void startNewHandForAllTables(Game game) {
         game = gameBso.fetchById(game.getId());
 
-        Set<Table> tables = gameBso.fetchTables(game);
+        List<Table> tables = gameBso.fetchTables(game);
 
         for (Table table : tables) {
             startNewHand(table);

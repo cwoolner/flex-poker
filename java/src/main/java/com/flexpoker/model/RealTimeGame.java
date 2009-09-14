@@ -1,7 +1,7 @@
 package com.flexpoker.model;
 
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -15,7 +15,7 @@ public class RealTimeGame {
 
     private Blinds currentBlinds;
 
-    private Set<Table> tables = new HashSet<Table>();
+    private List<Table> tables = new ArrayList<Table>();
 
     private Set<UserGameStatus> userGameStatuses;
 
@@ -50,8 +50,8 @@ public class RealTimeGame {
         return currentBlinds;
     }
 
-    public Set<Table> getTables() {
-        return tables ;
+    public List<Table> getTables() {
+        return tables;
     }
 
     public void addTable(Table table) {
@@ -60,6 +60,10 @@ public class RealTimeGame {
 
     public void removeTable(Table table) {
         tables.remove(table);
+    }
+
+    public Table getTable(Table table) {
+        return tables.get(table.getId().intValue());
     }
 
     public Set<UserGameStatus> getUserGameStatuses() {
