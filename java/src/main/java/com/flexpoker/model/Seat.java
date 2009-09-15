@@ -4,8 +4,6 @@ public class Seat implements Comparable<Seat> {
 
     private Integer id;
 
-    private com.flexpoker.model.Table table;
-
     private UserGameStatus userGameStatus;
 
     private Integer position;
@@ -20,14 +18,6 @@ public class Seat implements Comparable<Seat> {
 
     public void setId(Integer id) {
         this.id = id;
-    }
-
-    public Table getTable() {
-        return table;
-    }
-
-    public void setTable(Table table) {
-        this.table = table;
     }
 
     public UserGameStatus getUserGameStatus() {
