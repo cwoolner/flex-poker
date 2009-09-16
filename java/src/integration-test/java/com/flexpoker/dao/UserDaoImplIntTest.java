@@ -6,15 +6,20 @@ import org.junit.Test;
 
 import com.flexpoker.util.IntegrationContext;
 
-
+/**
+ * Integration test for UserDaoImpl class.
+ *
+ * @author chris
+ */
 public class UserDaoImplIntTest {
 
-    private UserDao userDao = (UserDao) IntegrationContext.instance().getBean("userDao");
+    private UserDaoImpl dao = (UserDaoImpl) IntegrationContext.instance()
+            .getBean("userDao");
 
     @Test
     public void testFindByUsername() {
-        assertTrue(userDao.findByUsername("bogus").isEmpty());
-        assertFalse(userDao.findByUsername("john").isEmpty());
+        assertTrue(dao.findByUsername("bogus").isEmpty());
+        assertFalse(dao.findByUsername("john").isEmpty());
     }
 
 }
