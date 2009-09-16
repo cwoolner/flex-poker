@@ -43,7 +43,7 @@ public class GameEventBsoImpl implements GameEventBso {
     public void addUserToGame(User user, Game game) {
         game = gameBso.fetchById(game.getId());
 
-        String gameStage = game.getGameStage().getName();
+        GameStage gameStage = game.getGameStage();
 
         if (GameStage.STARTING.equals(gameStage)
             || GameStage.IN_PROGRESS.equals(gameStage)) {

@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.flexpoker.dao.GameDao;
-import com.flexpoker.dao.GameStageDao;
 import com.flexpoker.exception.FlexPokerException;
 import com.flexpoker.model.Game;
 import com.flexpoker.model.GameStage;
@@ -29,8 +28,6 @@ public class GameBsoImpl implements GameBso {
 
     private UserBso userBso;
 
-    private GameStageDao gameStageDao;
-
     private RealTimeGameBso realTimeGameBso;
 
     private static final int MAX_PLAYERS_PER_TABLE = 9;
@@ -46,7 +43,7 @@ public class GameBsoImpl implements GameBso {
         game.setId(null);
         game.setCreatedByUser(user);
         game.setCreatedOn(new Date());
-        game.setGameStage(gameStageDao.findByName(GameStage.REGISTERING));
+        game.setGameStage(GameStage.REGISTERING);
         game.setTotalPlayers(2);
         game.setAllowRebuys(false);
         gameDao.save(game.getId(), game);
@@ -60,9 +57,9 @@ public class GameBsoImpl implements GameBso {
     }
 
     @Override
-    public void changeGameStage(Game game, String gameStageName) {
+    public void changeGameStage(Game game, GameStage gameStage) {
         game = fetchById(game.getId());
-        game.setGameStage(gameStageDao.findByName(gameStageName));
+        game.setGameStage(gameStage);
         gameDao.save(game.getId(), game);
     }
 
@@ -153,14 +150,6 @@ public class GameBsoImpl implements GameBso {
 
     public void setUserBso(UserBso userBso) {
         this.userBso = userBso;
-    }
-
-    public GameStageDao getGameStageDao() {
-        return gameStageDao;
-    }
-
-    public void setGameStageDao(GameStageDao gameStageDao) {
-        this.gameStageDao = gameStageDao;
     }
 
     public RealTimeGameBso getRealTimeGameBso() {
