@@ -28,8 +28,6 @@
 
     <bean name="jpaVendorAdapter" class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
         <property name="database" value="MYSQL" />
-        <property name="showSql" value="false" />
-        <property name="generateDdl" value="true" />
     </bean>
 
     <bean id="userBso" class="com.flexpoker.bso.UserBsoImpl">
