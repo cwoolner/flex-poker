@@ -81,33 +81,33 @@ public class EventManagerImpl implements EventManager {
     }
 
     @Override
-    public void sendNewHandStartingEvent(Table table) {
-        messageTemplate.send(new TableStatusMessageCreator(table, NEW_HAND_STARTING));
+    public void sendNewHandStartingEvent(Game game, Table table) {
+        messageTemplate.send(new TableStatusMessageCreator(game, table, NEW_HAND_STARTING));
     }
 
     @Override
-    public void sendDealFlopEvent(Table table) {
-        messageTemplate.send(new TableStatusMessageCreator(table, DEAL_FLOP));
+    public void sendDealFlopEvent(Game game, Table table) {
+        messageTemplate.send(new TableStatusMessageCreator(game, table, DEAL_FLOP));
     }
 
     @Override
-    public void sendDealRiverEvent(Table table) {
-        messageTemplate.send(new TableStatusMessageCreator(table, DEAL_RIVER));
+    public void sendDealRiverEvent(Game game, Table table) {
+        messageTemplate.send(new TableStatusMessageCreator(game, table, DEAL_RIVER));
     }
 
     @Override
-    public void sendDealTurnEvent(Table table) {
-        messageTemplate.send(new TableStatusMessageCreator(table, DEAL_TURN));
+    public void sendDealTurnEvent(Game game, Table table) {
+        messageTemplate.send(new TableStatusMessageCreator(game, table, DEAL_TURN));
     }
 
     @Override
-    public void sendHandCompleteEvent(Table table) {
-        messageTemplate.send(new TableStatusMessageCreator(table, HAND_COMPLETE));
+    public void sendHandCompleteEvent(Game game, Table table) {
+        messageTemplate.send(new TableStatusMessageCreator(game, table, HAND_COMPLETE));
     }
 
     @Override
-    public void sendUserActedEvent(Table table) {
-        messageTemplate.send(new TableStatusMessageCreator(table, USER_ACTED));
+    public void sendUserActedEvent(Game game, Table table) {
+        messageTemplate.send(new TableStatusMessageCreator(game, table, USER_ACTED));
     }
 
     public MessageTemplate getMessageTemplate() {
@@ -136,8 +136,12 @@ public class EventManagerImpl implements EventManager {
 
     private class TableStatusMessageCreator extends FlexPokerMessageCreator {
 
-        public TableStatusMessageCreator(Table table, String subtopic) {
+        public TableStatusMessageCreator(Game game, Table table, String subtopic) {
             super();
+            if (game == null || game.getId() == null) {
+                throw new IllegalArgumentException("Game or game id cannot "
+                        + "be null.");
+            }
             if (table == null || table.getId() == null) {
                 throw new IllegalArgumentException("Table or table id cannot "
                         + "be null.");
@@ -145,7 +149,7 @@ public class EventManagerImpl implements EventManager {
             if (StringUtils.isBlank(subtopic)) {
                 throw new IllegalArgumentException("Subtopic cannot be blank.");
             }
-            fullSubtopic = table.getId() + "." + subtopic;
+            fullSubtopic = game.getId() + "." + table.getId() + "." + subtopic;
             destination = TABLE_STATUS_UPDATES;
         }
 

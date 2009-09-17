@@ -345,25 +345,25 @@ public class GameEventBsoImpl implements GameEventBso {
     }
 
     @Override
-    public FlopCards fetchFlopCards(Table table) {
+    public FlopCards fetchFlopCards(Game game, Table table) {
         realTimeHandBso.get(table).setFlopDealt(true);
         return deckBso.fetchFlopCards(table);
     }
 
     @Override
-    public RiverCard fetchRiverCard(Table table) {
+    public RiverCard fetchRiverCard(Game game, Table table) {
         realTimeHandBso.get(table).setRiverDealt(true);
         return deckBso.fetchRiverCard(table);
     }
 
     @Override
-    public TurnCard fetchTurnCard(Table table) {
+    public TurnCard fetchTurnCard(Game game, Table table) {
         realTimeHandBso.get(table).setTurnDealt(true);
         return deckBso.fetchTurnCard(table);
     }
 
     @Override
-    public Map<Integer, PocketCards> fetchOptionalShowCards(Table table) {
+    public Map<Integer, PocketCards> fetchOptionalShowCards(Game game, Table table) {
         Map<Integer, PocketCards> returnMap = new HashMap<Integer, PocketCards>();
         returnMap.put(1, new PocketCards());
         returnMap.put(2, new PocketCards());
@@ -371,7 +371,7 @@ public class GameEventBsoImpl implements GameEventBso {
     }
 
     @Override
-    public Map<Integer, PocketCards> fetchRequiredShowCards(Table table) {
+    public Map<Integer, PocketCards> fetchRequiredShowCards(Game game, Table table) {
         Map<Integer, PocketCards> returnMap = new HashMap<Integer, PocketCards>();
         returnMap.put(1, new PocketCards());
         returnMap.put(2, new PocketCards());

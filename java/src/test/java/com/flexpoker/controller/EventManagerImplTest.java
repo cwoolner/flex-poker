@@ -5,6 +5,7 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 
 import com.flexpoker.model.Game;
+import com.flexpoker.model.Table;
 import com.flexpoker.util.Context;
 
 
@@ -80,42 +81,92 @@ public class EventManagerImplTest {
 
     @Test
     public void testSendNewHandStartingEvent() {
-        fail("Not yet implemented");
+        Game game = new Game();
+        Table table = new Table();
+        
+        try {
+            eventEventManager.sendNewHandStartingEvent(game, table);
+            fail("Should have thrown IllegalArgumentException.");
+        } catch (IllegalArgumentException e) {}
+
+        game.setId(1);
+        table.setId(1);
+        eventEventManager.sendNewHandStartingEvent(game, table);
     }
 
     @Test
     public void testSendDealFlopEvent() {
-        fail("Not yet implemented");
+        Game game = new Game();
+        Table table = new Table();
+        
+        try {
+            eventEventManager.sendDealFlopEvent(game, table);
+            fail("Should have thrown IllegalArgumentException.");
+        } catch (IllegalArgumentException e) {}
+
+        game.setId(1);
+        table.setId(1);
+        eventEventManager.sendDealFlopEvent(game, table);
     }
 
     @Test
     public void testSendDealRiverEvent() {
-        fail("Not yet implemented");
+        Game game = new Game();
+        Table table = new Table();
+        
+        try {
+            eventEventManager.sendDealRiverEvent(game, table);
+            fail("Should have thrown IllegalArgumentException.");
+        } catch (IllegalArgumentException e) {}
+
+        game.setId(1);
+        table.setId(1);
+        eventEventManager.sendDealRiverEvent(game, table);
     }
 
     @Test
     public void testSendDealTurnEvent() {
-        fail("Not yet implemented");
+        Game game = new Game();
+        Table table = new Table();
+        
+        try {
+            eventEventManager.sendDealTurnEvent(game, table);
+            fail("Should have thrown IllegalArgumentException.");
+        } catch (IllegalArgumentException e) {}
+
+        game.setId(1);
+        table.setId(1);
+        eventEventManager.sendDealTurnEvent(game, table);
     }
 
     @Test
     public void testSendHandCompleteEvent() {
-        fail("Not yet implemented");
+        Game game = new Game();
+        Table table = new Table();
+        
+        try {
+            eventEventManager.sendHandCompleteEvent(game, table);
+            fail("Should have thrown IllegalArgumentException.");
+        } catch (IllegalArgumentException e) {}
+
+        game.setId(1);
+        table.setId(1);
+        eventEventManager.sendHandCompleteEvent(game, table);
     }
 
     @Test
     public void testSendUserActedEvent() {
-        fail("Not yet implemented");
-    }
+        Game game = new Game();
+        Table table = new Table();
+        
+        try {
+            eventEventManager.sendUserActedEvent(game, table);
+            fail("Should have thrown IllegalArgumentException.");
+        } catch (IllegalArgumentException e) {}
 
-    @Test
-    public void testGetMessageTemplate() {
-        fail("Not yet implemented");
-    }
-
-    @Test
-    public void testSetMessageTemplate() {
-        fail("Not yet implemented");
+        game.setId(1);
+        table.setId(1);
+        eventEventManager.sendUserActedEvent(game, table);
     }
 
 }

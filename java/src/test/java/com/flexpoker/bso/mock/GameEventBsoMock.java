@@ -24,13 +24,13 @@ public class GameEventBsoMock implements GameEventBso {
     }
 
     @Override
-    public FlopCards fetchFlopCards(Table table) {
+    public FlopCards fetchFlopCards(Game game, Table table) {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public Map<Integer, PocketCards> fetchOptionalShowCards(Table table) {
+    public Map<Integer, PocketCards> fetchOptionalShowCards(Game game, Table table) {
         // TODO Auto-generated method stub
         return null;
     }
@@ -42,19 +42,19 @@ public class GameEventBsoMock implements GameEventBso {
     }
 
     @Override
-    public Map<Integer, PocketCards> fetchRequiredShowCards(Table table) {
+    public Map<Integer, PocketCards> fetchRequiredShowCards(Game game, Table table) {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public RiverCard fetchRiverCard(Table table) {
+    public RiverCard fetchRiverCard(Game game, Table table) {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public TurnCard fetchTurnCard(Table table) {
+    public TurnCard fetchTurnCard(Game game, Table table) {
         // TODO Auto-generated method stub
         return null;
     }
