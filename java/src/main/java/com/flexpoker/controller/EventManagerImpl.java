@@ -4,6 +4,7 @@ import javax.jms.JMSException;
 import javax.jms.MapMessage;
 
 import org.apache.activemq.command.ActiveMQMapMessage;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.flex.messaging.AsyncMessageCreator;
 import org.springframework.flex.messaging.MessageTemplate;
 import org.springframework.stereotype.Controller;
@@ -137,6 +138,13 @@ public class EventManagerImpl implements EventManager {
 
         public TableStatusMessageCreator(Table table, String subtopic) {
             super();
+            if (table == null || table.getId() == null) {
+                throw new IllegalArgumentException("Table or table id cannot "
+                        + "be null.");
+            }
+            if (StringUtils.isBlank(subtopic)) {
+                throw new IllegalArgumentException("Subtopic cannot be blank.");
+            }
             fullSubtopic = table.getId() + "." + subtopic;
             destination = TABLE_STATUS_UPDATES;
         }
@@ -146,6 +154,14 @@ public class EventManagerImpl implements EventManager {
     private class GameStatusMessageCreator extends FlexPokerMessageCreator {
 
         public GameStatusMessageCreator(Game game, String subtopic) {
+            super();
+            if (game == null || game.getId() == null) {
+                throw new IllegalArgumentException("Game or game id cannot "
+                        + "be null.");
+            }
+            if (StringUtils.isBlank(subtopic)) {
+                throw new IllegalArgumentException("Subtopic cannot be blank.");
+            }
             fullSubtopic = game.getId() + "." + subtopic;
             destination = GAME_STATUS_UPDATES;
         }
