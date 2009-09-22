@@ -19,6 +19,7 @@ import com.flexpoker.model.Seat;
 import com.flexpoker.model.Table;
 import com.flexpoker.model.User;
 import com.flexpoker.model.UserGameStatus;
+import com.flexpoker.util.Constants;
 
 @Transactional
 @Service("gameBso")
@@ -29,8 +30,6 @@ public class GameBsoImpl implements GameBso {
     private UserBso userBso;
 
     private RealTimeGameBso realTimeGameBso;
-
-    private static final int MAX_PLAYERS_PER_TABLE = 9;
 
     @Override
     public List<Game> fetchAllGames() {
