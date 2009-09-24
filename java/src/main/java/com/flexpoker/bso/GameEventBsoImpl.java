@@ -100,14 +100,14 @@ public class GameEventBsoImpl implements GameEventBso {
     }
 
     @Override
-    public void startNewHand(Table table) {
+    public void startNewHand(Game game, Table table) {
         assignSeatStates(table);
         deckBso.shuffleDeck(table);
-        createNewRealTimeHand(table);
+        createNewRealTimeHand(game, table);
     }
 
-    private void createNewRealTimeHand(Table table) {
-        Blinds currentBlinds = realTimeGameBso.get(table.getGame()).getCurrentBlinds();
+    private void createNewRealTimeHand(Game game, Table table) {
+        Blinds currentBlinds = realTimeGameBso.get(game).getCurrentBlinds();
         int smallBlind = currentBlinds.getSmallBlind();
         int bigBlind = currentBlinds.getBigBlind();
 
@@ -233,7 +233,7 @@ public class GameEventBsoImpl implements GameEventBso {
         List<Table> tables = gameBso.fetchTables(game);
 
         for (Table table : tables) {
-            startNewHand(table);
+            startNewHand(game, table);
         }
 
     }

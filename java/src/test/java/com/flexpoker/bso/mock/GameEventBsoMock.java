@@ -120,7 +120,7 @@ public class GameEventBsoMock implements GameEventBso {
     }
 
     @Override
-    public void startNewHand(Table table) {
+    public void startNewHand(Game game, Table table) {
         // TODO Auto-generated method stub
 
     }

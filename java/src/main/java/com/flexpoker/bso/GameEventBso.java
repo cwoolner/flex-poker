@@ -23,7 +23,7 @@ public interface GameEventBso {
 
     PocketCards fetchPocketCards(User user, Table table);
 
-    void startNewHand(Table table);
+    void startNewHand(Game game, Table table);
 
     void startNewHandForAllTables(Game game);
 
