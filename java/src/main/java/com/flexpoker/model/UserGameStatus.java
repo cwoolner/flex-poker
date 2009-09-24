@@ -4,8 +4,6 @@ import java.util.Date;
 
 public class UserGameStatus {
 
-    private Integer id;
-
     private User user;
 
     private Integer chips;
@@ -15,14 +13,6 @@ public class UserGameStatus {
     private Date enterTime;
 
     private Date exitTime;
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
 
     public User getUser() {
         return user;
