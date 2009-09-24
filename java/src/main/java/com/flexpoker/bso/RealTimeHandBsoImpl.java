@@ -3,14 +3,10 @@ package com.flexpoker.bso;
 import java.util.HashMap;
 
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import com.flexpoker.model.Game;
-import com.flexpoker.model.RealTimeGame;
 import com.flexpoker.model.RealTimeHand;
 import com.flexpoker.model.Table;
 
-@Transactional
 @Service("realTimeHandBso")
 public class RealTimeHandBsoImpl extends HashMap<Table, RealTimeHand>
         implements RealTimeHandBso {
