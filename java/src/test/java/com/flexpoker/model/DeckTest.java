@@ -71,10 +71,8 @@ public class DeckTest {
         UserGameStatus userGameStatus1 = new UserGameStatus();
         UserGameStatus userGameStatus2 = new UserGameStatus();
         Seat seat1 = new Seat();
-        seat1.setId(1);
         seat1.setPosition(1);
         Seat seat2 = new Seat();
-        seat2.setId(2);
         seat2.setPosition(2);
 
         userGameStatus1.setUser(user1);
