@@ -1,6 +1,6 @@
 package com.flexpoker.model;
 
-import java.util.Set;
+import java.util.List;
 
 public class Table {
 
@@ -14,7 +14,7 @@ public class Table {
 
     private Seat actionOn;
 
-    private Set<Seat> seats;
+    private List<Seat> seats;
 
     public Integer getId() {
         return id;
@@ -56,11 +56,11 @@ public class Table {
         this.actionOn = actionOn;
     }
 
-    public Set<Seat> getSeats() {
+    public List<Seat> getSeats() {
         return seats;
     }
 
-    public void setSeats(Set<Seat> seats) {
+    public void setSeats(List<Seat> seats) {
         this.seats = seats;
     }
 

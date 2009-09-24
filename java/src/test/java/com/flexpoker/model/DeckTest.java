@@ -3,9 +3,7 @@ package com.flexpoker.model;
 import static org.junit.Assert.*;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.junit.Test;
 
@@ -63,7 +61,7 @@ public class DeckTest {
         cardList.add(card15);
 
         Table table = new Table();
-        Set<Seat> seats = new HashSet<Seat>();
+        List<Seat> seats = new ArrayList<Seat>();
         User user1 = new User();
         user1.setId(1);
         User user2 = new User();

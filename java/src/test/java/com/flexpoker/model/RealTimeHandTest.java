@@ -2,17 +2,16 @@ package com.flexpoker.model;
 
 import static org.junit.Assert.*;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.Test;
-
 
 public class RealTimeHandTest {
 
     @Test
     public void testRealTimeHand() {
-        Set<Seat> seats = new HashSet<Seat>();
+        List<Seat> seats = new ArrayList<Seat>();
         Seat seat1 = new Seat();
         Seat seat2 = new Seat();
 

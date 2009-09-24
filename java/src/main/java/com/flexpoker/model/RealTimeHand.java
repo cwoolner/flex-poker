@@ -3,6 +3,7 @@ package com.flexpoker.model;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -39,7 +40,7 @@ public class RealTimeHand {
 
     private Seat nextToAct;
 
-    public RealTimeHand(Set<Seat> seats) {
+    public RealTimeHand(List<Seat> seats) {
         for (Seat seat : seats) {
             possibleSeatActionsMap.put(seat, new HashSet<GameEventType>());
             amountNeededToCall.put(seat, null);
