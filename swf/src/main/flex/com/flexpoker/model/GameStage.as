@@ -4,8 +4,6 @@ package com.flexpoker.model {
     [Bindable]
     public class GameStage {
 
-        public var id:int;
-
         public var name:String;
 
     }
