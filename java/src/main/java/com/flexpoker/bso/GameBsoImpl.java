@@ -64,8 +64,6 @@ public class GameBsoImpl implements GameBso {
 
     @Override
     public Table fetchPlayersCurrentTable(User user, Game game) {
-        game = fetchById(game.getId());
-
         List<Table> tables = fetchTables(game);
 
         for (Table table : tables) {
@@ -81,7 +79,6 @@ public class GameBsoImpl implements GameBso {
 
     @Override
     public void intializePlayersAndTables(Game game) {
-        game = fetchById(game.getId());
         RealTimeGame realTimeGame = realTimeGameBso.get(game);
 
         List<Integer> randomPlayerPositions = new ArrayList<Integer>();
