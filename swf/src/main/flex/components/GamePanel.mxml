@@ -100,7 +100,6 @@
                 token.addResponder(new AsyncResponder(
                     function(event:ResultEvent, token:Object = null):void {
                         table = event.result as Table;
-                        table.sortPositions();
                         tableEventConsumer.subtopic = game.id.toString()
                                 + "." + table.id.toString() + ".*";
                         tableEventConsumer.subscribe();
@@ -122,7 +121,6 @@
                 token.addResponder(new AsyncResponder(
                     function(event:ResultEvent, token:Object = null):void {
                         table = event.result as Table;
-                        table.sortPositions();
                         currentActionOnIndex = table.actionOn.position - 1;
                         actionOnArray.setItemAt(true, currentActionOnIndex);
                         dealerArray.setItemAt(true, table.button.position -1);
@@ -250,7 +248,6 @@
             token.addResponder(new AsyncResponder(
                 function(event:ResultEvent, token:Object = null):void {
                     table = event.result as Table;
-                    table.sortPositions();
                     actionOnArray.setItemAt(false, currentActionOnIndex);
                     currentActionOnIndex = table.actionOn.position - 1;
                     actionOnArray.setItemAt(true, currentActionOnIndex);
