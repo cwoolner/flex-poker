@@ -43,6 +43,16 @@ public class GameEventBsoImpl implements GameEventBso {
     public void addUserToGame(User user, Game game) {
         game = gameBso.fetchById(game.getId());
 
+        checkIfUserCanJoinGame(game, user);
+
+        UserGameStatus userGameStatus = new UserGameStatus();
+        userGameStatus.setEnterTime(new Date());
+        userGameStatus.setUser(user);
+
+        realTimeGameBso.get(game).addUserGameStatus(userGameStatus);
+    }
+
+    private void checkIfUserCanJoinGame(Game game, User user) {
         GameStage gameStage = game.getGameStage();
 
         if (GameStage.STARTING.equals(gameStage)
@@ -68,12 +78,6 @@ public class GameEventBsoImpl implements GameEventBso {
         if (totalPlayers <= currentNumberOfPlayers) {
             throw new FlexPokerException("This game is full.");
         }
-
-        UserGameStatus userGameStatus = new UserGameStatus();
-        userGameStatus.setEnterTime(new Date());
-        userGameStatus.setUser(user);
-        // TODO: UserGameStatusDao work.
-        // userGameStatusDao.save(userGameStatus.getId(), userGameStatus);
     }
 
     @Override

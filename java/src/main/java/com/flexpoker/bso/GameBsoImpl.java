@@ -112,14 +112,7 @@ public class GameBsoImpl implements GameBso {
 
     private void createRealTimeGame(Game game) {
         game = gameDao.findById(game.getId());
-
-        Set<UserGameStatus> userGameStatuses = fetchUserGameStatuses(game);
-
-        List<User> userList = new ArrayList<User>();
-        for (UserGameStatus userGameStatus : userGameStatuses) {
-            userList.add(userGameStatus.getUser());
-        }
-        realTimeGameBso.put(game, new RealTimeGame(userList));
+        realTimeGameBso.put(game, new RealTimeGame());
     }
 
     @Override
