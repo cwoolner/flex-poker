@@ -58,7 +58,7 @@ public class GameBsoMock implements GameBso {
     }
 
     @Override
-    public void intializePlayersAndTables(Game game) {
+    public void initializePlayersAndTables(Game game) {
         // TODO Auto-generated method stub
 
     }

@@ -78,7 +78,7 @@ public class GameBsoImpl implements GameBso {
     }
 
     @Override
-    public void intializePlayersAndTables(Game game) {
+    public void initializePlayersAndTables(Game game) {
         RealTimeGame realTimeGame = realTimeGameBso.get(game);
 
         List<Integer> randomPlayerPositions = new ArrayList<Integer>();

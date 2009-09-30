@@ -21,7 +21,7 @@ public interface GameBso {
 
     Table fetchPlayersCurrentTable(User user, Game game);
 
-    void intializePlayersAndTables(Game game);
+    void initializePlayersAndTables(Game game);
 
     List<Table> fetchTables(Game game);
 
