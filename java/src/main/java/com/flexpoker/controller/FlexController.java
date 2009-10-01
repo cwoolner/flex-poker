@@ -24,21 +24,21 @@ public interface FlexController {
 
     void verifyRegistrationForGame(Game game);
 
-    PocketCards fetchPocketCards(Table table);
+    PocketCards fetchPocketCards(Game game, Table table);
 
     Table fetchTable(Game game);
 
     void verifyGameInProgress(Game game);
 
-    void check(Table table);
+    void check(Game game, Table table);
 
-    FlopCards fetchFlopCards(Table table);
+    FlopCards fetchFlopCards(Game game, Table table);
 
-    TurnCard fetchTurnCard(Table table);
+    TurnCard fetchTurnCard(Game game, Table table);
 
-    RiverCard fetchRiverCard(Table table);
+    RiverCard fetchRiverCard(Game game, Table table);
 
-    Map<Integer, PocketCards> fetchRequiredShowCards(Table table);
+    Map<Integer, PocketCards> fetchRequiredShowCards(Game game, Table table);
 
-    Map<Integer, PocketCards> fetchOptionalShowCards(Table table);
+    Map<Integer, PocketCards> fetchOptionalShowCards(Game game, Table table);
 }

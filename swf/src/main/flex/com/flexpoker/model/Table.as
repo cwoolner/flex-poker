@@ -10,8 +10,6 @@ package com.flexpoker.model {
 
         public var id:int;
 
-        public var game:Game;
-
         public var button:Seat;
 
         public var smallBlind:Seat;
@@ -21,18 +19,6 @@ package com.flexpoker.model {
         public var actionOn:Seat;
 
         public var seats:ArrayCollection;
-
-        public function sortPositions():void {
-             var positionSortField:SortField = new SortField();
-             positionSortField.name = "position";
-             positionSortField.numeric = true;
-
-             var numericDataSort:Sort = new Sort();
-             numericDataSort.fields = [positionSortField];
-
-             seats.sort = numericDataSort;
-             seats.refresh();
-        }
 
     }
 

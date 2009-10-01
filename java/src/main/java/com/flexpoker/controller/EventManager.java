@@ -15,16 +15,16 @@ public interface EventManager {
 
     void sendGameInProgressEvent(Game game);
 
-    void sendNewHandStartingEvent(Table table);
+    void sendNewHandStartingEvent(Game game, Table table);
 
-    void sendDealFlopEvent(Table table);
+    void sendDealFlopEvent(Game game, Table table);
 
-    void sendDealTurnEvent(Table table);
+    void sendDealTurnEvent(Game game, Table table);
 
-    void sendDealRiverEvent(Table table);
+    void sendDealRiverEvent(Game game, Table table);
 
-    void sendHandCompleteEvent(Table table);
+    void sendHandCompleteEvent(Game game, Table table);
 
-    void sendUserActedEvent(Table table);
+    void sendUserActedEvent(Game game, Table table);
 
 }

@@ -151,13 +151,7 @@
                                     </mx:Component>
                                 </mx:itemRenderer>
                             </mx:DataGridColumn>
-                            <mx:DataGridColumn headerText="Stage" dataField="gameStage">
-                                <mx:itemRenderer>
-                                    <mx:Component>
-                                        <rend:GameStageRenderer />
-                                    </mx:Component>
-                                </mx:itemRenderer>
-                            </mx:DataGridColumn>
+                            <mx:DataGridColumn headerText="Stage" dataField="gameStage" />
                             <mx:DataGridColumn headerText="Creator" dataField="createdByUser">
                                 <mx:itemRenderer>
                                     <mx:Component>

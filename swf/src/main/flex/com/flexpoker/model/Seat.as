@@ -6,8 +6,6 @@ package com.flexpoker.model {
 
         public var id:int;
 
-        public var table:Table;
-
         public var userGameStatus:UserGameStatus;
 
         public var position:int;

@@ -4,6 +4,7 @@ import java.util.Map;
 
 import com.flexpoker.model.FlopCards;
 import com.flexpoker.model.Game;
+import com.flexpoker.model.GameEventType;
 import com.flexpoker.model.PocketCards;
 import com.flexpoker.model.RiverCard;
 import com.flexpoker.model.Table;
@@ -22,7 +23,7 @@ public interface GameEventBso {
 
     PocketCards fetchPocketCards(User user, Table table);
 
-    void startNewHand(Table table);
+    void startNewHand(Game game, Table table);
 
     void startNewHandForAllTables(Game game);
 
@@ -30,15 +31,14 @@ public interface GameEventBso {
 
     boolean haveAllPlayersVerifiedGameInProgress(Game game);
 
-    boolean isUserAllowedToPerformAction(String action, User user, Table table);
-
-    void check(User user, Table table);
+    boolean isUserAllowedToPerformAction(GameEventType action, User user,
+            Table table);
 
     boolean isRoundComplete(Table table);
 
     boolean isHandComplete(Table table);
 
-    void updateState(Table table);
+    void updateCheckState(Table table);
 
     boolean isFlopDealt(Table table);
 
@@ -46,16 +46,16 @@ public interface GameEventBso {
 
     boolean isRiverDealt(Table table);
 
-    FlopCards fetchFlopCards(Table table);
+    FlopCards fetchFlopCards(Game game, Table table);
 
-    RiverCard fetchRiverCard(Table table);
+    RiverCard fetchRiverCard(Game game, Table table);
 
-    TurnCard fetchTurnCard(Table table);
+    TurnCard fetchTurnCard(Game game, Table table);
 
     void setRoundComplete(Table table, boolean b);
 
-    Map<Integer, PocketCards> fetchRequiredShowCards(Table table);
+    Map<Integer, PocketCards> fetchRequiredShowCards(Game game, Table table);
 
-    Map<Integer, PocketCards> fetchOptionalShowCards(Table table);
+    Map<Integer, PocketCards> fetchOptionalShowCards(Game game, Table table);
 
 }

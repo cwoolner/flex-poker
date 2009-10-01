@@ -3,6 +3,7 @@ package com.flexpoker.bso;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
@@ -11,9 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.flexpoker.dao.GameDao;
-import com.flexpoker.dao.GameStageDao;
-import com.flexpoker.dao.SeatDao;
-import com.flexpoker.dao.TableDao;
 import com.flexpoker.exception.FlexPokerException;
 import com.flexpoker.model.Game;
 import com.flexpoker.model.GameStage;
@@ -22,6 +20,7 @@ import com.flexpoker.model.Seat;
 import com.flexpoker.model.Table;
 import com.flexpoker.model.User;
 import com.flexpoker.model.UserGameStatus;
+import com.flexpoker.util.Constants;
 
 @Transactional
 @Service("gameBso")
@@ -30,12 +29,6 @@ public class GameBsoImpl implements GameBso {
     private GameDao gameDao;
 
     private UserBso userBso;
-
-    private GameStageDao gameStageDao;
-
-    private TableDao tableDao;
-
-    private SeatDao seatDao;
 
     private RealTimeGameBso realTimeGameBso;
 
@@ -50,10 +43,12 @@ public class GameBsoImpl implements GameBso {
         game.setId(null);
         game.setCreatedByUser(user);
         game.setCreatedOn(new Date());
-        game.setGameStage(gameStageDao.findByName(GameStage.REGISTERING));
+        game.setGameStage(GameStage.REGISTERING);
         game.setTotalPlayers(2);
         game.setAllowRebuys(false);
         gameDao.save(game.getId(), game);
+
+        createRealTimeGame(game);
     }
 
     @Override
@@ -62,17 +57,17 @@ public class GameBsoImpl implements GameBso {
     }
 
     @Override
-    public void changeGameStage(Game game, String gameStageName) {
+    public void changeGameStage(Game game, GameStage gameStage) {
         game = fetchById(game.getId());
-        game.setGameStage(gameStageDao.findByName(gameStageName));
+        game.setGameStage(gameStage);
         gameDao.save(game.getId(), game);
     }
 
     @Override
     public Table fetchPlayersCurrentTable(User user, Game game) {
-        game = fetchById(game.getId());
+        List<Table> tables = fetchTables(game);
 
-        for (Table table : game.getTables()) {
+        for (Table table : tables) {
             for (Seat seat : table.getSeats()) {
                 if (seat.getUserGameStatus().getUser().equals(user)) {
                     return table;
@@ -84,46 +79,88 @@ public class GameBsoImpl implements GameBso {
     }
 
     @Override
-    public void intializePlayersAndTables(Game game) {
-        game = fetchById(game.getId());
+    public void initializePlayersAndTables(Game game) {
+        RealTimeGame realTimeGame = realTimeGameBso.get(game);
 
+        Table table = new Table();
+        realTimeGame.addTable(table);
+        List<Seat> seats = new ArrayList<Seat>();
+
+        Set<UserGameStatus> userGameStatuses = realTimeGame.getUserGameStatuses();
+
+        int i = 0;
+        for (UserGameStatus userGameStatus : userGameStatuses) {
+            userGameStatus.setChips(1000);
+
+            Seat seat = new Seat();
+            seat.setUserGameStatus(userGameStatus);
+            seat.setPosition(i);
+            seat.setStillInHand(true);
+            seat.setAllIn(false);
+
+            seats.add(seat);
+        }
+
+        table.setSeats(seats);
+/*
         List<Integer> randomPlayerPositions = new ArrayList<Integer>();
 
-        for (int i = 1; i <= game.getTotalPlayers(); i++) {
-            randomPlayerPositions.add(i);
+        if (game.getTotalPlayers() > Constants.MAX_PLAYERS_PER_TABLE) {
+            for (int i = 0; i < Constants.MAX_PLAYERS_PER_TABLE; i++) {
+                randomPlayerPositions.add(i);
+            }
+        } else {
+            for (int i = 0; i < game.getTotalPlayers(); i++) {
+                randomPlayerPositions.add(i);
+            }
+        }
+
+        List<UserGameStatus> userGameStatuses =
+                new ArrayList<UserGameStatus>(fetchUserGameStatuses(game));
+
+        for (int i = 0; i < game.getTotalPlayers(); i += Constants.MAX_PLAYERS_PER_TABLE) {
+            Table table = new Table();
+            realTimeGame.addTable(table);
+        }
+
+        int numberOfTables = realTimeGame.getTables().size();
+
+        List<Integer> numberOfPlayersPerTable = new ArrayList<Integer>();
+
+        // TODO: Assign all seats to one table, then send the tables to the
+        //       yet to be created TableBalancerBso class.
+        for (int i = 0; i < game.getTotalPlayers(); i++) {
         }
 
         Collections.shuffle(randomPlayerPositions, new Random());
 
-        Table table = new Table();
-        table.setGame(game);
-        tableDao.save(table.getId(), table);
+        Set<Seat> seats = new HashSet<Seat>();
 
-        int i = 0;
-        for (UserGameStatus userGameStatus : game.getUserGameStatuses()) {
-            Seat seat = new Seat();
-            seat.setPosition(randomPlayerPositions.get(i));
-            seat.setTable(table);
-            seat.setUserGameStatus(userGameStatus);
-            seatDao.save(seat.getId(), seat);
+//            for (int j = 0; j < )
+//            Seat seat = new Seat();
+//            seat.setPosition(randomPlayerPositions.get(j));
+//            seat.setUserGameStatus(userGameStatuses.get(i));
+//            seats.add(seat);
 
-            userGameStatus.setChips(1000);
+//            table.setSeats(seats);
 
-            i++;
-        }
+//            userGameStatuses.get(i).setChips(1000);
+*/
+    }
+
+    private void createRealTimeGame(Game game) {
+        game = gameDao.findById(game.getId());
+        realTimeGameBso.put(game, new RealTimeGame());
     }
 
     @Override
-    public void createRealTimeGame(Game game) {
-        game = gameDao.findById(game.getId());
+    public List<Table> fetchTables(Game game) {
+        return realTimeGameBso.get(game).getTables();
+    }
 
-        Set<UserGameStatus> userGameStatuses = game.getUserGameStatuses();
-
-        List<User> userList = new ArrayList<User>();
-        for (UserGameStatus userGameStatus : userGameStatuses) {
-            userList.add(userGameStatus.getUser());
-        }
-        realTimeGameBso.put(game, new RealTimeGame(userList));
+    @Override
+    public Set<UserGameStatus> fetchUserGameStatuses(Game game) {
+        return realTimeGameBso.get(game).getUserGameStatuses();
     }
 
     public GameDao getGameDao() {
@@ -140,30 +177,6 @@ public class GameBsoImpl implements GameBso {
 
     public void setUserBso(UserBso userBso) {
         this.userBso = userBso;
-    }
-
-    public GameStageDao getGameStageDao() {
-        return gameStageDao;
-    }
-
-    public void setGameStageDao(GameStageDao gameStageDao) {
-        this.gameStageDao = gameStageDao;
-    }
-
-    public TableDao getTableDao() {
-        return tableDao;
-    }
-
-    public void setTableDao(TableDao tableDao) {
-        this.tableDao = tableDao;
-    }
-
-    public SeatDao getSeatDao() {
-        return seatDao;
-    }
-
-    public void setSeatDao(SeatDao seatDao) {
-        this.seatDao = seatDao;
     }
 
     public RealTimeGameBso getRealTimeGameBso() {

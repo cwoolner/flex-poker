@@ -4,11 +4,7 @@ package com.flexpoker.model {
     [Bindable]
     public class UserGameStatus {
 
-        public var id:int;
-
         public var user:User;
-
-        public var game:Game;
 
         public var chips:int;
 
