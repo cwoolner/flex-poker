@@ -20,7 +20,7 @@ package com.flexpoker.model {
 
         public var playersRemaining:int;
 
-        public var gameStage:GameStage;
+        public var gameStage:String;
 
     }
 
