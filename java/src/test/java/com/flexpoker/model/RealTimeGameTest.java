@@ -2,24 +2,22 @@ package com.flexpoker.model;
 
 import static org.junit.Assert.*;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.junit.Test;
-
 
 public class RealTimeGameTest {
 
     @Test
     public void testIsEventVerified() {
-        List<User> users = new ArrayList<User>();
         User user1 = new User();
         User user2 = new User();
+        UserGameStatus userGameStatus1 = new UserGameStatus();
+        userGameStatus1.setUser(user1);
+        UserGameStatus userGameStatus2 = new UserGameStatus();
+        userGameStatus2.setUser(user2);
 
-        users.add(user1);
-        users.add(user2);
-
-        RealTimeGame realTimeGame = new RealTimeGame(users);
+        RealTimeGame realTimeGame = new RealTimeGame();
+        realTimeGame.addUserGameStatus(userGameStatus1);
+        realTimeGame.addUserGameStatus(userGameStatus2);
         assertFalse(realTimeGame.isEventVerified("event1"));
 
         realTimeGame.verifyEvent(user1, "event1");

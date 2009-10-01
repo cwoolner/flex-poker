@@ -9,8 +9,6 @@ import java.util.Set;
 
 public class RealTimeGame {
 
-    private List<User> users;
-
     private Map<String, Integer> eventVerificationMap =
             new HashMap<String, Integer>();
 
@@ -32,7 +30,7 @@ public class RealTimeGame {
                 return false;
             }
 
-            return numberOfVerified == users.size();
+            return numberOfVerified == userGameStatuses.size();
         }
     }
 
