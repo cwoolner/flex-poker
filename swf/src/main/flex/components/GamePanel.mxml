@@ -121,11 +121,11 @@
                 token.addResponder(new AsyncResponder(
                     function(event:ResultEvent, token:Object = null):void {
                         table = event.result as Table;
-                        currentActionOnIndex = table.actionOn.position - 1;
+                        currentActionOnIndex = table.actionOn.position;
                         actionOnArray.setItemAt(true, currentActionOnIndex);
-                        dealerArray.setItemAt(true, table.button.position -1);
-                        smallBlindArray.setItemAt(true, table.smallBlind.position -1);
-                        bigBlindArray.setItemAt(true, table.bigBlind.position -1);
+                        dealerArray.setItemAt(true, table.button.position);
+                        smallBlindArray.setItemAt(true, table.smallBlind.position);
+                        bigBlindArray.setItemAt(true, table.bigBlind.position);
 
                         if (table.actionOn.userGameStatus.user.username == username) {
                             pokerActionBox.visible = true;
@@ -249,7 +249,7 @@
                 function(event:ResultEvent, token:Object = null):void {
                     table = event.result as Table;
                     actionOnArray.setItemAt(false, currentActionOnIndex);
-                    currentActionOnIndex = table.actionOn.position - 1;
+                    currentActionOnIndex = table.actionOn.position;
                     actionOnArray.setItemAt(true, currentActionOnIndex);
 
                     if (table.actionOn.userGameStatus.user.username == username) {
