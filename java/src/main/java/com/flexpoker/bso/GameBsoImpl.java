@@ -3,6 +3,7 @@ package com.flexpoker.bso;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
@@ -81,33 +82,70 @@ public class GameBsoImpl implements GameBso {
     public void initializePlayersAndTables(Game game) {
         RealTimeGame realTimeGame = realTimeGameBso.get(game);
 
-        List<Integer> randomPlayerPositions = new ArrayList<Integer>();
+        Table table = new Table();
+        realTimeGame.addTable(table);
+        List<Seat> seats = new ArrayList<Seat>();
 
-        for (int i = 0; i < game.getTotalPlayers(); i++) {
-            randomPlayerPositions.add(i);
+        Set<UserGameStatus> userGameStatuses = realTimeGame.getUserGameStatuses();
+
+        int i = 0;
+        for (UserGameStatus userGameStatus : userGameStatuses) {
+            userGameStatus.setChips(1000);
+
+            Seat seat = new Seat();
+            seat.setUserGameStatus(userGameStatus);
+            seat.setPosition(i);
+            seat.setStillInHand(true);
+            seat.setAllIn(false);
+
+            seats.add(seat);
         }
 
-        Collections.shuffle(randomPlayerPositions, new Random());
+        table.setSeats(seats);
+/*
+        List<Integer> randomPlayerPositions = new ArrayList<Integer>();
 
-        for (int i = 0; i < game.getTotalPlayers(); i += MAX_PLAYERS_PER_TABLE) {
+        if (game.getTotalPlayers() > Constants.MAX_PLAYERS_PER_TABLE) {
+            for (int i = 0; i < Constants.MAX_PLAYERS_PER_TABLE; i++) {
+                randomPlayerPositions.add(i);
+            }
+        } else {
+            for (int i = 0; i < game.getTotalPlayers(); i++) {
+                randomPlayerPositions.add(i);
+            }
+        }
+
+        List<UserGameStatus> userGameStatuses =
+                new ArrayList<UserGameStatus>(fetchUserGameStatuses(game));
+
+        for (int i = 0; i < game.getTotalPlayers(); i += Constants.MAX_PLAYERS_PER_TABLE) {
             Table table = new Table();
             realTimeGame.addTable(table);
         }
 
-        Set<UserGameStatus> userGameStatuses = fetchUserGameStatuses(game);
+        int numberOfTables = realTimeGame.getTables().size();
 
-        int i = 0;
-        for (UserGameStatus userGameStatus : userGameStatuses) {
-            Seat seat = new Seat();
-            seat.setPosition(randomPlayerPositions.get(i));
-            seat.setTable(table);
-            seat.setUserGameStatus(userGameStatus);
-            // TODO: Save the seat information in some way.
+        List<Integer> numberOfPlayersPerTable = new ArrayList<Integer>();
 
-            userGameStatus.setChips(1000);
-
-            i++;
+        // TODO: Assign all seats to one table, then send the tables to the
+        //       yet to be created TableBalancerBso class.
+        for (int i = 0; i < game.getTotalPlayers(); i++) {
         }
+
+        Collections.shuffle(randomPlayerPositions, new Random());
+
+        Set<Seat> seats = new HashSet<Seat>();
+
+//            for (int j = 0; j < )
+//            Seat seat = new Seat();
+//            seat.setPosition(randomPlayerPositions.get(j));
+//            seat.setUserGameStatus(userGameStatuses.get(i));
+//            seats.add(seat);
+
+//            table.setSeats(seats);
+
+//            userGameStatuses.get(i).setChips(1000);
+*/
     }
 
     private void createRealTimeGame(Game game) {
