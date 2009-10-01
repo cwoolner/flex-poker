@@ -23,4 +23,10 @@
         <property name="userDao" ref="userDaoMock" />
     </bean>
 
+    <bean id="flexController" class="com.flexpoker.controller.FlexControllerImpl">
+        <property name="gameBso" ref="gameBsoMock" />
+        <property name="gameEventBso" ref="gameEventBsoMock" />
+        <property name="eventManager" ref="eventManagerMock" />
+    </bean>
+
 </beans>
