@@ -6,8 +6,6 @@ package com.flexpoker.model {
 
         public var id:int;
 
-        public var image:String;
-
     }
 
 }

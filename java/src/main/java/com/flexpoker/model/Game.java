@@ -1,15 +1,13 @@
 package com.flexpoker.model;
 
 import java.util.Date;
-import java.util.Set;
 
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
@@ -37,11 +35,7 @@ public class Game {
 
     private Boolean allowRebuys;
 
-    private Set<UserGameStatus> userGameStatuses;
-
     private GameStage gameStage;
-
-    private Set<com.flexpoker.model.Table> tables;
 
     @Id
     @GeneratedValue
@@ -129,34 +123,13 @@ public class Game {
         this.allowRebuys = allowRebuys;
     }
 
-    @OneToMany(fetch = FetchType.EAGER)
-    @JoinColumn(name = "gameId")
-    public Set<UserGameStatus> getUserGameStatuses() {
-        return userGameStatuses;
-    }
-
-    public void setUserGameStatuses(Set<UserGameStatus> userGameStatuses) {
-        this.userGameStatuses = userGameStatuses;
-    }
-
-    @ManyToOne
-    @JoinColumn(name = "gameStageId")
+    @Enumerated(EnumType.STRING)
     public GameStage getGameStage() {
         return gameStage;
     }
 
     public void setGameStage(GameStage gameStage) {
         this.gameStage = gameStage;
-    }
-
-    @OneToMany(fetch = FetchType.EAGER)
-    @JoinColumn(name = "gameId")
-    public Set<com.flexpoker.model.Table> getTables() {
-        return tables;
-    }
-
-    public void setTables(Set<com.flexpoker.model.Table> tables) {
-        this.tables = tables;
     }
 
     @Override

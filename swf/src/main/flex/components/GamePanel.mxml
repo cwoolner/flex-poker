@@ -100,8 +100,8 @@
                 token.addResponder(new AsyncResponder(
                     function(event:ResultEvent, token:Object = null):void {
                         table = event.result as Table;
-                        table.sortPositions();
-                        tableEventConsumer.subtopic = table.id.toString() + ".*";
+                        tableEventConsumer.subtopic = game.id.toString()
+                                + "." + table.id.toString() + ".*";
                         tableEventConsumer.subscribe();
                         mainRemoteObject.verifyGameInProgress(game);
                     },
@@ -121,12 +121,11 @@
                 token.addResponder(new AsyncResponder(
                     function(event:ResultEvent, token:Object = null):void {
                         table = event.result as Table;
-                        table.sortPositions();
-                        currentActionOnIndex = table.actionOn.position - 1;
+                        currentActionOnIndex = table.actionOn.position;
                         actionOnArray.setItemAt(true, currentActionOnIndex);
-                        dealerArray.setItemAt(true, table.button.position -1);
-                        smallBlindArray.setItemAt(true, table.smallBlind.position -1);
-                        bigBlindArray.setItemAt(true, table.bigBlind.position -1);
+                        dealerArray.setItemAt(true, table.button.position);
+                        smallBlindArray.setItemAt(true, table.smallBlind.position);
+                        bigBlindArray.setItemAt(true, table.bigBlind.position);
 
                         if (table.actionOn.userGameStatus.user.username == username) {
                             pokerActionBox.visible = true;
@@ -142,7 +141,7 @@
                 ))
 
                 mainRemoteObject.fetchAllUserGameStatuses(game);
-                mainRemoteObject.fetchPocketCards(table);
+                mainRemoteObject.fetchPocketCards(game, table);
                 return;
             }
 
@@ -153,7 +152,7 @@
             }
 
             if (message.headers.DSSubtopic.search("dealFlop") != -1) {
-                var token:AsyncToken = mainRemoteObject.fetchFlopCards(table);
+                var token:AsyncToken = mainRemoteObject.fetchFlopCards(game, table);
                 token.addResponder(new AsyncResponder(
                     function(event:ResultEvent, token:Object = null):void {
                         flopCards = event.result as FlopCards;
@@ -173,7 +172,7 @@
             }
 
             if (message.headers.DSSubtopic.search("dealTurn") != -1) {
-                var token:AsyncToken = mainRemoteObject.fetchTurnCard(table);
+                var token:AsyncToken = mainRemoteObject.fetchTurnCard(game, table);
                 token.addResponder(new AsyncResponder(
                     function(event:ResultEvent, token:Object = null):void {
                         turnCard = event.result as TurnCard;
@@ -191,7 +190,7 @@
             }
 
             if (message.headers.DSSubtopic.search("dealRiver") != -1) {
-                var token:AsyncToken = mainRemoteObject.fetchRiverCard(table);
+                var token:AsyncToken = mainRemoteObject.fetchRiverCard(game, table);
                 token.addResponder(new AsyncResponder(
                     function(event:ResultEvent, token:Object = null):void {
                         riverCard = event.result as RiverCard;
@@ -209,7 +208,7 @@
             }
 
             if (message.headers.DSSubtopic.search("handComplete") != -1) {
-                var token:AsyncToken = mainRemoteObject.fetchRequiredShowCards(table);
+                var token:AsyncToken = mainRemoteObject.fetchRequiredShowCards(game, table);
                 token.addResponder(new AsyncResponder(
                     function(event:ResultEvent, token:Object = null):void {
                         requiredShowCards = event.result as Array;
@@ -225,7 +224,7 @@
             }
 
             if (message.headers.DSSubtopic.search("optionalHandsShown") != -1) {
-                var token:AsyncToken = mainRemoteObject.fetchOptionalShowCards(table);
+                var token:AsyncToken = mainRemoteObject.fetchOptionalShowCards(game, table);
                 token.addResponder(new AsyncResponder(
                     function(event:ResultEvent, token:Object = null):void {
                         riverCard = event.result as RiverCard;
@@ -249,9 +248,8 @@
             token.addResponder(new AsyncResponder(
                 function(event:ResultEvent, token:Object = null):void {
                     table = event.result as Table;
-                    table.sortPositions();
                     actionOnArray.setItemAt(false, currentActionOnIndex);
-                    currentActionOnIndex = table.actionOn.position - 1;
+                    currentActionOnIndex = table.actionOn.position;
                     actionOnArray.setItemAt(true, currentActionOnIndex);
 
                     if (table.actionOn.userGameStatus.user.username == username) {
@@ -295,7 +293,7 @@
         }
 
         private function check(event:CheckEvent):void {
-            mainRemoteObject.check(table);
+            mainRemoteObject.check(game, table);
         }
 
         [Embed(source="/assets/Table.svg")]

@@ -54,7 +54,6 @@ public class FlexControllerImpl implements FlexController {
                     + " joined Game " + game.getId() + ".");
 
             if (gameEventBso.isGameAtMaxPlayers(game)) {
-                gameBso.createRealTimeGame(game);
                 gameBso.changeGameStage(game, GameStage.STARTING);
                 eventManager.sendGamesUpdatedEvent();
                 eventManager.sendGameStartingEvent(game);
@@ -66,7 +65,7 @@ public class FlexControllerImpl implements FlexController {
     @Override
     public Set<UserGameStatus> fetchAllUserGameStatuses(Game game) {
         game = gameBso.fetchById(game.getId());
-        return game.getUserGameStatuses();
+        return gameBso.fetchUserGameStatuses(game);
     }
 
     @Override
@@ -77,7 +76,7 @@ public class FlexControllerImpl implements FlexController {
             gameEventBso.verifyRegistration(user, game);
 
             if (gameEventBso.haveAllPlayersVerifiedRegistration(game)) {
-                gameBso.intializePlayersAndTables(game);
+                gameBso.initializePlayersAndTables(game);
                 gameBso.changeGameStage(game, GameStage.IN_PROGRESS);
                 eventManager.sendGameInProgressEvent(game);
             }
@@ -105,77 +104,77 @@ public class FlexControllerImpl implements FlexController {
     }
 
     @Override
-    public PocketCards fetchPocketCards(Table table) {
+    public PocketCards fetchPocketCards(Game game, Table table) {
         // TODO: This should have an additional "can they do this?" check.
         User user = extractCurrentUser();
         return gameEventBso.fetchPocketCards(user, table);
     }
 
     @Override
-    public void check(Table table) {
+    public void check(Game game, Table table) {
         User user = extractCurrentUser();
+        game = gameBso.fetchById(game.getId());
 
         synchronized (this) {
             if (gameEventBso.isUserAllowedToPerformAction(GameEventType.CHECK,
                     user, table)) {
-                gameEventBso.check(user, table);
-                gameEventBso.updateState(table);
+                gameEventBso.updateCheckState(table);
                 eventManager.sendChatEvent("System", user.getUsername()
                     + " checks.");
-                determineNextEvent(table);
+                determineNextEvent(game, table);
             }
         }
     }
 
     @Override
-    public FlopCards fetchFlopCards(Table table) {
+    public FlopCards fetchFlopCards(Game game, Table table) {
         // TODO: This should have an additional "can they do this?" check.
-        return gameEventBso.fetchFlopCards(table);
+        return gameEventBso.fetchFlopCards(game, table);
     }
 
     @Override
-    public RiverCard fetchRiverCard(Table table) {
+    public RiverCard fetchRiverCard(Game game, Table table) {
         // TODO: This should have an additional "can they do this?" check.
-        return gameEventBso.fetchRiverCard(table);
+        return gameEventBso.fetchRiverCard(game, table);
     }
 
     @Override
-    public TurnCard fetchTurnCard(Table table) {
+    public TurnCard fetchTurnCard(Game game, Table table) {
         // TODO: This should have an additional "can they do this?" check.
-        return gameEventBso.fetchTurnCard(table);
+        return gameEventBso.fetchTurnCard(game, table);
     }
 
     @Override
-    public Map<Integer, PocketCards> fetchOptionalShowCards(Table table) {
+    public Map<Integer, PocketCards> fetchOptionalShowCards(Game game, Table table) {
         //TODO: This shoud have an additional "can they do this? check.
-        return gameEventBso.fetchOptionalShowCards(table);
+        return gameEventBso.fetchOptionalShowCards(game, table);
     }
 
     @Override
-    public Map<Integer, PocketCards> fetchRequiredShowCards(Table table) {
+    public Map<Integer, PocketCards> fetchRequiredShowCards(Game game, Table table) {
         // TODO: This should have an additional "can they do this? check.
-        return gameEventBso.fetchRequiredShowCards(table);
+        return gameEventBso.fetchRequiredShowCards(game, table);
     }
 
-    private void determineNextEvent(Table table) {
+    private void determineNextEvent(Game game, Table table) {
         if (gameEventBso.isRoundComplete(table)) {
             gameEventBso.setRoundComplete(table, false);
 
             if (!gameEventBso.isFlopDealt(table)) {
-                eventManager.sendDealFlopEvent(table);
+                eventManager.sendDealFlopEvent(game, table);
             } else if (!gameEventBso.isTurnDealt(table)) {
-                eventManager.sendDealTurnEvent(table);
+                eventManager.sendDealTurnEvent(game, table);
             } else if (!gameEventBso.isRiverDealt(table)) {
-                eventManager.sendDealRiverEvent(table);
+                eventManager.sendDealRiverEvent(game, table);
             } else if (gameEventBso.isHandComplete(table)) {
-                eventManager.sendHandCompleteEvent(table);
+                eventManager.sendHandCompleteEvent(game, table);
             } else {
                 throw new IllegalStateException("The game is not in the "
                         + "correct state.  One of the above round complete "
                         + "events should have been sent.");
             }
         } else {
-            eventManager.sendUserActedEvent(table);
+            eventManager.sendUserActedEvent(game, table);
         }
     }
 
@@ -186,8 +185,10 @@ public class FlexControllerImpl implements FlexController {
     private void sendNewHandStartingEventForAllTables(Game game) {
         game = gameBso.fetchById(game.getId());
 
-        for (Table table : game.getTables()) {
-            eventManager.sendNewHandStartingEvent(table);
+        List<Table> tables = gameBso.fetchTables(game);
+
+        for (Table table : tables) {
+            eventManager.sendNewHandStartingEvent(game, table);
         }
     }
 
