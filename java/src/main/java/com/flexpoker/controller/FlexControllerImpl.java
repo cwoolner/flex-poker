@@ -64,7 +64,6 @@ public class FlexControllerImpl implements FlexController {
     
     @Override
     public Set<UserGameStatus> fetchAllUserGameStatuses(Game game) {
-        game = gameBso.fetchById(game.getId());
         return gameBso.fetchUserGameStatuses(game);
     }
 
