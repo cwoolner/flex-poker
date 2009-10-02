@@ -1,11 +1,8 @@
 package com.flexpoker.bso;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Random;
 import java.util.Set;
 
 import org.springframework.stereotype.Service;
@@ -20,7 +17,6 @@ import com.flexpoker.model.Seat;
 import com.flexpoker.model.Table;
 import com.flexpoker.model.User;
 import com.flexpoker.model.UserGameStatus;
-import com.flexpoker.util.Constants;
 
 @Transactional
 @Service("gameBso")
