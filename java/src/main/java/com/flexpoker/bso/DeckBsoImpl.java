@@ -7,7 +7,6 @@ import java.util.Map;
 import java.util.Random;
 
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.flexpoker.model.Card;
 import com.flexpoker.model.CardRank;
@@ -22,7 +21,6 @@ import com.flexpoker.model.User;
 
 import edu.emory.mathcs.backport.java.util.Arrays;
 
-@Transactional
 @Service("deckBso")
 public class DeckBsoImpl implements DeckBso {
 

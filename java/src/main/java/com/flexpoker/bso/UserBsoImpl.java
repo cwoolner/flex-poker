@@ -12,8 +12,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.flexpoker.dao.UserDao;
 import com.flexpoker.model.User;
 
-@Service(value = "userBso")
 @Transactional
+@Service(value = "userBso")
 public class UserBsoImpl implements UserBso {
 
     private UserDao userDao;
