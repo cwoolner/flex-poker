@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.flexpoker.bso.UserBso;
 
-@Service("userBsoMock")
+@Service
 public class UserBsoMock implements UserBso {
 
     @Override

@@ -10,7 +10,7 @@ import com.flexpoker.model.Table;
 import com.flexpoker.model.TurnCard;
 import com.flexpoker.model.User;
 
-@Service("deckBsoMock")
+@Service
 public class DeckBsoMock implements DeckBso {
 
     @Override

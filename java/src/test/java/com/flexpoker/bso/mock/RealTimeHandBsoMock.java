@@ -6,7 +6,7 @@ import com.flexpoker.bso.RealTimeHandBso;
 import com.flexpoker.model.RealTimeHand;
 import com.flexpoker.model.Table;
 
-@Service("realTimeHandBsoMock")
+@Service
 public class RealTimeHandBsoMock implements RealTimeHandBso {
 
     @Override

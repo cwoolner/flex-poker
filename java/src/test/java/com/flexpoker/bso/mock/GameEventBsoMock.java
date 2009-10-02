@@ -14,7 +14,7 @@ import com.flexpoker.model.Table;
 import com.flexpoker.model.TurnCard;
 import com.flexpoker.model.User;
 
-@Service("gameEventBsoMock")
+@Service
 public class GameEventBsoMock implements GameEventBso {
 
     @Override

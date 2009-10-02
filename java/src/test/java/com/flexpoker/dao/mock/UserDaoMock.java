@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
 import com.flexpoker.dao.UserDao;
 import com.flexpoker.model.User;
 
-@Repository("userDaoMock")
+@Repository
 public class UserDaoMock implements UserDao {
 
     @Override

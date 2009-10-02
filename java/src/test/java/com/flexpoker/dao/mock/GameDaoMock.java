@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 import com.flexpoker.dao.GameDao;
 import com.flexpoker.model.Game;
 
-@Repository("gameDaoMock")
+@Repository
 public class GameDaoMock implements GameDao {
 
     @Override

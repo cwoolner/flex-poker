@@ -12,7 +12,7 @@ import com.flexpoker.model.Table;
 import com.flexpoker.model.User;
 import com.flexpoker.model.UserGameStatus;
 
-@Service("gameBsoMock")
+@Service
 public class GameBsoMock implements GameBso {
 
     @Override

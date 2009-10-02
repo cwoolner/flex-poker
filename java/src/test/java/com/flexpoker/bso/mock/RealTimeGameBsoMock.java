@@ -6,7 +6,7 @@ import com.flexpoker.bso.RealTimeGameBso;
 import com.flexpoker.model.Game;
 import com.flexpoker.model.RealTimeGame;
 
-@Service("realTimeGameBsoMock")
+@Service
 public class RealTimeGameBsoMock implements RealTimeGameBso {
 
     @Override
