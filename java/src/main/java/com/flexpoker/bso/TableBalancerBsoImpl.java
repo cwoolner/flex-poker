@@ -1,15 +1,20 @@
 package com.flexpoker.bso;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Service;
 
 import com.flexpoker.model.Seat;
 import com.flexpoker.model.Table;
 import com.flexpoker.model.TableMovement;
+import com.flexpoker.model.UserGameStatus;
 import com.flexpoker.util.Constants;
 
 @Service("tableBalancerBso")
@@ -32,6 +37,87 @@ public class TableBalancerBsoImpl implements TableBalancerBso {
         return null;
     }
     
+    @Override
+    public List<Table> assignInitialTablesForNewGame(Set<UserGameStatus> userGameStatuses,
+            int maxPlayersPerTableForGame) {
+        validateAssignInitialTablesForNewGameArguments(userGameStatuses,
+                maxPlayersPerTableForGame);
+        int numberOfTables = calculateNumberOfTables(userGameStatuses,
+                maxPlayersPerTableForGame);
+        List<Table> tables = populateSeats(maxPlayersPerTableForGame, numberOfTables);
+        List<UserGameStatus> randomOrderedUserGameStatusList =
+                randomizeUserGameStatuses(userGameStatuses);
+        distributeUserGameStatusesToTables(randomOrderedUserGameStatusList, tables);
+        return tables;
+    }
+
+    private void distributeUserGameStatusesToTables(List<UserGameStatus> userGameStatuses,
+            List<Table> tables) {
+        for (int i = 0; i < userGameStatuses.size(); ) {
+            for (Table table : tables) {
+                if (i < userGameStatuses.size()) {
+                    table.addUserGameStatusToAnyEmptySeat(userGameStatuses.get(i));
+                    i++;
+                }
+            }
+        }
+    }
+
+    private List<UserGameStatus> randomizeUserGameStatuses(Set<UserGameStatus> userGameStatuses) {
+        List<UserGameStatus> userGameStatusList =
+                new ArrayList<UserGameStatus>(userGameStatuses);
+        Collections.shuffle(userGameStatusList, new Random());
+        return userGameStatusList;
+    }
+
+    private List<Table> populateSeats(int maxPlayersPerTableForGame, int numberOfTables) {
+        List<Table> tables = new ArrayList<Table>();
+
+        for (int i = 0; i < numberOfTables; i++) {
+            Table table = new Table();
+
+            List<Seat> seats = new ArrayList<Seat>();
+            for (int j = 0; j < maxPlayersPerTableForGame; j++) {
+                Seat seat = new Seat();
+                seat.setPosition(j);
+                seat.setStillInHand(true);
+                seat.setAllIn(false);
+                seats.add(seat);
+            }
+
+            table.setSeats(seats);
+            tables.add(table);
+        }
+        return tables;
+    }
+
+    private int calculateNumberOfTables(Set<UserGameStatus> userGameStatuses, int maxPlayersPerTableForGame) {
+        int numberOfTables = userGameStatuses.size() / maxPlayersPerTableForGame;
+
+        // if the number of people doesn't fit perfectly, then an additional
+        // table is needed for the overflow
+        if (userGameStatuses.size() % maxPlayersPerTableForGame != 0) {
+            numberOfTables++;
+        }
+        return numberOfTables;
+    }
+
+    private void validateAssignInitialTablesForNewGameArguments(
+            Set<UserGameStatus> userGameStatuses, int maxPlayersPerTableForGame) {
+        if (CollectionUtils.isEmpty(userGameStatuses)) {
+            throw new IllegalArgumentException("userGameStatuses cannot be empty.");
+        }
+        if (maxPlayersPerTableForGame > Constants.MAX_PLAYERS_PER_TABLE
+                || maxPlayersPerTableForGame < 2) {
+            throw new IllegalArgumentException("Number of players must be "
+                    + "between 2 and : " + Constants.MAX_PLAYERS_PER_TABLE);
+        }
+        if (maxPlayersPerTableForGame == 2 && userGameStatuses.size() % 2 != 0) {
+            throw new IllegalArgumentException("For a heads-up tournament, you "
+                    + "must have an even number of players.");
+        }
+    }
+
     private boolean isNumberOfTablesCorrect(List<Table> tables, Map<Integer, Integer> tableSizesMap) {
         int totalNumberOfPlayers = 0;
         
