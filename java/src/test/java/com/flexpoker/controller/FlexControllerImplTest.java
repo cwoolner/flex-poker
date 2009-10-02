@@ -3,9 +3,7 @@ package com.flexpoker.controller;
 import static org.junit.Assert.*;
 
 import org.junit.Test;
-import org.springframework.security.context.SecurityContextHolder;
 
-import com.flexpoker.model.Game;
 import com.flexpoker.util.Context;
 
 
