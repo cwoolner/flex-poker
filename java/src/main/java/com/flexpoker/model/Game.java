@@ -33,6 +33,8 @@ public class Game {
 
     private Integer playersRemaining;
 
+    private Integer maxPlayersPerTable;
+
     private Boolean allowRebuys;
 
     private GameStage gameStage;
@@ -130,6 +132,14 @@ public class Game {
 
     public void setGameStage(GameStage gameStage) {
         this.gameStage = gameStage;
+    }
+
+    public Integer getMaxPlayersPerTable() {
+        return maxPlayersPerTable;
+    }
+
+    public void setMaxPlayersPerTable(Integer maxPlayersPerTable) {
+        this.maxPlayersPerTable = maxPlayersPerTable;
     }
 
     @Override
