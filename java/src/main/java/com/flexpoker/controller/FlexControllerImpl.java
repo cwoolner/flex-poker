@@ -77,20 +77,8 @@ public class FlexControllerImpl implements FlexController {
     @Override
     public void joinGame(Game game) {
         User user = extractCurrentUser();
-
-        synchronized (this) {
-            gameEventBso.addUserToGame(user, game);
-            eventManager.sendUserJoinedEvent(game);
-            eventManager.sendChatEvent("System", user.getUsername()
-                    + " joined Game " + game.getId() + ".");
-
-            if (gameEventBso.isGameAtMaxPlayers(game)) {
-                gameBso.changeGameStage(game, GameStage.STARTING);
-                eventManager.sendGamesUpdatedEvent();
-                eventManager.sendGameStartingEvent(game);
-            }
-        }
-
+        boolean gameAtUserMax = gameEventBso.addUserToGame(user, game);
+        eventManager.sendUserJoinedEvent(game, user.getUsername(), gameAtUserMax);
     }
     
     @Override

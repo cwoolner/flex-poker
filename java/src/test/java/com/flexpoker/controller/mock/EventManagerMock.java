@@ -70,7 +70,8 @@ public class EventManagerMock implements EventManager {
     }
 
     @Override
-    public void sendUserJoinedEvent(Game game) {
+    public void sendUserJoinedEvent(Game game, String username,
+            boolean gameAtUserMax) {
         // TODO Auto-generated method stub
 
     }

@@ -37,16 +37,25 @@ public class GameEventBsoImpl implements GameEventBso {
     private RealTimeHandBso realTimeHandBso;
 
     @Override
-    public void addUserToGame(User user, Game game) {
-        game = gameBso.fetchById(game.getId());
+    public boolean addUserToGame(User user, Game game) {
+        synchronized (this) {
+            game = gameBso.fetchById(game.getId());
 
-        checkIfUserCanJoinGame(game, user);
+            checkIfUserCanJoinGame(game, user);
 
-        UserGameStatus userGameStatus = new UserGameStatus();
-        userGameStatus.setEnterTime(new Date());
-        userGameStatus.setUser(user);
+            UserGameStatus userGameStatus = new UserGameStatus();
+            userGameStatus.setEnterTime(new Date());
+            userGameStatus.setUser(user);
 
-        realTimeGameBso.get(game).addUserGameStatus(userGameStatus);
+            realTimeGameBso.get(game).addUserGameStatus(userGameStatus);
+
+            if (gameBso.fetchUserGameStatuses(game).size() == game.getTotalPlayers()) {
+                gameBso.changeGameStage(game, GameStage.STARTING);
+                return true;
+            }
+
+            return false;
+        }
     }
 
     private void checkIfUserCanJoinGame(Game game, User user) {
@@ -75,12 +84,6 @@ public class GameEventBsoImpl implements GameEventBso {
         if (totalPlayers <= currentNumberOfPlayers) {
             throw new FlexPokerException("This game is full.");
         }
-    }
-
-    @Override
-    public boolean isGameAtMaxPlayers(Game game) {
-        game = gameBso.fetchById(game.getId());
-        return gameBso.fetchUserGameStatuses(game).size() == game.getTotalPlayers();
     }
 
     @Override

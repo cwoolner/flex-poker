@@ -7,7 +7,7 @@ public interface EventManager {
 
     void sendGamesUpdatedEvent();
 
-    void sendUserJoinedEvent(Game game);
+    void sendUserJoinedEvent(Game game, String username, boolean gameAtUserMax);
 
     void sendChatEvent(String username, String text) ;
 

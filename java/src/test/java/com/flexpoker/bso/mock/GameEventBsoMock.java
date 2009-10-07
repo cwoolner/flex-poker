@@ -15,9 +15,9 @@ import com.flexpoker.model.User;
 public class GameEventBsoMock implements GameEventBso {
 
     @Override
-    public void addUserToGame(User user, Game game) {
+    public boolean addUserToGame(User user, Game game) {
         // TODO Auto-generated method stub
-
+        return false;
     }
 
     @Override
@@ -46,12 +46,6 @@ public class GameEventBsoMock implements GameEventBso {
 
     @Override
     public boolean isFlopDealt(Table table) {
-        // TODO Auto-generated method stub
-        return false;
-    }
-
-    @Override
-    public boolean isGameAtMaxPlayers(Game game) {
         // TODO Auto-generated method stub
         return false;
     }

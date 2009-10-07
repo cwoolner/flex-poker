@@ -24,12 +24,13 @@ public class EventManagerImplTest {
         Game game = new Game();
 
         try {
-            eventEventManager.sendUserJoinedEvent(game);
+            eventEventManager.sendUserJoinedEvent(game, "john", false);
             fail("Should have thrown IllegalArgumentException.");
         } catch (IllegalArgumentException e) {}
 
         game.setId(1);
-        eventEventManager.sendUserJoinedEvent(game);
+        eventEventManager.sendUserJoinedEvent(game, "john", false);
+        eventEventManager.sendUserJoinedEvent(game, "john", true);
     }
 
     @Test

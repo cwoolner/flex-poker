@@ -10,9 +10,7 @@ import com.flexpoker.model.User;
 
 public interface GameEventBso {
 
-    void addUserToGame(User user, Game game);
-
-    boolean isGameAtMaxPlayers(Game game);
+    boolean addUserToGame(User user, Game game);
 
     void verifyRegistration(User user, Game game);
 

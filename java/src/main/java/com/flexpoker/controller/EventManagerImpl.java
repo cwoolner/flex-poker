@@ -51,8 +51,16 @@ public class EventManagerImpl implements EventManager {
     }
 
     @Override
-    public void sendUserJoinedEvent(Game game) {
+    public void sendUserJoinedEvent(Game game, String username,
+            boolean gameAtUserMax) {
         messageTemplate.send(new GameStatusMessageCreator(game, USER_JOINED_GAME));
+        sendChatEvent("System", username + " joined Game " + game.getId() + ".");
+
+        if (gameAtUserMax) {
+            sendGamesUpdatedEvent();
+            sendGameStartingEvent(game);
+        }
+
     }
 
     @Override
