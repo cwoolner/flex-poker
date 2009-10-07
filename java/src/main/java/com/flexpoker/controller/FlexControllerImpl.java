@@ -97,14 +97,9 @@ public class FlexControllerImpl implements FlexController {
     @Override
     public void verifyGameInProgress(Game game) {
         User user = extractCurrentUser();
-
-        synchronized (this) {
-            gameEventBso.verifyGameInProgress(user, game);
-
-            if (gameEventBso.haveAllPlayersVerifiedGameInProgress(game)) {
-                gameEventBso.startNewHandForAllTables(game);
-                sendNewHandStartingEventForAllTables(game);
-            }
+        if (gameEventBso.verifyGameInProgress(user, game)) {
+            eventManager.sendNewHandStartingEventForAllTables(game,
+                    gameBso.fetchTables(game));
         }
     }
 
@@ -187,16 +182,6 @@ public class FlexControllerImpl implements FlexController {
 
     private User extractCurrentUser() {
         return (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-    }
-
-    private void sendNewHandStartingEventForAllTables(Game game) {
-        game = gameBso.fetchById(game.getId());
-
-        List<Table> tables = gameBso.fetchTables(game);
-
-        for (Table table : tables) {
-            eventManager.sendNewHandStartingEvent(game, table);
-        }
     }
 
     public GameBso getGameBso() {

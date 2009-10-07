@@ -1,5 +1,7 @@
 package com.flexpoker.controller;
 
+import java.util.List;
+
 import javax.jms.JMSException;
 import javax.jms.MapMessage;
 
@@ -91,6 +93,13 @@ public class EventManagerImpl implements EventManager {
     @Override
     public void sendNewHandStartingEvent(Game game, Table table) {
         messageTemplate.send(new TableStatusMessageCreator(game, table, NEW_HAND_STARTING));
+    }
+
+    @Override
+    public void sendNewHandStartingEventForAllTables(Game game, List<Table> tables) {
+        for (Table table : tables) {
+            sendNewHandStartingEvent(game, table);
+        }
     }
 
     @Override

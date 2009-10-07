@@ -1,5 +1,7 @@
 package com.flexpoker.controller;
 
+import java.util.List;
+
 import com.flexpoker.model.Game;
 import com.flexpoker.model.Table;
 
@@ -16,6 +18,8 @@ public interface EventManager {
     void sendGameInProgressEvent(Game game);
 
     void sendNewHandStartingEvent(Game game, Table table);
+
+    void sendNewHandStartingEventForAllTables(Game game, List<Table> tables);
 
     void sendDealFlopEvent(Game game, Table table);
 

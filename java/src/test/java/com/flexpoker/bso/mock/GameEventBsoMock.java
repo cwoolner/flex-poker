@@ -33,12 +33,6 @@ public class GameEventBsoMock implements GameEventBso {
     }
 
     @Override
-    public boolean haveAllPlayersVerifiedGameInProgress(Game game) {
-        // TODO Auto-generated method stub
-        return false;
-    }
-
-    @Override
     public boolean isFlopDealt(Table table) {
         // TODO Auto-generated method stub
         return false;
@@ -99,9 +93,9 @@ public class GameEventBsoMock implements GameEventBso {
     }
 
     @Override
-    public void verifyGameInProgress(User user, Game game) {
+    public boolean verifyGameInProgress(User user, Game game) {
         // TODO Auto-generated method stub
-
+        return false;
     }
 
     @Override

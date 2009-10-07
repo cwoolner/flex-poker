@@ -1,5 +1,7 @@
 package com.flexpoker.controller.mock;
 
+import java.util.List;
+
 import org.springframework.stereotype.Controller;
 
 import com.flexpoker.controller.EventManager;
@@ -72,6 +74,12 @@ public class EventManagerMock implements EventManager {
     @Override
     public void sendUserJoinedEvent(Game game, String username,
             boolean gameAtUserMax) {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void sendNewHandStartingEventForAllTables(Game game, List<Table> tables) {
         // TODO Auto-generated method stub
 
     }

@@ -243,15 +243,18 @@ public class GameEventBsoImpl implements GameEventBso {
     }
 
     @Override
-    public boolean haveAllPlayersVerifiedGameInProgress(Game game) {
-        RealTimeGame realTimeGame = realTimeGameBso.get(game);
-        return realTimeGame.isEventVerified("gameInProgress");
-    }
+    public boolean verifyGameInProgress(User user, Game game) {
+        synchronized (this) {
+            RealTimeGame realTimeGame = realTimeGameBso.get(game);
+            realTimeGame.verifyEvent(user, "gameInProgress");
 
-    @Override
-    public void verifyGameInProgress(User user, Game game) {
-        RealTimeGame realTimeGame = realTimeGameBso.get(game);
-        realTimeGame.verifyEvent(user, "gameInProgress");
+            if (realTimeGame.isEventVerified("gameInProgress")) {
+                startNewHandForAllTables(game);
+                return true;
+            }
+
+            return false;
+        }
     }
 
     @Override
