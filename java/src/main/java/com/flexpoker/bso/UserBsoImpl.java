@@ -13,7 +13,7 @@ import com.flexpoker.dao.UserDao;
 import com.flexpoker.model.User;
 
 @Transactional
-@Service(value = "userBso")
+@Service("userBso")
 public class UserBsoImpl implements UserBso {
 
     private UserDao userDao;
