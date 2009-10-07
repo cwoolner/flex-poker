@@ -12,9 +12,7 @@ public interface GameEventBso {
 
     boolean addUserToGame(User user, Game game);
 
-    void verifyRegistration(User user, Game game);
-
-    boolean haveAllPlayersVerifiedRegistration(Game game);
+    boolean verifyRegistration(User user, Game game);
 
     void startNewHand(Game game, Table table);
 

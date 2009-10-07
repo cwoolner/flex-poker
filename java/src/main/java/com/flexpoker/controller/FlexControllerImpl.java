@@ -89,15 +89,8 @@ public class FlexControllerImpl implements FlexController {
     @Override
     public void verifyRegistrationForGame(Game game) {
         User user = extractCurrentUser();
-
-        synchronized (this) {
-            gameEventBso.verifyRegistration(user, game);
-
-            if (gameEventBso.haveAllPlayersVerifiedRegistration(game)) {
-                gameBso.initializePlayersAndTables(game);
-                gameBso.changeGameStage(game, GameStage.IN_PROGRESS);
-                eventManager.sendGameInProgressEvent(game);
-            }
+        if (gameEventBso.verifyRegistration(user, game)) {
+            eventManager.sendGameInProgressEvent(game);
         }
     }
 

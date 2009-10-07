@@ -87,15 +87,20 @@ public class GameEventBsoImpl implements GameEventBso {
     }
 
     @Override
-    public void verifyRegistration(User user, Game game) {
-        RealTimeGame realTimeGame = realTimeGameBso.get(game);
-        realTimeGame.verifyEvent(user, "registration");
-    }
+    public boolean verifyRegistration(User user, Game game) {
+        synchronized (this) {
+            RealTimeGame realTimeGame = realTimeGameBso.get(game);
+            realTimeGame.verifyEvent(user, "registration");
 
-    @Override
-    public boolean haveAllPlayersVerifiedRegistration(Game game) {
-        RealTimeGame realTimeGame = realTimeGameBso.get(game);
-        return realTimeGame.isEventVerified("registration");
+            if (realTimeGame.isEventVerified("registration")) {
+                gameBso.initializePlayersAndTables(game);
+                gameBso.changeGameStage(game, GameStage.IN_PROGRESS);
+                return true;
+            }
+
+            return false;
+        }
+
     }
 
     @Override
