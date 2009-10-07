@@ -8,6 +8,7 @@ import org.springframework.flex.remoting.RemotingDestination;
 import org.springframework.security.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 
+import com.flexpoker.bso.DealCardActionsBso;
 import com.flexpoker.bso.GameBso;
 import com.flexpoker.bso.GameEventBso;
 import com.flexpoker.model.FlopCards;
@@ -30,6 +31,8 @@ public class FlexControllerImpl implements FlexController {
     private GameEventBso gameEventBso;
 
     private EventManager eventManager;
+
+    private DealCardActionsBso dealCardActionsBso;
 
     @Override
     public void createGame(Game game) {
@@ -104,9 +107,8 @@ public class FlexControllerImpl implements FlexController {
 
     @Override
     public PocketCards fetchPocketCards(Game game, Table table) {
-        // TODO: This should have an additional "can they do this?" check.
         User user = extractCurrentUser();
-        return gameEventBso.fetchPocketCards(user, table);
+        return dealCardActionsBso.fetchPocketCards(user, table);
     }
 
     @Override
@@ -127,20 +129,17 @@ public class FlexControllerImpl implements FlexController {
 
     @Override
     public FlopCards fetchFlopCards(Game game, Table table) {
-        // TODO: This should have an additional "can they do this?" check.
-        return gameEventBso.fetchFlopCards(game, table);
+        return dealCardActionsBso.fetchFlopCards(game, table);
     }
 
     @Override
     public RiverCard fetchRiverCard(Game game, Table table) {
-        // TODO: This should have an additional "can they do this?" check.
-        return gameEventBso.fetchRiverCard(game, table);
+        return dealCardActionsBso.fetchRiverCard(game, table);
     }
 
     @Override
     public TurnCard fetchTurnCard(Game game, Table table) {
-        // TODO: This should have an additional "can they do this?" check.
-        return gameEventBso.fetchTurnCard(game, table);
+        return dealCardActionsBso.fetchTurnCard(game, table);
     }
 
     @Override
@@ -213,6 +212,14 @@ public class FlexControllerImpl implements FlexController {
 
     public void setEventManager(EventManager eventManager) {
         this.eventManager = eventManager;
+    }
+
+    public DealCardActionsBso getDealCardActionsBso() {
+        return dealCardActionsBso;
+    }
+
+    public void setDealCardActionsBso(DealCardActionsBso dealCardActionsBso) {
+        this.dealCardActionsBso = dealCardActionsBso;
     }
 
 }

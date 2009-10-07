@@ -5,13 +5,10 @@ import java.util.Map;
 import org.springframework.stereotype.Service;
 
 import com.flexpoker.bso.GameEventBso;
-import com.flexpoker.model.FlopCards;
 import com.flexpoker.model.Game;
 import com.flexpoker.model.GameEventType;
 import com.flexpoker.model.PocketCards;
-import com.flexpoker.model.RiverCard;
 import com.flexpoker.model.Table;
-import com.flexpoker.model.TurnCard;
 import com.flexpoker.model.User;
 
 @Service
@@ -24,37 +21,13 @@ public class GameEventBsoMock implements GameEventBso {
     }
 
     @Override
-    public FlopCards fetchFlopCards(Game game, Table table) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
     public Map<Integer, PocketCards> fetchOptionalShowCards(Game game, Table table) {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public PocketCards fetchPocketCards(User user, Table table) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
     public Map<Integer, PocketCards> fetchRequiredShowCards(Game game, Table table) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public RiverCard fetchRiverCard(Game game, Table table) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public TurnCard fetchTurnCard(Game game, Table table) {
         // TODO Auto-generated method stub
         return null;
     }

@@ -2,13 +2,10 @@ package com.flexpoker.bso;
 
 import java.util.Map;
 
-import com.flexpoker.model.FlopCards;
 import com.flexpoker.model.Game;
 import com.flexpoker.model.GameEventType;
 import com.flexpoker.model.PocketCards;
-import com.flexpoker.model.RiverCard;
 import com.flexpoker.model.Table;
-import com.flexpoker.model.TurnCard;
 import com.flexpoker.model.User;
 
 public interface GameEventBso {
@@ -20,8 +17,6 @@ public interface GameEventBso {
     void verifyRegistration(User user, Game game);
 
     boolean haveAllPlayersVerifiedRegistration(Game game);
-
-    PocketCards fetchPocketCards(User user, Table table);
 
     void startNewHand(Game game, Table table);
 
@@ -45,12 +40,6 @@ public interface GameEventBso {
     boolean isTurnDealt(Table table);
 
     boolean isRiverDealt(Table table);
-
-    FlopCards fetchFlopCards(Game game, Table table);
-
-    RiverCard fetchRiverCard(Game game, Table table);
-
-    TurnCard fetchTurnCard(Game game, Table table);
 
     void setRoundComplete(Table table, boolean b);
 

@@ -13,17 +13,14 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.flexpoker.exception.FlexPokerException;
 import com.flexpoker.model.Blinds;
-import com.flexpoker.model.FlopCards;
 import com.flexpoker.model.Game;
 import com.flexpoker.model.GameEventType;
 import com.flexpoker.model.GameStage;
 import com.flexpoker.model.PocketCards;
 import com.flexpoker.model.RealTimeGame;
 import com.flexpoker.model.RealTimeHand;
-import com.flexpoker.model.RiverCard;
 import com.flexpoker.model.Seat;
 import com.flexpoker.model.Table;
-import com.flexpoker.model.TurnCard;
 import com.flexpoker.model.User;
 import com.flexpoker.model.UserGameStatus;
 
@@ -96,11 +93,6 @@ public class GameEventBsoImpl implements GameEventBso {
     public boolean haveAllPlayersVerifiedRegistration(Game game) {
         RealTimeGame realTimeGame = realTimeGameBso.get(game);
         return realTimeGame.isEventVerified("registration");
-    }
-
-    @Override
-    public PocketCards fetchPocketCards(User user, Table table) {
-        return deckBso.fetchPocketCards(user, table);
     }
 
     @Override
@@ -346,24 +338,6 @@ public class GameEventBsoImpl implements GameEventBso {
             }
         }
 
-    }
-
-    @Override
-    public FlopCards fetchFlopCards(Game game, Table table) {
-        realTimeHandBso.get(table).setFlopDealt(true);
-        return deckBso.fetchFlopCards(table);
-    }
-
-    @Override
-    public RiverCard fetchRiverCard(Game game, Table table) {
-        realTimeHandBso.get(table).setRiverDealt(true);
-        return deckBso.fetchRiverCard(table);
-    }
-
-    @Override
-    public TurnCard fetchTurnCard(Game game, Table table) {
-        realTimeHandBso.get(table).setTurnDealt(true);
-        return deckBso.fetchTurnCard(table);
     }
 
     @Override
