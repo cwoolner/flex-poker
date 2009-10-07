@@ -12,6 +12,17 @@ import com.flexpoker.model.Table;
 import com.flexpoker.model.TurnCard;
 import com.flexpoker.model.UserGameStatus;
 
+/**
+ * This is the interface for all interactivity between the Flex/Flash client
+ * and the Java back-end.
+ *
+ * Even though this interface will grow to be very large, for simplicity, no
+ * other interfaces or remote destinations should be exposed to the client.  The
+ * single exception to this is the Spring Security integration, which is
+ * implicitly used for channel login.
+ *
+ * @author cwoolner
+ */
 public interface FlexController {
 
     List<Game> fetchAllGames();

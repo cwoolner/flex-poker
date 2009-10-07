@@ -22,6 +22,34 @@ import com.flexpoker.model.TurnCard;
 import com.flexpoker.model.User;
 import com.flexpoker.model.UserGameStatus;
 
+/**
+ * This implements the main and only interface used to communicate between the
+ * Flex/Flash client application and the Java back-end.
+ *
+ * This class will grow very large due to the large number of methods, which is
+ * why each method must be as short as possible.
+ *
+ * Certain guidelines to be observed:
+ *
+ * 1. This class handles fetching the current user from the SecurityContext.
+ *
+ * 2. This class handles coordinating when events should be sent to the
+ *    subscribed clients, but should not actually handle sending the events.
+ *
+ * 3. The BSOs know more about when certain chunks of code need to be
+ *    thread-safe.  No 'synchronized' blocks should exist in this class.
+ *
+ * 4. As little logic as possible should be performed in each method.  Depending
+ *    on the method, each method should attempt to only contain three
+ *    lines/chunks of calls.  Most, if not all, methods should be no longer than
+ *    three lines.
+ *
+ *        a) Fetch the user.
+ *        b) Call some business logic.
+ *        c) Send the appropriate event.
+ *
+ * @author cwoolner
+ */
 @Controller("flexController")
 @RemotingDestination
 public class FlexControllerImpl implements FlexController {
