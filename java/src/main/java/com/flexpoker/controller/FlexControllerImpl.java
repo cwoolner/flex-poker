@@ -13,8 +13,7 @@ import com.flexpoker.bso.GameBso;
 import com.flexpoker.bso.GameEventBso;
 import com.flexpoker.model.FlopCards;
 import com.flexpoker.model.Game;
-import com.flexpoker.model.GameEventType;
-import com.flexpoker.model.GameStage;
+import com.flexpoker.model.HandState;
 import com.flexpoker.model.PocketCards;
 import com.flexpoker.model.RiverCard;
 import com.flexpoker.model.Table;
@@ -118,17 +117,8 @@ public class FlexControllerImpl implements FlexController {
     @Override
     public void check(Game game, Table table) {
         User user = extractCurrentUser();
-        game = gameBso.fetchById(game.getId());
-
-        synchronized (this) {
-            if (gameEventBso.isUserAllowedToPerformAction(GameEventType.CHECK,
-                    user, table)) {
-                gameEventBso.updateCheckState(table);
-                eventManager.sendChatEvent("System", user.getUsername()
-                    + " checks.");
-                determineNextEvent(game, table);
-            }
-        }
+        HandState handState = gameEventBso.check(game, table, user);
+        eventManager.sendCheckEvent(game, table, handState, user.getUsername());
     }
 
     @Override
@@ -156,28 +146,6 @@ public class FlexControllerImpl implements FlexController {
     public Map<Integer, PocketCards> fetchRequiredShowCards(Game game, Table table) {
         // TODO: This should have an additional "can they do this? check.
         return gameEventBso.fetchRequiredShowCards(game, table);
-    }
-
-    private void determineNextEvent(Game game, Table table) {
-        if (gameEventBso.isRoundComplete(table)) {
-            gameEventBso.setRoundComplete(table, false);
-
-            if (!gameEventBso.isFlopDealt(table)) {
-                eventManager.sendDealFlopEvent(game, table);
-            } else if (!gameEventBso.isTurnDealt(table)) {
-                eventManager.sendDealTurnEvent(game, table);
-            } else if (!gameEventBso.isRiverDealt(table)) {
-                eventManager.sendDealRiverEvent(game, table);
-            } else if (gameEventBso.isHandComplete(table)) {
-                eventManager.sendHandCompleteEvent(game, table);
-            } else {
-                throw new IllegalStateException("The game is not in the "
-                        + "correct state.  One of the above round complete "
-                        + "events should have been sent.");
-            }
-        } else {
-            eventManager.sendUserActedEvent(game, table);
-        }
     }
 
     private User extractCurrentUser() {

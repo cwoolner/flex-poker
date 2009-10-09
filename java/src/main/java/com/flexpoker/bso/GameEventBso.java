@@ -3,7 +3,7 @@ package com.flexpoker.bso;
 import java.util.Map;
 
 import com.flexpoker.model.Game;
-import com.flexpoker.model.GameEventType;
+import com.flexpoker.model.HandState;
 import com.flexpoker.model.PocketCards;
 import com.flexpoker.model.Table;
 import com.flexpoker.model.User;
@@ -20,22 +20,7 @@ public interface GameEventBso {
 
     boolean verifyGameInProgress(User user, Game game);
 
-    boolean isUserAllowedToPerformAction(GameEventType action, User user,
-            Table table);
-
-    boolean isRoundComplete(Table table);
-
-    boolean isHandComplete(Table table);
-
-    void updateCheckState(Table table);
-
-    boolean isFlopDealt(Table table);
-
-    boolean isTurnDealt(Table table);
-
-    boolean isRiverDealt(Table table);
-
-    void setRoundComplete(Table table, boolean b);
+    HandState check(Game game, Table table, User user);
 
     Map<Integer, PocketCards> fetchRequiredShowCards(Game game, Table table);
 

@@ -26,19 +26,13 @@ public class RealTimeHand {
 
     private Seat originatingBettor;
 
-    private boolean roundComplete;
-
-    private boolean handComplete;
-
-    private boolean flopDealt;
-
-    private boolean turnDealt;
-
-    private boolean riverDealt;
-
     private Seat lastToAct;
 
     private Seat nextToAct;
+
+    private HandDealerState handDealerState;
+
+    private HandRoundState handRoundState;
 
     public RealTimeHand(List<Seat> seats) {
         for (Seat seat : seats) {
@@ -80,49 +74,9 @@ public class RealTimeHand {
         this.originatingBettor = originatingBettor;
     }
 
-    public boolean isRoundComplete() {
-        return roundComplete;
-    }
-
-    public void setRoundComplete(boolean roundComplete) {
-        this.roundComplete = roundComplete;
-    }
-
-    public boolean isHandComplete() {
-        return handComplete;
-    }
-
-    public void setHandComplete(boolean handComplete) {
-        this.handComplete = handComplete;
-    }
-
     public boolean isUserAllowedToPerformAction(GameEventType action,
             Seat seat) {
         return possibleSeatActionsMap.get(seat).contains(action);
-    }
-
-    public boolean isFlopDealt() {
-        return flopDealt;
-    }
-
-    public void setFlopDealt(boolean flopDealt) {
-        this.flopDealt = flopDealt;
-    }
-
-    public boolean isTurnDealt() {
-        return turnDealt;
-    }
-
-    public void setTurnDealt(boolean turnDealt) {
-        this.turnDealt = turnDealt;
-    }
-
-    public boolean isRiverDealt() {
-        return riverDealt;
-    }
-
-    public void setRiverDealt(boolean riverDealt) {
-        this.riverDealt = riverDealt;
     }
 
     public Seat getLastToAct() {
@@ -139,6 +93,22 @@ public class RealTimeHand {
 
     public void setNextToAct(Seat nextToAct) {
         this.nextToAct = nextToAct;
+    }
+
+    public HandDealerState getHandDealerState() {
+        return handDealerState;
+    }
+
+    public void setHandDealerState(HandDealerState handDealerState) {
+        this.handDealerState = handDealerState;
+    }
+
+    public HandRoundState getHandRoundState() {
+        return handRoundState;
+    }
+
+    public void setHandRoundState(HandRoundState handRoundState) {
+        this.handRoundState = handRoundState;
     }
 
 }

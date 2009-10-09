@@ -12,6 +12,8 @@ import org.springframework.flex.messaging.MessageTemplate;
 import org.springframework.stereotype.Controller;
 
 import com.flexpoker.model.Game;
+import com.flexpoker.model.HandRoundState;
+import com.flexpoker.model.HandState;
 import com.flexpoker.model.Table;
 
 import flex.messaging.messages.AsyncMessage;
@@ -125,6 +127,34 @@ public class EventManagerImpl implements EventManager {
     @Override
     public void sendUserActedEvent(Game game, Table table) {
         messageTemplate.send(new TableStatusMessageCreator(game, table, USER_ACTED));
+    }
+
+    @Override
+    public void sendCheckEvent(Game game, Table table, HandState handState, String username) {
+        sendChatEvent("System", username + " checks.");
+
+        if (handState.getHandRoundState() == HandRoundState.ROUND_COMPLETE) {
+            switch (handState.getHandDealerState()) {
+                case POCKET_CARDS_DEALT:
+                    sendDealFlopEvent(game, table);
+                    break;
+                case FLOP_DEALT:
+                    sendDealTurnEvent(game, table);
+                    break;
+                case TURN_DEALT:
+                    sendDealRiverEvent(game, table);
+                    break;
+                case RIVER_DEALT:
+                    sendHandCompleteEvent(game, table);
+                    break;
+                default:
+                    throw new IllegalStateException("The game is not in the "
+                            + "correct state.  One of the above round complete "
+                            + "events should have been sent.");
+            }
+        } else {
+            sendUserActedEvent(game, table);
+        }
     }
 
     public MessageTemplate getMessageTemplate() {

@@ -6,6 +6,7 @@ import org.springframework.stereotype.Controller;
 
 import com.flexpoker.controller.EventManager;
 import com.flexpoker.model.Game;
+import com.flexpoker.model.HandState;
 import com.flexpoker.model.Table;
 
 @Controller
@@ -80,6 +81,12 @@ public class EventManagerMock implements EventManager {
 
     @Override
     public void sendNewHandStartingEventForAllTables(Game game, List<Table> tables) {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void sendCheckEvent(Game game, Table table, HandState handState, String username) {
         // TODO Auto-generated method stub
 
     }

@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 
 import com.flexpoker.bso.GameEventBso;
 import com.flexpoker.model.Game;
-import com.flexpoker.model.GameEventType;
+import com.flexpoker.model.HandState;
 import com.flexpoker.model.PocketCards;
 import com.flexpoker.model.Table;
 import com.flexpoker.model.User;
@@ -33,48 +33,6 @@ public class GameEventBsoMock implements GameEventBso {
     }
 
     @Override
-    public boolean isFlopDealt(Table table) {
-        // TODO Auto-generated method stub
-        return false;
-    }
-
-    @Override
-    public boolean isHandComplete(Table table) {
-        // TODO Auto-generated method stub
-        return false;
-    }
-
-    @Override
-    public boolean isRiverDealt(Table table) {
-        // TODO Auto-generated method stub
-        return false;
-    }
-
-    @Override
-    public boolean isRoundComplete(Table table) {
-        // TODO Auto-generated method stub
-        return false;
-    }
-
-    @Override
-    public boolean isTurnDealt(Table table) {
-        // TODO Auto-generated method stub
-        return false;
-    }
-
-    @Override
-    public boolean isUserAllowedToPerformAction(GameEventType action, User user, Table table) {
-        // TODO Auto-generated method stub
-        return false;
-    }
-
-    @Override
-    public void setRoundComplete(Table table, boolean b) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
     public void startNewHand(Game game, Table table) {
         // TODO Auto-generated method stub
 
@@ -87,9 +45,9 @@ public class GameEventBsoMock implements GameEventBso {
     }
 
     @Override
-    public void updateCheckState(Table table) {
+    public HandState check(Game game, Table table, User user) {
         // TODO Auto-generated method stub
-
+        return null;
     }
 
     @Override

@@ -3,6 +3,7 @@ package com.flexpoker.controller;
 import java.util.List;
 
 import com.flexpoker.model.Game;
+import com.flexpoker.model.HandState;
 import com.flexpoker.model.Table;
 
 public interface EventManager {
@@ -30,5 +31,7 @@ public interface EventManager {
     void sendHandCompleteEvent(Game game, Table table);
 
     void sendUserActedEvent(Game game, Table table);
+
+    void sendCheckEvent(Game game, Table table, HandState handState, String username);
 
 }

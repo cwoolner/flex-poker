@@ -16,6 +16,9 @@ import com.flexpoker.model.Blinds;
 import com.flexpoker.model.Game;
 import com.flexpoker.model.GameEventType;
 import com.flexpoker.model.GameStage;
+import com.flexpoker.model.HandDealerState;
+import com.flexpoker.model.HandRoundState;
+import com.flexpoker.model.HandState;
 import com.flexpoker.model.PocketCards;
 import com.flexpoker.model.RealTimeGame;
 import com.flexpoker.model.RealTimeHand;
@@ -257,32 +260,6 @@ public class GameEventBsoImpl implements GameEventBso {
         }
     }
 
-    @Override
-    public boolean isHandComplete(Table table) {
-        return realTimeHandBso.get(table).isHandComplete();
-    }
-
-    @Override
-    public boolean isRoundComplete(Table table) {
-        return realTimeHandBso.get(table).isRoundComplete();
-    }
-
-    @Override
-    public boolean isFlopDealt(Table table) {
-        return realTimeHandBso.get(table).isFlopDealt();
-    }
-
-    @Override
-    public boolean isRiverDealt(Table table) {
-        return realTimeHandBso.get(table).isRiverDealt();
-    }
-
-    @Override
-    public boolean isTurnDealt(Table table) {
-        return realTimeHandBso.get(table).isTurnDealt();
-    }
-
-    @Override
     public boolean isUserAllowedToPerformAction(GameEventType action,
             User user, Table table) {
         // TODO: TableDao work.
@@ -303,27 +280,32 @@ public class GameEventBsoImpl implements GameEventBso {
     }
 
     @Override
-    public void updateCheckState(Table table) {
-        // TODO: TableDao work.
-        // table = tableDao.findById(table.getId());
-        RealTimeHand realTimeHand = realTimeHandBso.get(table);
-
-        if (table.getActionOn().equals(realTimeHand.getLastToAct())) {
-            realTimeHand.setRoundComplete(true);
-
-            if (realTimeHand.isRiverDealt()) {
-                realTimeHand.setHandComplete(true);
+    public HandState check(Game game, Table table, User user) {
+        synchronized (this) {
+            if (!isUserAllowedToPerformAction(GameEventType.CHECK, user, table)) {
+                throw new FlexPokerException("Not allowed to check.");                
             }
 
-            if (!realTimeHand.isHandComplete()) {
-                determineNewRoundActionOn(table);
-                determineNextToAct(table, realTimeHand);
-                determineLastToAct(table, realTimeHand);
+            // TODO: TableDao work.
+            // table = tableDao.findById(table.getId());
+            RealTimeHand realTimeHand = realTimeHandBso.get(table);
+
+            if (table.getActionOn().equals(realTimeHand.getLastToAct())) {
+                realTimeHand.setHandRoundState(HandRoundState.ROUND_COMPLETE);
+
+                if (realTimeHand.getHandDealerState() != HandDealerState.RIVER_DEALT) {
+                    determineNewRoundActionOn(table);
+                    determineNextToAct(table, realTimeHand);
+                    determineLastToAct(table, realTimeHand);
+                }
+
+            } else {
+                // TODO: SeatDao work.
+                // table.setActionOn(seatDao.findById(realTimeHand.getNextToAct().getId()));
             }
 
-        } else {
-            // TODO: SeatDao work.
-            // table.setActionOn(seatDao.findById(realTimeHand.getNextToAct().getId()));
+            return new HandState(realTimeHand.getHandDealerState(),
+                    realTimeHand.getHandRoundState());
         }
     }
 
@@ -397,12 +379,6 @@ public class GameEventBsoImpl implements GameEventBso {
 
     public void setRealTimeHandBso(RealTimeHandBso realTimeHandBso) {
         this.realTimeHandBso = realTimeHandBso;
-    }
-
-    @Override
-    public void setRoundComplete(Table table, boolean b) {
-        RealTimeHand realTimeHand = realTimeHandBso.get(table);
-        realTimeHand.setRoundComplete(b);
     }
 
 }
