@@ -296,6 +296,11 @@
             mainRemoteObject.check(game, table);
         }
 
+        private function checkFaultHandler(event:FaultEvent):void {
+            var errorMessage:ErrorMessage = event.message as ErrorMessage;
+            Alert.show(errorMessage.rootCause.message);
+        }
+
         [Embed(source="/assets/Table.svg")]
         [Bindable]
         public var TableSvg:Class; 
@@ -379,6 +384,7 @@
         <mx:method name="joinGame" fault="joinGameFaultHandler(event)" />
         <mx:method name="fetchAllUserGameStatuses" result="fetchAllUserGameStatusesHandler(event)" />
         <mx:method name="fetchPocketCards" result="fetchPocketCardsHandler(event)" />
+        <mx:method name="check" fault="checkFaultHandler(event)" />
     </mx:RemoteObject>
 
     <mx:VBox id="registeringMain" verticalAlign="middle" horizontalAlign="middle"
