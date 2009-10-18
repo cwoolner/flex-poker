@@ -335,6 +335,8 @@ public class GameEventBsoImpl implements GameEventBso {
 
     @Override
     public Map<Integer, PocketCards> fetchOptionalShowCards(Game game, Table table) {
+        // TODO: This should have an additional "can they do this? check.
+        // TODO: Dummy data
         Map<Integer, PocketCards> returnMap = new HashMap<Integer, PocketCards>();
         returnMap.put(1, new PocketCards());
         returnMap.put(2, new PocketCards());
@@ -343,6 +345,8 @@ public class GameEventBsoImpl implements GameEventBso {
 
     @Override
     public Map<Integer, PocketCards> fetchRequiredShowCards(Game game, Table table) {
+        // TODO: This should have an additional "can they do this? check.
+        // TODO: Dummy data
         Map<Integer, PocketCards> returnMap = new HashMap<Integer, PocketCards>();
         returnMap.put(1, new PocketCards());
         returnMap.put(2, new PocketCards());

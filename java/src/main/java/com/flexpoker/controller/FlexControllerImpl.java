@@ -138,13 +138,11 @@ public class FlexControllerImpl implements FlexController {
 
     @Override
     public Map<Integer, PocketCards> fetchOptionalShowCards(Game game, Table table) {
-        //TODO: This shoud have an additional "can they do this? check.
         return gameEventBso.fetchOptionalShowCards(game, table);
     }
 
     @Override
     public Map<Integer, PocketCards> fetchRequiredShowCards(Game game, Table table) {
-        // TODO: This should have an additional "can they do this? check.
         return gameEventBso.fetchRequiredShowCards(game, table);
     }
 
