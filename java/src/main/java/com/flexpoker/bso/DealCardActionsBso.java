@@ -11,7 +11,7 @@ import com.flexpoker.model.User;
 
 public interface DealCardActionsBso {
 
-    PocketCards fetchPocketCards(User user, Table table);
+    PocketCards fetchPocketCards(User user, Game game, Table table);
 
     FlopCards fetchFlopCards(Game game, Table table);
 

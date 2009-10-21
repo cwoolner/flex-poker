@@ -111,7 +111,7 @@ public class FlexControllerImpl implements FlexController {
     @Override
     public PocketCards fetchPocketCards(Game game, Table table) {
         User user = extractCurrentUser();
-        return dealCardActionsBso.fetchPocketCards(user, table);
+        return dealCardActionsBso.fetchPocketCards(user, game, table);
     }
 
     @Override

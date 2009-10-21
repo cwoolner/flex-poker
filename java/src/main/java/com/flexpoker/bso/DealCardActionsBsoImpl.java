@@ -19,7 +19,7 @@ public class DealCardActionsBsoImpl implements DealCardActionsBso {
     private RealTimeHandBso realTimeHandBso;
 
     @Override
-    public PocketCards fetchPocketCards(User user, Table table) {
+    public PocketCards fetchPocketCards(User user, Game game, Table table) {
         // TODO: This should have an additional "can they do this?" check.
         realTimeHandBso.get(table).setHandDealerState(HandDealerState.POCKET_CARDS_DEALT);
         return deckBso.fetchPocketCards(user, table);

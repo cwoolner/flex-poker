@@ -15,7 +15,7 @@ import com.flexpoker.model.User;
 public class DealCardActionsBsoMock implements DealCardActionsBso {
 
     @Override
-    public PocketCards fetchPocketCards(User user, Table table) {
+    public PocketCards fetchPocketCards(User user, Game game, Table table) {
         // TODO Auto-generated method stub
         return null;
     }
