@@ -5,6 +5,9 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 
 import com.flexpoker.model.Game;
+import com.flexpoker.model.HandDealerState;
+import com.flexpoker.model.HandRoundState;
+import com.flexpoker.model.HandState;
 import com.flexpoker.model.Table;
 import com.flexpoker.util.Context;
 
@@ -96,78 +99,20 @@ public class EventManagerImplTest {
     }
 
     @Test
-    public void testSendDealFlopEvent() {
+    public void testSendCheckEvent() {
         Game game = new Game();
         Table table = new Table();
-        
+        HandState handState = new HandState(HandDealerState.POCKET_CARDS_DEALT,
+                HandRoundState.ROUND_COMPLETE);
+
         try {
-            eventEventManager.sendDealFlopEvent(game, table);
+            eventEventManager.sendCheckEvent(game, table, handState, "galt");
             fail("Should have thrown IllegalArgumentException.");
         } catch (IllegalArgumentException e) {}
 
         game.setId(1);
         table.setId(1);
-        eventEventManager.sendDealFlopEvent(game, table);
-    }
-
-    @Test
-    public void testSendDealRiverEvent() {
-        Game game = new Game();
-        Table table = new Table();
-        
-        try {
-            eventEventManager.sendDealRiverEvent(game, table);
-            fail("Should have thrown IllegalArgumentException.");
-        } catch (IllegalArgumentException e) {}
-
-        game.setId(1);
-        table.setId(1);
-        eventEventManager.sendDealRiverEvent(game, table);
-    }
-
-    @Test
-    public void testSendDealTurnEvent() {
-        Game game = new Game();
-        Table table = new Table();
-        
-        try {
-            eventEventManager.sendDealTurnEvent(game, table);
-            fail("Should have thrown IllegalArgumentException.");
-        } catch (IllegalArgumentException e) {}
-
-        game.setId(1);
-        table.setId(1);
-        eventEventManager.sendDealTurnEvent(game, table);
-    }
-
-    @Test
-    public void testSendHandCompleteEvent() {
-        Game game = new Game();
-        Table table = new Table();
-        
-        try {
-            eventEventManager.sendHandCompleteEvent(game, table);
-            fail("Should have thrown IllegalArgumentException.");
-        } catch (IllegalArgumentException e) {}
-
-        game.setId(1);
-        table.setId(1);
-        eventEventManager.sendHandCompleteEvent(game, table);
-    }
-
-    @Test
-    public void testSendUserActedEvent() {
-        Game game = new Game();
-        Table table = new Table();
-        
-        try {
-            eventEventManager.sendUserActedEvent(game, table);
-            fail("Should have thrown IllegalArgumentException.");
-        } catch (IllegalArgumentException e) {}
-
-        game.setId(1);
-        table.setId(1);
-        eventEventManager.sendUserActedEvent(game, table);
+        eventEventManager.sendCheckEvent(game, table, handState, "galt");
     }
 
 }

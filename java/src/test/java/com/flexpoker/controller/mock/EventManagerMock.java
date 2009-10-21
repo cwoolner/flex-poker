@@ -19,24 +19,6 @@ public class EventManagerMock implements EventManager {
     }
 
     @Override
-    public void sendDealFlopEvent(Game game, Table table) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void sendDealRiverEvent(Game game, Table table) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void sendDealTurnEvent(Game game, Table table) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
     public void sendGameInProgressEvent(Game game) {
         // TODO Auto-generated method stub
 
@@ -55,19 +37,7 @@ public class EventManagerMock implements EventManager {
     }
 
     @Override
-    public void sendHandCompleteEvent(Game game, Table table) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
     public void sendNewHandStartingEvent(Game game, Table table) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void sendUserActedEvent(Game game, Table table) {
         // TODO Auto-generated method stub
 
     }

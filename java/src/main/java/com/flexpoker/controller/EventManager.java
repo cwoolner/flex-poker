@@ -22,16 +22,6 @@ public interface EventManager {
 
     void sendNewHandStartingEventForAllTables(Game game, List<Table> tables);
 
-    void sendDealFlopEvent(Game game, Table table);
-
-    void sendDealTurnEvent(Game game, Table table);
-
-    void sendDealRiverEvent(Game game, Table table);
-
-    void sendHandCompleteEvent(Game game, Table table);
-
-    void sendUserActedEvent(Game game, Table table);
-
     void sendCheckEvent(Game game, Table table, HandState handState, String username);
 
 }

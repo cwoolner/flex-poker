@@ -104,28 +104,23 @@ public class EventManagerImpl implements EventManager {
         }
     }
 
-    @Override
-    public void sendDealFlopEvent(Game game, Table table) {
+    private void sendDealFlopEvent(Game game, Table table) {
         messageTemplate.send(new TableStatusMessageCreator(game, table, DEAL_FLOP));
     }
 
-    @Override
-    public void sendDealRiverEvent(Game game, Table table) {
+    private void sendDealRiverEvent(Game game, Table table) {
         messageTemplate.send(new TableStatusMessageCreator(game, table, DEAL_RIVER));
     }
 
-    @Override
-    public void sendDealTurnEvent(Game game, Table table) {
+    private void sendDealTurnEvent(Game game, Table table) {
         messageTemplate.send(new TableStatusMessageCreator(game, table, DEAL_TURN));
     }
 
-    @Override
-    public void sendHandCompleteEvent(Game game, Table table) {
+    private void sendHandCompleteEvent(Game game, Table table) {
         messageTemplate.send(new TableStatusMessageCreator(game, table, HAND_COMPLETE));
     }
 
-    @Override
-    public void sendUserActedEvent(Game game, Table table) {
+    private void sendUserActedEvent(Game game, Table table) {
         messageTemplate.send(new TableStatusMessageCreator(game, table, USER_ACTED));
     }
 
