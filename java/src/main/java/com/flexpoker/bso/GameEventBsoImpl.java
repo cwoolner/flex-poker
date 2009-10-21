@@ -37,8 +37,6 @@ public class GameEventBsoImpl implements GameEventBso {
 
     private RealTimeGameBso realTimeGameBso;
 
-    private RealTimeHandBso realTimeHandBso;
-
     @Override
     public boolean addUserToGame(User user, Game game) {
         synchronized (this) {
@@ -114,7 +112,8 @@ public class GameEventBsoImpl implements GameEventBso {
     }
 
     private void createNewRealTimeHand(Game game, Table table) {
-        Blinds currentBlinds = realTimeGameBso.get(game).getCurrentBlinds();
+        RealTimeGame realTimeGame = realTimeGameBso.get(game);
+        Blinds currentBlinds = realTimeGame.getCurrentBlinds();
         int smallBlind = currentBlinds.getSmallBlind();
         int bigBlind = currentBlinds.getBigBlind();
 
@@ -146,7 +145,7 @@ public class GameEventBsoImpl implements GameEventBso {
         determineNextToAct(table, realTimeHand);
         determineLastToAct(table, realTimeHand);
 
-        realTimeHandBso.put(table, realTimeHand);
+        realTimeGame.addRealTimeHand(table, realTimeHand);
     }
 
     private void determineLastToAct(Table table, RealTimeHand realTimeHand) {
@@ -260,10 +259,8 @@ public class GameEventBsoImpl implements GameEventBso {
         }
     }
 
-    public boolean isUserAllowedToPerformAction(GameEventType action,
-            User user, Table table) {
-        // TODO: TableDao work.
-        // table = tableDao.findById(table.getId());
+    private boolean isUserAllowedToPerformAction(GameEventType action,
+            User user, RealTimeHand realTimeHand, Table table) {
 
         Seat usersSeat = null;
 
@@ -275,20 +272,20 @@ public class GameEventBsoImpl implements GameEventBso {
             }
         }
 
-        return realTimeHandBso.get(table).isUserAllowedToPerformAction(action,
-                usersSeat);
+        return realTimeHand.isUserAllowedToPerformAction(action, usersSeat);
     }
 
     @Override
     public HandState check(Game game, Table table, User user) {
         synchronized (this) {
-            if (!isUserAllowedToPerformAction(GameEventType.CHECK, user, table)) {
+            RealTimeGame realTimeGame = realTimeGameBso.get(game);
+            RealTimeHand realTimeHand = realTimeGame.getRealTimeHand(table);
+            table = realTimeGame.getTable(table);
+
+            if (!isUserAllowedToPerformAction(GameEventType.CHECK, user,
+                    realTimeHand, table)) {
                 throw new FlexPokerException("Not allowed to check.");                
             }
-
-            // TODO: TableDao work.
-            // table = tableDao.findById(table.getId());
-            RealTimeHand realTimeHand = realTimeHandBso.get(table);
 
             if (table.getActionOn().equals(realTimeHand.getLastToAct())) {
                 realTimeHand.setHandRoundState(HandRoundState.ROUND_COMPLETE);
@@ -375,14 +372,6 @@ public class GameEventBsoImpl implements GameEventBso {
 
     public void setRealTimeGameBso(RealTimeGameBso realTimeGameBso) {
         this.realTimeGameBso = realTimeGameBso;
-    }
-
-    public RealTimeHandBso getRealTimeHandBso() {
-        return realTimeHandBso;
-    }
-
-    public void setRealTimeHandBso(RealTimeHandBso realTimeHandBso) {
-        this.realTimeHandBso = realTimeHandBso;
     }
 
 }

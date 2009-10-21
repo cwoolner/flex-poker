@@ -18,6 +18,8 @@ public class RealTimeGame {
 
     private Set<UserGameStatus> userGameStatuses = new HashSet<UserGameStatus>();
 
+    private Map<Table, RealTimeHand> realTimeHands = new HashMap<Table, RealTimeHand>();
+
     public RealTimeGame() {
         currentBlinds = new Blinds(10, 20);
     }
@@ -75,6 +77,24 @@ public class RealTimeGame {
 
     public Set<UserGameStatus> getUserGameStatuses() {
         return userGameStatuses;
+    }
+
+    public RealTimeHand getRealTimeHand(Table table) {
+        synchronized (this) {
+            return realTimeHands.get(table);
+        }
+    }
+
+    public void addRealTimeHand(Table table, RealTimeHand realTimeHand) {
+        synchronized (this) {
+            realTimeHands.put(table, realTimeHand);
+        }
+    }
+
+    public void removeRealTimeHand(Table table, RealTimeHand realTimeHand) {
+        synchronized (this) {
+            realTimeHands.remove(table);
+        }
     }
 
 }
