@@ -145,6 +145,9 @@ public class GameEventBsoImpl implements GameEventBso {
         determineNextToAct(table, realTimeHand);
         determineLastToAct(table, realTimeHand);
 
+        realTimeHand.setHandDealerState(HandDealerState.POCKET_CARDS_DEALT);
+        realTimeHand.setHandRoundState(HandRoundState.ROUND_IN_PROGRESS);
+
         realTimeGame.addRealTimeHand(table, realTimeHand);
     }
 
