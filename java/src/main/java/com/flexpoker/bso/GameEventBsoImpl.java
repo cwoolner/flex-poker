@@ -78,13 +78,6 @@ public class GameEventBsoImpl implements GameEventBso {
                 throw new FlexPokerException("You are already in this game.");
             }
         }
-        
-        Integer totalPlayers = game.getTotalPlayers();
-        Integer currentNumberOfPlayers = gameBso.fetchUserGameStatuses(game).size();
-        
-        if (totalPlayers <= currentNumberOfPlayers) {
-            throw new FlexPokerException("This game is full.");
-        }
     }
 
     @Override
