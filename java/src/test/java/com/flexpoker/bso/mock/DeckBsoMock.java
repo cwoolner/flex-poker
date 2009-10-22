@@ -15,26 +15,22 @@ public class DeckBsoMock implements DeckBso {
 
     @Override
     public FlopCards fetchFlopCards(Table table) {
-        // TODO Auto-generated method stub
-        return null;
+        return new FlopCards();
     }
 
     @Override
     public PocketCards fetchPocketCards(User user, Table table) {
-        // TODO Auto-generated method stub
-        return null;
+        return new PocketCards();
     }
 
     @Override
     public RiverCard fetchRiverCard(Table table) {
-        // TODO Auto-generated method stub
-        return null;
+        return new RiverCard();
     }
 
     @Override
     public TurnCard fetchTurnCard(Table table) {
-        // TODO Auto-generated method stub
-        return null;
+        return new TurnCard();
     }
 
     @Override

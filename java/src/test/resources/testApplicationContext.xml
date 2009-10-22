@@ -23,6 +23,11 @@
         <property name="userDao" ref="userDaoMock" />
     </bean>
 
+    <bean id="dealCardActionsBso" class="com.flexpoker.bso.DealCardActionsBsoImpl">
+        <property name="deckBso" ref="deckBsoMock" />
+        <property name="realTimeGameBso" ref="realTimeGameBsoMock" />
+    </bean>
+
     <bean id="flexController" class="com.flexpoker.controller.FlexControllerImpl">
         <property name="gameBso" ref="gameBsoMock" />
         <property name="gameEventBso" ref="gameEventBsoMock" />
