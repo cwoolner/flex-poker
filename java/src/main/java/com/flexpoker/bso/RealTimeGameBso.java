@@ -5,7 +5,7 @@ import com.flexpoker.model.RealTimeGame;
 
 public interface RealTimeGameBso {
 
-    RealTimeGame get(Object game);
+    RealTimeGame get(Game game);
 
     RealTimeGame put(Game game, RealTimeGame realTimeGame);
 

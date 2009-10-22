@@ -13,4 +13,9 @@ public class RealTimeGameBsoImpl extends HashMap<Game, RealTimeGame>
 
     private static final long serialVersionUID = 5614346056128935854L;
 
+    @Override
+    public RealTimeGame get(Game game) {
+        return super.get(game);
+    }
+
 }
