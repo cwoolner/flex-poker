@@ -130,16 +130,16 @@ public class EventManagerImpl implements EventManager {
 
         if (handState.getHandRoundState() == HandRoundState.ROUND_COMPLETE) {
             switch (handState.getHandDealerState()) {
-                case POCKET_CARDS_DEALT:
+                case FLOP_DEALT:
                     sendDealFlopEvent(game, table);
                     break;
-                case FLOP_DEALT:
+                case TURN_DEALT:
                     sendDealTurnEvent(game, table);
                     break;
-                case TURN_DEALT:
+                case RIVER_DEALT:
                     sendDealRiverEvent(game, table);
                     break;
-                case RIVER_DEALT:
+                case COMPLETE:
                     sendHandCompleteEvent(game, table);
                     break;
                 default:
