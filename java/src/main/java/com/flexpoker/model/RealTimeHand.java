@@ -30,9 +30,9 @@ public class RealTimeHand {
 
     private Seat nextToAct;
 
-    private HandDealerState handDealerState;
+    private HandDealerState handDealerState = HandDealerState.NONE;
 
-    private HandRoundState handRoundState;
+    private HandRoundState handRoundState = HandRoundState.ROUND_COMPLETE;
 
     public RealTimeHand(List<Seat> seats) {
         for (Seat seat : seats) {
