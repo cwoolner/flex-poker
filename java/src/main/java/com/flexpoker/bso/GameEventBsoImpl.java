@@ -258,6 +258,10 @@ public class GameEventBsoImpl implements GameEventBso {
     private boolean isUserAllowedToPerformAction(GameEventType action,
             User user, RealTimeHand realTimeHand, Table table) {
 
+        if (realTimeHand.getHandDealerState() == HandDealerState.COMPLETE) {
+            return false;
+        }
+
         Seat usersSeat = null;
 
         for (Seat seat : table.getSeats()) {
@@ -286,7 +290,7 @@ public class GameEventBsoImpl implements GameEventBso {
             if (table.getActionOn().equals(realTimeHand.getLastToAct())) {
                 realTimeHand.setHandRoundState(HandRoundState.ROUND_COMPLETE);
 
-                if (realTimeHand.getHandDealerState() != HandDealerState.RIVER_DEALT) {
+                if (realTimeHand.getHandDealerState() != HandDealerState.COMPLETE) {
                     determineNewRoundActionOn(table);
                     determineNextToAct(table, realTimeHand);
                     determineLastToAct(table, realTimeHand);
