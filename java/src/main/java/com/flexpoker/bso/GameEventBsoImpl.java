@@ -293,8 +293,8 @@ public class GameEventBsoImpl implements GameEventBso {
                 }
 
             } else {
-                // TODO: SeatDao work.
-                // table.setActionOn(seatDao.findById(realTimeHand.getNextToAct().getId()));
+                realTimeHand.setHandRoundState(HandRoundState.ROUND_IN_PROGRESS);
+                table.setActionOn(realTimeHand.getNextToAct());
             }
 
             return new HandState(realTimeHand.getHandDealerState(),
