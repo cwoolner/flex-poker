@@ -335,16 +335,14 @@ public class GameEventBsoImpl implements GameEventBso {
 
         for (int i = buttonIndex + 1; i < seats.size(); i++) {
             if (seats.get(i).isStillInHand()) {
-                // TODO: SeatDao work.
-                // table.setActionOn(seatDao.findById(seats.get(i).getId()));
+                table.setActionOn(seats.get(i));
                 return;
             }
         }
 
         for (int i = 0; i < buttonIndex; i++) {
             if (seats.get(i).isStillInHand()) {
-                // TODO: SeatDao work.
-                // table.setActionOn(seatDao.findById(seats.get(i).getId()));
+                table.setActionOn(seats.get(i));
                 return;
             }
         }
