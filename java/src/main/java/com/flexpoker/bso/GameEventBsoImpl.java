@@ -289,13 +289,13 @@ public class GameEventBsoImpl implements GameEventBso {
 
             if (table.getActionOn().equals(realTimeHand.getLastToAct())) {
                 realTimeHand.setHandRoundState(HandRoundState.ROUND_COMPLETE);
+                moveToNextHandDealerState(realTimeHand);
 
                 if (realTimeHand.getHandDealerState() != HandDealerState.COMPLETE) {
                     determineNewRoundActionOn(table);
                     determineNextToAct(table, realTimeHand);
                     determineLastToAct(table, realTimeHand);
                 }
-
             } else {
                 realTimeHand.setHandRoundState(HandRoundState.ROUND_IN_PROGRESS);
                 table.setActionOn(realTimeHand.getNextToAct());
@@ -303,6 +303,27 @@ public class GameEventBsoImpl implements GameEventBso {
 
             return new HandState(realTimeHand.getHandDealerState(),
                     realTimeHand.getHandRoundState());
+        }
+    }
+
+    private void moveToNextHandDealerState(RealTimeHand realTimeHand) {
+        HandDealerState handDealerState = realTimeHand.getHandDealerState();
+
+        switch (handDealerState) {
+            case POCKET_CARDS_DEALT:
+                realTimeHand.setHandDealerState(HandDealerState.FLOP_DEALT);
+                break;
+            case FLOP_DEALT:
+                realTimeHand.setHandDealerState(HandDealerState.TURN_DEALT);
+                break;
+            case TURN_DEALT:
+                realTimeHand.setHandDealerState(HandDealerState.RIVER_DEALT);
+                break;
+            case RIVER_DEALT:
+                realTimeHand.setHandDealerState(HandDealerState.COMPLETE);
+                break;
+            default:
+                throw new IllegalStateException("No valid state to move to.");
         }
     }
 
