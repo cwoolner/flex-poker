@@ -152,7 +152,18 @@ public class EventManagerImpl implements EventManager {
                             + "events should have been sent.");
             }
         } else {
-            sendUserActedEvent(game, table);
+            switch (handState.getHandDealerState()) {
+                case POCKET_CARDS_DEALT:
+                case FLOP_DEALT:
+                case TURN_DEALT:
+                case RIVER_DEALT:
+                    sendUserActedEvent(game, table);
+                    break;
+                default:
+                    throw new IllegalStateException("The game is not in the "
+                            + "correct state.  The HandDealerState should be "
+                            + "in one of the above states.");
+            }
         }
     }
 
