@@ -64,17 +64,6 @@ public class Table {
         this.seats = seats;
     }
 
-    public void addUserGameStatusToAnyEmptySeat(UserGameStatus userGameStatus) {
-        for (Seat seat : seats) {
-            if (seat.getUserGameStatus() == null) {
-                seat.setUserGameStatus(userGameStatus);
-                return;
-            }
-        }
-
-        throw new IllegalArgumentException("No empty seats were found.");
-    }
-
     @Override
     public int hashCode() {
         final int prime = 31;

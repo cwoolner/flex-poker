@@ -56,10 +56,23 @@ public class TableBalancerBsoImpl implements TableBalancerBso {
         for (int i = 0; i < userGameStatuses.size(); ) {
             for (Table table : tables) {
                 if (i < userGameStatuses.size()) {
-                    table.addUserGameStatusToAnyEmptySeat(userGameStatuses.get(i));
+                    addUserGameStatusToAnyEmptySeat(table, userGameStatuses.get(i));
                     i++;
                 }
             }
+        }
+    }
+
+    private void addUserGameStatusToAnyEmptySeat(Table table, UserGameStatus userGameStatus) {
+        synchronized (table) {
+            for (Seat seat : table.getSeats()) {
+                if (seat.getUserGameStatus() == null) {
+                    seat.setUserGameStatus(userGameStatus);
+                    return;
+                }
+            }
+
+            throw new IllegalArgumentException("No empty seats were found.");
         }
     }
 
