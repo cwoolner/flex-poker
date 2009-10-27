@@ -35,6 +35,8 @@ public class GameEventBsoImpl implements GameEventBso {
 
     private RealTimeGameBso realTimeGameBso;
 
+    private SeatStatusBso seatStatusBso;
+
     @Override
     public boolean addUserToGame(User user, Game game) {
         synchronized (this) {
@@ -97,7 +99,7 @@ public class GameEventBsoImpl implements GameEventBso {
 
     @Override
     public void startNewHand(Game game, Table table) {
-        assignSeatStates(table);
+        seatStatusBso.setStatusForNewGame(table);
         deckBso.shuffleDeck(table);
         createNewRealTimeHand(game, table);
     }
@@ -185,44 +187,6 @@ public class GameEventBsoImpl implements GameEventBso {
         }
     }
 
-    private void assignSeatStates(Table table) {
-        List<Seat> seats = new ArrayList<Seat>(table.getSeats());
-        Collections.sort(seats);
-        assignButton(table, seats);
-        assignSmallBlind(table, seats);
-        assignBigBlind(table, seats);
-        assignActionOn(table, seats);
-
-        for (Seat seat : seats) {
-            seat.setStillInHand(true);
-        }
-    }
-
-    private void assignActionOn(Table table, List<Seat> seats) {
-        table.setActionOn(seats.get(1));
-    }
-
-    private void assignBigBlind(Table table, List<Seat> seats) {
-        table.setBigBlind(seats.get(0));
-    }
-
-    private void assignSmallBlind(Table table, List<Seat> seats) {
-        table.setSmallBlind(seats.get(1));
-    }
-
-    private void assignButton(Table table, List<Seat> seats) {
-        table.setButton(seats.get(0));
-//        int numberOfPlayersAtTable = table.getSeats().size();
-//        int dealerPosition = new Random().nextInt(numberOfPlayersAtTable) + 1;
-
-//        for (Seat seat : table.getSeats()) {
-//            if (seat.getPosition().equals(dealerPosition)) {
-//                table.setButton(seat);
-//                break;
-//            }
-//        }
-    }
-
     @Override
     public void startNewHandForAllTables(Game game) {
         game = gameBso.fetchById(game.getId());
@@ -287,7 +251,7 @@ public class GameEventBsoImpl implements GameEventBso {
                 moveToNextHandDealerState(realTimeHand);
 
                 if (realTimeHand.getHandDealerState() != HandDealerState.COMPLETE) {
-                    determineNewRoundActionOn(table);
+                    seatStatusBso.setStatusForNewRound(table);
                     determineNextToAct(table, realTimeHand);
                     determineLastToAct(table, realTimeHand);
                 }
@@ -320,28 +284,6 @@ public class GameEventBsoImpl implements GameEventBso {
             default:
                 throw new IllegalStateException("No valid state to move to.");
         }
-    }
-
-    private void determineNewRoundActionOn(Table table) {
-        List<Seat> seats = new ArrayList<Seat>(table.getSeats());
-        Collections.sort(seats);
-
-        int buttonIndex = seats.indexOf(table.getButton());
-
-        for (int i = buttonIndex + 1; i < seats.size(); i++) {
-            if (seats.get(i).isStillInHand()) {
-                table.setActionOn(seats.get(i));
-                return;
-            }
-        }
-
-        for (int i = 0; i < buttonIndex; i++) {
-            if (seats.get(i).isStillInHand()) {
-                table.setActionOn(seats.get(i));
-                return;
-            }
-        }
-
     }
 
     @Override
@@ -386,6 +328,14 @@ public class GameEventBsoImpl implements GameEventBso {
 
     public void setRealTimeGameBso(RealTimeGameBso realTimeGameBso) {
         this.realTimeGameBso = realTimeGameBso;
+    }
+
+    public SeatStatusBso getSeatStatusBso() {
+        return seatStatusBso;
+    }
+
+    public void setSeatStatusBso(SeatStatusBso seatStatusBso) {
+        this.seatStatusBso = seatStatusBso;
     }
 
 }
