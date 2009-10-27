@@ -1,7 +1,5 @@
 package com.flexpoker.bso;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -145,8 +143,7 @@ public class GameEventBsoImpl implements GameEventBso {
     }
 
     private void determineLastToAct(Table table, RealTimeHand realTimeHand) {
-        List<Seat> seats = new ArrayList<Seat>(table.getSeats());
-        Collections.sort(seats);
+        List<Seat> seats = table.getSeats();
 
         if (realTimeHand.getOriginatingBettor() == null) {
             int buttonIndex = seats.indexOf(table.getButton());
@@ -170,9 +167,7 @@ public class GameEventBsoImpl implements GameEventBso {
     }
 
     private void determineNextToAct(Table table, RealTimeHand realTimeHand) {
-        List<Seat> seats = new ArrayList<Seat>(table.getSeats());
-        Collections.sort(seats);
-
+        List<Seat> seats = table.getSeats();
         int actionOnIndex = seats.indexOf(table.getActionOn());
 
         for (int i = actionOnIndex + 1; i < seats.size(); i++) {
