@@ -116,33 +116,7 @@ public class TableBalancerBsoImplTest {
 
     @Test
     public void testAssignInitialTablesForNewGame() {
-        Set<UserGameStatus> userGameStatuses = null;
-        try {
-            bso.assignInitialTablesForNewGame(userGameStatuses, 9);
-            fail("An exception should have been thrown.  Can't send in an empty Set.");
-        } catch (IllegalArgumentException e) {}
-
-        userGameStatuses = createUserGameStatusSet(0);
-        try {
-            bso.assignInitialTablesForNewGame(userGameStatuses, 9);
-            fail("An exception should have been thrown.  Can't send in an empty Set.");
-        } catch (IllegalArgumentException e) {}
-
-        userGameStatuses = createUserGameStatusSet(7);
-        try {
-            assertEquals(1, bso.assignInitialTablesForNewGame(userGameStatuses, 10).size());
-            fail("An exception should have been thrown.  10 is too large of a table.");
-        } catch (IllegalArgumentException e) {}
-        try {
-            assertEquals(1, bso.assignInitialTablesForNewGame(userGameStatuses, 1).size());
-            fail("An exception should have been thrown.  1 is too small of a table.");
-        } catch (IllegalArgumentException e) {}
-        try {
-            assertEquals(1, bso.assignInitialTablesForNewGame(userGameStatuses, 2).size());
-            fail("A heads-up tournament must start with an even number of people.");
-        } catch (IllegalArgumentException e) {}
-
-        userGameStatuses = createUserGameStatusSet(4);
+        Set<UserGameStatus> userGameStatuses = TestDataUtils.createUserGameStatusSet(4);
         List<Table> tables = bso.assignInitialTablesForNewGame(userGameStatuses, 9);
         assertEquals(1, tables.size());
         verifyEqualDistribution(tables, 9, 4);

@@ -8,7 +8,6 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Service;
 
 import com.flexpoker.model.Seat;
@@ -19,6 +18,8 @@ import com.flexpoker.util.Constants;
 
 @Service("tableBalancerBso")
 public class TableBalancerBsoImpl implements TableBalancerBso {
+
+    private ValidationBso validationBso;
 
     @Override
     public boolean areTablesBalanced(List<Table> tables) {
@@ -39,9 +40,8 @@ public class TableBalancerBsoImpl implements TableBalancerBso {
     
     @Override
     public List<Table> assignInitialTablesForNewGame(Set<UserGameStatus> userGameStatuses,
-            int maxPlayersPerTableForGame) {
-        validateAssignInitialTablesForNewGameArguments(userGameStatuses,
-                maxPlayersPerTableForGame);
+            int maxPlayersPerTable) {
+        validationBso.validateTableAssignment(userGameStatuses, maxPlayersPerTable);
         int numberOfTables = calculateNumberOfTables(userGameStatuses,
                 maxPlayersPerTable);
         List<Table> tables = populateSeats(maxPlayersPerTable, numberOfTables);
@@ -115,22 +115,6 @@ public class TableBalancerBsoImpl implements TableBalancerBso {
         return numberOfTables;
     }
 
-    private void validateAssignInitialTablesForNewGameArguments(
-            Set<UserGameStatus> userGameStatuses, int maxPlayersPerTableForGame) {
-        if (CollectionUtils.isEmpty(userGameStatuses)) {
-            throw new IllegalArgumentException("userGameStatuses cannot be empty.");
-        }
-        if (maxPlayersPerTableForGame > Constants.MAX_PLAYERS_PER_TABLE
-                || maxPlayersPerTableForGame < 2) {
-            throw new IllegalArgumentException("Number of players must be "
-                    + "between 2 and : " + Constants.MAX_PLAYERS_PER_TABLE);
-        }
-        if (maxPlayersPerTableForGame == 2 && userGameStatuses.size() % 2 != 0) {
-            throw new IllegalArgumentException("For a heads-up tournament, you "
-                    + "must have an even number of players.");
-        }
-    }
-
     private boolean isNumberOfTablesCorrect(List<Table> tables, Map<Integer, Integer> tableSizesMap) {
         int totalNumberOfPlayers = 0;
         
@@ -189,6 +173,14 @@ public class TableBalancerBsoImpl implements TableBalancerBso {
         }
 
         return numberOfPlayers;
+    }
+
+    public ValidationBso getValidationBso() {
+        return validationBso;
+    }
+
+    public void setValidationBso(ValidationBso validationBso) {
+        this.validationBso = validationBso;
     }
 
 }
