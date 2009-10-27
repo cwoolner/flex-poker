@@ -19,19 +19,48 @@
 
     <bean id="messageTemplate" class="com.flexpoker.misc.mock.MessageTemplateMock" />
 
-    <bean id="userBso" class="com.flexpoker.bso.UserBsoImpl">
-        <property name="userDao" ref="userDaoMock" />
-    </bean>
-
     <bean id="dealCardActionsBso" class="com.flexpoker.bso.DealCardActionsBsoImpl">
         <property name="deckBso" ref="deckBsoMock" />
         <property name="realTimeGameBso" ref="realTimeGameBsoMock" />
     </bean>
 
+    <bean id="deckBso" class="com.flexpoker.bso.DeckBsoImpl" />
+
+    <bean id="gameBso" class="com.flexpoker.bso.GameBsoImpl">
+        <property name="gameDao" ref="gameDaoMock" />
+        <property name="userBso" ref="userBsoMock" />
+        <property name="realTimeGameBso" ref="realTimeGameBsoMock" />
+        <property name="tableBalancerBso" ref="tableBalancerBsoMock" />
+    </bean>
+
+    <bean id="gameEventBso" class="com.flexpoker.bso.GameEventBsoImpl">
+        <property name="gameBso" ref="gameBsoMock" />
+        <property name="deckBso" ref="deckBsoMock" />
+        <property name="realTimeGameBso" ref="realTimeGameBsoMock" />
+        <property name="seatStatusBso" ref="seatStatusBsoMock" />
+    </bean>
+
+    <bean id="realTimeGameBso" class="com.flexpoker.bso.RealTimeGameBsoImpl" />
+
+    <bean id="seatStatusBso" class="com.flexpoker.bso.SeatStatusBsoImpl">
+        <property name="validationBso" ref="validationBsoMock" />
+    </bean>
+
+    <bean id="tableBalancerBso" class="com.flexpoker.bso.TableBalancerBsoImpl">
+        <property name="validationBso" ref="validationBsoMock" />
+    </bean>
+
+    <bean id="userBso" class="com.flexpoker.bso.UserBsoImpl">
+        <property name="userDao" ref="userDaoMock" />
+    </bean>
+
+    <bean id="validationBso" class="com.flexpoker.bso.ValidationBsoImpl" />
+
     <bean id="flexController" class="com.flexpoker.controller.FlexControllerImpl">
         <property name="gameBso" ref="gameBsoMock" />
         <property name="gameEventBso" ref="gameEventBsoMock" />
         <property name="eventManager" ref="eventManagerMock" />
+        <property name="dealCardActionsBso" ref="dealCardActionsBsoMock" />
     </bean>
 
 </beans>
