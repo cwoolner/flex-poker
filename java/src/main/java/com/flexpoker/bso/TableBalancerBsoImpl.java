@@ -43,8 +43,8 @@ public class TableBalancerBsoImpl implements TableBalancerBso {
         validateAssignInitialTablesForNewGameArguments(userGameStatuses,
                 maxPlayersPerTableForGame);
         int numberOfTables = calculateNumberOfTables(userGameStatuses,
-                maxPlayersPerTableForGame);
-        List<Table> tables = populateSeats(maxPlayersPerTableForGame, numberOfTables);
+                maxPlayersPerTable);
+        List<Table> tables = populateSeats(maxPlayersPerTable, numberOfTables);
         List<UserGameStatus> randomOrderedUserGameStatusList =
                 randomizeUserGameStatuses(userGameStatuses);
         distributeUserGameStatusesToTables(randomOrderedUserGameStatusList, tables);
@@ -83,14 +83,14 @@ public class TableBalancerBsoImpl implements TableBalancerBso {
         return userGameStatusList;
     }
 
-    private List<Table> populateSeats(int maxPlayersPerTableForGame, int numberOfTables) {
+    private List<Table> populateSeats(int maxPlayersPerTable, int numberOfTables) {
         List<Table> tables = new ArrayList<Table>();
 
         for (int i = 0; i < numberOfTables; i++) {
             Table table = new Table();
 
             List<Seat> seats = new ArrayList<Seat>();
-            for (int j = 0; j < maxPlayersPerTableForGame; j++) {
+            for (int j = 0; j < maxPlayersPerTable; j++) {
                 Seat seat = new Seat();
                 seat.setPosition(j);
                 seat.setStillInHand(true);
@@ -104,12 +104,12 @@ public class TableBalancerBsoImpl implements TableBalancerBso {
         return tables;
     }
 
-    private int calculateNumberOfTables(Set<UserGameStatus> userGameStatuses, int maxPlayersPerTableForGame) {
-        int numberOfTables = userGameStatuses.size() / maxPlayersPerTableForGame;
+    private int calculateNumberOfTables(Set<UserGameStatus> userGameStatuses, int maxPlayersPerTable) {
+        int numberOfTables = userGameStatuses.size() / maxPlayersPerTable;
 
         // if the number of people doesn't fit perfectly, then an additional
         // table is needed for the overflow
-        if (userGameStatuses.size() % maxPlayersPerTableForGame != 0) {
+        if (userGameStatuses.size() % maxPlayersPerTable != 0) {
             numberOfTables++;
         }
         return numberOfTables;
