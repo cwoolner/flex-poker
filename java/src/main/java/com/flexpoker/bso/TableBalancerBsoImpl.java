@@ -93,8 +93,6 @@ public class TableBalancerBsoImpl implements TableBalancerBso {
             for (int j = 0; j < maxPlayersPerTable; j++) {
                 Seat seat = new Seat();
                 seat.setPosition(j);
-                seat.setStillInHand(true);
-                seat.setAllIn(false);
                 seats.add(seat);
             }
 
