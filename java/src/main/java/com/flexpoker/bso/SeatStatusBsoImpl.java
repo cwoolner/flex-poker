@@ -20,7 +20,7 @@ public class SeatStatusBsoImpl implements SeatStatusBso {
         assignNewGameButton(table);
         assignNewGameSmallBlind(table);
         assignNewGameBigBlind(table);
-        assignNewGameActionOn(table);
+        assignNewHandActionOn(table);
     }
     
     @Override
@@ -33,6 +33,10 @@ public class SeatStatusBsoImpl implements SeatStatusBso {
     public void setStatusForNewHand(Table table) {
         validationBso.validateTable(table);
         assignStillInHand(table);
+        assignNewHandBigBlind(table);
+        assignNewHandSmallBlind(table);
+        assignNewHandButton(table);
+        assignNewHandActionOn(table);
     }
 
     private void assignStillInHand(Table table) {
@@ -43,19 +47,87 @@ public class SeatStatusBsoImpl implements SeatStatusBso {
         }
     }
 
-    private void assignNewGameActionOn(Table table) {
-        // TODO: Implement for real.
-        table.setActionOn(table.getSeats().get(1));
+    private void assignNewHandActionOn(Table table) {
+        List<Seat> seats = table.getSeats();
+        int bigBlindIndex = seats.indexOf(table.getBigBlind());
+
+        for (int i = bigBlindIndex + 1; i < seats.size(); i++) {
+            if (seats.get(i).isStillInHand()) {
+                table.setActionOn(seats.get(i));
+                return;
+            }
+        }
+
+        for (int i = 0; i < bigBlindIndex; i++) {
+            if (seats.get(i).isStillInHand()) {
+                table.setActionOn(seats.get(i));
+                return;
+            }
+        }
     }
 
     private void assignNewGameBigBlind(Table table) {
-        // TODO: Implement for real.
-        table.setBigBlind(table.getSeats().get(0));
+        List<Seat> seats = table.getSeats();
+        int numberOfPlayers = determineNumberOfPlayers(table);
+
+        if (numberOfPlayers == 2) {
+            int buttonIndex = seats.indexOf(table.getButton());
+
+            for (int i = buttonIndex + 1; i < seats.size(); i++) {
+                if (seats.get(i).isStillInHand()) {
+                    table.setBigBlind(seats.get(i));
+                    return;
+                }
+            }
+
+            for (int i = 0; i < buttonIndex; i++) {
+                if (seats.get(i).isStillInHand()) {
+                    table.setBigBlind(seats.get(i));
+                    return;
+                }
+            }
+        } else {
+            int smallBlindIndex = seats.indexOf(table.getSmallBlind());
+
+            for (int i = smallBlindIndex + 1; i < seats.size(); i++) {
+                if (seats.get(i).isStillInHand()) {
+                    table.setBigBlind(seats.get(i));
+                    return;
+                }
+            }
+
+            for (int i = 0; i < smallBlindIndex; i++) {
+                if (seats.get(i).isStillInHand()) {
+                    table.setBigBlind(seats.get(i));
+                    return;
+                }
+            }
+        }
     }
 
     private void assignNewGameSmallBlind(Table table) {
-        // TODO: Implement for real.
-        table.setSmallBlind(table.getSeats().get(1));
+        List<Seat> seats = table.getSeats();
+        int numberOfPlayers = determineNumberOfPlayers(table);
+
+        if (numberOfPlayers == 2) {
+            table.setSmallBlind(table.getButton());
+        } else {
+            int buttonIndex = seats.indexOf(table.getButton());
+
+            for (int i = buttonIndex + 1; i < seats.size(); i++) {
+                if (seats.get(i).isStillInHand()) {
+                    table.setSmallBlind(seats.get(i));
+                    return;
+                }
+            }
+
+            for (int i = 0; i < buttonIndex; i++) {
+                if (seats.get(i).isStillInHand()) {
+                    table.setSmallBlind(seats.get(i));
+                    return;
+                }
+            }
+        }
     }
 
     private void assignNewGameButton(Table table) {
@@ -63,7 +135,7 @@ public class SeatStatusBsoImpl implements SeatStatusBso {
         while (true) {
             int dealerPosition = new Random().nextInt(numberOfPlayersAtTable);
             Seat seat = table.getSeats().get(dealerPosition);
-            if (seat.getUserGameStatus() != null) {
+            if (seat.isStillInHand()) {
                 table.setButton(table.getSeats().get(dealerPosition));
                 break;
             }
@@ -75,15 +147,105 @@ public class SeatStatusBsoImpl implements SeatStatusBso {
         int buttonIndex = seats.indexOf(table.getButton());
 
         for (int i = buttonIndex + 1; i < seats.size(); i++) {
-            if (seats.get(i).isStillInHand()) {
+            if (seats.get(i).isStillInHand()
+                    && !seats.get(i).isAllIn()) {
                 table.setActionOn(seats.get(i));
                 return;
             }
         }
 
         for (int i = 0; i < buttonIndex; i++) {
-            if (seats.get(i).isStillInHand()) {
+            if (seats.get(i).isStillInHand()
+                    && !seats.get(i).isAllIn()) {
                 table.setActionOn(seats.get(i));
+                return;
+            }
+        }
+
+    }
+
+    private Integer determineNumberOfPlayers(Table table) {
+        int numberOfPlayers = 0;
+
+        for (Seat seat : table.getSeats()) {
+            if (seat.getUserGameStatus() != null) {
+                numberOfPlayers++;
+            }
+        }
+
+        return numberOfPlayers;
+    }
+
+    private void assignNewHandBigBlind(Table table) {
+        List<Seat> seats = table.getSeats();
+        int bigBlindIndex = seats.indexOf(table.getBigBlind());
+
+        for (int i = bigBlindIndex + 1; i < seats.size(); i++) {
+            if (seats.get(i).isStillInHand()) {
+                table.setBigBlind(seats.get(i));
+                return;
+            }
+        }
+
+        for (int i = 0; i < bigBlindIndex; i++) {
+            if (seats.get(i).isStillInHand()) {
+                table.setBigBlind(seats.get(i));
+                return;
+            }
+        }
+    }
+
+    private void assignNewHandSmallBlind(Table table) {
+        List<Seat> seats = table.getSeats();
+
+        // if only two people are left, switch to the heads-up rules.  just loop
+        // through the table and find the first seat that is not the big blind.
+        if (determineNumberOfPlayers(table) == 2) {
+            for (Seat seat : seats) {
+                if (!table.getBigBlind().equals(seat) && seat.isStillInHand()) {
+                    table.setSmallBlind(seat);
+                    return;
+                }
+            }
+        }
+
+        int smallBlindIndex = seats.indexOf(table.getSmallBlind());
+
+        for (int i = smallBlindIndex + 1; i < seats.size(); i++) {
+            if (seats.get(i).isStillInHand() || seats.get(i).isPlayerJustLeft()) {
+                table.setSmallBlind(seats.get(i));
+                return;
+            }
+        }
+
+        for (int i = 0; i < smallBlindIndex; i++) {
+            if (seats.get(i).isStillInHand() || seats.get(i).isPlayerJustLeft()) {
+                table.setSmallBlind(seats.get(i));
+                return;
+            }
+        }
+
+    }
+
+    private void assignNewHandButton(Table table) {
+        if (determineNumberOfPlayers(table) == 2) {
+            table.setButton(table.getSmallBlind());
+            return;
+        }
+
+        List<Seat> seats = table.getSeats();
+        int buttonIndex = seats.indexOf(table.getButton());
+
+        for (int i = buttonIndex + 1; i < seats.size() ; i++) {
+            if (seats.get(i).isStillInHand() || seats.get(i).isPlayerJustLeft()) {
+                table.setButton(seats.get(i));
+                return;
+            }
+        }
+
+        for (int i = 0; i < buttonIndex; i++) {
+            if (seats.get(i).isStillInHand() || seats.get(i).isPlayerJustLeft()) {
+                table.setButton(seats.get(i));
                 return;
             }
         }

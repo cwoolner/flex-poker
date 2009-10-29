@@ -2,15 +2,14 @@ package com.flexpoker.bso;
 
 import static org.junit.Assert.*;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Test;
 
-import com.flexpoker.model.Seat;
 import com.flexpoker.model.Table;
-import com.flexpoker.model.UserGameStatus;
 import com.flexpoker.util.Context;
+import com.flexpoker.util.TestDataUtils;
 
 
 public class SeatStatusBsoImplTest {
@@ -21,24 +20,227 @@ public class SeatStatusBsoImplTest {
     @Test
     public void testSetStatusForNewGame() {
         Table table = new Table();
-        List<Seat> seats = new ArrayList<Seat>();
-        table.setSeats(seats);
-
-        Seat seat1 = new Seat();
-        seat1.setPosition(0);
-        seat1.setUserGameStatus(new UserGameStatus());
-
-        Seat seat2 = new Seat();
-        seat2.setPosition(1);
-        seat2.setUserGameStatus(new UserGameStatus());
-
-        seats.add(seat1);
-        seats.add(seat2);
-
+        TestDataUtils.fillTableWithUsers(table, 2);
         bso.setStatusForNewGame(table);
 
-        assertTrue(table.getButton().getPosition() == 0
-                || table.getButton().getPosition() == 1);
+        assertTrue(table.getSeats().get(0).isStillInHand());
+        assertTrue(table.getSeats().get(1).isStillInHand());
+
+        // since things are assigned randomly, need to do some if/else logic
+        if (table.getButton().equals(table.getSeats().get(0))) {
+            assertTrue(table.getSmallBlind().equals(table.getSeats().get(0)));
+            assertTrue(table.getBigBlind().equals(table.getSeats().get(1)));
+            assertTrue(table.getActionOn().equals(table.getSeats().get(0)));
+        } else if (table.getButton().equals(table.getSeats().get(1))){
+            assertTrue(table.getSmallBlind().equals(table.getSeats().get(1)));
+            assertTrue(table.getBigBlind().equals(table.getSeats().get(0)));
+            assertTrue(table.getActionOn().equals(table.getSeats().get(1)));
+        } else {
+            fail("None of the seats were the button.");
+        }
+
+        table = new Table();
+        TestDataUtils.fillTableWithUsers(table, 3);
+        bso.setStatusForNewGame(table);
+
+        assertTrue(table.getSeats().get(0).isStillInHand());
+        assertTrue(table.getSeats().get(1).isStillInHand());
+        assertTrue(table.getSeats().get(2).isStillInHand());
+
+        // since things are assigned randomly, need to do some if/else logic
+        if (table.getButton().equals(table.getSeats().get(0))) {
+            assertTrue(table.getSmallBlind().equals(table.getSeats().get(1)));
+            assertTrue(table.getBigBlind().equals(table.getSeats().get(2)));
+            assertTrue(table.getActionOn().equals(table.getSeats().get(0)));
+        } else if (table.getButton().equals(table.getSeats().get(1))) {
+            assertTrue(table.getSmallBlind().equals(table.getSeats().get(2)));
+            assertTrue(table.getBigBlind().equals(table.getSeats().get(0)));
+            assertTrue(table.getActionOn().equals(table.getSeats().get(1)));
+        } else if (table.getButton().equals(table.getSeats().get(2))) {
+            assertTrue(table.getSmallBlind().equals(table.getSeats().get(0)));
+            assertTrue(table.getBigBlind().equals(table.getSeats().get(1)));
+            assertTrue(table.getActionOn().equals(table.getSeats().get(2)));
+        } else {
+            fail("None of the seats were the button.");
+        }
+
+        table = new Table();
+        TestDataUtils.fillTableWithUsers(table, 6);
+        bso.setStatusForNewGame(table);
+
+        assertTrue(table.getSeats().get(0).isStillInHand());
+        assertTrue(table.getSeats().get(1).isStillInHand());
+        assertTrue(table.getSeats().get(2).isStillInHand());
+        assertTrue(table.getSeats().get(3).isStillInHand());
+        assertTrue(table.getSeats().get(4).isStillInHand());
+        assertTrue(table.getSeats().get(5).isStillInHand());
+
+        // since things are assigned randomly, need to do some if/else logic
+        if (table.getButton().equals(table.getSeats().get(0))) {
+            assertTrue(table.getSmallBlind().equals(table.getSeats().get(1)));
+            assertTrue(table.getBigBlind().equals(table.getSeats().get(2)));
+            assertTrue(table.getActionOn().equals(table.getSeats().get(3)));
+        } else if (table.getButton().equals(table.getSeats().get(1))) {
+            assertTrue(table.getSmallBlind().equals(table.getSeats().get(2)));
+            assertTrue(table.getBigBlind().equals(table.getSeats().get(3)));
+            assertTrue(table.getActionOn().equals(table.getSeats().get(4)));
+        } else if (table.getButton().equals(table.getSeats().get(2))) {
+            assertTrue(table.getSmallBlind().equals(table.getSeats().get(3)));
+            assertTrue(table.getBigBlind().equals(table.getSeats().get(4)));
+            assertTrue(table.getActionOn().equals(table.getSeats().get(5)));
+        } else if (table.getButton().equals(table.getSeats().get(3))) {
+            assertTrue(table.getSmallBlind().equals(table.getSeats().get(4)));
+            assertTrue(table.getBigBlind().equals(table.getSeats().get(5)));
+            assertTrue(table.getActionOn().equals(table.getSeats().get(0)));
+        } else if (table.getButton().equals(table.getSeats().get(4))) {
+            assertTrue(table.getSmallBlind().equals(table.getSeats().get(5)));
+            assertTrue(table.getBigBlind().equals(table.getSeats().get(0)));
+            assertTrue(table.getActionOn().equals(table.getSeats().get(1)));
+        } else if (table.getButton().equals(table.getSeats().get(5))) {
+            assertTrue(table.getSmallBlind().equals(table.getSeats().get(0)));
+            assertTrue(table.getBigBlind().equals(table.getSeats().get(1)));
+            assertTrue(table.getActionOn().equals(table.getSeats().get(2)));
+        } else {
+            fail("None of the seats were the button.");
+        }
     }
 
+    @Test
+    public void testStatusForNewHand() {
+        setStatusForNewHandHelper(2, Arrays.asList(new Integer[]{}), 1, 1, 0, 1);
+        setStatusForNewHandHelper(3, Arrays.asList(new Integer[]{0}), 2, 2, 1, 2);
+        setStatusForNewHandHelper(3, Arrays.asList(new Integer[]{1}), 2, 2, 0, 2);
+        setStatusForNewHandHelper(3, Arrays.asList(new Integer[]{2}), 1, 1, 0, 1);
+        setStatusForNewHandHelper(4, Arrays.asList(new Integer[]{0}), 1, 2, 3, 1);
+        setStatusForNewHandHelper(4, Arrays.asList(new Integer[]{1}), 1, 2, 3, 0);
+        setStatusForNewHandHelper(4, Arrays.asList(new Integer[]{2}), 1, 2, 3, 0);
+        setStatusForNewHandHelper(4, Arrays.asList(new Integer[]{3}), 1, 2, 0, 1);
+        setStatusForNewHandHelper(4, Arrays.asList(new Integer[]{0, 1}), 2, 2, 3, 2);
+        setStatusForNewHandHelper(4, Arrays.asList(new Integer[]{1, 2}), 0, 0, 3, 0);
+        setStatusForNewHandHelper(4, Arrays.asList(new Integer[]{2, 3}), 1, 1, 0, 1);
+        setStatusForNewHandHelper(4, Arrays.asList(new Integer[]{0, 3}), 2, 2, 1, 2);
+        setStatusForNewHandHelper(5, Arrays.asList(new Integer[]{}), 1, 2, 3, 4);
+        setStatusForNewHandHelper(5, Arrays.asList(new Integer[]{2}), 1, 2, 3, 4);
+        setStatusForNewHandHelper(5, Arrays.asList(new Integer[]{2, 3}), 1, 2, 4, 0);
+        setStatusForNewHandHelper(5, Arrays.asList(new Integer[]{0, 1, 2}), 4, 4, 3, 4);
+        setStatusForNewHandHelper(5, Arrays.asList(new Integer[]{0, 1, 4}), 2, 2, 3, 2);
+    }
+
+    @Test
+    public void testStatusForNewRound() {
+        Table table = new Table();
+        TestDataUtils.fillTableWithUsers(table, 2);
+        bso.setStatusForNewRound(table);
+
+        assertTrue(table.getSeats().get(0).isStillInHand());
+        assertTrue(table.getSeats().get(1).isStillInHand());
+
+        // since things are assigned randomly, need to do some if/else logic
+        if (table.getButton().equals(table.getSeats().get(0))) {
+            assertTrue(table.getSmallBlind().equals(table.getSeats().get(0)));
+            assertTrue(table.getBigBlind().equals(table.getSeats().get(1)));
+            assertTrue(table.getActionOn().equals(table.getSeats().get(0)));
+        } else if (table.getButton().equals(table.getSeats().get(1))){
+            assertTrue(table.getSmallBlind().equals(table.getSeats().get(1)));
+            assertTrue(table.getBigBlind().equals(table.getSeats().get(0)));
+            assertTrue(table.getActionOn().equals(table.getSeats().get(1)));
+        } else {
+            fail("None of the seats were the button.");
+        }
+
+        table = new Table();
+        TestDataUtils.fillTableWithUsers(table, 3);
+        bso.setStatusForNewRound(table);
+
+        assertTrue(table.getSeats().get(0).isStillInHand());
+        assertTrue(table.getSeats().get(1).isStillInHand());
+        assertTrue(table.getSeats().get(2).isStillInHand());
+
+        // since things are assigned randomly, need to do some if/else logic
+        if (table.getButton().equals(table.getSeats().get(0))) {
+            assertTrue(table.getSmallBlind().equals(table.getSeats().get(1)));
+            assertTrue(table.getBigBlind().equals(table.getSeats().get(2)));
+            assertTrue(table.getActionOn().equals(table.getSeats().get(0)));
+        } else if (table.getButton().equals(table.getSeats().get(1))) {
+            assertTrue(table.getSmallBlind().equals(table.getSeats().get(2)));
+            assertTrue(table.getBigBlind().equals(table.getSeats().get(0)));
+            assertTrue(table.getActionOn().equals(table.getSeats().get(1)));
+        } else if (table.getButton().equals(table.getSeats().get(2))) {
+            assertTrue(table.getSmallBlind().equals(table.getSeats().get(0)));
+            assertTrue(table.getBigBlind().equals(table.getSeats().get(1)));
+            assertTrue(table.getActionOn().equals(table.getSeats().get(2)));
+        } else {
+            fail("None of the seats were the button.");
+        }
+
+        table = new Table();
+        TestDataUtils.fillTableWithUsers(table, 6);
+        bso.setStatusForNewRound(table);
+
+        assertTrue(table.getSeats().get(0).isStillInHand());
+        assertTrue(table.getSeats().get(1).isStillInHand());
+        assertTrue(table.getSeats().get(2).isStillInHand());
+        assertTrue(table.getSeats().get(3).isStillInHand());
+        assertTrue(table.getSeats().get(4).isStillInHand());
+        assertTrue(table.getSeats().get(5).isStillInHand());
+
+        // since things are assigned randomly, need to do some if/else logic
+        if (table.getButton().equals(table.getSeats().get(0))) {
+            assertTrue(table.getSmallBlind().equals(table.getSeats().get(1)));
+            assertTrue(table.getBigBlind().equals(table.getSeats().get(2)));
+            assertTrue(table.getActionOn().equals(table.getSeats().get(3)));
+        } else if (table.getButton().equals(table.getSeats().get(1))) {
+            assertTrue(table.getSmallBlind().equals(table.getSeats().get(2)));
+            assertTrue(table.getBigBlind().equals(table.getSeats().get(3)));
+            assertTrue(table.getActionOn().equals(table.getSeats().get(4)));
+        } else if (table.getButton().equals(table.getSeats().get(2))) {
+            assertTrue(table.getSmallBlind().equals(table.getSeats().get(3)));
+            assertTrue(table.getBigBlind().equals(table.getSeats().get(4)));
+            assertTrue(table.getActionOn().equals(table.getSeats().get(5)));
+        } else if (table.getButton().equals(table.getSeats().get(3))) {
+            assertTrue(table.getSmallBlind().equals(table.getSeats().get(4)));
+            assertTrue(table.getBigBlind().equals(table.getSeats().get(5)));
+            assertTrue(table.getActionOn().equals(table.getSeats().get(0)));
+        } else if (table.getButton().equals(table.getSeats().get(4))) {
+            assertTrue(table.getSmallBlind().equals(table.getSeats().get(5)));
+            assertTrue(table.getBigBlind().equals(table.getSeats().get(0)));
+            assertTrue(table.getActionOn().equals(table.getSeats().get(1)));
+        } else if (table.getButton().equals(table.getSeats().get(5))) {
+            assertTrue(table.getSmallBlind().equals(table.getSeats().get(0)));
+            assertTrue(table.getBigBlind().equals(table.getSeats().get(1)));
+            assertTrue(table.getActionOn().equals(table.getSeats().get(2)));
+        } else {
+            fail("None of the seats were the button.");
+        }
+    }
+
+    private void setStatusForNewHandHelper(int numberOfPlayers,
+            List<Integer> seatsThatJustLeft, int buttonIndex,
+            int smallBlindIndex, int bigBlindIndex, int actionOnIndex) {
+        Table table = new Table();
+        TestDataUtils.fillTableWithUsers(table, numberOfPlayers);
+        table.setButton(table.getSeats().get(0));
+        table.setSmallBlind(table.getSeats().get(1));
+        table.setBigBlind(table.getSeats().get(2));
+
+        for (Integer seat : seatsThatJustLeft) {
+            table.getSeats().get(seat.intValue()).setUserGameStatus(null);
+            table.getSeats().get(seat.intValue()).setPlayerJustLeft(true);
+        }
+
+        bso.setStatusForNewHand(table);
+
+        for (int i = 0; i < numberOfPlayers; i++) {
+            if (seatsThatJustLeft.contains(i)) {
+                assertFalse(table.getSeats().get(i).isStillInHand());
+            } else {
+                assertTrue(table.getSeats().get(i).isStillInHand());
+            }
+        }
+
+        assertTrue(table.getButton().equals(table.getSeats().get(buttonIndex)));
+        assertTrue(table.getSmallBlind().equals(table.getSeats().get(smallBlindIndex)));
+        assertTrue(table.getBigBlind().equals(table.getSeats().get(bigBlindIndex)));
+        assertTrue(table.getActionOn().equals(table.getSeats().get(actionOnIndex)));
+    }
 }
