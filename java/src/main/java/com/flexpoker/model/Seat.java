@@ -1,5 +1,7 @@
 package com.flexpoker.model;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
+
 public class Seat implements Comparable<Seat> {
 
     private UserGameStatus userGameStatus;
@@ -9,6 +11,8 @@ public class Seat implements Comparable<Seat> {
     private boolean stillInHand;
 
     private boolean allIn;
+
+    private boolean playerJustLeft;
 
     public UserGameStatus getUserGameStatus() {
         return userGameStatus;
@@ -42,6 +46,14 @@ public class Seat implements Comparable<Seat> {
         this.allIn = allIn;
     }
 
+    public boolean isPlayerJustLeft() {
+        return playerJustLeft;
+    }
+
+    public void setPlayerJustLeft(boolean playerJustLeft) {
+        this.playerJustLeft = playerJustLeft;
+    }
+
     @Override
     public int compareTo(Seat seat) {
         return position.compareTo(seat.getPosition());
@@ -70,6 +82,17 @@ public class Seat implements Comparable<Seat> {
         } else if (!position.equals(other.position))
             return false;
         return true;
+    }
+
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this)
+                .append("allIn", allIn)
+                .append("position", position)
+                .append("stillInHand", stillInHand)
+                .append("userGameStatus", userGameStatus)
+                .append("playerJustLeft", playerJustLeft)
+                .toString();
     }
 
 }
