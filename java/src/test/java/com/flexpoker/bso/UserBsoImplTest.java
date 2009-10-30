@@ -10,15 +10,11 @@ import com.flexpoker.util.Context;
 /**
  * Test for UserBsoImpl class.
  *
- * NOTE: The interface is used in defining the dao field due to the
- *       Transactional annotation, which creates a Proxy object.  This Proxy
- *       object is not allowed to be cast.
- *
  * @author chris
  */
 public class UserBsoImplTest {
 
-    private UserBso bso = (UserBso) Context.instance().getBean("userBso");
+    private UserBsoImpl bso = (UserBsoImpl) Context.instance().getBean("userBso");
     
     @Test
     public void testLoadUserByUsername() {
