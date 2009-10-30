@@ -250,6 +250,7 @@ public class GameEventBsoImpl implements GameEventBso {
             } else {
                 realTimeHand.setHandRoundState(HandRoundState.ROUND_IN_PROGRESS);
                 table.setActionOn(realTimeHand.getNextToAct());
+                determineNextToAct(table, realTimeHand);
             }
 
             return new HandState(realTimeHand.getHandDealerState(),
