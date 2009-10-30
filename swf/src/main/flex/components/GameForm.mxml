@@ -19,6 +19,8 @@
         }
 
         private function saveGame():void {
+            game.totalPlayers = totalPlayers.value;
+            game.maxPlayersPerTable = maxPlayersPerTable.value;
             dispatchEvent(new GameFormSavedEvent(game, this));
         }
 
@@ -26,6 +28,13 @@
     </mx:Script>
 
     <mx:Form defaultButton="{saveButton}">
+        <mx:FormHeading label="New Game" />
+        <mx:FormItem label="Players">
+            <mx:NumericStepper id="totalPlayers" minimum="2" maximum="9" stepSize="1" value="2" />
+        </mx:FormItem>
+        <mx:FormItem label="Max Players Per Table">
+            <mx:NumericStepper id="maxPlayersPerTable" minimum="2" maximum="9" stepSize="1" value="2" />
+        </mx:FormItem>
         <mx:FormItem direction="horizontal">
             <mx:Button id="saveButton" label="Save" click="saveGame();" />
             <mx:Button label="Cancel" click="removeMe();" />
