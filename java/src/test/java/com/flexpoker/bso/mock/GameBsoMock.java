@@ -34,12 +34,6 @@ public class GameBsoMock implements GameBso {
     }
 
     @Override
-    public Game fetchById(Integer id) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
     public Table fetchPlayersCurrentTable(User user, Game game) {
         // TODO Auto-generated method stub
         return null;

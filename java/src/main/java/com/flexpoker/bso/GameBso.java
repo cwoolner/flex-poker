@@ -15,8 +15,6 @@ public interface GameBso {
 
     void createGame(User user, Game game);
 
-    Game fetchById(Integer id);
-
     void changeGameStage(Game game, GameStage starting);
 
     Table fetchPlayersCurrentTable(User user, Game game);

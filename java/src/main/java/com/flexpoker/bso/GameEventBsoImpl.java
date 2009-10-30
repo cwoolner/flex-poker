@@ -38,8 +38,6 @@ public class GameEventBsoImpl implements GameEventBso {
     @Override
     public boolean addUserToGame(User user, Game game) {
         synchronized (this) {
-            game = gameBso.fetchById(game.getId());
-
             checkIfUserCanJoinGame(game, user);
 
             UserGameStatus userGameStatus = new UserGameStatus();
@@ -187,14 +185,9 @@ public class GameEventBsoImpl implements GameEventBso {
 
     @Override
     public void startNewHandForAllTables(Game game) {
-        game = gameBso.fetchById(game.getId());
-
-        List<Table> tables = gameBso.fetchTables(game);
-
-        for (Table table : tables) {
+        for (Table table : gameBso.fetchTables(game)) {
             startNewHand(game, table);
         }
-
     }
 
     @Override

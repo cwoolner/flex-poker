@@ -50,13 +50,8 @@ public class GameBsoImpl implements GameBso {
     }
 
     @Override
-    public Game fetchById(Integer id) {
-        return gameDao.findById(id);
-    }
-
-    @Override
     public void changeGameStage(Game game, GameStage gameStage) {
-        game = fetchById(game.getId());
+        game = gameDao.findById(game.getId());
         game.setGameStage(gameStage);
         gameDao.save(game.getId(), game);
     }
