@@ -7,7 +7,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.flexpoker.exception.FlexPokerException;
 import com.flexpoker.model.Blinds;
@@ -25,7 +24,6 @@ import com.flexpoker.model.Table;
 import com.flexpoker.model.User;
 import com.flexpoker.model.UserGameStatus;
 
-@Transactional
 @Service("gameEventBso")
 public class GameEventBsoImpl implements GameEventBso {
 

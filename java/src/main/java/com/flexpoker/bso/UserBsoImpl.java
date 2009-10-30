@@ -7,12 +7,10 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.security.userdetails.UserDetails;
 import org.springframework.security.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.flexpoker.dao.UserDao;
 import com.flexpoker.model.User;
 
-@Transactional
 @Service("userBso")
 public class UserBsoImpl implements UserBso {
 
