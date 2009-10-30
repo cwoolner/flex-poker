@@ -16,8 +16,6 @@ public interface GameEventBso {
 
     void startNewHand(Game game, Table table);
 
-    void startNewHandForAllTables(Game game);
-
     boolean verifyGameInProgress(User user, Game game);
 
     HandState check(Game game, Table table, User user);
