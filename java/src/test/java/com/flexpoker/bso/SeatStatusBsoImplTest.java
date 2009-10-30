@@ -10,7 +10,7 @@ import org.junit.Test;
 import com.flexpoker.model.Seat;
 import com.flexpoker.model.Table;
 import com.flexpoker.util.Context;
-import com.flexpoker.util.TestDataUtils;
+import com.flexpoker.util.DataUtilsForTests;
 
 
 public class SeatStatusBsoImplTest {
@@ -21,7 +21,7 @@ public class SeatStatusBsoImplTest {
     @Test
     public void testSetStatusForNewGame() {
         Table table = new Table();
-        TestDataUtils.fillTableWithUsers(table, 2);
+        DataUtilsForTests.fillTableWithUsers(table, 2);
         bso.setStatusForNewGame(table);
 
         assertTrue(table.getSeats().get(0).isStillInHand());
@@ -41,7 +41,7 @@ public class SeatStatusBsoImplTest {
         }
 
         table = new Table();
-        TestDataUtils.fillTableWithUsers(table, 3);
+        DataUtilsForTests.fillTableWithUsers(table, 3);
         bso.setStatusForNewGame(table);
 
         assertTrue(table.getSeats().get(0).isStillInHand());
@@ -66,7 +66,7 @@ public class SeatStatusBsoImplTest {
         }
 
         table = new Table();
-        TestDataUtils.fillTableWithUsers(table, 6);
+        DataUtilsForTests.fillTableWithUsers(table, 6);
         bso.setStatusForNewGame(table);
 
         assertTrue(table.getSeats().get(0).isStillInHand());
@@ -161,7 +161,7 @@ public class SeatStatusBsoImplTest {
             List<Integer> seatsThatJustLeft, int buttonIndex,
             int smallBlindIndex, int bigBlindIndex, int actionOnIndex) {
         Table table = new Table();
-        TestDataUtils.fillTableWithUsers(table, numberOfPlayers);
+        DataUtilsForTests.fillTableWithUsers(table, numberOfPlayers);
         table.setButton(table.getSeats().get(0));
         table.setSmallBlind(table.getSeats().get(1));
         table.setBigBlind(table.getSeats().get(2));
@@ -191,7 +191,7 @@ public class SeatStatusBsoImplTest {
             List<Integer> seatsThatJustLeft, List<Integer> seatsNotInHand,
             int actionOnIndex) {
         Table table = new Table();
-        TestDataUtils.fillTableWithUsers(table, numberOfPlayers);
+        DataUtilsForTests.fillTableWithUsers(table, numberOfPlayers);
         table.setButton(table.getSeats().get(0));
         table.setSmallBlind(table.getSeats().get(1));
         table.setBigBlind(table.getSeats().get(2));

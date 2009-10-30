@@ -10,7 +10,7 @@ import com.flexpoker.model.Table;
 import com.flexpoker.model.UserGameStatus;
 
 
-public class TestDataUtils {
+public class DataUtilsForTests {
 
     public static Set<UserGameStatus> createUserGameStatusSet(int numberOfUserGameStatuses) {
         Set<UserGameStatus> userGameStatuses = new HashSet<UserGameStatus>();

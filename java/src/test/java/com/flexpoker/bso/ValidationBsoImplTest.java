@@ -12,7 +12,7 @@ import com.flexpoker.model.Seat;
 import com.flexpoker.model.Table;
 import com.flexpoker.model.UserGameStatus;
 import com.flexpoker.util.Context;
-import com.flexpoker.util.TestDataUtils;
+import com.flexpoker.util.DataUtilsForTests;
 
 
 public class ValidationBsoImplTest {
@@ -63,13 +63,13 @@ public class ValidationBsoImplTest {
             fail("An exception should have been thrown.  Can't send in an empty Set.");
         } catch (IllegalArgumentException e) {}
 
-        userGameStatuses = TestDataUtils.createUserGameStatusSet(0);
+        userGameStatuses = DataUtilsForTests.createUserGameStatusSet(0);
         try {
             bso.validateTableAssignment(userGameStatuses, 9);
             fail("An exception should have been thrown.  Can't send in an empty Set.");
         } catch (IllegalArgumentException e) {}
 
-        userGameStatuses = TestDataUtils.createUserGameStatusSet(7);
+        userGameStatuses = DataUtilsForTests.createUserGameStatusSet(7);
         try {
             bso.validateTableAssignment(userGameStatuses, 10);
             fail("An exception should have been thrown.  10 is too large of a table.");

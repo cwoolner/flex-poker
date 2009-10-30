@@ -13,7 +13,7 @@ import com.flexpoker.model.Seat;
 import com.flexpoker.model.Table;
 import com.flexpoker.model.UserGameStatus;
 import com.flexpoker.util.Context;
-import com.flexpoker.util.TestDataUtils;
+import com.flexpoker.util.DataUtilsForTests;
 
 public class TableBalancerBsoImplTest {
 
@@ -23,7 +23,7 @@ public class TableBalancerBsoImplTest {
     public void testAreTablesBalanced() {
         Table table1 = new Table();
         table1.setId(1);
-        TestDataUtils.fillTableWithUsers(table1, 3);
+        DataUtilsForTests.fillTableWithUsers(table1, 3);
         List<Table> tables = new ArrayList<Table>();
         tables.add(table1);
         assertTrue(bso.areTablesBalanced(tables));
@@ -32,8 +32,8 @@ public class TableBalancerBsoImplTest {
         table1.setId(1);
         Table table2 = new Table();
         table2.setId(2);
-        TestDataUtils.fillTableWithUsers(table1, 3);
-        TestDataUtils.fillTableWithUsers(table2, 5);
+        DataUtilsForTests.fillTableWithUsers(table1, 3);
+        DataUtilsForTests.fillTableWithUsers(table2, 5);
         tables = new ArrayList<Table>();
         tables.add(table1);
         tables.add(table2);
@@ -43,8 +43,8 @@ public class TableBalancerBsoImplTest {
         table1.setId(1);
         table2 = new Table();
         table2.setId(2);
-        TestDataUtils.fillTableWithUsers(table1, 7);
-        TestDataUtils.fillTableWithUsers(table2, 6);
+        DataUtilsForTests.fillTableWithUsers(table1, 7);
+        DataUtilsForTests.fillTableWithUsers(table2, 6);
         tables = new ArrayList<Table>();
         tables.add(table1);
         tables.add(table2);
@@ -57,9 +57,9 @@ public class TableBalancerBsoImplTest {
         table2.setId(2);
         Table table3 = new Table();
         table3.setId(3);
-        TestDataUtils.fillTableWithUsers(table1, 4);
-        TestDataUtils.fillTableWithUsers(table2, 5);
-        TestDataUtils.fillTableWithUsers(table3, 4);
+        DataUtilsForTests.fillTableWithUsers(table1, 4);
+        DataUtilsForTests.fillTableWithUsers(table2, 5);
+        DataUtilsForTests.fillTableWithUsers(table3, 4);
         tables = new ArrayList<Table>();
         tables.add(table1);
         tables.add(table2);
@@ -73,9 +73,9 @@ public class TableBalancerBsoImplTest {
         table2.setId(2);
         table3 = new Table();
         table3.setId(3);
-        TestDataUtils.fillTableWithUsers(table1, 7);
-        TestDataUtils.fillTableWithUsers(table2, 9);
-        TestDataUtils.fillTableWithUsers(table3, 8);
+        DataUtilsForTests.fillTableWithUsers(table1, 7);
+        DataUtilsForTests.fillTableWithUsers(table2, 9);
+        DataUtilsForTests.fillTableWithUsers(table3, 8);
         tables = new ArrayList<Table>();
         tables.add(table1);
         tables.add(table2);
@@ -88,9 +88,9 @@ public class TableBalancerBsoImplTest {
         table2.setId(2);
         table3 = new Table();
         table3.setId(3);
-        TestDataUtils.fillTableWithUsers(table1, 7);
-        TestDataUtils.fillTableWithUsers(table2, 7);
-        TestDataUtils.fillTableWithUsers(table3, 7);
+        DataUtilsForTests.fillTableWithUsers(table1, 7);
+        DataUtilsForTests.fillTableWithUsers(table2, 7);
+        DataUtilsForTests.fillTableWithUsers(table3, 7);
         tables = new ArrayList<Table>();
         tables.add(table1);
         tables.add(table2);
@@ -104,9 +104,9 @@ public class TableBalancerBsoImplTest {
         table2.setId(2);
         table3 = new Table();
         table3.setId(3);
-        TestDataUtils.fillTableWithUsers(table1, 6);
-        TestDataUtils.fillTableWithUsers(table2, 6);
-        TestDataUtils.fillTableWithUsers(table3, 6);
+        DataUtilsForTests.fillTableWithUsers(table1, 6);
+        DataUtilsForTests.fillTableWithUsers(table2, 6);
+        DataUtilsForTests.fillTableWithUsers(table3, 6);
         tables = new ArrayList<Table>();
         tables.add(table1);
         tables.add(table2);
@@ -116,7 +116,7 @@ public class TableBalancerBsoImplTest {
 
     @Test
     public void testAssignInitialTablesForNewGame() {
-        Set<UserGameStatus> userGameStatuses = TestDataUtils.createUserGameStatusSet(4);
+        Set<UserGameStatus> userGameStatuses = DataUtilsForTests.createUserGameStatusSet(4);
         List<Table> tables = bso.assignInitialTablesForNewGame(userGameStatuses, 9);
         assertEquals(1, tables.size());
         verifyEqualDistribution(tables, 9, 4);
@@ -133,7 +133,7 @@ public class TableBalancerBsoImplTest {
         assertEquals(2, tables.size());
         verifyEqualDistribution(tables, 2, 2, 2);
 
-        userGameStatuses = TestDataUtils.createUserGameStatusSet(20);
+        userGameStatuses = DataUtilsForTests.createUserGameStatusSet(20);
         tables = bso.assignInitialTablesForNewGame(userGameStatuses, 9);
         assertEquals(3, tables.size());
         verifyEqualDistribution(tables, 9, 7, 7, 6);
@@ -150,7 +150,7 @@ public class TableBalancerBsoImplTest {
         assertEquals(10, tables.size());
         verifyEqualDistribution(tables, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2);
 
-        userGameStatuses = TestDataUtils.createUserGameStatusSet(2);
+        userGameStatuses = DataUtilsForTests.createUserGameStatusSet(2);
         tables = bso.assignInitialTablesForNewGame(userGameStatuses, 9);
         assertEquals(1, tables.size());
         verifyEqualDistribution(tables, 9, 2);
