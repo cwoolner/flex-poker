@@ -10,6 +10,12 @@ package com.flexpoker.model {
 
         public var position:int;
 
+        public var stillInHand:Boolean;
+
+        public allIn:Boolean;
+
+        public playerJustLeft:Boolean;
+
     }
 
 }
