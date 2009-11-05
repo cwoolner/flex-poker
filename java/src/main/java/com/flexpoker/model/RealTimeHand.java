@@ -34,6 +34,8 @@ public class RealTimeHand {
 
     private HandRoundState handRoundState = HandRoundState.ROUND_COMPLETE;
 
+    private List<HandEvaluation> handEvaluationList;
+
     public RealTimeHand(List<Seat> seats) {
         for (Seat seat : seats) {
             possibleSeatActionsMap.put(seat, new HashSet<GameEventType>());
@@ -109,6 +111,14 @@ public class RealTimeHand {
 
     public void setHandRoundState(HandRoundState handRoundState) {
         this.handRoundState = handRoundState;
+    }
+
+    public List<HandEvaluation> getHandEvaluationList() {
+        return handEvaluationList;
+    }
+
+    public void setHandEvaluationList(List<HandEvaluation> handEvaluationList) {
+        this.handEvaluationList = handEvaluationList;
     }
 
 }
