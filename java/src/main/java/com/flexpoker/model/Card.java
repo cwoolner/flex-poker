@@ -1,6 +1,8 @@
 package com.flexpoker.model;
 
-public class Card {
+import org.apache.commons.lang.builder.ToStringBuilder;
+
+public class Card implements Comparable<Card> {
 
     private int id;
 
@@ -52,6 +54,20 @@ public class Card {
         if (id != other.id)
             return false;
         return true;
+    }
+
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this)
+                .append("id", id)
+                .append("cardRank", cardRank)
+                .append("cardSuit", cardSuit)
+                .toString();
+    }
+
+    @Override
+    public int compareTo(Card otherCard) {
+        return cardRank.compareTo(otherCard.cardRank);
     }
 
 }
