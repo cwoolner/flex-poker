@@ -74,13 +74,9 @@ public class HandEvaluatorBsoImplTest {
     }
 
     private CommonCards createStraight(CardRank cardRank) {
-        Card card1 = null;
-        Card card2 = null;
-        Card card3 = null;
-        Card card4 = null;
-        Card card5 = null;
-
         CardRank[] cardRanks = CardRank.values();
+
+        Card card1;
 
         // if 5, make the first one an ace for the wheel
         if (cardRank.ordinal() == 3) {
@@ -89,10 +85,10 @@ public class HandEvaluatorBsoImplTest {
             card1 = new Card(0, cardRanks[cardRank.ordinal() - 4], CardSuit.HEARTS);
         }
 
-        card2 = new Card(0, cardRanks[cardRank.ordinal() - 3], CardSuit.CLUBS);
-        card3 = new Card(0, cardRanks[cardRank.ordinal() - 2], CardSuit.DIAMONDS);
-        card4 = new Card(0, cardRanks[cardRank.ordinal() - 1], CardSuit.SPADES);
-        card5 = new Card(0, cardRank, CardSuit.HEARTS);
+        Card card2 = new Card(0, cardRanks[cardRank.ordinal() - 3], CardSuit.CLUBS);
+        Card card3 = new Card(0, cardRanks[cardRank.ordinal() - 2], CardSuit.DIAMONDS);
+        Card card4 = new Card(0, cardRanks[cardRank.ordinal() - 1], CardSuit.SPADES);
+        Card card5 = new Card(0, cardRank, CardSuit.HEARTS);
 
         FlopCards flopCards = new FlopCards(card2, card4, card5);
         TurnCard turnCard = new TurnCard(card3);
@@ -102,13 +98,9 @@ public class HandEvaluatorBsoImplTest {
     }
 
     private CommonCards createStraightFlush(CardRank cardRank) {
-        Card card1 = null;
-        Card card2 = null;
-        Card card3 = null;
-        Card card4 = null;
-        Card card5 = null;
-
         CardRank[] cardRanks = CardRank.values();
+
+        Card card1;
 
         // if 5, make the first one an ace for the wheel
         if (cardRank.ordinal() == 3) {
@@ -117,10 +109,10 @@ public class HandEvaluatorBsoImplTest {
             card1 = new Card(0, cardRanks[cardRank.ordinal() - 4], CardSuit.HEARTS);
         }
 
-        card2 = new Card(0, cardRanks[cardRank.ordinal() - 3], CardSuit.HEARTS);
-        card3 = new Card(0, cardRanks[cardRank.ordinal() - 2], CardSuit.HEARTS);
-        card4 = new Card(0, cardRanks[cardRank.ordinal() - 1], CardSuit.HEARTS);
-        card5 = new Card(0, cardRank, CardSuit.HEARTS);
+        Card card2 = new Card(0, cardRanks[cardRank.ordinal() - 3], CardSuit.HEARTS);
+        Card card3 = new Card(0, cardRanks[cardRank.ordinal() - 2], CardSuit.HEARTS);
+        Card card4 = new Card(0, cardRanks[cardRank.ordinal() - 1], CardSuit.HEARTS);
+        Card card5 = new Card(0, cardRank, CardSuit.HEARTS);
 
         FlopCards flopCards = new FlopCards(card1, card3, card4);
         TurnCard turnCard = new TurnCard(card5);
