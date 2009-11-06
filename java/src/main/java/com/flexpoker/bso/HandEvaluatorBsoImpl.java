@@ -1,12 +1,13 @@
 package com.flexpoker.bso;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
 
 import com.flexpoker.model.Card;
+import com.flexpoker.model.CardRank;
 import com.flexpoker.model.CardSuit;
 import com.flexpoker.model.CommonCards;
 import com.flexpoker.model.HandEvaluation;
@@ -18,20 +19,51 @@ public class HandEvaluatorBsoImpl implements HandEvaluatorBso {
 
     @Override
     public List<HandRanking> determinePossibleHands(CommonCards commonCards) {
-        List<HandRanking> possibleHandRankings = new ArrayList<HandRanking>();
+        List<HandRanking> possibleHandRankings = Arrays.asList(HandRanking.values());
 
         CommonCardStatus straightFlushStatus =
                 determineStraightFlushStatus(commonCards);
 
         if (straightFlushStatus == CommonCardStatus.BOARD) {
-            possibleHandRankings.add(HandRanking.STRAIGHT_FLUSH);
-            return possibleHandRankings;
+            possibleHandRankings.remove(HandRanking.FOUR_OF_A_KIND);
+            possibleHandRankings.remove(HandRanking.FULL_HOUSE);
+            possibleHandRankings.remove(HandRanking.FLUSH);
+            possibleHandRankings.remove(HandRanking.STRAIGHT);
+            possibleHandRankings.remove(HandRanking.THREE_OF_A_KIND);
+            possibleHandRankings.remove(HandRanking.TWO_PAIR);
+            possibleHandRankings.remove(HandRanking.ONE_PAIR);
+            possibleHandRankings.remove(HandRanking.HIGH_CARD);
+        } else {
+            possibleHandRankings.remove(HandRanking.STRAIGHT_FLUSH);
         }
 
-        if (straightFlushStatus == CommonCardStatus.POSSIBLE) {
-            possibleHandRankings.add(HandRanking.STRAIGHT_FLUSH);
-            possibleHandRankings.add(HandRanking.FLUSH);
+        CommonCardStatus fourOfAKindStatus =
+                determineFourOfAKindStatus(commonCards);
+
+        if (fourOfAKindStatus == CommonCardStatus.BOARD) {
+            possibleHandRankings.remove(HandRanking.STRAIGHT_FLUSH);
+            possibleHandRankings.remove(HandRanking.FULL_HOUSE);
+            possibleHandRankings.remove(HandRanking.FLUSH);
+            possibleHandRankings.remove(HandRanking.STRAIGHT);
+            possibleHandRankings.remove(HandRanking.THREE_OF_A_KIND);
+            possibleHandRankings.remove(HandRanking.TWO_PAIR);
+            possibleHandRankings.remove(HandRanking.ONE_PAIR);
+            possibleHandRankings.remove(HandRanking.HIGH_CARD);
+        } else {
+            possibleHandRankings.remove(HandRanking.FOUR_OF_A_KIND);
+        }
+
+        if (fourOfAKindStatus == CommonCardStatus.POSSIBLE) {
+            possibleHandRankings.add(HandRanking.FOUR_OF_A_KIND);
+            possibleHandRankings.add(HandRanking.FULL_HOUSE);
+            possibleHandRankings.add(HandRanking.THREE_OF_A_KIND);
+            possibleHandRankings.add(HandRanking.TWO_PAIR);
+            possibleHandRankings.add(HandRanking.ONE_PAIR);
+        }
+
+        if (straightFlushStatus == CommonCardStatus.BOARD) {
             possibleHandRankings.add(HandRanking.STRAIGHT);
+            return possibleHandRankings;
         }
 
         return possibleHandRankings;
@@ -62,6 +94,29 @@ public class HandEvaluatorBsoImpl implements HandEvaluatorBso {
         }
 
         return null;
+    }
+
+    private CommonCardStatus determineFourOfAKindStatus(CommonCards commonCards) {
+        List<Card> cardList = commonCards.getCards();
+        Collections.sort(cardList);
+
+        CardRank cardRank1 = cardList.get(0).getCardRank();
+        CardRank cardRank2 = cardList.get(1).getCardRank();
+        CardRank cardRank3 = cardList.get(2).getCardRank();
+        CardRank cardRank4 = cardList.get(3).getCardRank();
+        CardRank cardRank5 = cardList.get(4).getCardRank();
+
+        if ((cardRank1 == cardRank2 && cardRank2 == cardRank3 && cardRank3 == cardRank4)
+                || (cardRank2 == cardRank3 && cardRank3 == cardRank4 && cardRank4 == cardRank5)) {
+            return CommonCardStatus.BOARD;
+        }
+
+        if (cardRank1 == cardRank2 || cardRank2 == cardRank3
+                || cardRank3 == cardRank4 || cardRank4 == cardRank5) {
+            return CommonCardStatus.POSSIBLE;
+        }
+
+        return CommonCardStatus.NOT_POSSIBLE;
     }
 
     private boolean isFlush(CommonCards commonCards) {
