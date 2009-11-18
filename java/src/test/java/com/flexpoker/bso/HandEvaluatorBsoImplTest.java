@@ -26,6 +26,7 @@ public class HandEvaluatorBsoImplTest {
     public void testDeterminePossibleHands() {
         verifyStraightFlushOnBoard();
         verifyFourOfAKindOnBoard();
+        verifyFullHouseOnBoard();
         verifyFlushOnBoard();
         verifyStraightOnBoard();
     }
@@ -62,6 +63,15 @@ public class HandEvaluatorBsoImplTest {
         verifyFourOfAKindOnBoardHelper(CardRank.QUEEN);
         verifyStraightFlushOnBoardHelper(CardRank.KING);
         verifyFourOfAKindOnBoardHelper(CardRank.ACE);
+    }
+
+    private void verifyFullHouseOnBoard() {
+        verifyFullHouseOnBoardHelper(CardRank.TWO, CardRank.ACE);
+        verifyFullHouseOnBoardHelper(CardRank.ACE, CardRank.TWO);
+        verifyFullHouseOnBoardHelper(CardRank.KING, CardRank.ACE);
+        verifyFullHouseOnBoardHelper(CardRank.ACE, CardRank.KING);
+        verifyFullHouseOnBoardHelper(CardRank.KING, CardRank.QUEEN);
+        verifyFullHouseOnBoardHelper(CardRank.EIGHT, CardRank.SEVEN);
     }
 
     private void verifyFlushOnBoard() {
@@ -121,6 +131,15 @@ public class HandEvaluatorBsoImplTest {
         List<HandRanking> handRankings = bso.determinePossibleHands(commonCards);
         assertEquals(1, handRankings.size());
         assertEquals(HandRanking.FOUR_OF_A_KIND, handRankings.get(0));
+    }
+
+    private void verifyFullHouseOnBoardHelper(CardRank primaryCardRank,
+            CardRank secondaryCardRank) {
+        CommonCards commonCards = createFullHouse(primaryCardRank, secondaryCardRank);
+        List<HandRanking> handRankings = bso.determinePossibleHands(commonCards);
+        assertEquals(2, handRankings.size());
+        assertEquals(HandRanking.FULL_HOUSE, handRankings.get(0));
+        assertEquals(HandRanking.FOUR_OF_A_KIND, handRankings.get(1));
     }
 
     private void verifyStraightOnBoardHelper(CardRank cardRank) {
@@ -190,6 +209,20 @@ public class HandEvaluatorBsoImplTest {
         } else {
             card5 = new Card(0, cardRank, CardSuit.HEARTS);
         }
+
+        FlopCards flopCards = new FlopCards(card1, card3, card4);
+        TurnCard turnCard = new TurnCard(card5);
+        RiverCard riverCard = new RiverCard(card2);
+
+        return new CommonCards(flopCards, turnCard, riverCard);
+    }
+
+    private CommonCards createFullHouse(CardRank primaryCardRank, CardRank secondaryCardRank) {
+        Card card1 = new Card(0, primaryCardRank, CardSuit.HEARTS);
+        Card card2 = new Card(0, secondaryCardRank, CardSuit.CLUBS);
+        Card card3 = new Card(0, secondaryCardRank, CardSuit.DIAMONDS);
+        Card card4 = new Card(0, primaryCardRank, CardSuit.SPADES);
+        Card card5 = new Card(0, primaryCardRank, CardSuit.HEARTS);
 
         FlopCards flopCards = new FlopCards(card1, card3, card4);
         TurnCard turnCard = new TurnCard(card5);
