@@ -3,7 +3,9 @@ package com.flexpoker.bso;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
@@ -149,14 +151,22 @@ public class HandEvaluatorBsoImpl implements HandEvaluatorBso {
     }
 
     private CommonCardStatus determineStraightFlushStatus(CommonCards commonCards) {
-        boolean straight = isStraight(commonCards);
-        boolean flush = isFlush(commonCards);
+        List<Card> listOfCardsInLargestSuit = findCardsInLargestSuit(commonCards);
 
-        if (straight && flush) {
+        // we have a flush, check to see if it's a straight also
+        if (listOfCardsInLargestSuit.size() == 5 && isStraight(commonCards)) {
             return CommonCardStatus.BOARD;
         }
 
-        return null;
+        if (listOfCardsInLargestSuit.size() < 3) {
+            return CommonCardStatus.NOT_POSSIBLE;
+        }
+
+        if (isStraightPossible(listOfCardsInLargestSuit)) {
+            return CommonCardStatus.POSSIBLE;
+        }
+
+        return CommonCardStatus.NOT_POSSIBLE;
     }
 
     private CommonCardStatus determineFourOfAKindStatus(CommonCards commonCards) {
@@ -182,20 +192,73 @@ public class HandEvaluatorBsoImpl implements HandEvaluatorBso {
         return CommonCardStatus.NOT_POSSIBLE;
     }
 
-    private boolean isFlush(CommonCards commonCards) {
-        CardSuit cardSuit = null;
+    private CommonCardStatus determineFullHouseStatus(CommonCards commonCards) {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
-        for (Card card : commonCards.getCards()) {
-            if (cardSuit == null) {
-                cardSuit = card.getCardSuit();
-                continue;
-            }
-            if (!cardSuit.equals(card.getCardSuit())) {
-                return false;
-            }
+    private CommonCardStatus determineFlushStatus(CommonCards commonCards) {
+        List<Card> cards = findCardsInLargestSuit(commonCards);
+
+        switch (cards.size()) {
+            case 5:
+                return CommonCardStatus.BOARD;
+            case 4:
+                return CommonCardStatus.POSSIBLE;
+            case 3:
+                return CommonCardStatus.POSSIBLE;
+            default:
+                return CommonCardStatus.NOT_POSSIBLE;
+        }
+    }
+
+    private CommonCardStatus determineStraightStatus(CommonCards commonCards) {
+        if (isStraight(commonCards)) {
+            return CommonCardStatus.BOARD;
+        }
+        return null;
+    }
+
+    private CommonCardStatus determineThreeOfAKindStatus(CommonCards commonCards) {
+        List<Card> cardList = commonCards.getCards();
+        Collections.sort(cardList);
+
+        CardRank cardRank1 = cardList.get(0).getCardRank();
+        CardRank cardRank2 = cardList.get(1).getCardRank();
+        CardRank cardRank3 = cardList.get(2).getCardRank();
+        CardRank cardRank4 = cardList.get(3).getCardRank();
+        CardRank cardRank5 = cardList.get(4).getCardRank();
+
+        if ((cardRank1 == cardRank2 && cardRank2 == cardRank3)
+                || (cardRank2 == cardRank3 && cardRank3 == cardRank4)
+                || (cardRank3 == cardRank4 && cardRank4 == cardRank5)) {
+            return CommonCardStatus.BOARD;
         }
 
-        return true;
+        return CommonCardStatus.POSSIBLE;
+    }
+
+    private CommonCardStatus determineTwoPairStatus(CommonCards commonCards) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    private CommonCardStatus determineOnePairStatus(CommonCards commonCards) {
+        List<Card> cardList = commonCards.getCards();
+        Collections.sort(cardList);
+
+        CardRank cardRank1 = cardList.get(0).getCardRank();
+        CardRank cardRank2 = cardList.get(1).getCardRank();
+        CardRank cardRank3 = cardList.get(2).getCardRank();
+        CardRank cardRank4 = cardList.get(3).getCardRank();
+        CardRank cardRank5 = cardList.get(4).getCardRank();
+
+        if (cardRank1 == cardRank2 || cardRank2 == cardRank3
+                || cardRank3 == cardRank4|| cardRank4 == cardRank5) {
+            return CommonCardStatus.BOARD;
+        }
+
+        return CommonCardStatus.POSSIBLE;
     }
 
     private boolean isStraight(CommonCards commonCards) {
@@ -220,6 +283,68 @@ public class HandEvaluatorBsoImpl implements HandEvaluatorBso {
         }
 
         return cardRankOrdinal4 + 1 == cardRankOrdinal5;
+    }
+
+    private boolean isStraightPossible(List<Card> listOfCardsInLargestSuit) {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    /**
+     * Return the list of cards in the largest suit.  If that number is three,
+     * then the correct suit will be represented.  If that number is only two,
+     * then the first suit scanned will be returned in the following order:
+     * HEARTS, CLUBS, DIAMONDS, SPADES
+     */
+    private List<Card> findCardsInLargestSuit(CommonCards commonCards) {
+        List<Card> cards = commonCards.getCards();
+        Map<CardSuit, List<Card>> suitMap = new HashMap<CardSuit, List<Card>>();
+
+        for (Card card : cards) {
+            CardSuit cardSuit = card.getCardSuit();
+            if (suitMap.get(cardSuit) == null) {
+                suitMap.put(cardSuit, new ArrayList<Card>());
+            }
+            suitMap.get(cardSuit).add(card);
+        }
+
+        int numberOfHearts = suitMap.get(CardSuit.HEARTS) == null
+                ? 0 : suitMap.get(CardSuit.HEARTS).size();
+        int numberOfClubs = suitMap.get(CardSuit.CLUBS) == null
+                ? 0 : suitMap.get(CardSuit.CLUBS).size();
+        int numberOfDiamonds = suitMap.get(CardSuit.DIAMONDS) == null
+                ? 0 : suitMap.get(CardSuit.DIAMONDS).size();
+        int numberOfSpades = suitMap.get(CardSuit.SPADES) == null
+                ? 0 : suitMap.get(CardSuit.SPADES).size();
+
+        if (numberOfHearts >= 3) {
+            return suitMap.get(CardSuit.HEARTS);
+        }
+        if (numberOfClubs >= 3) {
+            return suitMap.get(CardSuit.CLUBS);
+        }
+        if (numberOfDiamonds >= 3) {
+            return suitMap.get(CardSuit.DIAMONDS);
+        }
+        if (numberOfSpades >= 3) {
+            return suitMap.get(CardSuit.SPADES);
+        }
+
+        if (numberOfHearts == 2) {
+            return suitMap.get(CardSuit.HEARTS);
+        }
+        if (numberOfClubs == 2) {
+            return suitMap.get(CardSuit.CLUBS);
+        }
+        if (numberOfDiamonds == 2) {
+            return suitMap.get(CardSuit.DIAMONDS);
+        }
+        if (numberOfSpades == 2) {
+            return suitMap.get(CardSuit.SPADES);
+        }
+
+        throw new IllegalArgumentException("CommonCards must contain at least "
+                + "two instances of a suit.");
     }
 
 }
