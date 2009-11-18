@@ -25,111 +25,14 @@ public class HandEvaluatorBsoImpl implements HandEvaluatorBso {
         List<HandRanking> possibleHandRankings
                 = new ArrayList<HandRanking>(Arrays.asList(HandRanking.values()));
 
-        CommonCardStatus straightFlushStatus = determineStraightFlushStatus(commonCards);
-
-        if (straightFlushStatus == CommonCardStatus.BOARD) {
-            possibleHandRankings.remove(HandRanking.FOUR_OF_A_KIND);
-            possibleHandRankings.remove(HandRanking.FULL_HOUSE);
-            possibleHandRankings.remove(HandRanking.FLUSH);
-            possibleHandRankings.remove(HandRanking.STRAIGHT);
-            possibleHandRankings.remove(HandRanking.THREE_OF_A_KIND);
-            possibleHandRankings.remove(HandRanking.TWO_PAIR);
-            possibleHandRankings.remove(HandRanking.ONE_PAIR);
-            possibleHandRankings.remove(HandRanking.HIGH_CARD);
-            return possibleHandRankings;
-        } else if (straightFlushStatus == CommonCardStatus.NOT_POSSIBLE) {
-            possibleHandRankings.remove(HandRanking.STRAIGHT_FLUSH);
-        }
-
-        CommonCardStatus fourOfAKindStatus = determineFourOfAKindStatus(commonCards);
-
-        if (fourOfAKindStatus == CommonCardStatus.BOARD) {
-            possibleHandRankings.remove(HandRanking.STRAIGHT_FLUSH);
-            possibleHandRankings.remove(HandRanking.FULL_HOUSE);
-            possibleHandRankings.remove(HandRanking.FLUSH);
-            possibleHandRankings.remove(HandRanking.STRAIGHT);
-            possibleHandRankings.remove(HandRanking.THREE_OF_A_KIND);
-            possibleHandRankings.remove(HandRanking.TWO_PAIR);
-            possibleHandRankings.remove(HandRanking.ONE_PAIR);
-            possibleHandRankings.remove(HandRanking.HIGH_CARD);
-            return possibleHandRankings;
-        } else if (straightFlushStatus == CommonCardStatus.NOT_POSSIBLE) {
-            possibleHandRankings.remove(HandRanking.FOUR_OF_A_KIND);
-            possibleHandRankings.remove(HandRanking.FULL_HOUSE);
-        }
-
-        if (possibleHandRankings.contains(HandRanking.FULL_HOUSE)) {
-            CommonCardStatus fullHouseStatus = determineFullHouseStatus(commonCards);
-
-            if (fullHouseStatus == CommonCardStatus.BOARD) {
-                possibleHandRankings.remove(HandRanking.FLUSH);
-                possibleHandRankings.remove(HandRanking.STRAIGHT);
-                possibleHandRankings.remove(HandRanking.THREE_OF_A_KIND);
-                possibleHandRankings.remove(HandRanking.TWO_PAIR);
-                possibleHandRankings.remove(HandRanking.ONE_PAIR);
-                possibleHandRankings.remove(HandRanking.HIGH_CARD);
-                return possibleHandRankings;
-            }
-        }
-
-        if (possibleHandRankings.contains(HandRanking.FLUSH)) {
-            CommonCardStatus flushStatus = determineFlushStatus(commonCards);
-
-            if (flushStatus == CommonCardStatus.BOARD) {
-                possibleHandRankings.remove(HandRanking.STRAIGHT);
-                possibleHandRankings.remove(HandRanking.THREE_OF_A_KIND);
-                possibleHandRankings.remove(HandRanking.TWO_PAIR);
-                possibleHandRankings.remove(HandRanking.ONE_PAIR);
-                possibleHandRankings.remove(HandRanking.HIGH_CARD);
-                return possibleHandRankings;
-            } else if (flushStatus == CommonCardStatus.NOT_POSSIBLE) {
-                possibleHandRankings.remove(HandRanking.FLUSH);
-            }
-        }
-
-        if (possibleHandRankings.contains(HandRanking.STRAIGHT)) {
-            CommonCardStatus straightStatus = determineStraightStatus(commonCards);
-
-            if (straightStatus == CommonCardStatus.BOARD) {
-                possibleHandRankings.remove(HandRanking.THREE_OF_A_KIND);
-                possibleHandRankings.remove(HandRanking.TWO_PAIR);
-                possibleHandRankings.remove(HandRanking.ONE_PAIR);
-                possibleHandRankings.remove(HandRanking.HIGH_CARD);
-                return possibleHandRankings;
-            } else if (straightStatus == CommonCardStatus.NOT_POSSIBLE) {
-                possibleHandRankings.remove(HandRanking.STRAIGHT);
-            }
-        }
-
-        if (possibleHandRankings.contains(HandRanking.THREE_OF_A_KIND)) {
-            CommonCardStatus threeOfAKindStatus = determineThreeOfAKindStatus(commonCards);
-
-            if (threeOfAKindStatus == CommonCardStatus.BOARD) {
-                possibleHandRankings.remove(HandRanking.TWO_PAIR);
-                possibleHandRankings.remove(HandRanking.ONE_PAIR);
-                possibleHandRankings.remove(HandRanking.HIGH_CARD);
-                return possibleHandRankings;
-            }
-        }
-
-        if (possibleHandRankings.contains(HandRanking.TWO_PAIR)) {
-            CommonCardStatus twoPairStatus = determineTwoPairStatus(commonCards);
-
-            if (twoPairStatus == CommonCardStatus.BOARD) {
-                possibleHandRankings.remove(HandRanking.ONE_PAIR);
-                possibleHandRankings.remove(HandRanking.HIGH_CARD);
-                return possibleHandRankings;
-            }
-        }
-
-        if (possibleHandRankings.contains(HandRanking.ONE_PAIR)) {
-            CommonCardStatus onePairStatus = determineOnePairStatus(commonCards);
-
-            if (onePairStatus == CommonCardStatus.BOARD) {
-                possibleHandRankings.remove(HandRanking.HIGH_CARD);
-                return possibleHandRankings;
-            }
-        }
+        filterByStraightFlushStatus(commonCards, possibleHandRankings);
+        filterByFourOfAKindStatus(commonCards, possibleHandRankings);
+        filterByFullHouseStatus(commonCards, possibleHandRankings);
+        filterByFlushStatus(commonCards, possibleHandRankings);
+        filterByStraightStatus(commonCards, possibleHandRankings);
+        filterByThreeOfAKindStatus(commonCards, possibleHandRankings);
+        filterByTwoPairStatus(commonCards, possibleHandRankings);
+        filterByOnePairStatus(commonCards, possibleHandRankings);
 
         return possibleHandRankings;
     }
@@ -148,6 +51,122 @@ public class HandEvaluatorBsoImpl implements HandEvaluatorBso {
      */
     private enum CommonCardStatus {
         NOT_POSSIBLE, POSSIBLE, BOARD;
+    }
+
+    private void filterByStraightFlushStatus(CommonCards commonCards, List<HandRanking> possibleHandRankings) {
+        CommonCardStatus straightFlushStatus = determineStraightFlushStatus(commonCards);
+
+        if (straightFlushStatus == CommonCardStatus.BOARD) {
+            possibleHandRankings.remove(HandRanking.FOUR_OF_A_KIND);
+            possibleHandRankings.remove(HandRanking.FULL_HOUSE);
+            possibleHandRankings.remove(HandRanking.FLUSH);
+            possibleHandRankings.remove(HandRanking.STRAIGHT);
+            possibleHandRankings.remove(HandRanking.THREE_OF_A_KIND);
+            possibleHandRankings.remove(HandRanking.TWO_PAIR);
+            possibleHandRankings.remove(HandRanking.ONE_PAIR);
+            possibleHandRankings.remove(HandRanking.HIGH_CARD);
+        } else if (straightFlushStatus == CommonCardStatus.NOT_POSSIBLE) {
+            possibleHandRankings.remove(HandRanking.STRAIGHT_FLUSH);
+        }
+    }
+
+    private void filterByFourOfAKindStatus(CommonCards commonCards, List<HandRanking> possibleHandRankings) {
+        if (possibleHandRankings.contains(HandRanking.FOUR_OF_A_KIND)) {
+            CommonCardStatus fourOfAKindStatus = determineFourOfAKindStatus(commonCards);
+
+            if (fourOfAKindStatus == CommonCardStatus.BOARD) {
+                possibleHandRankings.remove(HandRanking.STRAIGHT_FLUSH);
+                possibleHandRankings.remove(HandRanking.FULL_HOUSE);
+                possibleHandRankings.remove(HandRanking.FLUSH);
+                possibleHandRankings.remove(HandRanking.STRAIGHT);
+                possibleHandRankings.remove(HandRanking.THREE_OF_A_KIND);
+                possibleHandRankings.remove(HandRanking.TWO_PAIR);
+                possibleHandRankings.remove(HandRanking.ONE_PAIR);
+                possibleHandRankings.remove(HandRanking.HIGH_CARD);
+            } else if (fourOfAKindStatus == CommonCardStatus.NOT_POSSIBLE) {
+                possibleHandRankings.remove(HandRanking.FOUR_OF_A_KIND);
+                possibleHandRankings.remove(HandRanking.FULL_HOUSE);
+            }
+        }
+    }
+
+    private void filterByFullHouseStatus(CommonCards commonCards, List<HandRanking> possibleHandRankings) {
+        if (possibleHandRankings.contains(HandRanking.FULL_HOUSE)) {
+            CommonCardStatus fullHouseStatus = determineFullHouseStatus(commonCards);
+
+            if (fullHouseStatus == CommonCardStatus.BOARD) {
+                possibleHandRankings.remove(HandRanking.FLUSH);
+                possibleHandRankings.remove(HandRanking.STRAIGHT);
+                possibleHandRankings.remove(HandRanking.THREE_OF_A_KIND);
+                possibleHandRankings.remove(HandRanking.TWO_PAIR);
+                possibleHandRankings.remove(HandRanking.ONE_PAIR);
+                possibleHandRankings.remove(HandRanking.HIGH_CARD);
+            }
+        }
+    }
+
+    private void filterByFlushStatus(CommonCards commonCards, List<HandRanking> possibleHandRankings) {
+        if (possibleHandRankings.contains(HandRanking.FLUSH)) {
+            CommonCardStatus flushStatus = determineFlushStatus(commonCards);
+
+            if (flushStatus == CommonCardStatus.BOARD) {
+                possibleHandRankings.remove(HandRanking.STRAIGHT);
+                possibleHandRankings.remove(HandRanking.THREE_OF_A_KIND);
+                possibleHandRankings.remove(HandRanking.TWO_PAIR);
+                possibleHandRankings.remove(HandRanking.ONE_PAIR);
+                possibleHandRankings.remove(HandRanking.HIGH_CARD);
+            } else if (flushStatus == CommonCardStatus.NOT_POSSIBLE) {
+                possibleHandRankings.remove(HandRanking.FLUSH);
+            }
+        }
+    }
+
+    private void filterByStraightStatus(CommonCards commonCards, List<HandRanking> possibleHandRankings) {
+        if (possibleHandRankings.contains(HandRanking.STRAIGHT)) {
+            CommonCardStatus straightStatus = determineStraightStatus(commonCards);
+
+            if (straightStatus == CommonCardStatus.BOARD) {
+                possibleHandRankings.remove(HandRanking.THREE_OF_A_KIND);
+                possibleHandRankings.remove(HandRanking.TWO_PAIR);
+                possibleHandRankings.remove(HandRanking.ONE_PAIR);
+                possibleHandRankings.remove(HandRanking.HIGH_CARD);
+            } else if (straightStatus == CommonCardStatus.NOT_POSSIBLE) {
+                possibleHandRankings.remove(HandRanking.STRAIGHT);
+            }
+        }
+    }
+
+    private void filterByThreeOfAKindStatus(CommonCards commonCards, List<HandRanking> possibleHandRankings) {
+        if (possibleHandRankings.contains(HandRanking.THREE_OF_A_KIND)) {
+            CommonCardStatus threeOfAKindStatus = determineThreeOfAKindStatus(commonCards);
+
+            if (threeOfAKindStatus == CommonCardStatus.BOARD) {
+                possibleHandRankings.remove(HandRanking.TWO_PAIR);
+                possibleHandRankings.remove(HandRanking.ONE_PAIR);
+                possibleHandRankings.remove(HandRanking.HIGH_CARD);
+            }
+        }
+    }
+
+    private void filterByTwoPairStatus(CommonCards commonCards, List<HandRanking> possibleHandRankings) {
+        if (possibleHandRankings.contains(HandRanking.TWO_PAIR)) {
+            CommonCardStatus twoPairStatus = determineTwoPairStatus(commonCards);
+
+            if (twoPairStatus == CommonCardStatus.BOARD) {
+                possibleHandRankings.remove(HandRanking.ONE_PAIR);
+                possibleHandRankings.remove(HandRanking.HIGH_CARD);
+            }
+        }
+    }
+
+    private void filterByOnePairStatus(CommonCards commonCards, List<HandRanking> possibleHandRankings) {
+        if (possibleHandRankings.contains(HandRanking.ONE_PAIR)) {
+            CommonCardStatus onePairStatus = determineOnePairStatus(commonCards);
+
+            if (onePairStatus == CommonCardStatus.BOARD) {
+                possibleHandRankings.remove(HandRanking.HIGH_CARD);
+            }
+        }
     }
 
     private CommonCardStatus determineStraightFlushStatus(CommonCards commonCards) {
