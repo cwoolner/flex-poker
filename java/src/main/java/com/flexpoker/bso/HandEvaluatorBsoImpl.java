@@ -276,8 +276,22 @@ public class HandEvaluatorBsoImpl implements HandEvaluatorBso {
     }
 
     private CommonCardStatus determineTwoPairStatus(CommonCards commonCards) {
-        // TODO Auto-generated method stub
-        return null;
+        List<Card> cardList = commonCards.getCards();
+        Collections.sort(cardList);
+
+        CardRank cardRank1 = cardList.get(0).getCardRank();
+        CardRank cardRank2 = cardList.get(1).getCardRank();
+        CardRank cardRank3 = cardList.get(2).getCardRank();
+        CardRank cardRank4 = cardList.get(3).getCardRank();
+        CardRank cardRank5 = cardList.get(4).getCardRank();
+
+        if ((cardRank1 == cardRank2 && cardRank3 == cardRank4)
+                || (cardRank1 == cardRank2 && cardRank4 == cardRank5)
+                || (cardRank2 == cardRank3 && cardRank4 == cardRank5)) {
+            return CommonCardStatus.BOARD;
+        }
+
+        return CommonCardStatus.POSSIBLE;
     }
 
     private CommonCardStatus determineOnePairStatus(CommonCards commonCards) {
