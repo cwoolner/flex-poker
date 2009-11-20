@@ -94,7 +94,7 @@ public class HandEvaluatorBsoImplTest {
         card2 = new Card(0, CardRank.TWO, CardSuit.SPADES);
         card3 = new Card(0, CardRank.EIGHT, CardSuit.SPADES);
         card4 = new Card(0, CardRank.NINE, CardSuit.SPADES);
-        card5 = new Card(0, CardRank.ACE, CardSuit.SPADES);
+        card5 = new Card(0, CardRank.KING, CardSuit.SPADES);
 
         flopCards = new FlopCards(card1, card2, card3);
         turnCard = new TurnCard(card4);

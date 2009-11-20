@@ -253,7 +253,12 @@ public class HandEvaluatorBsoImpl implements HandEvaluatorBso {
         if (isStraight(commonCards)) {
             return CommonCardStatus.BOARD;
         }
-        return null;
+
+        if (isStraightPossible(commonCards.getCards())) {
+            return CommonCardStatus.POSSIBLE;
+        }
+
+        return CommonCardStatus.NOT_POSSIBLE;
     }
 
     private CommonCardStatus determineThreeOfAKindStatus(CommonCards commonCards) {
@@ -336,9 +341,68 @@ public class HandEvaluatorBsoImpl implements HandEvaluatorBso {
         return cardRankOrdinal4 + 1 == cardRankOrdinal5;
     }
 
-    private boolean isStraightPossible(List<Card> listOfCardsInLargestSuit) {
-        // TODO Auto-generated method stub
+    private boolean isStraightPossible(List<Card> cardList) {
+        List<CardRank> cardRanks = new ArrayList<CardRank>();
+
+        for (Card card : cardList) {
+            cardRanks.add(card.getCardRank());
+        }
+
+        if (doThreeCardRanksMatch(cardRanks, Arrays.asList(new CardRank[]{CardRank.ACE,
+                CardRank.TWO, CardRank.THREE, CardRank.FOUR, CardRank.FIVE}))) {
+            return true;
+        }
+        if (doThreeCardRanksMatch(cardRanks, Arrays.asList(new CardRank[]{CardRank.TWO,
+                CardRank.THREE, CardRank.FOUR, CardRank.FIVE, CardRank.SIX}))) {
+            return true;
+        }
+        if (doThreeCardRanksMatch(cardRanks, Arrays.asList(new CardRank[]{CardRank.THREE,
+                CardRank.FOUR, CardRank.FIVE, CardRank.SIX, CardRank.SEVEN}))) {
+            return true;
+        }
+        if (doThreeCardRanksMatch(cardRanks, Arrays.asList(new CardRank[]{CardRank.FOUR,
+                CardRank.FIVE, CardRank.SIX, CardRank.SEVEN, CardRank.EIGHT}))) {
+            return true;
+        }
+        if (doThreeCardRanksMatch(cardRanks, Arrays.asList(new CardRank[]{CardRank.FIVE,
+                CardRank.SIX, CardRank.SEVEN, CardRank.EIGHT, CardRank.NINE}))) {
+            return true;
+        }
+        if (doThreeCardRanksMatch(cardRanks, Arrays.asList(new CardRank[]{CardRank.SIX,
+                CardRank.SEVEN, CardRank.EIGHT, CardRank.NINE, CardRank.TEN}))) {
+            return true;
+        }
+        if (doThreeCardRanksMatch(cardRanks, Arrays.asList(new CardRank[]{CardRank.SEVEN,
+                CardRank.EIGHT, CardRank.NINE, CardRank.TEN, CardRank.JACK}))) {
+            return true;
+        }
+        if (doThreeCardRanksMatch(cardRanks, Arrays.asList(new CardRank[]{CardRank.EIGHT,
+                CardRank.NINE, CardRank.TEN, CardRank.JACK, CardRank.QUEEN}))) {
+            return true;
+        }
+        if (doThreeCardRanksMatch(cardRanks, Arrays.asList(new CardRank[]{CardRank.NINE,
+                CardRank.TEN, CardRank.JACK, CardRank.QUEEN, CardRank.KING}))) {
+            return true;
+        }
+        if (doThreeCardRanksMatch(cardRanks, Arrays.asList(new CardRank[]{CardRank.TEN,
+                CardRank.JACK, CardRank.QUEEN, CardRank.KING, CardRank.ACE}))) {
+            return true;
+        }
+
         return false;
+    }
+
+    private boolean doThreeCardRanksMatch(List<CardRank> cardRanks,
+            List<CardRank> straightCardRanks) {
+        int numberOfMatched = 0;
+
+        for (CardRank cardRank : cardRanks) {
+            if (straightCardRanks.contains(cardRank)) {
+                numberOfMatched++;
+            }
+        }
+
+        return numberOfMatched >= 3;
     }
 
     /**
