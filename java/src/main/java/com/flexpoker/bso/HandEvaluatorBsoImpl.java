@@ -153,6 +153,7 @@ public class HandEvaluatorBsoImpl implements HandEvaluatorBso {
             CommonCardStatus twoPairStatus = determineTwoPairStatus(commonCards);
 
             if (twoPairStatus == CommonCardStatus.BOARD) {
+                possibleHandRankings.remove(HandRanking.THREE_OF_A_KIND);
                 possibleHandRankings.remove(HandRanking.ONE_PAIR);
                 possibleHandRankings.remove(HandRanking.HIGH_CARD);
             }
