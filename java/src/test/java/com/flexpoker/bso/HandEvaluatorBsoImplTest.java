@@ -119,6 +119,54 @@ public class HandEvaluatorBsoImplTest {
         verifyStraightOnBoardHelper(CardRank.ACE);
     }
 
+    private void verifyThreeOfAKindOnBoard() {
+        verifyThreeOfAKindOnBoardHelper(CardRank.TWO);
+        verifyThreeOfAKindOnBoardHelper(CardRank.THREE);
+        verifyThreeOfAKindOnBoardHelper(CardRank.FOUR);
+        verifyThreeOfAKindOnBoardHelper(CardRank.FIVE);
+        verifyThreeOfAKindOnBoardHelper(CardRank.SIX);
+        verifyThreeOfAKindOnBoardHelper(CardRank.SEVEN);
+        verifyThreeOfAKindOnBoardHelper(CardRank.EIGHT);
+        verifyThreeOfAKindOnBoardHelper(CardRank.NINE);
+        verifyThreeOfAKindOnBoardHelper(CardRank.TEN);
+        verifyThreeOfAKindOnBoardHelper(CardRank.JACK);
+        verifyThreeOfAKindOnBoardHelper(CardRank.QUEEN);
+        verifyThreeOfAKindOnBoardHelper(CardRank.KING);
+        verifyThreeOfAKindOnBoardHelper(CardRank.ACE);
+    }
+
+    private void verifyTwoPairOnBoard() {
+        verifyTwoPairOnBoardHelper(CardRank.TWO, CardRank.KING);
+        verifyTwoPairOnBoardHelper(CardRank.THREE, CardRank.ACE);
+        verifyTwoPairOnBoardHelper(CardRank.FOUR, CardRank.SEVEN);
+        verifyTwoPairOnBoardHelper(CardRank.FIVE, CardRank.EIGHT);
+        verifyTwoPairOnBoardHelper(CardRank.SIX, CardRank.ACE);
+        verifyTwoPairOnBoardHelper(CardRank.SEVEN, CardRank.TWO);
+        verifyTwoPairOnBoardHelper(CardRank.EIGHT, CardRank.NINE);
+        verifyTwoPairOnBoardHelper(CardRank.NINE, CardRank.TEN);
+        verifyTwoPairOnBoardHelper(CardRank.TEN, CardRank.JACK);
+        verifyTwoPairOnBoardHelper(CardRank.JACK, CardRank.THREE);
+        verifyTwoPairOnBoardHelper(CardRank.QUEEN, CardRank.KING);
+        verifyTwoPairOnBoardHelper(CardRank.KING, CardRank.SIX);
+        verifyTwoPairOnBoardHelper(CardRank.ACE, CardRank.KING);
+    }
+
+    private void verifyOnePairOnBoard() {
+        verifyOnePairOnBoardHelper(CardRank.TWO);
+        verifyOnePairOnBoardHelper(CardRank.THREE);
+        verifyOnePairOnBoardHelper(CardRank.FOUR);
+        verifyOnePairOnBoardHelper(CardRank.FIVE);
+        verifyOnePairOnBoardHelper(CardRank.SIX);
+        verifyOnePairOnBoardHelper(CardRank.SEVEN);
+        verifyOnePairOnBoardHelper(CardRank.EIGHT);
+        verifyOnePairOnBoardHelper(CardRank.NINE);
+        verifyOnePairOnBoardHelper(CardRank.TEN);
+        verifyOnePairOnBoardHelper(CardRank.JACK);
+        verifyOnePairOnBoardHelper(CardRank.QUEEN);
+        verifyOnePairOnBoardHelper(CardRank.KING);
+        verifyOnePairOnBoardHelper(CardRank.ACE);
+    }
+
     private void verifyStraightFlushOnBoardHelper(CardRank cardRank) {
         CommonCards commonCards = createStraightFlush(cardRank);
         List<HandRanking> handRankings = bso.determinePossibleHands(commonCards);
@@ -147,6 +195,122 @@ public class HandEvaluatorBsoImplTest {
         List<HandRanking> handRankings = bso.determinePossibleHands(commonCards);
         assertEquals(1, handRankings.size());
         assertEquals(HandRanking.STRAIGHT, handRankings.get(0));
+    }
+
+    private void verifyThreeOfAKindOnBoardHelper(CardRank cardRank) {
+        CommonCards commonCards = createThreeOfAKind(cardRank);
+        List<HandRanking> handRankings = bso.determinePossibleHands(commonCards);
+        assertEquals(3, handRankings.size());
+        assertEquals(HandRanking.THREE_OF_A_KIND, handRankings.get(0));
+        assertEquals(HandRanking.FULL_HOUSE, handRankings.get(1));
+        assertEquals(HandRanking.FOUR_OF_A_KIND, handRankings.get(2));
+    }
+
+    private void verifyTwoPairOnBoardHelper(CardRank primaryCardRank,
+            CardRank secondaryCardRank) {
+        CommonCards commonCards = createTwoPair(primaryCardRank, secondaryCardRank);
+        List<HandRanking> handRankings = bso.determinePossibleHands(commonCards);
+        assertEquals(3, handRankings.size());
+        assertEquals(HandRanking.TWO_PAIR, handRankings.get(0));
+        assertEquals(HandRanking.FULL_HOUSE, handRankings.get(1));
+        assertEquals(HandRanking.FOUR_OF_A_KIND, handRankings.get(2));
+    }
+
+    private void verifyOnePairOnBoardHelper(CardRank cardRank) {
+        CommonCards commonCards = createOnePair(cardRank);
+        List<HandRanking> handRankings = bso.determinePossibleHands(commonCards);
+        assertEquals(5, handRankings.size());
+        assertEquals(HandRanking.ONE_PAIR, handRankings.get(0));
+        assertEquals(HandRanking.TWO_PAIR, handRankings.get(1));
+        assertEquals(HandRanking.THREE_OF_A_KIND, handRankings.get(2));
+        assertEquals(HandRanking.FULL_HOUSE, handRankings.get(3));
+        assertEquals(HandRanking.FOUR_OF_A_KIND, handRankings.get(4));
+    }
+
+    private CommonCards createThreeOfAKind(CardRank cardRank) {
+        Card card1 = new Card(0, cardRank, CardSuit.CLUBS);
+        Card card4 = new Card(0, cardRank, CardSuit.SPADES);
+        Card card2 = new Card(0, cardRank, CardSuit.DIAMONDS);
+
+        Card card3;
+        Card card5;
+
+        if (cardRank.ordinal() < 7) {
+            card3 = new Card(0, CardRank.KING, CardSuit.HEARTS);
+            card5 = new Card(0, CardRank.QUEEN, CardSuit.HEARTS);
+        } else {
+            card3 = new Card(0, CardRank.TWO, CardSuit.HEARTS);
+            card5 = new Card(0, CardRank.SIX, CardSuit.HEARTS);
+        }
+
+        FlopCards flopCards = new FlopCards(card2, card4, card5);
+        TurnCard turnCard = new TurnCard(card3);
+        RiverCard riverCard = new RiverCard(card1);
+
+        return new CommonCards(flopCards, turnCard, riverCard);
+    }
+
+    private CommonCards createTwoPair(CardRank primaryCardRank,
+            CardRank secondaryCardRank) {
+        Card card1 = new Card(0, primaryCardRank, CardSuit.CLUBS);
+        Card card4 = new Card(0, primaryCardRank, CardSuit.SPADES);
+        Card card2 = new Card(0, secondaryCardRank, CardSuit.HEARTS);
+        Card card3 = new Card(0, secondaryCardRank, CardSuit.SPADES);
+
+        Card card5;
+
+        if (primaryCardRank.ordinal() < 7) {
+            if (secondaryCardRank.equals(CardRank.KING)) {
+                card5 = new Card(0, CardRank.QUEEN, CardSuit.HEARTS);
+            } else {
+                card5 = new Card(0, CardRank.KING, CardSuit.HEARTS);
+            }
+        } else {
+            if (secondaryCardRank.equals(CardRank.THREE)) {
+                card5 = new Card(0, CardRank.TWO, CardSuit.HEARTS);
+            } else {
+                card5 = new Card(0, CardRank.THREE, CardSuit.HEARTS);
+            }
+        }
+
+        FlopCards flopCards = new FlopCards(card2, card4, card5);
+        TurnCard turnCard = new TurnCard(card3);
+        RiverCard riverCard = new RiverCard(card1);
+
+        return new CommonCards(flopCards, turnCard, riverCard);
+    }
+
+    private CommonCards createOnePair(CardRank cardRank) {
+        Card card1 = new Card(0, cardRank, CardSuit.CLUBS);
+        Card card4 = new Card(0, cardRank, CardSuit.SPADES);
+
+        Card card2;
+        Card card3;
+        Card card5;
+
+        if (cardRank.equals(CardRank.TWO)) {
+            card2 = new Card(0, CardRank.ACE, CardSuit.CLUBS);
+            card3 = new Card(0, CardRank.SEVEN, CardSuit.DIAMONDS);
+            card5 = new Card(0, CardRank.QUEEN, CardSuit.HEARTS);
+        } else if (cardRank.equals(CardRank.SEVEN)) {
+            card2 = new Card(0, CardRank.TWO, CardSuit.CLUBS);
+            card3 = new Card(0, CardRank.ACE, CardSuit.DIAMONDS);
+            card5 = new Card(0, CardRank.QUEEN, CardSuit.HEARTS);
+        } else if (cardRank.equals(CardRank.QUEEN)) {
+            card2 = new Card(0, CardRank.TWO, CardSuit.CLUBS);
+            card3 = new Card(0, CardRank.SEVEN, CardSuit.DIAMONDS);
+            card5 = new Card(0, CardRank.KING, CardSuit.HEARTS);
+        } else {
+            card2 = new Card(0, CardRank.TWO, CardSuit.CLUBS);
+            card3 = new Card(0, CardRank.SEVEN, CardSuit.DIAMONDS);
+            card5 = new Card(0, CardRank.QUEEN, CardSuit.HEARTS);
+        }
+
+        FlopCards flopCards = new FlopCards(card2, card4, card5);
+        TurnCard turnCard = new TurnCard(card3);
+        RiverCard riverCard = new RiverCard(card1);
+
+        return new CommonCards(flopCards, turnCard, riverCard);
     }
 
     private CommonCards createStraight(CardRank cardRank) {
