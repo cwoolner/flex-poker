@@ -175,18 +175,18 @@ public class HandEvaluatorBsoImpl implements HandEvaluatorBso {
     }
 
     private CommonCardStatus determineStraightFlushStatus(CommonCards commonCards) {
-        List<Card> listOfCardsInLargestSuit = findCardsInLargestSuit(commonCards);
+        List<Card> cards = findCardsInLargestSuit(commonCards.getCards());
 
         // we have a flush, check to see if it's a straight also
-        if (listOfCardsInLargestSuit.size() == 5 && isStraight(commonCards)) {
+        if (cards.size() == 5 && isStraight(commonCards)) {
             return CommonCardStatus.BOARD;
         }
 
-        if (listOfCardsInLargestSuit.size() < 3) {
+        if (cards.size() < 3) {
             return CommonCardStatus.NOT_POSSIBLE;
         }
 
-        if (isStraightPossible(listOfCardsInLargestSuit)) {
+        if (isStraightPossible(cards)) {
             return CommonCardStatus.POSSIBLE;
         }
 
@@ -240,7 +240,7 @@ public class HandEvaluatorBsoImpl implements HandEvaluatorBso {
     }
 
     private CommonCardStatus determineFlushStatus(CommonCards commonCards) {
-        List<Card> cards = findCardsInLargestSuit(commonCards);
+        List<Card> cards = findCardsInLargestSuit(commonCards.getCards());
 
         switch (cards.size()) {
             case 5:
@@ -419,8 +419,7 @@ public class HandEvaluatorBsoImpl implements HandEvaluatorBso {
      * then the first suit scanned will be returned in the following order:
      * HEARTS, CLUBS, DIAMONDS, SPADES
      */
-    private List<Card> findCardsInLargestSuit(CommonCards commonCards) {
-        List<Card> cards = commonCards.getCards();
+    private List<Card> findCardsInLargestSuit(List<Card> cards) {
         Map<CardSuit, List<Card>> suitMap = new HashMap<CardSuit, List<Card>>();
 
         for (Card card : cards) {
