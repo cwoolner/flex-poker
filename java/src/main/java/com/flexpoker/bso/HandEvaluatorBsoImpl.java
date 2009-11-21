@@ -4,8 +4,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.springframework.stereotype.Service;
 
@@ -395,9 +397,12 @@ public class HandEvaluatorBsoImpl implements HandEvaluatorBso {
 
     private boolean doThreeCardRanksMatch(List<CardRank> cardRanks,
             List<CardRank> straightCardRanks) {
+
+        Set<CardRank> cardRankSet = new HashSet<CardRank>(cardRanks);
+
         int numberOfMatched = 0;
 
-        for (CardRank cardRank : cardRanks) {
+        for (CardRank cardRank : cardRankSet) {
             if (straightCardRanks.contains(cardRank)) {
                 numberOfMatched++;
             }
