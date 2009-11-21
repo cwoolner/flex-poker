@@ -35,6 +35,10 @@ public class HandEvaluatorBsoImplTest {
 
     private void verifyRandomHands() {
         verifyScenario1();
+        verifyScenario2();
+        verifyScenario3();
+        verifyScenario4();
+        verifyScenario5();
     }
 
     private void verifyScenario1() {
@@ -56,6 +60,103 @@ public class HandEvaluatorBsoImplTest {
         assertEquals(HandRanking.ONE_PAIR, handRankings.get(1));
         assertEquals(HandRanking.TWO_PAIR, handRankings.get(2));
         assertEquals(HandRanking.THREE_OF_A_KIND, handRankings.get(3));
+    }
+
+    private void verifyScenario2() {
+        Card card1 = new Card(0, CardRank.ACE, CardSuit.HEARTS);
+        Card card2 = new Card(0, CardRank.KING, CardSuit.HEARTS);
+        Card card3 = new Card(0, CardRank.SEVEN, CardSuit.CLUBS);
+        Card card4 = new Card(0, CardRank.EIGHT, CardSuit.SPADES);
+        Card card5 = new Card(0, CardRank.QUEEN, CardSuit.HEARTS);
+
+        FlopCards flopCards = new FlopCards(card1, card3, card4);
+        TurnCard turnCard = new TurnCard(card5);
+        RiverCard riverCard = new RiverCard(card2);
+
+        CommonCards commonCards = new CommonCards(flopCards, turnCard, riverCard);
+
+        List<HandRanking> handRankings = bso.determinePossibleHands(commonCards);
+        assertEquals(7, handRankings.size());
+        assertEquals(HandRanking.HIGH_CARD, handRankings.get(0));
+        assertEquals(HandRanking.ONE_PAIR, handRankings.get(1));
+        assertEquals(HandRanking.TWO_PAIR, handRankings.get(2));
+        assertEquals(HandRanking.THREE_OF_A_KIND, handRankings.get(3));
+        assertEquals(HandRanking.STRAIGHT, handRankings.get(4));
+        assertEquals(HandRanking.FLUSH, handRankings.get(5));
+        assertEquals(HandRanking.STRAIGHT_FLUSH, handRankings.get(6));
+    }
+
+    private void verifyScenario3() {
+        Card card1 = new Card(0, CardRank.THREE, CardSuit.CLUBS);
+        Card card2 = new Card(0, CardRank.NINE, CardSuit.SPADES);
+        Card card3 = new Card(0, CardRank.TWO, CardSuit.CLUBS);
+        Card card4 = new Card(0, CardRank.SIX, CardSuit.CLUBS);
+        Card card5 = new Card(0, CardRank.THREE, CardSuit.HEARTS);
+
+        FlopCards flopCards = new FlopCards(card1, card3, card4);
+        TurnCard turnCard = new TurnCard(card5);
+        RiverCard riverCard = new RiverCard(card2);
+
+        CommonCards commonCards = new CommonCards(flopCards, turnCard, riverCard);
+
+        List<HandRanking> handRankings = bso.determinePossibleHands(commonCards);
+        assertEquals(8, handRankings.size());
+        assertEquals(HandRanking.ONE_PAIR, handRankings.get(0));
+        assertEquals(HandRanking.TWO_PAIR, handRankings.get(1));
+        assertEquals(HandRanking.THREE_OF_A_KIND, handRankings.get(2));
+        assertEquals(HandRanking.STRAIGHT, handRankings.get(3));
+        assertEquals(HandRanking.FLUSH, handRankings.get(4));
+        assertEquals(HandRanking.FULL_HOUSE, handRankings.get(5));
+        assertEquals(HandRanking.FOUR_OF_A_KIND, handRankings.get(6));
+        assertEquals(HandRanking.STRAIGHT_FLUSH, handRankings.get(7));
+    }
+
+    private void verifyScenario4() {
+        Card card1 = new Card(0, CardRank.TEN, CardSuit.CLUBS);
+        Card card2 = new Card(0, CardRank.SIX, CardSuit.HEARTS);
+        Card card3 = new Card(0, CardRank.JACK, CardSuit.DIAMONDS);
+        Card card4 = new Card(0, CardRank.NINE, CardSuit.CLUBS);
+        Card card5 = new Card(0, CardRank.THREE, CardSuit.CLUBS);
+
+        FlopCards flopCards = new FlopCards(card1, card3, card4);
+        TurnCard turnCard = new TurnCard(card5);
+        RiverCard riverCard = new RiverCard(card2);
+
+        CommonCards commonCards = new CommonCards(flopCards, turnCard, riverCard);
+
+        List<HandRanking> handRankings = bso.determinePossibleHands(commonCards);
+        assertEquals(6, handRankings.size());
+        assertEquals(HandRanking.HIGH_CARD, handRankings.get(0));
+        assertEquals(HandRanking.ONE_PAIR, handRankings.get(1));
+        assertEquals(HandRanking.TWO_PAIR, handRankings.get(2));
+        assertEquals(HandRanking.THREE_OF_A_KIND, handRankings.get(3));
+        assertEquals(HandRanking.STRAIGHT, handRankings.get(4));
+        assertEquals(HandRanking.FLUSH, handRankings.get(5));
+    }
+
+    private void verifyScenario5() {
+        Card card1 = new Card(0, CardRank.EIGHT, CardSuit.CLUBS);
+        Card card2 = new Card(0, CardRank.FOUR, CardSuit.DIAMONDS);
+        Card card3 = new Card(0, CardRank.ACE, CardSuit.DIAMONDS);
+        Card card4 = new Card(0, CardRank.EIGHT, CardSuit.DIAMONDS);
+        Card card5 = new Card(0, CardRank.FIVE, CardSuit.DIAMONDS);
+
+        FlopCards flopCards = new FlopCards(card1, card3, card4);
+        TurnCard turnCard = new TurnCard(card5);
+        RiverCard riverCard = new RiverCard(card2);
+
+        CommonCards commonCards = new CommonCards(flopCards, turnCard, riverCard);
+
+        List<HandRanking> handRankings = bso.determinePossibleHands(commonCards);
+        assertEquals(8, handRankings.size());
+        assertEquals(HandRanking.ONE_PAIR, handRankings.get(0));
+        assertEquals(HandRanking.TWO_PAIR, handRankings.get(1));
+        assertEquals(HandRanking.THREE_OF_A_KIND, handRankings.get(2));
+        assertEquals(HandRanking.STRAIGHT, handRankings.get(3));
+        assertEquals(HandRanking.FLUSH, handRankings.get(4));
+        assertEquals(HandRanking.FULL_HOUSE, handRankings.get(5));
+        assertEquals(HandRanking.FOUR_OF_A_KIND, handRankings.get(6));
+        assertEquals(HandRanking.STRAIGHT_FLUSH, handRankings.get(7));
     }
 
     private void verifyOnBoard() {
