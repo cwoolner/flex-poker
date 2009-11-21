@@ -18,6 +18,7 @@ import com.flexpoker.model.CommonCards;
 import com.flexpoker.model.HandEvaluation;
 import com.flexpoker.model.HandRanking;
 import com.flexpoker.model.PocketCards;
+import com.flexpoker.model.User;
 
 @Service("handEvaluatorBso")
 public class HandEvaluatorBsoImpl implements HandEvaluatorBso {
@@ -40,9 +41,10 @@ public class HandEvaluatorBsoImpl implements HandEvaluatorBso {
     }
 
     @Override
-    public HandEvaluation determineHandEvaluation(CommonCards commonCards,
+    public HandEvaluation determineHandEvaluation(CommonCards commonCards, User user,
             PocketCards pocketCards, List<HandRanking> possibleHandRankings) {
         HandEvaluation handEvaluation = new HandEvaluation();
+        handEvaluation.setUser(user);
         return handEvaluation;
     }
 
