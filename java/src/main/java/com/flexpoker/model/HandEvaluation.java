@@ -6,7 +6,7 @@ public class HandEvaluation implements Comparable<HandEvaluation> {
 
     private HandRanking handRanking;
 
-    private CardRank primaryCardRanking;
+    private CardRank primaryCardRank;
 
     private CardRank secondaryCardRank;
 
@@ -34,12 +34,12 @@ public class HandEvaluation implements Comparable<HandEvaluation> {
         this.handRanking = handRanking;
     }
 
-    public CardRank getPrimaryCardRanking() {
-        return primaryCardRanking;
+    public CardRank getPrimaryCardRank() {
+        return primaryCardRank;
     }
 
-    public void setPrimaryCardRanking(CardRank primaryCardRanking) {
-        this.primaryCardRanking = primaryCardRanking;
+    public void setPrimaryCardRank(CardRank primaryCardRank) {
+        this.primaryCardRank = primaryCardRank;
     }
 
     public CardRank getSecondaryCardRank() {
@@ -114,7 +114,7 @@ public class HandEvaluation implements Comparable<HandEvaluation> {
     }
 
     private int highCardCompareTo(HandEvaluation otherHandEvaluation) {
-        if (primaryCardRanking.equals(otherHandEvaluation.primaryCardRanking)) {
+        if (primaryCardRank.equals(otherHandEvaluation.primaryCardRank)) {
             if (firstKicker.equals(otherHandEvaluation.firstKicker)) {
                 if (secondKicker.equals(otherHandEvaluation.secondKicker)) {
                     if (thirdKicker.equals(otherHandEvaluation.thirdKicker)) {
@@ -126,11 +126,11 @@ public class HandEvaluation implements Comparable<HandEvaluation> {
             }
             return firstKicker.compareTo(otherHandEvaluation.firstKicker);
         }
-        return primaryCardRanking.compareTo(otherHandEvaluation.primaryCardRanking);
+        return primaryCardRank.compareTo(otherHandEvaluation.primaryCardRank);
     }
 
     private int onePairCompareTo(HandEvaluation otherHandEvaluation) {
-        if (primaryCardRanking.equals(otherHandEvaluation.primaryCardRanking)) {
+        if (primaryCardRank.equals(otherHandEvaluation.primaryCardRank)) {
             if (firstKicker.equals(otherHandEvaluation.firstKicker)) {
                 if (secondKicker.equals(otherHandEvaluation.secondKicker)) {
                     return thirdKicker.compareTo(otherHandEvaluation.thirdKicker);
@@ -139,35 +139,35 @@ public class HandEvaluation implements Comparable<HandEvaluation> {
             }
             return firstKicker.compareTo(otherHandEvaluation.firstKicker);
         }
-        return primaryCardRanking.compareTo(otherHandEvaluation.primaryCardRanking);
+        return primaryCardRank.compareTo(otherHandEvaluation.primaryCardRank);
     }
 
     private int twoPairCompareTo(HandEvaluation otherHandEvaluation) {
-        if (primaryCardRanking.equals(otherHandEvaluation.primaryCardRanking)) {
+        if (primaryCardRank.equals(otherHandEvaluation.primaryCardRank)) {
             if (secondaryCardRank.equals(otherHandEvaluation.secondaryCardRank)) {
                 return firstKicker.compareTo(otherHandEvaluation.firstKicker);
             }
             return secondaryCardRank.compareTo(otherHandEvaluation.secondaryCardRank);
         }
-        return primaryCardRanking.compareTo(otherHandEvaluation.primaryCardRanking);
+        return primaryCardRank.compareTo(otherHandEvaluation.primaryCardRank);
     }
 
     private int threeOfAKindCompareTo(HandEvaluation otherHandEvaluation) {
-        if (primaryCardRanking.equals(otherHandEvaluation.primaryCardRanking)) {
+        if (primaryCardRank.equals(otherHandEvaluation.primaryCardRank)) {
             if (firstKicker.equals(otherHandEvaluation.firstKicker)) {
                 return secondKicker.compareTo(otherHandEvaluation.secondKicker);
             }
             return firstKicker.compareTo(otherHandEvaluation.firstKicker);
         }
-        return primaryCardRanking.compareTo(otherHandEvaluation.primaryCardRanking);
+        return primaryCardRank.compareTo(otherHandEvaluation.primaryCardRank);
     }
 
     private int straightCompareTo(HandEvaluation otherHandEvaluation) {
-        return primaryCardRanking.compareTo(otherHandEvaluation.primaryCardRanking);
+        return primaryCardRank.compareTo(otherHandEvaluation.primaryCardRank);
     }
 
     private int flushCompareTo(HandEvaluation otherHandEvaluation) {
-        if (primaryCardRanking.equals(otherHandEvaluation.primaryCardRanking)) {
+        if (primaryCardRank.equals(otherHandEvaluation.primaryCardRank)) {
             if (firstKicker.equals(otherHandEvaluation.firstKicker)) {
                 if (secondKicker.equals(otherHandEvaluation.secondKicker)) {
                     if (thirdKicker.equals(otherHandEvaluation.thirdKicker)) {
@@ -179,25 +179,25 @@ public class HandEvaluation implements Comparable<HandEvaluation> {
             }
             return firstKicker.compareTo(otherHandEvaluation.firstKicker);
         }
-        return primaryCardRanking.compareTo(otherHandEvaluation.primaryCardRanking);
+        return primaryCardRank.compareTo(otherHandEvaluation.primaryCardRank);
     }
 
     private int fullHouseCompareTo(HandEvaluation otherHandEvaluation) {
-        if (primaryCardRanking.equals(otherHandEvaluation.primaryCardRanking)) {
+        if (primaryCardRank.equals(otherHandEvaluation.primaryCardRank)) {
             return secondaryCardRank.compareTo(otherHandEvaluation.secondaryCardRank);
         }
-        return primaryCardRanking.compareTo(otherHandEvaluation.primaryCardRanking);
+        return primaryCardRank.compareTo(otherHandEvaluation.primaryCardRank);
     }
 
     private int fourOfAKindCompareTo(HandEvaluation otherHandEvaluation) {
-        if (primaryCardRanking.equals(otherHandEvaluation.primaryCardRanking)) {
+        if (primaryCardRank.equals(otherHandEvaluation.primaryCardRank)) {
             return firstKicker.compareTo(otherHandEvaluation.firstKicker);
         }
-        return primaryCardRanking.compareTo(otherHandEvaluation.primaryCardRanking);
+        return primaryCardRank.compareTo(otherHandEvaluation.primaryCardRank);
     }
 
     private int straightFlushCompareTo(HandEvaluation otherHandEvaluation) {
-        return primaryCardRanking.compareTo(otherHandEvaluation.primaryCardRanking);
+        return primaryCardRank.compareTo(otherHandEvaluation.primaryCardRank);
     }
 
 }
