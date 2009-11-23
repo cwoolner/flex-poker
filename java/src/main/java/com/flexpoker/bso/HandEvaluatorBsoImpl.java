@@ -130,7 +130,37 @@ public class HandEvaluatorBsoImpl implements HandEvaluatorBso {
     }
 
     private boolean evaluateFourOfAKind(HandEvaluation handEvaluation, List<Card> cardList) {
-        // TODO Auto-generated method stub
+        Collections.sort(cardList);
+
+        CardRank cardRank1 = cardList.get(0).getCardRank();
+        CardRank cardRank2 = cardList.get(1).getCardRank();
+        CardRank cardRank3 = cardList.get(2).getCardRank();
+        CardRank cardRank4 = cardList.get(3).getCardRank();
+        CardRank cardRank5 = cardList.get(4).getCardRank();
+        CardRank cardRank6 = cardList.get(5).getCardRank();
+        CardRank cardRank7 = cardList.get(6).getCardRank();
+
+        if (cardRank1 == cardRank4) {
+            handEvaluation.setPrimaryCardRanking(cardRank1);
+            handEvaluation.setFirstKicker(cardRank7);
+            return true;
+        }
+        if (cardRank2 == cardRank5) {
+            handEvaluation.setPrimaryCardRanking(cardRank2);
+            handEvaluation.setFirstKicker(cardRank7);
+            return true;
+        }
+        if (cardRank3 == cardRank6) {
+            handEvaluation.setPrimaryCardRanking(cardRank3);
+            handEvaluation.setFirstKicker(cardRank7);
+            return true;
+        }
+        if (cardRank4 == cardRank7) {
+            handEvaluation.setPrimaryCardRanking(cardRank4);
+            handEvaluation.setFirstKicker(cardRank3);
+            return true;
+        }
+
         return false;
     }
 
@@ -150,7 +180,47 @@ public class HandEvaluatorBsoImpl implements HandEvaluatorBso {
     }
 
     private boolean evaluateThreeOfAKind(HandEvaluation handEvaluation, List<Card> cardList) {
-        // TODO Auto-generated method stub
+        Collections.sort(cardList);
+
+        CardRank cardRank1 = cardList.get(0).getCardRank();
+        CardRank cardRank2 = cardList.get(1).getCardRank();
+        CardRank cardRank3 = cardList.get(2).getCardRank();
+        CardRank cardRank4 = cardList.get(3).getCardRank();
+        CardRank cardRank5 = cardList.get(4).getCardRank();
+        CardRank cardRank6 = cardList.get(5).getCardRank();
+        CardRank cardRank7 = cardList.get(6).getCardRank();
+
+        if (cardRank5 == cardRank7) {
+            handEvaluation.setPrimaryCardRanking(cardRank5);
+            handEvaluation.setFirstKicker(cardRank4);
+            handEvaluation.setSecondKicker(cardRank3);
+            return true;
+        }
+        if (cardRank4 == cardRank6) {
+            handEvaluation.setPrimaryCardRanking(cardRank4);
+            handEvaluation.setFirstKicker(cardRank7);
+            handEvaluation.setSecondKicker(cardRank3);
+            return true;
+        }
+        if (cardRank3 == cardRank5) {
+            handEvaluation.setPrimaryCardRanking(cardRank3);
+            handEvaluation.setFirstKicker(cardRank7);
+            handEvaluation.setSecondKicker(cardRank6);
+            return true;
+        }
+        if (cardRank2 == cardRank4) {
+            handEvaluation.setPrimaryCardRanking(cardRank2);
+            handEvaluation.setFirstKicker(cardRank7);
+            handEvaluation.setSecondKicker(cardRank6);
+            return true;
+        }
+        if (cardRank1 == cardRank3) {
+            handEvaluation.setPrimaryCardRanking(cardRank1);
+            handEvaluation.setFirstKicker(cardRank7);
+            handEvaluation.setSecondKicker(cardRank6);
+            return true;
+        }
+
         return false;
     }
 
@@ -160,13 +230,72 @@ public class HandEvaluatorBsoImpl implements HandEvaluatorBso {
     }
 
     private boolean evaluateOnePair(HandEvaluation handEvaluation, List<Card> cardList) {
-        // TODO Auto-generated method stub
+        Collections.sort(cardList);
+
+        CardRank cardRank1 = cardList.get(0).getCardRank();
+        CardRank cardRank2 = cardList.get(1).getCardRank();
+        CardRank cardRank3 = cardList.get(2).getCardRank();
+        CardRank cardRank4 = cardList.get(3).getCardRank();
+        CardRank cardRank5 = cardList.get(4).getCardRank();
+        CardRank cardRank6 = cardList.get(5).getCardRank();
+        CardRank cardRank7 = cardList.get(6).getCardRank();
+
+        if (cardRank6 == cardRank7) {
+            handEvaluation.setPrimaryCardRanking(cardRank6);
+            handEvaluation.setFirstKicker(cardRank5);
+            handEvaluation.setSecondKicker(cardRank4);
+            handEvaluation.setThirdKicker(cardRank3);
+            return true;
+        }
+        if (cardRank5 == cardRank6) {
+            handEvaluation.setPrimaryCardRanking(cardRank5);
+            handEvaluation.setFirstKicker(cardRank7);
+            handEvaluation.setSecondKicker(cardRank4);
+            handEvaluation.setThirdKicker(cardRank3);
+            return true;
+        }
+        if (cardRank4 == cardRank5) {
+            handEvaluation.setPrimaryCardRanking(cardRank4);
+            handEvaluation.setFirstKicker(cardRank7);
+            handEvaluation.setSecondKicker(cardRank6);
+            handEvaluation.setThirdKicker(cardRank3);
+            return true;
+        }
+        if (cardRank3 == cardRank4) {
+            handEvaluation.setPrimaryCardRanking(cardRank3);
+            handEvaluation.setFirstKicker(cardRank7);
+            handEvaluation.setSecondKicker(cardRank6);
+            handEvaluation.setThirdKicker(cardRank5);
+            return true;
+        }
+        if (cardRank2 == cardRank3) {
+            handEvaluation.setPrimaryCardRanking(cardRank2);
+            handEvaluation.setFirstKicker(cardRank7);
+            handEvaluation.setSecondKicker(cardRank6);
+            handEvaluation.setThirdKicker(cardRank5);
+            return true;
+        }
+        if (cardRank1 == cardRank2) {
+            handEvaluation.setPrimaryCardRanking(cardRank1);
+            handEvaluation.setFirstKicker(cardRank7);
+            handEvaluation.setSecondKicker(cardRank6);
+            handEvaluation.setThirdKicker(cardRank5);
+            return true;
+        }
+
         return false;
     }
 
     private boolean evaluateHighCard(HandEvaluation handEvaluation, List<Card> cardList) {
-        // TODO Auto-generated method stub
-        return false;
+        Collections.sort(cardList);
+
+        handEvaluation.setPrimaryCardRanking(cardList.get(6).getCardRank());
+        handEvaluation.setFirstKicker(cardList.get(5).getCardRank());
+        handEvaluation.setSecondKicker(cardList.get(4).getCardRank());
+        handEvaluation.setThirdKicker(cardList.get(3).getCardRank());
+        handEvaluation.setFourthKicker(cardList.get(2).getCardRank());
+
+        return true;
     }
 
     private void filterByStraightFlushStatus(CommonCards commonCards, List<HandRanking> possibleHandRankings) {
