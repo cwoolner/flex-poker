@@ -45,6 +45,13 @@ public class HandEvaluatorBsoImpl implements HandEvaluatorBso {
             PocketCards pocketCards, List<HandRanking> possibleHandRankings) {
         HandEvaluation handEvaluation = new HandEvaluation();
         handEvaluation.setUser(user);
+
+        List<Card> cardList = new ArrayList<Card>(commonCards.getCards());
+        cardList.add(pocketCards.getCard1());
+        cardList.add(pocketCards.getCard2());
+
+        fillInHandEvaluation(handEvaluation, cardList, possibleHandRankings);
+
         return handEvaluation;
     }
 
@@ -55,6 +62,111 @@ public class HandEvaluatorBsoImpl implements HandEvaluatorBso {
      */
     private enum CommonCardStatus {
         NOT_POSSIBLE, POSSIBLE, BOARD;
+    }
+
+    private void fillInHandEvaluation(HandEvaluation handEvaluation,
+            List<Card> cardList, List<HandRanking> possibleHandRankings) {
+        Collections.sort(possibleHandRankings);
+        Collections.reverse(possibleHandRankings);
+
+        for (HandRanking handRanking : possibleHandRankings) {
+            switch (handRanking) {
+                case STRAIGHT_FLUSH:
+                    if (evaluateStraightFlush(handEvaluation, cardList)) {
+                        return;
+                    }
+                case FOUR_OF_A_KIND:
+                    if (evaluateFourOfAKind(handEvaluation, cardList)) {
+                        return;
+                    }
+                case FULL_HOUSE:
+                    if (evaluateFullHouse(handEvaluation, cardList)) {
+                        return;
+                    }
+                case FLUSH:
+                    if (evaluateFlush(handEvaluation, cardList)) {
+                        return;
+                    }
+                case STRAIGHT:
+                    if (evaluateStraight(handEvaluation, cardList)) {
+                        return;
+                    }
+                case THREE_OF_A_KIND:
+                    if (evaluateThreeOfAKind(handEvaluation, cardList)) {
+                        return;
+                    }
+                case TWO_PAIR:
+                    if (evaluateTwoPair(handEvaluation, cardList)) {
+                        return;
+                    }
+                case ONE_PAIR:
+                    if (evaluateOnePair(handEvaluation, cardList)) {
+                        return;
+                    }
+                case HIGH_CARD:
+                    if (evaluateHighCard(handEvaluation, cardList)) {
+                        return;
+                    }
+            }
+        }
+    }
+
+    private boolean evaluateStraightFlush(HandEvaluation handEvaluation, List<Card> cardList) {
+        List<Card> cards = findCardsInLargestSuit(cardList);
+
+        if (cards.size() < 5) {
+            return false;
+        }
+
+        CardRank cardRank = findCardRankOfHighestStraight(cardList);
+
+        if (cardRank == null) {
+            return false;
+        }
+
+        handEvaluation.setHandRanking(HandRanking.STRAIGHT_FLUSH);
+        handEvaluation.setPrimaryCardRanking(cardRank);
+        return true;
+    }
+
+    private boolean evaluateFourOfAKind(HandEvaluation handEvaluation, List<Card> cardList) {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    private boolean evaluateFullHouse(HandEvaluation handEvaluation, List<Card> cardList) {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    private boolean evaluateFlush(HandEvaluation handEvaluation, List<Card> cardList) {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    private boolean evaluateStraight(HandEvaluation handEvaluation, List<Card> cardList) {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    private boolean evaluateThreeOfAKind(HandEvaluation handEvaluation, List<Card> cardList) {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    private boolean evaluateTwoPair(HandEvaluation handEvaluation, List<Card> cardList) {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    private boolean evaluateOnePair(HandEvaluation handEvaluation, List<Card> cardList) {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    private boolean evaluateHighCard(HandEvaluation handEvaluation, List<Card> cardList) {
+        // TODO Auto-generated method stub
+        return false;
     }
 
     private void filterByStraightFlushStatus(CommonCards commonCards, List<HandRanking> possibleHandRankings) {
@@ -467,6 +579,61 @@ public class HandEvaluatorBsoImpl implements HandEvaluatorBso {
 
         throw new IllegalArgumentException("CommonCards must contain at least "
                 + "two instances of a suit.");
+    }
+
+    private CardRank findCardRankOfHighestStraight(List<Card> cardList) {
+        if (cardList.size() < 5) {
+            return null;
+        }
+
+        List<CardRank> cardRanks = new ArrayList<CardRank>();
+
+        for (Card card : cardList) {
+            cardRanks.add(card.getCardRank());
+        }
+
+        if (doCardRanksMatch(cardRanks, Arrays.asList(new CardRank[]{CardRank.TEN,
+                CardRank.JACK, CardRank.QUEEN, CardRank.KING, CardRank.ACE}), 5)) {
+            return CardRank.ACE;
+        }
+        if (doCardRanksMatch(cardRanks, Arrays.asList(new CardRank[]{CardRank.NINE,
+                CardRank.TEN, CardRank.JACK, CardRank.QUEEN, CardRank.KING}), 5)) {
+            return CardRank.KING;
+        }
+        if (doCardRanksMatch(cardRanks, Arrays.asList(new CardRank[]{CardRank.EIGHT,
+                CardRank.NINE, CardRank.TEN, CardRank.JACK, CardRank.QUEEN}), 5)) {
+            return CardRank.QUEEN;
+        }
+        if (doCardRanksMatch(cardRanks, Arrays.asList(new CardRank[]{CardRank.SEVEN,
+                CardRank.EIGHT, CardRank.NINE, CardRank.TEN, CardRank.JACK}), 5)) {
+            return CardRank.JACK;
+        }
+        if (doCardRanksMatch(cardRanks, Arrays.asList(new CardRank[]{CardRank.SIX,
+                CardRank.SEVEN, CardRank.EIGHT, CardRank.NINE, CardRank.TEN}), 5)) {
+            return CardRank.TEN;
+        }
+        if (doCardRanksMatch(cardRanks, Arrays.asList(new CardRank[]{CardRank.FIVE,
+                CardRank.SIX, CardRank.SEVEN, CardRank.EIGHT, CardRank.NINE}), 5)) {
+            return CardRank.NINE;
+        }
+        if (doCardRanksMatch(cardRanks, Arrays.asList(new CardRank[]{CardRank.FOUR,
+                CardRank.FIVE, CardRank.SIX, CardRank.SEVEN, CardRank.EIGHT}), 5)) {
+            return CardRank.EIGHT;
+        }
+        if (doCardRanksMatch(cardRanks, Arrays.asList(new CardRank[]{CardRank.THREE,
+                CardRank.FOUR, CardRank.FIVE, CardRank.SIX, CardRank.SEVEN}), 5)) {
+            return CardRank.SEVEN;
+        }
+        if (doCardRanksMatch(cardRanks, Arrays.asList(new CardRank[]{CardRank.TWO,
+                CardRank.THREE, CardRank.FOUR, CardRank.FIVE, CardRank.SIX}), 5)) {
+            return CardRank.SIX;
+        }
+        if (doCardRanksMatch(cardRanks, Arrays.asList(new CardRank[]{CardRank.ACE,
+                CardRank.TWO, CardRank.THREE, CardRank.FOUR, CardRank.FIVE}), 5)) {
+            return CardRank.FIVE;
+        }
+
+        return null;
     }
 
 }
