@@ -11,9 +11,12 @@ import com.flexpoker.model.CardRank;
 import com.flexpoker.model.CardSuit;
 import com.flexpoker.model.CommonCards;
 import com.flexpoker.model.FlopCards;
+import com.flexpoker.model.HandEvaluation;
 import com.flexpoker.model.HandRanking;
+import com.flexpoker.model.PocketCards;
 import com.flexpoker.model.RiverCard;
 import com.flexpoker.model.TurnCard;
+import com.flexpoker.model.User;
 import com.flexpoker.util.Context;
 
 
@@ -38,6 +41,150 @@ public class HandEvaluatorBsoImplTest {
         testDeterminePossibleHandsScenario3();
         testDeterminePossibleHandsScenario4();
         testDeterminePossibleHandsScenario5();
+    }
+
+    @Test
+    public void testDetermineHandEvaluation() {
+        testDetermineHandEvaluationScenario1();
+        testDetermineHandEvaluationScenario2();
+    }
+
+    private void testDetermineHandEvaluationScenario1() {
+        Card card1 = new Card(0, CardRank.FOUR, CardSuit.SPADES);
+        Card card2 = new Card(0, CardRank.JACK, CardSuit.SPADES);
+        Card card3 = new Card(0, CardRank.EIGHT, CardSuit.HEARTS);
+        Card card4 = new Card(0, CardRank.FOUR, CardSuit.HEARTS);
+        Card card5 = new Card(0, CardRank.QUEEN, CardSuit.HEARTS);
+
+        FlopCards flopCards = new FlopCards(card1, card3, card4);
+        TurnCard turnCard = new TurnCard(card5);
+        RiverCard riverCard = new RiverCard(card2);
+
+        CommonCards commonCards = new CommonCards(flopCards, turnCard, riverCard);
+
+        List<HandRanking> possibleHandRankings = bso.determinePossibleHands(commonCards);
+
+        User user = new User();
+        user.setId(1);
+        Card pocketCard1 = new Card(0, CardRank.NINE, CardSuit.HEARTS);
+        Card pocketCard2 = new Card(0, CardRank.ACE, CardSuit.CLUBS);
+        PocketCards pocketCards = new PocketCards(pocketCard1, pocketCard2);
+
+        HandEvaluation handEvaluation = bso.determineHandEvaluation(commonCards,
+                user, pocketCards, possibleHandRankings);
+        assertEquals(HandRanking.ONE_PAIR, handEvaluation.getHandRanking());
+        assertEquals(CardRank.FOUR, handEvaluation.getPrimaryCardRank());
+        assertEquals(CardRank.ACE, handEvaluation.getFirstKicker());
+        assertEquals(CardRank.QUEEN, handEvaluation.getSecondKicker());
+        assertEquals(CardRank.JACK, handEvaluation.getThirdKicker());
+        assertEquals(1, handEvaluation.getUser().getId().intValue());
+
+        user = new User();
+        user.setId(2);
+        pocketCard1 = new Card(0, CardRank.QUEEN, CardSuit.HEARTS);
+        pocketCard2 = new Card(0, CardRank.ACE, CardSuit.CLUBS);
+        pocketCards = new PocketCards(pocketCard1, pocketCard2);
+
+        handEvaluation = bso.determineHandEvaluation(commonCards,
+                user, pocketCards, possibleHandRankings);
+        assertEquals(HandRanking.TWO_PAIR, handEvaluation.getHandRanking());
+        assertEquals(CardRank.QUEEN, handEvaluation.getPrimaryCardRank());
+        assertEquals(CardRank.FOUR, handEvaluation.getSecondaryCardRank());
+        assertEquals(CardRank.ACE, handEvaluation.getFirstKicker());
+        assertEquals(2, handEvaluation.getUser().getId().intValue());
+
+        user = new User();
+        user.setId(3);
+        pocketCard1 = new Card(0, CardRank.TWO, CardSuit.HEARTS);
+        pocketCard2 = new Card(0, CardRank.ACE, CardSuit.HEARTS);
+        pocketCards = new PocketCards(pocketCard1, pocketCard2);
+
+        handEvaluation = bso.determineHandEvaluation(commonCards,
+                user, pocketCards, possibleHandRankings);
+        assertEquals(HandRanking.FLUSH, handEvaluation.getHandRanking());
+        assertEquals(CardRank.ACE, handEvaluation.getPrimaryCardRank());
+        assertEquals(CardRank.QUEEN, handEvaluation.getFirstKicker());
+        assertEquals(CardRank.EIGHT, handEvaluation.getSecondKicker());
+        assertEquals(CardRank.FOUR, handEvaluation.getThirdKicker());
+        assertEquals(CardRank.TWO, handEvaluation.getFourthKicker());
+        assertEquals(3, handEvaluation.getUser().getId().intValue());
+
+        user = new User();
+        user.setId(4);
+        pocketCard1 = new Card(0, CardRank.FOUR, CardSuit.CLUBS);
+        pocketCard2 = new Card(0, CardRank.FOUR, CardSuit.DIAMONDS);
+        pocketCards = new PocketCards(pocketCard1, pocketCard2);
+
+        handEvaluation = bso.determineHandEvaluation(commonCards,
+                user, pocketCards, possibleHandRankings);
+        assertEquals(HandRanking.FOUR_OF_A_KIND, handEvaluation.getHandRanking());
+        assertEquals(CardRank.QUEEN, handEvaluation.getFirstKicker());
+        assertEquals(4, handEvaluation.getUser().getId().intValue());
+
+        user = new User();
+        user.setId(5);
+        pocketCard1 = new Card(0, CardRank.FIVE, CardSuit.CLUBS);
+        pocketCard2 = new Card(0, CardRank.FOUR, CardSuit.DIAMONDS);
+        pocketCards = new PocketCards(pocketCard1, pocketCard2);
+
+        handEvaluation = bso.determineHandEvaluation(commonCards,
+                user, pocketCards, possibleHandRankings);
+        assertEquals(HandRanking.THREE_OF_A_KIND, handEvaluation.getHandRanking());
+        assertEquals(CardRank.QUEEN, handEvaluation.getFirstKicker());
+        assertEquals(CardRank.JACK, handEvaluation.getSecondKicker());
+        assertEquals(5, handEvaluation.getUser().getId().intValue());
+    }
+
+    private void testDetermineHandEvaluationScenario2() {
+        Card card1 = new Card(0, CardRank.KING, CardSuit.HEARTS);
+        Card card2 = new Card(0, CardRank.JACK, CardSuit.HEARTS);
+        Card card3 = new Card(0, CardRank.NINE, CardSuit.HEARTS);
+        Card card4 = new Card(0, CardRank.TEN, CardSuit.HEARTS);
+        Card card5 = new Card(0, CardRank.QUEEN, CardSuit.HEARTS);
+
+        FlopCards flopCards = new FlopCards(card1, card3, card4);
+        TurnCard turnCard = new TurnCard(card5);
+        RiverCard riverCard = new RiverCard(card2);
+
+        CommonCards commonCards = new CommonCards(flopCards, turnCard, riverCard);
+
+        List<HandRanking> possibleHandRankings = bso.determinePossibleHands(commonCards);
+
+        User user = new User();
+        user.setId(1);
+        Card pocketCard1 = new Card(0, CardRank.EIGHT, CardSuit.HEARTS);
+        Card pocketCard2 = new Card(0, CardRank.ACE, CardSuit.CLUBS);
+        PocketCards pocketCards = new PocketCards(pocketCard1, pocketCard2);
+
+        HandEvaluation handEvaluation = bso.determineHandEvaluation(commonCards,
+                user, pocketCards, possibleHandRankings);
+        assertEquals(HandRanking.STRAIGHT_FLUSH, handEvaluation.getHandRanking());
+        assertEquals(CardRank.KING, handEvaluation.getPrimaryCardRank());
+        assertEquals(1, handEvaluation.getUser().getId().intValue());
+
+        user = new User();
+        user.setId(2);
+        pocketCard1 = new Card(0, CardRank.QUEEN, CardSuit.SPADES);
+        pocketCard2 = new Card(0, CardRank.ACE, CardSuit.HEARTS);
+        pocketCards = new PocketCards(pocketCard1, pocketCard2);
+
+        handEvaluation = bso.determineHandEvaluation(commonCards,
+                user, pocketCards, possibleHandRankings);
+        assertEquals(HandRanking.STRAIGHT_FLUSH, handEvaluation.getHandRanking());
+        assertEquals(CardRank.ACE, handEvaluation.getPrimaryCardRank());
+        assertEquals(2, handEvaluation.getUser().getId().intValue());
+
+        user = new User();
+        user.setId(3);
+        pocketCard1 = new Card(0, CardRank.QUEEN, CardSuit.SPADES);
+        pocketCard2 = new Card(0, CardRank.ACE, CardSuit.DIAMONDS);
+        pocketCards = new PocketCards(pocketCard1, pocketCard2);
+
+        handEvaluation = bso.determineHandEvaluation(commonCards,
+                user, pocketCards, possibleHandRankings);
+        assertEquals(HandRanking.STRAIGHT_FLUSH, handEvaluation.getHandRanking());
+        assertEquals(CardRank.KING, handEvaluation.getPrimaryCardRank());
+        assertEquals(3, handEvaluation.getUser().getId().intValue());
     }
 
     private void testDeterminePossibleHandsScenario1() {
