@@ -121,9 +121,9 @@ public class HandEvaluatorBsoImpl implements HandEvaluatorBso {
     }
 
     private boolean evaluateStraightFlush(HandEvaluation handEvaluation, List<Card> cardList) {
-        List<Card> cards = findCardsInLargestSuit(cardList);
+        cardList = findCardsInLargestSuit(cardList);
 
-        if (cards.size() < 5) {
+        if (cardList.size() < 5) {
             return false;
         }
 
