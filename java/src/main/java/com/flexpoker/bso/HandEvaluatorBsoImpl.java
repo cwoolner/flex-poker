@@ -173,18 +173,116 @@ public class HandEvaluatorBsoImpl implements HandEvaluatorBso {
     }
 
     private boolean evaluateFullHouse(HandEvaluation handEvaluation, List<Card> cardList) {
-        // TODO Auto-generated method stub
+        Collections.sort(cardList);
+
+        CardRank cardRank1 = cardList.get(0).getCardRank();
+        CardRank cardRank2 = cardList.get(1).getCardRank();
+        CardRank cardRank3 = cardList.get(2).getCardRank();
+        CardRank cardRank4 = cardList.get(3).getCardRank();
+        CardRank cardRank5 = cardList.get(4).getCardRank();
+        CardRank cardRank6 = cardList.get(5).getCardRank();
+        CardRank cardRank7 = cardList.get(6).getCardRank();
+
+        if (cardRank5 == cardRank7) {
+            if (cardRank3 == cardRank4) {
+                handEvaluation.setPrimaryCardRank(cardRank5);
+                handEvaluation.setSecondaryCardRank(cardRank3);
+                return true;
+            }
+            if (cardRank2 == cardRank3) {
+                handEvaluation.setPrimaryCardRank(cardRank5);
+                handEvaluation.setSecondaryCardRank(cardRank2);
+                return true;
+            }
+            if (cardRank1 == cardRank2) {
+                handEvaluation.setPrimaryCardRank(cardRank5);
+                handEvaluation.setSecondaryCardRank(cardRank1);
+                return true;
+            }
+        }
+        if (cardRank4 == cardRank6) {
+            if (cardRank2 == cardRank3) {
+                handEvaluation.setPrimaryCardRank(cardRank4);
+                handEvaluation.setSecondaryCardRank(cardRank2);
+                return true;
+            }
+            if (cardRank1 == cardRank2) {
+                handEvaluation.setPrimaryCardRank(cardRank4);
+                handEvaluation.setSecondaryCardRank(cardRank1);
+                return true;
+            }
+        }
+        if (cardRank3 == cardRank5) {
+            if (cardRank6 == cardRank7) {
+                handEvaluation.setPrimaryCardRank(cardRank3);
+                handEvaluation.setSecondaryCardRank(cardRank6);
+                return true;
+            }
+            if (cardRank1 == cardRank2) {
+                handEvaluation.setPrimaryCardRank(cardRank3);
+                handEvaluation.setSecondaryCardRank(cardRank1);
+                return true;
+            }
+        }
+        if (cardRank2 == cardRank4) {
+            if (cardRank6 == cardRank7) {
+                handEvaluation.setPrimaryCardRank(cardRank2);
+                handEvaluation.setSecondaryCardRank(cardRank6);
+                return true;
+            }
+            if (cardRank5 == cardRank6) {
+                handEvaluation.setPrimaryCardRank(cardRank2);
+                handEvaluation.setSecondaryCardRank(cardRank5);
+                return true;
+            }
+        }
+        if (cardRank1 == cardRank3) {
+            if (cardRank6 == cardRank7) {
+                handEvaluation.setPrimaryCardRank(cardRank1);
+                handEvaluation.setSecondaryCardRank(cardRank6);
+                return true;
+            }
+            if (cardRank5 == cardRank6) {
+                handEvaluation.setPrimaryCardRank(cardRank1);
+                handEvaluation.setSecondaryCardRank(cardRank5);
+                return true;
+            }
+            if (cardRank4 == cardRank5) {
+                handEvaluation.setPrimaryCardRank(cardRank1);
+                handEvaluation.setSecondaryCardRank(cardRank4);
+                return true;
+            }
+        }
+
         return false;
     }
 
     private boolean evaluateFlush(HandEvaluation handEvaluation, List<Card> cardList) {
-        // TODO Auto-generated method stub
-        return false;
+        List<Card> cards = findCardsInLargestSuit(cardList);
+
+        if (cards.size() < 5) {
+            return false;
+        }
+
+        Collections.sort(cards);
+
+        handEvaluation.setPrimaryCardRank(cards.get(cards.size() - 1).getCardRank());
+        handEvaluation.setFirstKicker(cards.get(cards.size() - 2).getCardRank());
+        handEvaluation.setSecondKicker(cards.get(cards.size() - 3).getCardRank());
+        handEvaluation.setThirdKicker(cards.get(cards.size() - 4).getCardRank());
+        handEvaluation.setFourthKicker(cards.get(cards.size() - 5).getCardRank());
+        return true;
     }
 
     private boolean evaluateStraight(HandEvaluation handEvaluation, List<Card> cardList) {
-        // TODO Auto-generated method stub
-        return false;
+        CardRank cardRank = findCardRankOfHighestStraight(cardList);
+
+        if (cardRank == null) {
+            return false;
+        }
+
+        handEvaluation.setPrimaryCardRank(cardRank);
+        return true;
     }
 
     private boolean evaluateThreeOfAKind(HandEvaluation handEvaluation, List<Card> cardList) {
@@ -233,7 +331,85 @@ public class HandEvaluatorBsoImpl implements HandEvaluatorBso {
     }
 
     private boolean evaluateTwoPair(HandEvaluation handEvaluation, List<Card> cardList) {
-        // TODO Auto-generated method stub
+        Collections.sort(cardList);
+
+        CardRank cardRank1 = cardList.get(0).getCardRank();
+        CardRank cardRank2 = cardList.get(1).getCardRank();
+        CardRank cardRank3 = cardList.get(2).getCardRank();
+        CardRank cardRank4 = cardList.get(3).getCardRank();
+        CardRank cardRank5 = cardList.get(4).getCardRank();
+        CardRank cardRank6 = cardList.get(5).getCardRank();
+        CardRank cardRank7 = cardList.get(6).getCardRank();
+
+        if (cardRank6 == cardRank7) {
+            if (cardRank4 == cardRank5) {
+                handEvaluation.setPrimaryCardRank(cardRank6);
+                handEvaluation.setSecondaryCardRank(cardRank4);
+                handEvaluation.setFirstKicker(cardRank3);
+                return true;
+            }
+            if (cardRank3 == cardRank4) {
+                handEvaluation.setPrimaryCardRank(cardRank6);
+                handEvaluation.setSecondaryCardRank(cardRank3);
+                handEvaluation.setFirstKicker(cardRank5);
+                return true;
+            }
+            if (cardRank2 == cardRank3) {
+                handEvaluation.setPrimaryCardRank(cardRank6);
+                handEvaluation.setSecondaryCardRank(cardRank2);
+                handEvaluation.setFirstKicker(cardRank5);
+                return true;
+            }
+            if (cardRank1 == cardRank2) {
+                handEvaluation.setPrimaryCardRank(cardRank6);
+                handEvaluation.setSecondaryCardRank(cardRank1);
+                handEvaluation.setFirstKicker(cardRank5);
+                return true;
+            }
+        }
+        if (cardRank5 == cardRank6) {
+            if (cardRank3 == cardRank4) {
+                handEvaluation.setPrimaryCardRank(cardRank5);
+                handEvaluation.setSecondaryCardRank(cardRank3);
+                handEvaluation.setFirstKicker(cardRank7);
+                return true;
+            }
+            if (cardRank2 == cardRank3) {
+                handEvaluation.setPrimaryCardRank(cardRank5);
+                handEvaluation.setSecondaryCardRank(cardRank2);
+                handEvaluation.setFirstKicker(cardRank7);
+                return true;
+            }
+            if (cardRank1 == cardRank2) {
+                handEvaluation.setPrimaryCardRank(cardRank5);
+                handEvaluation.setSecondaryCardRank(cardRank1);
+                handEvaluation.setFirstKicker(cardRank7);
+                return true;
+            }
+        }
+        if (cardRank4 == cardRank5) {
+            if (cardRank2 == cardRank3) {
+                handEvaluation.setPrimaryCardRank(cardRank4);
+                handEvaluation.setSecondaryCardRank(cardRank2);
+                handEvaluation.setFirstKicker(cardRank7);
+                return true;
+            }
+            if (cardRank1 == cardRank2) {
+                handEvaluation.setPrimaryCardRank(cardRank4);
+                handEvaluation.setSecondaryCardRank(cardRank1);
+                handEvaluation.setFirstKicker(cardRank7);
+                return true;
+            }
+        }
+        if (cardRank3 == cardRank4) {
+            if (cardRank1 == cardRank2) {
+                handEvaluation.setPrimaryCardRank(cardRank4);
+                handEvaluation.setSecondaryCardRank(cardRank1);
+                handEvaluation.setFirstKicker(cardRank7);
+                return true;
+            }
+        }
+
         return false;
     }
 
