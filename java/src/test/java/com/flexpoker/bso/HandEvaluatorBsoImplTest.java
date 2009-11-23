@@ -24,24 +24,23 @@ public class HandEvaluatorBsoImplTest {
 
     @Test
     public void testDeterminePossibleHands() {
-        verifyOnBoard();
-        verifyRandomHands();
+        testDeterminePossibleHandsStraightFlushOnBoard();
+        testDeterminePossibleHandsFourOfAKindOnBoard();
+        testDeterminePossibleHandsFullHouseOnBoard();
+        testDeterminePossibleHandsFlushOnBoard();
+        testDeterminePossibleHandsStraightOnBoard();
+        testDeterminePossibleHandsThreeOfAKindOnBoard();
+        testDeterminePossibleHandsTwoPairOnBoard();
+        testDeterminePossibleHandsOnePairOnBoard();
+
+        testDeterminePossibleHandsScenario1();
+        testDeterminePossibleHandsScenario2();
+        testDeterminePossibleHandsScenario3();
+        testDeterminePossibleHandsScenario4();
+        testDeterminePossibleHandsScenario5();
     }
 
-    @Test
-    public void testDetermineHandEvaluation() {
-        fail("Not yet implemented");
-    }
-
-    private void verifyRandomHands() {
-        verifyScenario1();
-        verifyScenario2();
-        verifyScenario3();
-        verifyScenario4();
-        verifyScenario5();
-    }
-
-    private void verifyScenario1() {
+    private void testDeterminePossibleHandsScenario1() {
         Card card1 = new Card(0, CardRank.ACE, CardSuit.HEARTS);
         Card card2 = new Card(0, CardRank.TWO, CardSuit.DIAMONDS);
         Card card3 = new Card(0, CardRank.SEVEN, CardSuit.CLUBS);
@@ -62,7 +61,7 @@ public class HandEvaluatorBsoImplTest {
         assertEquals(HandRanking.THREE_OF_A_KIND, handRankings.get(3));
     }
 
-    private void verifyScenario2() {
+    private void testDeterminePossibleHandsScenario2() {
         Card card1 = new Card(0, CardRank.ACE, CardSuit.HEARTS);
         Card card2 = new Card(0, CardRank.KING, CardSuit.HEARTS);
         Card card3 = new Card(0, CardRank.SEVEN, CardSuit.CLUBS);
@@ -86,7 +85,7 @@ public class HandEvaluatorBsoImplTest {
         assertEquals(HandRanking.STRAIGHT_FLUSH, handRankings.get(6));
     }
 
-    private void verifyScenario3() {
+    private void testDeterminePossibleHandsScenario3() {
         Card card1 = new Card(0, CardRank.THREE, CardSuit.CLUBS);
         Card card2 = new Card(0, CardRank.NINE, CardSuit.SPADES);
         Card card3 = new Card(0, CardRank.TWO, CardSuit.CLUBS);
@@ -111,7 +110,7 @@ public class HandEvaluatorBsoImplTest {
         assertEquals(HandRanking.STRAIGHT_FLUSH, handRankings.get(7));
     }
 
-    private void verifyScenario4() {
+    private void testDeterminePossibleHandsScenario4() {
         Card card1 = new Card(0, CardRank.TEN, CardSuit.CLUBS);
         Card card2 = new Card(0, CardRank.SIX, CardSuit.HEARTS);
         Card card3 = new Card(0, CardRank.JACK, CardSuit.DIAMONDS);
@@ -134,7 +133,7 @@ public class HandEvaluatorBsoImplTest {
         assertEquals(HandRanking.FLUSH, handRankings.get(5));
     }
 
-    private void verifyScenario5() {
+    private void testDeterminePossibleHandsScenario5() {
         Card card1 = new Card(0, CardRank.EIGHT, CardSuit.CLUBS);
         Card card2 = new Card(0, CardRank.FOUR, CardSuit.DIAMONDS);
         Card card3 = new Card(0, CardRank.ACE, CardSuit.DIAMONDS);
@@ -159,18 +158,7 @@ public class HandEvaluatorBsoImplTest {
         assertEquals(HandRanking.STRAIGHT_FLUSH, handRankings.get(7));
     }
 
-    private void verifyOnBoard() {
-        verifyStraightFlushOnBoard();
-        verifyFourOfAKindOnBoard();
-        verifyFullHouseOnBoard();
-        verifyFlushOnBoard();
-        verifyStraightOnBoard();
-        verifyThreeOfAKindOnBoard();
-        verifyTwoPairOnBoard();
-        verifyOnePairOnBoard();
-    }
-
-    private void verifyStraightFlushOnBoard() {
+    private void testDeterminePossibleHandsStraightFlushOnBoard() {
         verifyStraightFlushOnBoardHelper(CardRank.FIVE);
         verifyStraightFlushOnBoardHelper(CardRank.SIX);
         verifyStraightFlushOnBoardHelper(CardRank.SEVEN);
@@ -183,7 +171,7 @@ public class HandEvaluatorBsoImplTest {
         verifyStraightFlushOnBoardHelper(CardRank.ACE);
     }
 
-    private void verifyFourOfAKindOnBoard() {
+    private void testDeterminePossibleHandsFourOfAKindOnBoard() {
         verifyFourOfAKindOnBoardHelper(CardRank.TWO);
         verifyFourOfAKindOnBoardHelper(CardRank.THREE);
         verifyFourOfAKindOnBoardHelper(CardRank.FOUR);
@@ -199,7 +187,7 @@ public class HandEvaluatorBsoImplTest {
         verifyFourOfAKindOnBoardHelper(CardRank.ACE);
     }
 
-    private void verifyFullHouseOnBoard() {
+    private void testDeterminePossibleHandsFullHouseOnBoard() {
         verifyFullHouseOnBoardHelper(CardRank.TWO, CardRank.ACE);
         verifyFullHouseOnBoardHelper(CardRank.ACE, CardRank.TWO);
         verifyFullHouseOnBoardHelper(CardRank.KING, CardRank.ACE);
@@ -208,7 +196,7 @@ public class HandEvaluatorBsoImplTest {
         verifyFullHouseOnBoardHelper(CardRank.EIGHT, CardRank.SEVEN);
     }
 
-    private void verifyFlushOnBoard() {
+    private void testDeterminePossibleHandsFlushOnBoard() {
         Card card1 = new Card(0, CardRank.ACE, CardSuit.HEARTS);
         Card card2 = new Card(0, CardRank.TWO, CardSuit.HEARTS);
         Card card3 = new Card(0, CardRank.SIX, CardSuit.HEARTS);
@@ -240,7 +228,7 @@ public class HandEvaluatorBsoImplTest {
         assertEquals(HandRanking.FLUSH, handRankings.get(0));
     }
 
-    private void verifyStraightOnBoard() {
+    private void testDeterminePossibleHandsStraightOnBoard() {
         verifyStraightOnBoardHelper(CardRank.FIVE);
         verifyStraightOnBoardHelper(CardRank.SIX);
         verifyStraightOnBoardHelper(CardRank.SEVEN);
@@ -253,7 +241,7 @@ public class HandEvaluatorBsoImplTest {
         verifyStraightOnBoardHelper(CardRank.ACE);
     }
 
-    private void verifyThreeOfAKindOnBoard() {
+    private void testDeterminePossibleHandsThreeOfAKindOnBoard() {
         verifyThreeOfAKindOnBoardHelper(CardRank.TWO);
         verifyThreeOfAKindOnBoardHelper(CardRank.THREE);
         verifyThreeOfAKindOnBoardHelper(CardRank.FOUR);
@@ -269,7 +257,7 @@ public class HandEvaluatorBsoImplTest {
         verifyThreeOfAKindOnBoardHelper(CardRank.ACE);
     }
 
-    private void verifyTwoPairOnBoard() {
+    private void testDeterminePossibleHandsTwoPairOnBoard() {
         verifyTwoPairOnBoardHelper(CardRank.TWO, CardRank.KING);
         verifyTwoPairOnBoardHelper(CardRank.THREE, CardRank.ACE);
         verifyTwoPairOnBoardHelper(CardRank.FOUR, CardRank.SEVEN);
@@ -285,7 +273,7 @@ public class HandEvaluatorBsoImplTest {
         verifyTwoPairOnBoardHelper(CardRank.ACE, CardRank.KING);
     }
 
-    private void verifyOnePairOnBoard() {
+    private void testDeterminePossibleHandsOnePairOnBoard() {
         verifyOnePairOnBoardHelper(CardRank.TWO);
         verifyOnePairOnBoardHelper(CardRank.THREE);
         verifyOnePairOnBoardHelper(CardRank.FOUR);
