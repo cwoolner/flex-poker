@@ -353,52 +353,52 @@ public class HandEvaluatorBsoImpl implements HandEvaluatorBso {
             cardRanks.add(card.getCardRank());
         }
 
-        if (doThreeCardRanksMatch(cardRanks, Arrays.asList(new CardRank[]{CardRank.ACE,
-                CardRank.TWO, CardRank.THREE, CardRank.FOUR, CardRank.FIVE}))) {
+        if (doCardRanksMatch(cardRanks, Arrays.asList(new CardRank[]{CardRank.ACE,
+                CardRank.TWO, CardRank.THREE, CardRank.FOUR, CardRank.FIVE}), 3)) {
             return true;
         }
-        if (doThreeCardRanksMatch(cardRanks, Arrays.asList(new CardRank[]{CardRank.TWO,
-                CardRank.THREE, CardRank.FOUR, CardRank.FIVE, CardRank.SIX}))) {
+        if (doCardRanksMatch(cardRanks, Arrays.asList(new CardRank[]{CardRank.TWO,
+                CardRank.THREE, CardRank.FOUR, CardRank.FIVE, CardRank.SIX}), 3)) {
             return true;
         }
-        if (doThreeCardRanksMatch(cardRanks, Arrays.asList(new CardRank[]{CardRank.THREE,
-                CardRank.FOUR, CardRank.FIVE, CardRank.SIX, CardRank.SEVEN}))) {
+        if (doCardRanksMatch(cardRanks, Arrays.asList(new CardRank[]{CardRank.THREE,
+                CardRank.FOUR, CardRank.FIVE, CardRank.SIX, CardRank.SEVEN}), 3)) {
             return true;
         }
-        if (doThreeCardRanksMatch(cardRanks, Arrays.asList(new CardRank[]{CardRank.FOUR,
-                CardRank.FIVE, CardRank.SIX, CardRank.SEVEN, CardRank.EIGHT}))) {
+        if (doCardRanksMatch(cardRanks, Arrays.asList(new CardRank[]{CardRank.FOUR,
+                CardRank.FIVE, CardRank.SIX, CardRank.SEVEN, CardRank.EIGHT}), 3)) {
             return true;
         }
-        if (doThreeCardRanksMatch(cardRanks, Arrays.asList(new CardRank[]{CardRank.FIVE,
-                CardRank.SIX, CardRank.SEVEN, CardRank.EIGHT, CardRank.NINE}))) {
+        if (doCardRanksMatch(cardRanks, Arrays.asList(new CardRank[]{CardRank.FIVE,
+                CardRank.SIX, CardRank.SEVEN, CardRank.EIGHT, CardRank.NINE}), 3)) {
             return true;
         }
-        if (doThreeCardRanksMatch(cardRanks, Arrays.asList(new CardRank[]{CardRank.SIX,
-                CardRank.SEVEN, CardRank.EIGHT, CardRank.NINE, CardRank.TEN}))) {
+        if (doCardRanksMatch(cardRanks, Arrays.asList(new CardRank[]{CardRank.SIX,
+                CardRank.SEVEN, CardRank.EIGHT, CardRank.NINE, CardRank.TEN}), 3)) {
             return true;
         }
-        if (doThreeCardRanksMatch(cardRanks, Arrays.asList(new CardRank[]{CardRank.SEVEN,
-                CardRank.EIGHT, CardRank.NINE, CardRank.TEN, CardRank.JACK}))) {
+        if (doCardRanksMatch(cardRanks, Arrays.asList(new CardRank[]{CardRank.SEVEN,
+                CardRank.EIGHT, CardRank.NINE, CardRank.TEN, CardRank.JACK}), 3)) {
             return true;
         }
-        if (doThreeCardRanksMatch(cardRanks, Arrays.asList(new CardRank[]{CardRank.EIGHT,
-                CardRank.NINE, CardRank.TEN, CardRank.JACK, CardRank.QUEEN}))) {
+        if (doCardRanksMatch(cardRanks, Arrays.asList(new CardRank[]{CardRank.EIGHT,
+                CardRank.NINE, CardRank.TEN, CardRank.JACK, CardRank.QUEEN}), 3)) {
             return true;
         }
-        if (doThreeCardRanksMatch(cardRanks, Arrays.asList(new CardRank[]{CardRank.NINE,
-                CardRank.TEN, CardRank.JACK, CardRank.QUEEN, CardRank.KING}))) {
+        if (doCardRanksMatch(cardRanks, Arrays.asList(new CardRank[]{CardRank.NINE,
+                CardRank.TEN, CardRank.JACK, CardRank.QUEEN, CardRank.KING}), 3)) {
             return true;
         }
-        if (doThreeCardRanksMatch(cardRanks, Arrays.asList(new CardRank[]{CardRank.TEN,
-                CardRank.JACK, CardRank.QUEEN, CardRank.KING, CardRank.ACE}))) {
+        if (doCardRanksMatch(cardRanks, Arrays.asList(new CardRank[]{CardRank.TEN,
+                CardRank.JACK, CardRank.QUEEN, CardRank.KING, CardRank.ACE}), 3)) {
             return true;
         }
 
         return false;
     }
 
-    private boolean doThreeCardRanksMatch(List<CardRank> cardRanks,
-            List<CardRank> straightCardRanks) {
+    private boolean doCardRanksMatch(List<CardRank> cardRanks,
+            List<CardRank> straightCardRanks, int numberToMatch) {
 
         Set<CardRank> cardRankSet = new HashSet<CardRank>(cardRanks);
 
@@ -410,7 +410,7 @@ public class HandEvaluatorBsoImpl implements HandEvaluatorBso {
             }
         }
 
-        return numberOfMatched >= 3;
+        return numberOfMatched >= numberToMatch;
     }
 
     /**
