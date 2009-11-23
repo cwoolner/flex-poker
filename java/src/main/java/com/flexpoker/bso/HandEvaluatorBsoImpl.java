@@ -73,38 +73,47 @@ public class HandEvaluatorBsoImpl implements HandEvaluatorBso {
             switch (handRanking) {
                 case STRAIGHT_FLUSH:
                     if (evaluateStraightFlush(handEvaluation, cardList)) {
+                        handEvaluation.setHandRanking(HandRanking.STRAIGHT_FLUSH);
                         return;
                     }
                 case FOUR_OF_A_KIND:
                     if (evaluateFourOfAKind(handEvaluation, cardList)) {
+                        handEvaluation.setHandRanking(HandRanking.FOUR_OF_A_KIND);
                         return;
                     }
                 case FULL_HOUSE:
                     if (evaluateFullHouse(handEvaluation, cardList)) {
+                        handEvaluation.setHandRanking(HandRanking.FULL_HOUSE);
                         return;
                     }
                 case FLUSH:
                     if (evaluateFlush(handEvaluation, cardList)) {
+                        handEvaluation.setHandRanking(HandRanking.FLUSH);
                         return;
                     }
                 case STRAIGHT:
                     if (evaluateStraight(handEvaluation, cardList)) {
+                        handEvaluation.setHandRanking(HandRanking.STRAIGHT);
                         return;
                     }
                 case THREE_OF_A_KIND:
                     if (evaluateThreeOfAKind(handEvaluation, cardList)) {
+                        handEvaluation.setHandRanking(HandRanking.THREE_OF_A_KIND);
                         return;
                     }
                 case TWO_PAIR:
                     if (evaluateTwoPair(handEvaluation, cardList)) {
+                        handEvaluation.setHandRanking(HandRanking.TWO_PAIR);
                         return;
                     }
                 case ONE_PAIR:
                     if (evaluateOnePair(handEvaluation, cardList)) {
+                        handEvaluation.setHandRanking(HandRanking.ONE_PAIR);
                         return;
                     }
                 case HIGH_CARD:
                     if (evaluateHighCard(handEvaluation, cardList)) {
+                        handEvaluation.setHandRanking(HandRanking.HIGH_CARD);
                         return;
                     }
             }
@@ -124,7 +133,6 @@ public class HandEvaluatorBsoImpl implements HandEvaluatorBso {
             return false;
         }
 
-        handEvaluation.setHandRanking(HandRanking.STRAIGHT_FLUSH);
         handEvaluation.setPrimaryCardRank(cardRank);
         return true;
     }
