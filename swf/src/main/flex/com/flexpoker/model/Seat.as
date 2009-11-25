@@ -12,9 +12,9 @@ package com.flexpoker.model {
 
         public var stillInHand:Boolean;
 
-        public allIn:Boolean;
+        public var allIn:Boolean;
 
-        public playerJustLeft:Boolean;
+        public var playerJustLeft:Boolean;
 
     }
 
