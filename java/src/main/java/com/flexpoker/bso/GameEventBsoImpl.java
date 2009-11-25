@@ -214,16 +214,14 @@ public class GameEventBsoImpl implements GameEventBso {
         realTimeHand.setHandDealerState(HandDealerState.POCKET_CARDS_DEALT);
         realTimeHand.setHandRoundState(HandRoundState.ROUND_IN_PROGRESS);
 
-        List<HandEvaluation> handEvaluations = determineHandEvaluations(game,
-                table, table.getSeats());
+        List<HandEvaluation> handEvaluations = determineHandEvaluations(game, table);
         Collections.sort(handEvaluations);
         realTimeHand.setHandEvaluationList(handEvaluations);
 
         realTimeGame.addRealTimeHand(table, realTimeHand);
     }
 
-    private List<HandEvaluation> determineHandEvaluations(Game game,
-            Table table, List<Seat> seats) {
+    private List<HandEvaluation> determineHandEvaluations(Game game, Table table) {
         FlopCards flopCards = deckBso.fetchFlopCards(game, table);
         TurnCard turnCard = deckBso.fetchTurnCard(game, table);
         RiverCard riverCard = deckBso.fetchRiverCard(game, table);
@@ -234,7 +232,7 @@ public class GameEventBsoImpl implements GameEventBso {
 
         List<HandEvaluation> handEvaluations = new ArrayList<HandEvaluation>();
 
-        for (Seat seat : seats) {
+        for (Seat seat : table.getSeats()) {
             if (seat.getUserGameStatus() != null
                     && seat.getUserGameStatus().getUser() != null) {
                 User user = seat.getUserGameStatus().getUser();
