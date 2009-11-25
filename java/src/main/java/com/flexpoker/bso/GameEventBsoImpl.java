@@ -55,27 +55,6 @@ public class GameEventBsoImpl implements GameEventBso {
         }
     }
 
-    private void checkIfUserCanJoinGame(Game game, User user) {
-        GameStage gameStage = game.getGameStage();
-
-        if (GameStage.STARTING.equals(gameStage)
-            || GameStage.IN_PROGRESS.equals(gameStage)) {
-            throw new FlexPokerException("The game has already started");
-        }
-
-        if (GameStage.FINISHED.equals(gameStage)) {
-            throw new FlexPokerException("The game is already finished.");
-        }
-
-        Set<UserGameStatus> userGameStatuses = gameBso.fetchUserGameStatuses(game);
-        
-        for (UserGameStatus userGameStatus : userGameStatuses) {
-            if (user.equals(userGameStatus.getUser())) {
-                throw new FlexPokerException("You are already in this game.");
-            }
-        }
-    }
-
     @Override
     public boolean verifyRegistration(User user, Game game) {
         synchronized (this) {
@@ -98,6 +77,94 @@ public class GameEventBsoImpl implements GameEventBso {
         seatStatusBso.setStatusForNewHand(table);
         deckBso.shuffleDeck(table);
         createNewRealTimeHand(game, table);
+    }
+
+    @Override
+    public boolean verifyGameInProgress(User user, Game game) {
+        synchronized (this) {
+            RealTimeGame realTimeGame = realTimeGameBso.get(game);
+            realTimeGame.verifyEvent(user, "gameInProgress");
+
+            if (realTimeGame.isEventVerified("gameInProgress")) {
+                startNewGameForAllTables(game);
+                return true;
+            }
+
+            return false;
+        }
+    }
+
+    @Override
+    public HandState check(Game game, Table table, User user) {
+        synchronized (this) {
+            RealTimeGame realTimeGame = realTimeGameBso.get(game);
+            RealTimeHand realTimeHand = realTimeGame.getRealTimeHand(table);
+            table = realTimeGame.getTable(table);
+
+            if (!isUserAllowedToPerformAction(GameEventType.CHECK, user,
+                    realTimeHand, table)) {
+                throw new FlexPokerException("Not allowed to check.");
+            }
+
+            if (table.getActionOn().equals(realTimeHand.getLastToAct())) {
+                realTimeHand.setHandRoundState(HandRoundState.ROUND_COMPLETE);
+                moveToNextHandDealerState(realTimeHand);
+
+                if (realTimeHand.getHandDealerState() != HandDealerState.COMPLETE) {
+                    seatStatusBso.setStatusForNewRound(table);
+                    determineNextToAct(table, realTimeHand);
+                    determineLastToAct(table, realTimeHand);
+                }
+            } else {
+                realTimeHand.setHandRoundState(HandRoundState.ROUND_IN_PROGRESS);
+                table.setActionOn(realTimeHand.getNextToAct());
+                determineNextToAct(table, realTimeHand);
+            }
+
+            return new HandState(realTimeHand.getHandDealerState(),
+                    realTimeHand.getHandRoundState());
+        }
+    }
+
+    @Override
+    public Map<Integer, PocketCards> fetchOptionalShowCards(Game game, Table table) {
+        // TODO: This should have an additional "can they do this? check.
+        // TODO: Dummy data
+        Map<Integer, PocketCards> returnMap = new HashMap<Integer, PocketCards>();
+        returnMap.put(1, new PocketCards());
+        returnMap.put(2, new PocketCards());
+        return returnMap;
+    }
+
+    @Override
+    public Map<Integer, PocketCards> fetchRequiredShowCards(Game game, Table table) {
+        // TODO: This should have an additional "can they do this? check.
+        // TODO: Dummy data
+        Map<Integer, PocketCards> returnMap = new HashMap<Integer, PocketCards>();
+        returnMap.put(1, new PocketCards());
+        returnMap.put(2, new PocketCards());
+        return returnMap;
+    }
+
+    private void checkIfUserCanJoinGame(Game game, User user) {
+        GameStage gameStage = game.getGameStage();
+
+        if (GameStage.STARTING.equals(gameStage)
+            || GameStage.IN_PROGRESS.equals(gameStage)) {
+            throw new FlexPokerException("The game has already started");
+        }
+
+        if (GameStage.FINISHED.equals(gameStage)) {
+            throw new FlexPokerException("The game is already finished.");
+        }
+
+        Set<UserGameStatus> userGameStatuses = gameBso.fetchUserGameStatuses(game);
+
+        for (UserGameStatus userGameStatus : userGameStatuses) {
+            if (user.equals(userGameStatus.getUser())) {
+                throw new FlexPokerException("You are already in this game.");
+            }
+        }
     }
 
     private void createNewRealTimeHand(Game game, Table table) {
@@ -183,21 +250,6 @@ public class GameEventBsoImpl implements GameEventBso {
         }
     }
 
-    @Override
-    public boolean verifyGameInProgress(User user, Game game) {
-        synchronized (this) {
-            RealTimeGame realTimeGame = realTimeGameBso.get(game);
-            realTimeGame.verifyEvent(user, "gameInProgress");
-
-            if (realTimeGame.isEventVerified("gameInProgress")) {
-                startNewGameForAllTables(game);
-                return true;
-            }
-
-            return false;
-        }
-    }
-
     private void startNewGameForAllTables(Game game) {
         for (Table table : gameBso.fetchTables(game)) {
             seatStatusBso.setStatusForNewGame(table);
@@ -226,38 +278,6 @@ public class GameEventBsoImpl implements GameEventBso {
         return realTimeHand.isUserAllowedToPerformAction(action, usersSeat);
     }
 
-    @Override
-    public HandState check(Game game, Table table, User user) {
-        synchronized (this) {
-            RealTimeGame realTimeGame = realTimeGameBso.get(game);
-            RealTimeHand realTimeHand = realTimeGame.getRealTimeHand(table);
-            table = realTimeGame.getTable(table);
-
-            if (!isUserAllowedToPerformAction(GameEventType.CHECK, user,
-                    realTimeHand, table)) {
-                throw new FlexPokerException("Not allowed to check.");                
-            }
-
-            if (table.getActionOn().equals(realTimeHand.getLastToAct())) {
-                realTimeHand.setHandRoundState(HandRoundState.ROUND_COMPLETE);
-                moveToNextHandDealerState(realTimeHand);
-
-                if (realTimeHand.getHandDealerState() != HandDealerState.COMPLETE) {
-                    seatStatusBso.setStatusForNewRound(table);
-                    determineNextToAct(table, realTimeHand);
-                    determineLastToAct(table, realTimeHand);
-                }
-            } else {
-                realTimeHand.setHandRoundState(HandRoundState.ROUND_IN_PROGRESS);
-                table.setActionOn(realTimeHand.getNextToAct());
-                determineNextToAct(table, realTimeHand);
-            }
-
-            return new HandState(realTimeHand.getHandDealerState(),
-                    realTimeHand.getHandRoundState());
-        }
-    }
-
     private void moveToNextHandDealerState(RealTimeHand realTimeHand) {
         HandDealerState handDealerState = realTimeHand.getHandDealerState();
 
@@ -277,26 +297,6 @@ public class GameEventBsoImpl implements GameEventBso {
             default:
                 throw new IllegalStateException("No valid state to move to.");
         }
-    }
-
-    @Override
-    public Map<Integer, PocketCards> fetchOptionalShowCards(Game game, Table table) {
-        // TODO: This should have an additional "can they do this? check.
-        // TODO: Dummy data
-        Map<Integer, PocketCards> returnMap = new HashMap<Integer, PocketCards>();
-        returnMap.put(1, new PocketCards());
-        returnMap.put(2, new PocketCards());
-        return returnMap;
-    }
-
-    @Override
-    public Map<Integer, PocketCards> fetchRequiredShowCards(Game game, Table table) {
-        // TODO: This should have an additional "can they do this? check.
-        // TODO: Dummy data
-        Map<Integer, PocketCards> returnMap = new HashMap<Integer, PocketCards>();
-        returnMap.put(1, new PocketCards());
-        returnMap.put(2, new PocketCards());
-        return returnMap;
     }
 
     public GameBso getGameBso() {
