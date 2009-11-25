@@ -1,5 +1,7 @@
 package com.flexpoker.bso;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -10,17 +12,23 @@ import org.springframework.stereotype.Service;
 
 import com.flexpoker.exception.FlexPokerException;
 import com.flexpoker.model.Blinds;
+import com.flexpoker.model.CommonCards;
+import com.flexpoker.model.FlopCards;
 import com.flexpoker.model.Game;
 import com.flexpoker.model.GameEventType;
 import com.flexpoker.model.GameStage;
 import com.flexpoker.model.HandDealerState;
+import com.flexpoker.model.HandEvaluation;
+import com.flexpoker.model.HandRanking;
 import com.flexpoker.model.HandRoundState;
 import com.flexpoker.model.HandState;
 import com.flexpoker.model.PocketCards;
 import com.flexpoker.model.RealTimeGame;
 import com.flexpoker.model.RealTimeHand;
+import com.flexpoker.model.RiverCard;
 import com.flexpoker.model.Seat;
 import com.flexpoker.model.Table;
+import com.flexpoker.model.TurnCard;
 import com.flexpoker.model.User;
 import com.flexpoker.model.UserGameStatus;
 
@@ -34,6 +42,8 @@ public class GameEventBsoImpl implements GameEventBso {
     private RealTimeGameBso realTimeGameBso;
 
     private SeatStatusBso seatStatusBso;
+
+    private HandEvaluatorBso handEvaluatorBso;
 
     @Override
     public boolean addUserToGame(User user, Game game) {
@@ -204,7 +214,39 @@ public class GameEventBsoImpl implements GameEventBso {
         realTimeHand.setHandDealerState(HandDealerState.POCKET_CARDS_DEALT);
         realTimeHand.setHandRoundState(HandRoundState.ROUND_IN_PROGRESS);
 
+        List<HandEvaluation> handEvaluations = determineHandEvaluations(game,
+                table, table.getSeats());
+        Collections.sort(handEvaluations);
+        realTimeHand.setHandEvaluationList(handEvaluations);
+
         realTimeGame.addRealTimeHand(table, realTimeHand);
+    }
+
+    private List<HandEvaluation> determineHandEvaluations(Game game,
+            Table table, List<Seat> seats) {
+        FlopCards flopCards = deckBso.fetchFlopCards(game, table);
+        TurnCard turnCard = deckBso.fetchTurnCard(game, table);
+        RiverCard riverCard = deckBso.fetchRiverCard(game, table);
+
+        CommonCards commonCards = new CommonCards(flopCards, turnCard, riverCard);
+
+        List<HandRanking> possibleHands = handEvaluatorBso.determinePossibleHands(commonCards);
+
+        List<HandEvaluation> handEvaluations = new ArrayList<HandEvaluation>();
+
+        for (Seat seat : seats) {
+            if (seat.getUserGameStatus() != null
+                    && seat.getUserGameStatus().getUser() != null) {
+                User user = seat.getUserGameStatus().getUser();
+                PocketCards pocketCards = deckBso.fetchPocketCards(user, game, table);
+                HandEvaluation handEvaluation = handEvaluatorBso
+                        .determineHandEvaluation(commonCards, user, pocketCards,
+                         possibleHands);
+                handEvaluations.add(handEvaluation);
+            }
+        }
+
+        return handEvaluations;
     }
 
     private void determineLastToAct(Table table, RealTimeHand realTimeHand) {
@@ -329,6 +371,14 @@ public class GameEventBsoImpl implements GameEventBso {
 
     public void setSeatStatusBso(SeatStatusBso seatStatusBso) {
         this.seatStatusBso = seatStatusBso;
+    }
+
+    public HandEvaluatorBso getHandEvaluatorBso() {
+        return handEvaluatorBso;
+    }
+
+    public void setHandEvaluatorBso(HandEvaluatorBso handEvaluatorBso) {
+        this.handEvaluatorBso = handEvaluatorBso;
     }
 
 }
