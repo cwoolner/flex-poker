@@ -13,6 +13,7 @@ import com.flexpoker.model.CardRank;
 import com.flexpoker.model.CardSuit;
 import com.flexpoker.model.Deck;
 import com.flexpoker.model.FlopCards;
+import com.flexpoker.model.Game;
 import com.flexpoker.model.PocketCards;
 import com.flexpoker.model.RiverCard;
 import com.flexpoker.model.Table;
@@ -24,7 +25,8 @@ import edu.emory.mathcs.backport.java.util.Arrays;
 @Service("deckBso")
 public class DeckBsoImpl implements DeckBso {
 
-    private Map<Table, Deck> tableToDeckMap = new HashMap<Table, Deck>();
+    private Map<Game, Map<Table, Deck>> gameToTableToDeckMap
+            = new HashMap<Game, Map<Table,Deck>>();
 
     private final List<Card> cardList;
 
@@ -87,40 +89,43 @@ public class DeckBsoImpl implements DeckBso {
     }
 
     @Override
-    public void shuffleDeck(Table table) {
-        synchronized (tableToDeckMap) {
+    public void shuffleDeck(Game game, Table table) {
+        synchronized (gameToTableToDeckMap) {
             Collections.shuffle(cardList, new Random());
             Deck deck = new Deck(cardList, table);
-            tableToDeckMap.put(table, deck);
+            if (gameToTableToDeckMap.get(game) == null) {
+                gameToTableToDeckMap.put(game, new HashMap<Table, Deck>());
+            }
+            gameToTableToDeckMap.get(game).put(table, deck);
         }
 
     }
 
     @Override
-    public void removeDeck(Table table) {
-        synchronized (tableToDeckMap) {
-            tableToDeckMap.remove(table);
+    public void removeDeck(Game game, Table table) {
+        synchronized (gameToTableToDeckMap) {
+            gameToTableToDeckMap.get(game).remove(table);
         }
     }
 
     @Override
-    public FlopCards fetchFlopCards(Table table) {
-        return tableToDeckMap.get(table).getFlopCards();
+    public FlopCards fetchFlopCards(Game game, Table table) {
+        return gameToTableToDeckMap.get(game).get(table).getFlopCards();
     }
 
     @Override
-    public PocketCards fetchPocketCards(User user, Table table) {
-        return tableToDeckMap.get(table).getPocketCards(user);
+    public PocketCards fetchPocketCards(User user, Game game, Table table) {
+        return gameToTableToDeckMap.get(game).get(table).getPocketCards(user);
     }
 
     @Override
-    public RiverCard fetchRiverCard(Table table) {
-        return tableToDeckMap.get(table).getRiverCard();
+    public RiverCard fetchRiverCard(Game game, Table table) {
+        return gameToTableToDeckMap.get(game).get(table).getRiverCard();
     }
 
     @Override
-    public TurnCard fetchTurnCard(Table table) {
-        return tableToDeckMap.get(table).getTurnCard();
+    public TurnCard fetchTurnCard(Game game, Table table) {
+        return gameToTableToDeckMap.get(game).get(table).getTurnCard();
     }
 
 }

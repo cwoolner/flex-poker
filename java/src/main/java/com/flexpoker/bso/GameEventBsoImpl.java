@@ -75,7 +75,7 @@ public class GameEventBsoImpl implements GameEventBso {
     @Override
     public void startNewHand(Game game, Table table) {
         seatStatusBso.setStatusForNewHand(table);
-        deckBso.shuffleDeck(table);
+        deckBso.shuffleDeck(game, table);
         createNewRealTimeHand(game, table);
     }
 
@@ -253,7 +253,7 @@ public class GameEventBsoImpl implements GameEventBso {
     private void startNewGameForAllTables(Game game) {
         for (Table table : gameBso.fetchTables(game)) {
             seatStatusBso.setStatusForNewGame(table);
-            deckBso.shuffleDeck(table);
+            deckBso.shuffleDeck(game, table);
             createNewRealTimeHand(game, table);
         }
     }
