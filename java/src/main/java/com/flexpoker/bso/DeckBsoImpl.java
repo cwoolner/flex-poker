@@ -88,20 +88,9 @@ public class DeckBsoImpl implements DeckBso {
 
     @Override
     public void shuffleDeck(Table table) {
-        Deck deck = null;
-
-        synchronized (this) {
-            try {
-                Thread.currentThread().sleep(10);
-                Collections.shuffle(cardList, new Random());
-                deck = new Deck(cardList, table);
-            } catch (InterruptedException e) {
-                throw new RuntimeException("InterruptedException thrown while "
-                        + "generating random number.");
-            }
-        }
-
         synchronized (tableToDeckMap) {
+            Collections.shuffle(cardList, new Random());
+            Deck deck = new Deck(cardList, table);
             tableToDeckMap.put(table, deck);
         }
 
