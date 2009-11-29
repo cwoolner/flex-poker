@@ -215,7 +215,6 @@ public class GameEventBsoImpl implements GameEventBso {
         realTimeHand.setHandRoundState(HandRoundState.ROUND_IN_PROGRESS);
 
         List<HandEvaluation> handEvaluations = determineHandEvaluations(game, table);
-        Collections.sort(handEvaluations);
         realTimeHand.setHandEvaluationList(handEvaluations);
 
         realTimeGame.addRealTimeHand(table, realTimeHand);
