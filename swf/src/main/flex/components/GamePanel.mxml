@@ -41,9 +41,6 @@
         private var table:Table;
 
         [Bindable]
-        private var pocketCards:PocketCards;
-
-        [Bindable]
         private var flopCards:FlopCards;
 
         [Bindable]
@@ -187,7 +184,20 @@
                 ))
 
                 mainRemoteObject.fetchAllUserGameStatuses(game);
-                mainRemoteObject.fetchPocketCards(game, table);
+
+                var token:AsyncToken = mainRemoteObject.fetchPocketCards(game, table);
+                token.addResponder(new AsyncResponder(
+                    function(event:ResultEvent, token:Object = null):void {
+                        var pocketCards:PocketCards = event.result as PocketCards;
+                        var deck:Deck = Deck.getInstance();
+                        pocketCardImage1 = deck.getCardImage(pocketCards.card1);
+                        pocketCardImage2 = deck.getCardImage(pocketCards.card2);
+                    },
+                    function(event:FaultEvent, token:Object = null):void {
+                        Alert.show("Send Failed: " + event.fault.faultString);
+                    }
+                ))
+
                 return;
             }
 
@@ -330,13 +340,6 @@
             mainRemoteObject.verifyRegistrationForGame(game);
         }
 
-        private function fetchPocketCardsHandler(event:ResultEvent):void {
-            pocketCards = event.result as PocketCards;
-            var deck:Deck = Deck.getInstance();
-            pocketCardImage1 = deck.getCardImage(pocketCards.card1);
-            pocketCardImage2 = deck.getCardImage(pocketCards.card2);
-        }
-
         private function check(event:CheckEvent):void {
             mainRemoteObject.check(game, table);
         }
@@ -399,7 +402,6 @@
     <mx:RemoteObject id="mainRemoteObject" destination="flexController">
         <mx:method name="joinGame" fault="joinGameFaultHandler(event)" />
         <mx:method name="fetchAllUserGameStatuses" result="fetchAllUserGameStatusesHandler(event)" />
-        <mx:method name="fetchPocketCards" result="fetchPocketCardsHandler(event)" />
         <mx:method name="check" fault="checkFaultHandler(event)" />
     </mx:RemoteObject>
 
