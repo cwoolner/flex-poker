@@ -74,6 +74,41 @@
         [Bindable]
         private var bigBlindArray:ArrayCollection = new ArrayCollection(new Array(false, false, false, false, false, false, false, false, false, false));
 
+        [Embed(source="/assets/Table.svg")]
+        [Bindable]
+        public var TableSvg:Class;
+
+        [Bindable]
+        public var pocketCardImage1:Class;
+
+        [Bindable]
+        public var pocketCardImage2:Class;
+
+        [Bindable]
+        public var flopCardImage1:Class;
+
+        [Bindable]
+        public var flopCardImage2:Class;
+
+        [Bindable]
+        public var flopCardImage3:Class;
+
+        [Bindable]
+        public var turnCardImage:Class;
+
+        [Bindable]
+        public var riverCardImage:Class;
+
+        public var username:String;
+
+        private var currentActionOnIndex:int;
+
+        private var currentDealerIndex:int;
+
+        private var currentSmallBlindIndex:int;
+
+        private var currentBigBlindIndex:int;
+
         private function initializeTable() {
             gameEventConsumer.subtopic = game.id.toString() + ".*";
             gameEventConsumer.subscribe();
@@ -310,41 +345,6 @@
             var errorMessage:ErrorMessage = event.message as ErrorMessage;
             Alert.show(errorMessage.rootCause.message);
         }
-
-        [Embed(source="/assets/Table.svg")]
-        [Bindable]
-        public var TableSvg:Class; 
-
-        [Bindable]
-        public var pocketCardImage1:Class;
-
-        [Bindable]
-        public var pocketCardImage2:Class;
-
-        [Bindable]
-        public var flopCardImage1:Class;
-
-        [Bindable]
-        public var flopCardImage2:Class;
-
-        [Bindable]
-        public var flopCardImage3:Class;
-
-        [Bindable]
-        public var turnCardImage:Class;
-
-        [Bindable]
-        public var riverCardImage:Class;
-
-        public var username:String;
-
-        private var currentActionOnIndex:int;
-
-        private var currentDealerIndex:int;
-
-        private var currentSmallBlindIndex:int;
-
-        private var currentBigBlindIndex:int;
 
     ]]>
     </mx:Script>
