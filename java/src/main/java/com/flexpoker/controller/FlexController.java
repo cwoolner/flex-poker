@@ -1,7 +1,6 @@
 package com.flexpoker.controller;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import com.flexpoker.model.FlopCards;
@@ -49,7 +48,8 @@ public interface FlexController {
 
     RiverCard fetchRiverCard(Game game, Table table);
 
-    Map<Integer, PocketCards> fetchRequiredShowCards(Game game, Table table);
+    List<PocketCards> fetchRequiredShowCards(Game game, Table table);
 
-    Map<Integer, PocketCards> fetchOptionalShowCards(Game game, Table table);
+    List<PocketCards> fetchOptionalShowCards(Game game, Table table);
+
 }

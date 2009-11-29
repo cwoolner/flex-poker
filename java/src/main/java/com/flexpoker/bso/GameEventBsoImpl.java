@@ -3,9 +3,7 @@ package com.flexpoker.bso;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.springframework.stereotype.Service;
@@ -137,23 +135,50 @@ public class GameEventBsoImpl implements GameEventBso {
     }
 
     @Override
-    public Map<Integer, PocketCards> fetchOptionalShowCards(Game game, Table table) {
+    public List<PocketCards> fetchOptionalShowCards(Game game, Table table) {
         // TODO: This should have an additional "can they do this? check.
         // TODO: Dummy data
-        Map<Integer, PocketCards> returnMap = new HashMap<Integer, PocketCards>();
-        returnMap.put(1, new PocketCards());
-        returnMap.put(2, new PocketCards());
-        return returnMap;
+        List<PocketCards> pocketCards = new ArrayList<PocketCards>();
+        pocketCards.add(new PocketCards());
+        pocketCards.add(new PocketCards());
+        return pocketCards;
     }
 
     @Override
-    public Map<Integer, PocketCards> fetchRequiredShowCards(Game game, Table table) {
-        // TODO: This should have an additional "can they do this? check.
-        // TODO: Dummy data
-        Map<Integer, PocketCards> returnMap = new HashMap<Integer, PocketCards>();
-        returnMap.put(1, new PocketCards());
-        returnMap.put(2, new PocketCards());
-        return returnMap;
+    public List<PocketCards> fetchRequiredShowCards(Game game, Table table) {
+        RealTimeHand realTimeHand = realTimeGameBso.get(game).getRealTimeHand(table);
+
+        HandDealerState handDealerState = realTimeHand.getHandDealerState();
+
+        if (handDealerState.equals(HandDealerState.COMPLETE)) {
+            // TODO: Implement more logic.  Right now we're just sending back
+            // the winning hand.  We should be checking to see if that hand is
+            // even still in the hand.  Also calling/last aggressor logic needs
+            // to be implemented.
+
+            List<HandEvaluation> handEvaluations = realTimeHand.getHandEvaluationList();
+            Collections.sort(handEvaluations);
+            Collections.reverse(handEvaluations);
+
+            HandEvaluation handEvaluation = handEvaluations.get(0);
+
+            PocketCards pocketCards = deckBso
+                    .fetchPocketCards(handEvaluation.getUser(), game, table);
+
+            List<PocketCards> pocketCardList = new ArrayList<PocketCards>();
+
+            for (Seat seat : table.getSeats()) {
+                if (seat.getUserGameStatus().getUser().equals(handEvaluation.getUser())) {
+                    pocketCardList.add(pocketCards);
+                } else {
+                    pocketCardList.add(null);
+                }
+            }
+
+            return pocketCardList;
+        }
+
+        throw new FlexPokerException("You are not allowed to fetch the required cards.");
     }
 
     private void checkIfUserCanJoinGame(Game game, User user) {

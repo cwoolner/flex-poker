@@ -16,6 +16,8 @@
         import com.flexpoker.events.ActionOnChangedEvent;
         import mx.controls.Alert;
         import com.flexpoker.model.TableImages;
+        import com.flexpoker.model.PocketCards;
+        import com.flexpoker.model.Deck;
 
         [Bindable]
         public var userGameStatus:UserGameStatus;
@@ -31,9 +33,21 @@
         [Bindable]
         public var bigBlind:Boolean;
 
+        [Bindable]
+        public var pocketCardImage1:Class;
+
+        [Bindable]
+        public var pocketCardImage2:Class;
+
         public function set actionOn(actionOn:Boolean):void {
             _actionOn = actionOn;
             dispatchEvent(new ActionOnChangedEvent());
+        }
+
+        public function set requiredShowCard(requiredShowCard:PocketCards):void {
+            var deck:Deck = Deck.getInstance();
+            pocketCardImage1 = deck.getCardImage(requiredShowCard.card1);
+            pocketCardImage2 = deck.getCardImage(requiredShowCard.card2);
         }
 
         private function initializeEvents():void {
@@ -51,6 +65,11 @@
 
     ]]>
     </mx:Script>
+
+    <mx:HBox width="100%">
+        <mx:Image id="myPocketCard1" height="100%" width="100%" source="{pocketCardImage1}" maintainAspectRatio="true" />
+        <mx:Image id="myPocketCard2" height="100%" width="100%" source="{pocketCardImage2}" maintainAspectRatio="true" />
+    </mx:HBox>
 
     <mx:Label text="{userGameStatus.user.username}" />
     <mx:Label text="{userGameStatus.chips}" />

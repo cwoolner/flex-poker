@@ -1,7 +1,6 @@
 package com.flexpoker.controller;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.springframework.flex.remoting.RemotingDestination;
@@ -137,12 +136,12 @@ public class FlexControllerImpl implements FlexController {
     }
 
     @Override
-    public Map<Integer, PocketCards> fetchOptionalShowCards(Game game, Table table) {
+    public List<PocketCards> fetchOptionalShowCards(Game game, Table table) {
         return gameEventBso.fetchOptionalShowCards(game, table);
     }
 
     @Override
-    public Map<Integer, PocketCards> fetchRequiredShowCards(Game game, Table table) {
+    public List<PocketCards> fetchRequiredShowCards(Game game, Table table) {
         return gameEventBso.fetchRequiredShowCards(game, table);
     }
 

@@ -1,6 +1,6 @@
 package com.flexpoker.bso.mock;
 
-import java.util.Map;
+import java.util.List;
 
 import org.springframework.stereotype.Service;
 
@@ -21,13 +21,13 @@ public class GameEventBsoMock implements GameEventBso {
     }
 
     @Override
-    public Map<Integer, PocketCards> fetchOptionalShowCards(Game game, Table table) {
+    public List<PocketCards> fetchOptionalShowCards(Game game, Table table) {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public Map<Integer, PocketCards> fetchRequiredShowCards(Game game, Table table) {
+    public List<PocketCards> fetchRequiredShowCards(Game game, Table table) {
         // TODO Auto-generated method stub
         return null;
     }

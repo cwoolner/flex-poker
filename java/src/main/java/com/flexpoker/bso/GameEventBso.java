@@ -1,6 +1,6 @@
 package com.flexpoker.bso;
 
-import java.util.Map;
+import java.util.List;
 
 import com.flexpoker.model.Game;
 import com.flexpoker.model.HandState;
@@ -20,8 +20,8 @@ public interface GameEventBso {
 
     HandState check(Game game, Table table, User user);
 
-    Map<Integer, PocketCards> fetchRequiredShowCards(Game game, Table table);
+    List<PocketCards> fetchRequiredShowCards(Game game, Table table);
 
-    Map<Integer, PocketCards> fetchOptionalShowCards(Game game, Table table);
+    List<PocketCards> fetchOptionalShowCards(Game game, Table table);
 
 }
