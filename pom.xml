@@ -26,7 +26,7 @@
     <repositories>
         <repository>
             <id>central</id>
-            <url>http://localhost:8080/artifactory-2.0.6/repo</url>
+            <url>http://localhost:8081/artifactory-2.0.6/repo</url>
             <releases>
                 <enabled>true</enabled>
             </releases>
@@ -37,7 +37,7 @@
 
         <repository>
             <id>snapshot</id>
-            <url>http://localhost:8080/artifactory-2.0.6/repo</url>
+            <url>http://localhost:8081/artifactory-2.0.6/repo</url>
             <releases>
                 <enabled>false</enabled>
             </releases>
