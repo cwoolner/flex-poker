@@ -62,7 +62,7 @@ public class DeckBsoImpl implements DeckBso {
             new Card(26, CardRank.TWO, CardSuit.DIAMONDS),
             new Card(27, CardRank.THREE, CardSuit.DIAMONDS),
             new Card(28, CardRank.FOUR, CardSuit.DIAMONDS),
-            new Card(28, CardRank.FIVE, CardSuit.DIAMONDS),
+            new Card(29, CardRank.FIVE, CardSuit.DIAMONDS),
             new Card(30, CardRank.SIX, CardSuit.DIAMONDS),
             new Card(31, CardRank.SEVEN, CardSuit.DIAMONDS),
             new Card(32, CardRank.EIGHT, CardSuit.DIAMONDS),
