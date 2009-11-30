@@ -84,6 +84,8 @@ public class GameBsoImpl implements GameBso {
 
         for (UserGameStatus userGameStatus : userGameStatuses) {
             userGameStatus.setChips(1000);
+            userGameStatus.setCallAmount(100);
+            userGameStatus.setMinBet(200);
         }
     }
 

@@ -2,12 +2,21 @@
     <mx:Script>
     <![CDATA[
         import com.flexpoker.events.CheckEvent;
+
+        [Bindable]
+        public var maxValue:int;
+
+        [Bindable]
+        public var minValue:int;
+
+        [Bindable]
+        public var callAmount:int;
     ]]>
     </mx:Script>
-    <mx:HSlider id="betSlider" tickInterval="2" labels="['0', '100']"
-        maximum="100" minimum="0" height="150" />
-    <mx:Text text="{betSlider.value}" />
-    <mx:Button label="Bet" />
-    <mx:Button label="Check" click="dispatchEvent(new CheckEvent())"/>
+    <mx:HSlider id="betSlider" snapInterval="1" maximum="{maxValue}" minimum="{minValue}" />
+    <mx:TextInput id="raise" text="{betSlider.value}" />
+    <mx:Button label="Raise To {raise.text}" />
+    <mx:Button label="Check" click="dispatchEvent(new CheckEvent())" visible="{callAmount == 0}" />
+    <mx:Button label="Call {callAmount}" click="dispatchEvent(new CheckEvent())" visible="{callAmount != 0}" />
     <mx:Button label="Fold" />
 </mx:VBox>

@@ -170,13 +170,7 @@
                         smallBlindArray.setItemAt(true, currentSmallBlindIndex);
                         bigBlindArray.setItemAt(true, currentBigBlindIndex);
 
-                        if (table.actionOn.userGameStatus.user.username == username) {
-                            pokerActionBox.visible = true;
-                            pokerActionBox.addEventListener(CheckEvent.NAME, check);
-                        } else {
-                            pokerActionBox.visible = false;
-                            pokerActionBox.removeEventListener(CheckEvent.NAME, check);
-                        }
+                        setupPokerActionBox();
                     },
                     function(event:FaultEvent, token:Object = null):void {
                         Alert.show("Send Failed: " + event.fault.faultString);
@@ -307,13 +301,7 @@
                     currentActionOnIndex = table.actionOn.position;
                     actionOnArray.setItemAt(true, currentActionOnIndex);
 
-                    if (table.actionOn.userGameStatus.user.username == username) {
-                        pokerActionBox.visible = true;
-                        pokerActionBox.addEventListener(CheckEvent.NAME, check);
-                    } else {
-                        pokerActionBox.visible = false;
-                        pokerActionBox.removeEventListener(CheckEvent.NAME, check);
-                    }
+                    setupPokerActionBox();
                 },
                 function(event:FaultEvent, token:Object = null):void {
                     Alert.show("Send Failed: " + event.fault.faultString);
@@ -349,6 +337,18 @@
             Alert.show(errorMessage.rootCause.message);
         }
 
+        private function setupPokerActionBox():void {
+            if (table.actionOn.userGameStatus.user.username == username) {
+                pokerActionBox.visible = true;
+                pokerActionBox.minValue = table.actionOn.userGameStatus.minBet;
+                pokerActionBox.maxValue = table.actionOn.userGameStatus.chips;
+                pokerActionBox.callAmount = table.actionOn.userGameStatus.callAmount;
+                pokerActionBox.addEventListener(CheckEvent.NAME, check);
+            } else {
+                pokerActionBox.visible = false;
+                pokerActionBox.removeEventListener(CheckEvent.NAME, check);
+            }
+        }
     ]]>
     </mx:Script>
 
