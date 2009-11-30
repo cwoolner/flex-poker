@@ -6,8 +6,11 @@ public class UserGameStatus {
 
     private User user;
 
-    private Integer chips;
+    private Integer minBet;
 
+    private Integer callAmount;
+
+    private Integer chips;
 
     private Date enterTime;
 
@@ -21,16 +24,28 @@ public class UserGameStatus {
         this.user = user;
     }
 
+    public Integer getMinBet() {
+        return minBet;
+    }
+
+    public void setMinBet(Integer minBet) {
+        this.minBet = minBet;
+    }
+
+    public Integer getCallAmount() {
+        return callAmount;
+    }
+
+    public void setCallAmount(Integer callAmount) {
+        this.callAmount = callAmount;
+    }
+
     public Integer getChips() {
         return chips;
     }
 
     public void setChips(Integer chips) {
         this.chips = chips;
-    }
-
-    }
-
     }
 
     public Date getEnterTime() {
