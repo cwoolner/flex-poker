@@ -8,7 +8,6 @@ package com.flexpoker.model {
 
         public var chips:int;
 
-        public var money:Number;
 
         public var enterTime:Date;
 

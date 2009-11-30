@@ -8,7 +8,6 @@ public class UserGameStatus {
 
     private Integer chips;
 
-    private Double money;
 
     private Date enterTime;
 
@@ -30,12 +29,8 @@ public class UserGameStatus {
         this.chips = chips;
     }
 
-    public Double getMoney() {
-        return money;
     }
 
-    public void setMoney(Double money) {
-        this.money = money;
     }
 
     public Date getEnterTime() {
