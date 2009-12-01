@@ -137,6 +137,12 @@ public class EventManagerImpl implements EventManager {
         determineNextEvent(game, table, handState);
     }
 
+    @Override
+    public void sendCallEvent(Game game, Table table, HandState handState, String username) {
+        sendChatEvent("System", username + " calls.");
+        determineNextEvent(game, table, handState);
+    }
+
     private void determineNextEvent(Game game, Table table, HandState handState) {
         if (handState.getHandRoundState() == HandRoundState.ROUND_COMPLETE) {
             switch (handState.getHandDealerState()) {

@@ -185,6 +185,38 @@ public class GameEventBsoImpl implements GameEventBso {
     }
 
     @Override
+    public HandState call(Game game, Table table, User user) {
+        synchronized (this) {
+            RealTimeGame realTimeGame = realTimeGameBso.get(game);
+            RealTimeHand realTimeHand = realTimeGame.getRealTimeHand(table);
+            table = realTimeGame.getTable(table);
+
+            if (!isUserAllowedToPerformAction(GameEventType.CALL, user,
+                    realTimeHand, table)) {
+                throw new FlexPokerException("Not allowed to call.");
+            }
+
+            if (table.getActionOn().equals(realTimeHand.getLastToAct())) {
+                realTimeHand.setHandRoundState(HandRoundState.ROUND_COMPLETE);
+                moveToNextHandDealerState(realTimeHand);
+
+                if (realTimeHand.getHandDealerState() != HandDealerState.COMPLETE) {
+                    seatStatusBso.setStatusForNewRound(table);
+                    determineNextToAct(table, realTimeHand);
+                    determineLastToAct(table, realTimeHand);
+                }
+            } else {
+                realTimeHand.setHandRoundState(HandRoundState.ROUND_IN_PROGRESS);
+                table.setActionOn(realTimeHand.getNextToAct());
+                determineNextToAct(table, realTimeHand);
+            }
+
+            return new HandState(realTimeHand.getHandDealerState(),
+                    realTimeHand.getHandRoundState());
+        }
+    }
+
+    @Override
     public List<PocketCards> fetchOptionalShowCards(Game game, Table table) {
         // TODO: This should have an additional "can they do this? check.
         // TODO: Dummy data
@@ -267,6 +299,7 @@ public class GameEventBsoImpl implements GameEventBso {
             if (seat.equals(table.getBigBlind())) {
                 amountNeededToCall = 0;
                 amountNeededToRaise = bigBlind;
+                realTimeHand.addPossibleSeatAction(seat, GameEventType.CALL);
                 realTimeHand.addPossibleSeatAction(seat, GameEventType.FOLD);
                 realTimeHand.addPossibleSeatAction(seat, GameEventType.CHECK);
             } else if (seat.equals(table.getSmallBlind())) {
@@ -275,9 +308,11 @@ public class GameEventBsoImpl implements GameEventBso {
                 // TODO: This shouldn't be here, but it's being set just for
                 //       testing purposes.  The small blind should not be able
                 //       to check.
+                realTimeHand.addPossibleSeatAction(seat, GameEventType.CALL);
                 realTimeHand.addPossibleSeatAction(seat, GameEventType.FOLD);
                 realTimeHand.addPossibleSeatAction(seat, GameEventType.CHECK);
             } else {
+                realTimeHand.addPossibleSeatAction(seat, GameEventType.CALL);
                 realTimeHand.addPossibleSeatAction(seat, GameEventType.FOLD);
                 realTimeHand.addPossibleSeatAction(seat, GameEventType.CHECK);
             }

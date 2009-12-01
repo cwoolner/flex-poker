@@ -22,6 +22,8 @@ public interface GameEventBso {
 
     HandState fold(Game game, Table table, User user);
 
+    HandState call(Game game, Table table, User user);
+
     List<PocketCards> fetchRequiredShowCards(Game game, Table table);
 
     List<PocketCards> fetchOptionalShowCards(Game game, Table table);

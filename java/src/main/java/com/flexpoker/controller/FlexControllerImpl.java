@@ -128,6 +128,13 @@ public class FlexControllerImpl implements FlexController {
     }
 
     @Override
+    public void call(Game game, Table table) {
+        User user = extractCurrentUser();
+        HandState handState = gameEventBso.call(game, table, user);
+        eventManager.sendCallEvent(game, table, handState, user.getUsername());
+    }
+
+    @Override
     public FlopCards fetchFlopCards(Game game, Table table) {
         return dealCardActionsBso.fetchFlopCards(game, table);
     }

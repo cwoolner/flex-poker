@@ -44,6 +44,8 @@ public interface FlexController {
 
     void fold(Game game, Table table);
 
+    void call(Game game, Table table);
+
     FlopCards fetchFlopCards(Game game, Table table);
 
     TurnCard fetchTurnCard(Game game, Table table);

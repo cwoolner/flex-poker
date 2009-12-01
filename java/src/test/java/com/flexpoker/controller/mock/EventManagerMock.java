@@ -67,4 +67,10 @@ public class EventManagerMock implements EventManager {
 
     }
 
+    @Override
+    public void sendCallEvent(Game game, Table table, HandState handState, String username) {
+        // TODO Auto-generated method stub
+
+    }
+
 }

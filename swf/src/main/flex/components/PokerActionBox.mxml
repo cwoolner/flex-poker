@@ -3,6 +3,7 @@
     <![CDATA[
         import com.flexpoker.events.CheckEvent;
         import com.flexpoker.events.FoldEvent;
+        import com.flexpoker.events.CallEvent;
 
         [Bindable]
         public var maxValue:int;
@@ -18,6 +19,6 @@
     <mx:TextInput id="raise" text="{betSlider.value}" />
     <mx:Button label="Raise To {raise.text}" />
     <mx:Button label="Check" click="dispatchEvent(new CheckEvent())" visible="{callAmount == 0}" />
-    <mx:Button label="Call {callAmount}" click="dispatchEvent(new CheckEvent())" visible="{callAmount != 0}" />
+    <mx:Button label="Call {callAmount}" click="dispatchEvent(new CallEvent())" visible="{callAmount != 0}" />
     <mx:Button label="Fold" click="dispatchEvent(new FoldEvent())" visible="{callAmount != 0}" />
 </mx:VBox>

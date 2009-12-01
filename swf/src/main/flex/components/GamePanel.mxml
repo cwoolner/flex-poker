@@ -35,6 +35,7 @@
         import mx.rpc.AsyncResponder;
         import com.flexpoker.events.CheckEvent;
         import com.flexpoker.events.FoldEvent;
+        import com.flexpoker.events.CallEvent;
 
         public var game:Game;
 
@@ -337,6 +338,10 @@
             mainRemoteObject.fold(game, table);
         }
 
+        private function call(event:CallEvent):void {
+            mainRemoteObject.call(game, table);
+        }
+
         private function showErrorFaultHandler(event:FaultEvent):void {
             var errorMessage:ErrorMessage = event.message as ErrorMessage;
             Alert.show(errorMessage.rootCause.message);
@@ -350,10 +355,12 @@
                 pokerActionBox.callAmount = table.actionOn.userGameStatus.callAmount;
                 pokerActionBox.addEventListener(CheckEvent.NAME, check);
                 pokerActionBox.addEventListener(FoldEvent.NAME, fold);
+                pokerActionBox.addEventListener(CallEvent.NAME, call);
             } else {
                 pokerActionBox.visible = false;
                 pokerActionBox.removeEventListener(CheckEvent.NAME, check);
                 pokerActionBox.removeEventListener(FoldEvent.NAME, fold);
+                pokerActionBox.removeEventListener(CallEvent.NAME, call);
             }
         }
     ]]>
@@ -411,6 +418,7 @@
         <mx:method name="fetchAllUserGameStatuses" result="fetchAllUserGameStatusesHandler(event)" />
         <mx:method name="check" fault="showErrorFaultHandler(event)" />
         <mx:method name="fold" fault="showErrorFaultHandler(event)" />
+        <mx:method name="call" fault="showErrorFaultHandler(event)" />
     </mx:RemoteObject>
 
     <mx:VBox id="registeringMain" verticalAlign="middle" horizontalAlign="middle"
