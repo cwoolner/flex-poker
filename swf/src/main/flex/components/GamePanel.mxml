@@ -172,6 +172,7 @@
                         smallBlindArray.setItemAt(true, currentSmallBlindIndex);
                         bigBlindArray.setItemAt(true, currentBigBlindIndex);
 
+                        pokerActionBox.visible = true;
                         setupPokerActionBox();
                     },
                     function(event:FaultEvent, token:Object = null):void {
@@ -335,7 +336,13 @@
         }
 
         private function fold(event:FoldEvent):void {
-            mainRemoteObject.fold(game, table);
+            var token:AsyncToken = mainRemoteObject.fold(game, table);
+            token.addResponder(new AsyncResponder(
+                function(event:ResultEvent, token:Object = null):void {
+                    pokerActionBox.visible = false;
+                },
+                showErrorFaultHandler
+            ))
         }
 
         private function call(event:CallEvent):void {
@@ -349,7 +356,7 @@
 
         private function setupPokerActionBox():void {
             if (table.actionOn.userGameStatus.user.username == username) {
-                pokerActionBox.visible = true;
+                pokerActionBox.actionOn = true;
                 pokerActionBox.minValue = table.actionOn.userGameStatus.minBet;
                 pokerActionBox.maxValue = table.actionOn.userGameStatus.chips;
                 pokerActionBox.callAmount = table.actionOn.userGameStatus.callAmount;
@@ -357,7 +364,7 @@
                 pokerActionBox.addEventListener(FoldEvent.NAME, fold);
                 pokerActionBox.addEventListener(CallEvent.NAME, call);
             } else {
-                pokerActionBox.visible = false;
+                pokerActionBox.actionOn = false;
                 pokerActionBox.removeEventListener(CheckEvent.NAME, check);
                 pokerActionBox.removeEventListener(FoldEvent.NAME, fold);
                 pokerActionBox.removeEventListener(CallEvent.NAME, call);
