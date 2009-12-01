@@ -24,4 +24,6 @@ public interface EventManager {
 
     void sendCheckEvent(Game game, Table table, HandState handState, String username);
 
+    void sendFoldEvent(Game game, Table table, HandState handState, String username);
+
 }

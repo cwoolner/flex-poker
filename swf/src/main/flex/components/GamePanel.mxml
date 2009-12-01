@@ -34,6 +34,7 @@
         import mx.rpc.AsyncToken;
         import mx.rpc.AsyncResponder;
         import com.flexpoker.events.CheckEvent;
+        import com.flexpoker.events.FoldEvent;
 
         public var game:Game;
 
@@ -332,7 +333,16 @@
             mainRemoteObject.check(game, table);
         }
 
+        private function fold(event:FoldEvent):void {
+            mainRemoteObject.fold(game, table);
+        }
+
         private function checkFaultHandler(event:FaultEvent):void {
+            var errorMessage:ErrorMessage = event.message as ErrorMessage;
+            Alert.show(errorMessage.rootCause.message);
+        }
+
+        private function foldFaultHandler(event:FaultEvent):void {
             var errorMessage:ErrorMessage = event.message as ErrorMessage;
             Alert.show(errorMessage.rootCause.message);
         }
@@ -344,9 +354,11 @@
                 pokerActionBox.maxValue = table.actionOn.userGameStatus.chips;
                 pokerActionBox.callAmount = table.actionOn.userGameStatus.callAmount;
                 pokerActionBox.addEventListener(CheckEvent.NAME, check);
+                pokerActionBox.addEventListener(FoldEvent.NAME, fold);
             } else {
                 pokerActionBox.visible = false;
                 pokerActionBox.removeEventListener(CheckEvent.NAME, check);
+                pokerActionBox.removeEventListener(FoldEvent.NAME, fold);
             }
         }
     ]]>
@@ -403,6 +415,7 @@
         <mx:method name="joinGame" fault="joinGameFaultHandler(event)" />
         <mx:method name="fetchAllUserGameStatuses" result="fetchAllUserGameStatusesHandler(event)" />
         <mx:method name="check" fault="checkFaultHandler(event)" />
+        <mx:method name="fold" fault="foldFaultHandler(event)" />
     </mx:RemoteObject>
 
     <mx:VBox id="registeringMain" verticalAlign="middle" horizontalAlign="middle"

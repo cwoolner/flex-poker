@@ -20,6 +20,8 @@ public interface GameEventBso {
 
     HandState check(Game game, Table table, User user);
 
+    HandState fold(Game game, Table table, User user);
+
     List<PocketCards> fetchRequiredShowCards(Game game, Table table);
 
     List<PocketCards> fetchOptionalShowCards(Game game, Table table);

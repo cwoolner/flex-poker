@@ -56,4 +56,10 @@ public class GameEventBsoMock implements GameEventBso {
         return false;
     }
 
+    @Override
+    public HandState fold(Game game, Table table, User user) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
 }

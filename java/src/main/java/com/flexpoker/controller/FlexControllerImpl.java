@@ -121,6 +121,13 @@ public class FlexControllerImpl implements FlexController {
     }
 
     @Override
+    public void fold(Game game, Table table) {
+        User user = extractCurrentUser();
+        HandState handState = gameEventBso.fold(game, table, user);
+        eventManager.sendFoldEvent(game, table, handState, user.getUsername());
+    }
+
+    @Override
     public FlopCards fetchFlopCards(Game game, Table table) {
         return dealCardActionsBso.fetchFlopCards(game, table);
     }

@@ -2,6 +2,7 @@
     <mx:Script>
     <![CDATA[
         import com.flexpoker.events.CheckEvent;
+        import com.flexpoker.events.FoldEvent;
 
         [Bindable]
         public var maxValue:int;
@@ -18,5 +19,5 @@
     <mx:Button label="Raise To {raise.text}" />
     <mx:Button label="Check" click="dispatchEvent(new CheckEvent())" visible="{callAmount == 0}" />
     <mx:Button label="Call {callAmount}" click="dispatchEvent(new CheckEvent())" visible="{callAmount != 0}" />
-    <mx:Button label="Fold" />
+    <mx:Button label="Fold" click="dispatchEvent(new FoldEvent())" visible="{callAmount != 0}" />
 </mx:VBox>
