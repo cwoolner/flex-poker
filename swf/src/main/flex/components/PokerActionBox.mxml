@@ -15,8 +15,8 @@
         public var callAmount:int;
     ]]>
     </mx:Script>
-    <mx:HSlider id="betSlider" snapInterval="1" maximum="{maxValue}" minimum="{minValue}" />
-    <mx:TextInput id="raise" text="{betSlider.value}" />
+    <mx:HSlider id="raiseSlider" snapInterval="1" maximum="{maxValue}" minimum="{minValue}" />
+    <mx:TextInput id="raise" text="{raiseSlider.value}" />
     <mx:Button label="Raise To {raise.text}" />
     <mx:Button label="Check" click="dispatchEvent(new CheckEvent())" visible="{callAmount == 0}" />
     <mx:Button label="Call {callAmount}" click="dispatchEvent(new CallEvent())" visible="{callAmount != 0}" />
