@@ -337,12 +337,7 @@
             mainRemoteObject.fold(game, table);
         }
 
-        private function checkFaultHandler(event:FaultEvent):void {
-            var errorMessage:ErrorMessage = event.message as ErrorMessage;
-            Alert.show(errorMessage.rootCause.message);
-        }
-
-        private function foldFaultHandler(event:FaultEvent):void {
+        private function showErrorFaultHandler(event:FaultEvent):void {
             var errorMessage:ErrorMessage = event.message as ErrorMessage;
             Alert.show(errorMessage.rootCause.message);
         }
@@ -414,8 +409,8 @@
     <mx:RemoteObject id="mainRemoteObject" destination="flexController">
         <mx:method name="joinGame" fault="joinGameFaultHandler(event)" />
         <mx:method name="fetchAllUserGameStatuses" result="fetchAllUserGameStatusesHandler(event)" />
-        <mx:method name="check" fault="checkFaultHandler(event)" />
-        <mx:method name="fold" fault="foldFaultHandler(event)" />
+        <mx:method name="check" fault="showErrorFaultHandler(event)" />
+        <mx:method name="fold" fault="showErrorFaultHandler(event)" />
     </mx:RemoteObject>
 
     <mx:VBox id="registeringMain" verticalAlign="middle" horizontalAlign="middle"
