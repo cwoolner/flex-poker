@@ -83,9 +83,7 @@ public class GameBsoImpl implements GameBso {
         Set<UserGameStatus> userGameStatuses = realTimeGame.getUserGameStatuses();
 
         for (UserGameStatus userGameStatus : userGameStatuses) {
-            userGameStatus.setChips(1000);
-            userGameStatus.setCallAmount(100);
-            userGameStatus.setMinBet(200);
+            userGameStatus.setChips(1500);
         }
     }
 

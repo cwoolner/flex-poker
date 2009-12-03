@@ -299,23 +299,18 @@ public class GameEventBsoImpl implements GameEventBso {
             if (seat.equals(table.getBigBlind())) {
                 amountNeededToCall = 0;
                 amountNeededToRaise = bigBlind;
-                realTimeHand.addPossibleSeatAction(seat, GameEventType.CALL);
-                realTimeHand.addPossibleSeatAction(seat, GameEventType.FOLD);
                 realTimeHand.addPossibleSeatAction(seat, GameEventType.CHECK);
             } else if (seat.equals(table.getSmallBlind())) {
                 amountNeededToCall = smallBlind;
-                amountNeededToRaise = bigBlind + smallBlind;
-                // TODO: This shouldn't be here, but it's being set just for
-                //       testing purposes.  The small blind should not be able
-                //       to check.
                 realTimeHand.addPossibleSeatAction(seat, GameEventType.CALL);
                 realTimeHand.addPossibleSeatAction(seat, GameEventType.FOLD);
-                realTimeHand.addPossibleSeatAction(seat, GameEventType.CHECK);
             } else {
                 realTimeHand.addPossibleSeatAction(seat, GameEventType.CALL);
                 realTimeHand.addPossibleSeatAction(seat, GameEventType.FOLD);
-                realTimeHand.addPossibleSeatAction(seat, GameEventType.CHECK);
             }
+
+            seat.getUserGameStatus().setCallAmount(amountNeededToCall);
+            seat.getUserGameStatus().setMinBet(amountNeededToRaise);
 
             realTimeHand.setAmountNeededToCall(seat, amountNeededToCall);
             realTimeHand.setAmountNeededToRaise(seat, amountNeededToRaise);
