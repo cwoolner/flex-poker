@@ -134,7 +134,7 @@
     <mx:CheckBox id="callCheckBox" label="Call {_callAmount}" />
     <mx:CheckBox id="foldCheckBox" label="Fold" />
 
-    <mx:HSlider id="raiseSlider" snapInterval="1" maximum="{maxValue}" minimum="{minValue}" />
+    <mx:HSlider id="raiseSlider" snapInterval="1" maximum="{maxValue}" minimum="{minValue}" value="{minValue}" />
     <mx:TextInput id="raiseTextBox" text="{raiseSlider.value}" />
     <mx:Button id="raiseButton" label="Raise To {raiseTextBox.text}" />
     <mx:Button id="checkButton" label="Check" click="dispatchEvent(new CheckEvent())" />
