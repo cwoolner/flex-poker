@@ -48,7 +48,7 @@ public class RealTimeHand {
         possibleSeatActionsMap.get(Seat).add(action);
     }
 
-    public void removePossibleSeatAction(Seat Seat, String action) {
+    public void removePossibleSeatAction(Seat Seat, GameEventType action) {
         possibleSeatActionsMap.get(Seat).remove(action);
     }
 
