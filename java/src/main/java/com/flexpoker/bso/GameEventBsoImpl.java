@@ -188,15 +188,20 @@ public class GameEventBsoImpl implements GameEventBso {
     public HandState call(Game game, Table table, User user) {
         synchronized (this) {
             RealTimeGame realTimeGame = realTimeGameBso.get(game);
+
+            Blinds currentBlinds = realTimeGame.getCurrentBlinds();
+            int bigBlind = currentBlinds.getBigBlind();
+
             RealTimeHand realTimeHand = realTimeGame.getRealTimeHand(table);
             table = realTimeGame.getTable(table);
+            Seat seat = table.getActionOn();
 
             if (!isUserAllowedToPerformAction(GameEventType.CALL, user,
                     realTimeHand, table)) {
                 throw new FlexPokerException("Not allowed to call.");
             }
 
-            if (table.getActionOn().equals(realTimeHand.getLastToAct())) {
+            if (seat.equals(realTimeHand.getLastToAct())) {
                 realTimeHand.setHandRoundState(HandRoundState.ROUND_COMPLETE);
                 moveToNextHandDealerState(realTimeHand);
 
@@ -210,6 +215,19 @@ public class GameEventBsoImpl implements GameEventBso {
                 table.setActionOn(realTimeHand.getNextToAct());
                 determineNextToAct(table, realTimeHand);
             }
+
+            int amountNeededToCall = 0;
+            int amountNeededToRaise = bigBlind;
+
+            realTimeHand.addPossibleSeatAction(seat, GameEventType.CHECK);
+            realTimeHand.removePossibleSeatAction(seat, GameEventType.CALL);
+            realTimeHand.removePossibleSeatAction(seat, GameEventType.FOLD);
+
+            seat.getUserGameStatus().setCallAmount(amountNeededToCall);
+            seat.getUserGameStatus().setMinBet(amountNeededToRaise);
+
+            realTimeHand.setAmountNeededToCall(seat, amountNeededToCall);
+            realTimeHand.setAmountNeededToRaise(seat, amountNeededToRaise);
 
             return new HandState(realTimeHand.getHandDealerState(),
                     realTimeHand.getHandRoundState());
