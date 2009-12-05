@@ -1,0 +1,26 @@
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml">
+    <mx:Script>
+    <![CDATA[
+        [Bindable]
+        public var flopCardImage1:Class;
+
+        [Bindable]
+        public var flopCardImage2:Class;
+
+        [Bindable]
+        public var flopCardImage3:Class;
+
+        [Bindable]
+        public var turnCardImage:Class;
+
+        [Bindable]
+        public var riverCardImage:Class;
+    ]]>
+    </mx:Script>
+
+    <mx:Image id="flopCardImageId1" height="100%" width="100%" source="{flopCardImage1}" maintainAspectRatio="true" />
+    <mx:Image id="flopCardImageId2" height="100%" width="100%" source="{flopCardImage2}" maintainAspectRatio="true" />
+    <mx:Image id="flopCardImageId3" height="100%" width="100%" source="{flopCardImage3}" maintainAspectRatio="true" />
+    <mx:Image id="turnCardImageId" height="100%" width="100%" source="{turnCardImage}" maintainAspectRatio="true" />
+    <mx:Image id="riverCardImageId" height="100%" width="100%" source="{riverCardImage}" maintainAspectRatio="true" />
+</mx:VBox>

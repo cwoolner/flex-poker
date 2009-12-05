@@ -43,15 +43,6 @@
         private var table:Table;
 
         [Bindable]
-        private var flopCards:FlopCards;
-
-        [Bindable]
-        private var turnCard:TurnCard;
-
-        [Bindable]
-        private var riverCard:RiverCard;
-
-        [Bindable]
         private var requiredShowCardArray:ArrayCollection;
 
         public var channelSet:ChannelSet;
@@ -82,21 +73,6 @@
 
         [Bindable]
         public var pocketCardImage2:Class;
-
-        [Bindable]
-        public var flopCardImage1:Class;
-
-        [Bindable]
-        public var flopCardImage2:Class;
-
-        [Bindable]
-        public var flopCardImage3:Class;
-
-        [Bindable]
-        public var turnCardImage:Class;
-
-        [Bindable]
-        public var riverCardImage:Class;
 
         public var username:String;
 
@@ -208,11 +184,11 @@
                 var token:AsyncToken = mainRemoteObject.fetchFlopCards(game, table);
                 token.addResponder(new AsyncResponder(
                     function(event:ResultEvent, token:Object = null):void {
-                        flopCards = event.result as FlopCards;
+                        var flopCards:FlopCards = event.result as FlopCards;
                         var deck:Deck = Deck.getInstance();
-                        flopCardImage1 = deck.getCardImage(flopCards.card1);
-                        flopCardImage2 = deck.getCardImage(flopCards.card2);
-                        flopCardImage3 = deck.getCardImage(flopCards.card3);
+                        inProgressCommonPanel.flopCardImage1 = deck.getCardImage(flopCards.card1);
+                        inProgressCommonPanel.flopCardImage2 = deck.getCardImage(flopCards.card2);
+                        inProgressCommonPanel.flopCardImage3 = deck.getCardImage(flopCards.card3);
                         fetchTableAfterDeal();
                     },
                     function(event:FaultEvent, token:Object = null):void {
@@ -228,9 +204,9 @@
                 var token:AsyncToken = mainRemoteObject.fetchTurnCard(game, table);
                 token.addResponder(new AsyncResponder(
                     function(event:ResultEvent, token:Object = null):void {
-                        turnCard = event.result as TurnCard;
+                        var turnCard:TurnCard = event.result as TurnCard;
                         var deck:Deck = Deck.getInstance();
-                        turnCardImage = deck.getCardImage(turnCard.card);
+                        inProgressCommonPanel.turnCardImage = deck.getCardImage(turnCard.card);
                         fetchTableAfterDeal();
                     },
                     function(event:FaultEvent, token:Object = null):void {
@@ -246,9 +222,9 @@
                 var token:AsyncToken = mainRemoteObject.fetchRiverCard(game, table);
                 token.addResponder(new AsyncResponder(
                     function(event:ResultEvent, token:Object = null):void {
-                        riverCard = event.result as RiverCard;
+                        var riverCard:RiverCard = event.result as RiverCard;
                         var deck:Deck = Deck.getInstance();
-                        riverCardImage = deck.getCardImage(riverCard.card);
+                        inProgressCommonPanel.riverCardImage = deck.getCardImage(riverCard.card);
                         fetchTableAfterDeal();
                     },
                     function(event:FaultEvent, token:Object = null):void {
@@ -279,9 +255,9 @@
                 var token:AsyncToken = mainRemoteObject.fetchOptionalShowCards(game, table);
                 token.addResponder(new AsyncResponder(
                     function(event:ResultEvent, token:Object = null):void {
-                        riverCard = event.result as RiverCard;
+                        var riverCard:RiverCard = event.result as RiverCard;
                         var deck:Deck = Deck.getInstance();
-                        riverCardImage = deck.getCardImage(riverCard.card);
+                        inProgressCommonPanel.riverCardImage = deck.getCardImage(riverCard.card);
                         fetchTableAfterDeal();
                     },
                     function(event:FaultEvent, token:Object = null):void {
@@ -529,13 +505,7 @@
         </mx:HBox>
     </mx:VBox>
 
-    <mx:VBox id="inProgressCommonPanel" height="100%" width="20%">
-        <mx:Image id="flopCardImageId1" height="100%" width="100%" source="{flopCardImage1}" maintainAspectRatio="true" />
-        <mx:Image id="flopCardImageId2" height="100%" width="100%" source="{flopCardImage2}" maintainAspectRatio="true" />
-        <mx:Image id="flopCardImageId3" height="100%" width="100%" source="{flopCardImage3}" maintainAspectRatio="true" />
-        <mx:Image id="turnCardImageId" height="100%" width="100%" source="{turnCardImage}" maintainAspectRatio="true" />
-        <mx:Image id="riverCardImageId" height="100%" width="100%" source="{riverCardImage}" maintainAspectRatio="true" />
-    </mx:VBox>
+    <comp:CommonCardsPanel id="inProgressCommonPanel" height="100%" width="20%" />
 
     <mx:VBox id="registeringRightPanel" height="100%" width="20%">
         <comp:UserGameStatusGrid height="50%" width="100%" userGameStatuses="{userGameStatuses}" />
