@@ -454,12 +454,9 @@
         </mx:HBox>
         <mx:Spacer height="100%" />
         <mx:HBox width="100%">
-            <mx:Spacer width="60%" />
-            <comp:SeatPanel actionOn="{actionOnArray.getItemAt(9)}" dealer="{dealerArray.getItemAt(9)}"
-                smallBlind="{smallBlindArray.getItemAt(9)}" bigBlind="{bigBlindArray.getItemAt(9)}"
-                userGameStatus="{table.seats.getItemAt(9).userGameStatus}"
-                requiredShowCard="{requiredShowCardArray.getItemAt(9) as PocketCards}" />
-            <mx:Spacer width="100%" />
+            <mx:Spacer width="160%" />
+            <mx:Label color="white" text="Total Pot: {table.totalPotAmount}" />
+            <mx:Spacer width="50%" />
             <comp:SeatPanel actionOn="{actionOnArray.getItemAt(4)}" dealer="{dealerArray.getItemAt(4)}"
                 smallBlind="{smallBlindArray.getItemAt(4)}" bigBlind="{bigBlindArray.getItemAt(4)}"
                 userGameStatus="{table.seats.getItemAt(4).userGameStatus}"

@@ -16,6 +16,8 @@ public class Table {
 
     private List<Seat> seats;
 
+    private int totalPotAmount;
+
     public Integer getId() {
         return id;
     }
@@ -62,6 +64,14 @@ public class Table {
 
     public void setSeats(List<Seat> seats) {
         this.seats = seats;
+    }
+
+    public int getTotalPotAmount() {
+        return totalPotAmount;
+    }
+
+    public void setTotalPotAmount(int totalPotAmount) {
+        this.totalPotAmount = totalPotAmount;
     }
 
     @Override

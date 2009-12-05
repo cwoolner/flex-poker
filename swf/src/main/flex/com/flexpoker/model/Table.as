@@ -20,6 +20,8 @@ package com.flexpoker.model {
 
         public var seats:ArrayCollection;
 
+        public var totalPotAmount:int;
+
     }
 
 }
