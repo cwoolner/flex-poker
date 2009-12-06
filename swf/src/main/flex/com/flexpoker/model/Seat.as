@@ -16,6 +16,8 @@ package com.flexpoker.model {
 
         public var playerJustLeft:Boolean;
 
+        public var chipsInFront:int;
+
     }
 
 }

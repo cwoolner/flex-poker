@@ -14,6 +14,8 @@ public class Seat implements Comparable<Seat> {
 
     private boolean playerJustLeft;
 
+    private int chipsInFront;
+
     public UserGameStatus getUserGameStatus() {
         return userGameStatus;
     }
@@ -52,6 +54,14 @@ public class Seat implements Comparable<Seat> {
 
     public void setPlayerJustLeft(boolean playerJustLeft) {
         this.playerJustLeft = playerJustLeft;
+    }
+
+    public int getChipsInFront() {
+        return chipsInFront;
+    }
+
+    public void setChipsInFront(int chipsInFront) {
+        this.chipsInFront = chipsInFront;
     }
 
     @Override

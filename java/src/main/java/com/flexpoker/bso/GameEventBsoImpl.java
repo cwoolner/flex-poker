@@ -117,6 +117,7 @@ public class GameEventBsoImpl implements GameEventBso {
             if (table.getActionOn().equals(realTimeHand.getLastToAct())) {
                 realTimeHand.setHandRoundState(HandRoundState.ROUND_COMPLETE);
                 moveToNextHandDealerState(realTimeHand);
+                resetChipsInFront(table);
 
                 if (realTimeHand.getHandDealerState() != HandDealerState.COMPLETE) {
                     seatStatusBso.setStatusForNewRound(table);
@@ -167,6 +168,7 @@ public class GameEventBsoImpl implements GameEventBso {
             } else if (table.getActionOn().equals(realTimeHand.getLastToAct())) {
                 realTimeHand.setHandRoundState(HandRoundState.ROUND_COMPLETE);
                 moveToNextHandDealerState(realTimeHand);
+                resetChipsInFront(table);
 
                 if (realTimeHand.getHandDealerState() != HandDealerState.COMPLETE) {
                     seatStatusBso.setStatusForNewRound(table);
@@ -204,6 +206,7 @@ public class GameEventBsoImpl implements GameEventBso {
             if (seat.equals(realTimeHand.getLastToAct())) {
                 realTimeHand.setHandRoundState(HandRoundState.ROUND_COMPLETE);
                 moveToNextHandDealerState(realTimeHand);
+                resetChipsInFront(table);
 
                 if (realTimeHand.getHandDealerState() != HandDealerState.COMPLETE) {
                     seatStatusBso.setStatusForNewRound(table);
@@ -214,7 +217,12 @@ public class GameEventBsoImpl implements GameEventBso {
                 realTimeHand.setHandRoundState(HandRoundState.ROUND_IN_PROGRESS);
                 table.setActionOn(realTimeHand.getNextToAct());
                 determineNextToAct(table, realTimeHand);
+                seat.setChipsInFront(seat.getChipsInFront() + seat
+                        .getUserGameStatus().getCallAmount());
             }
+
+            table.setTotalPotAmount(table.getTotalPotAmount() + seat
+                    .getUserGameStatus().getCallAmount());
 
             int amountNeededToCall = 0;
             int amountNeededToRaise = bigBlind;
@@ -281,6 +289,18 @@ public class GameEventBsoImpl implements GameEventBso {
         throw new FlexPokerException("You are not allowed to fetch the required cards.");
     }
 
+    /**
+     * Zero-out the chipsInFront field for all seats at a table.  This should
+     * typically be used whenever a new round is started.
+     *
+     * @param table
+     */
+    private void resetChipsInFront(Table table) {
+        for (Seat seat : table.getSeats()) {
+            seat.setChipsInFront(0);
+        }
+    }
+
     private void checkIfUserCanJoinGame(Game game, User user) {
         GameStage gameStage = game.getGameStage();
 
@@ -318,14 +338,19 @@ public class GameEventBsoImpl implements GameEventBso {
                 amountNeededToCall = 0;
                 amountNeededToRaise = bigBlind;
                 realTimeHand.addPossibleSeatAction(seat, GameEventType.CHECK);
+                seat.setChipsInFront(bigBlind);
             } else if (seat.equals(table.getSmallBlind())) {
                 amountNeededToCall = smallBlind;
                 realTimeHand.addPossibleSeatAction(seat, GameEventType.CALL);
                 realTimeHand.addPossibleSeatAction(seat, GameEventType.FOLD);
+                seat.setChipsInFront(smallBlind);
             } else {
                 realTimeHand.addPossibleSeatAction(seat, GameEventType.CALL);
                 realTimeHand.addPossibleSeatAction(seat, GameEventType.FOLD);
+                seat.setChipsInFront(0);
             }
+
+            table.setTotalPotAmount(table.getTotalPotAmount() + seat.getChipsInFront());
 
             seat.getUserGameStatus().setCallAmount(amountNeededToCall);
             seat.getUserGameStatus().setMinBet(amountNeededToRaise);

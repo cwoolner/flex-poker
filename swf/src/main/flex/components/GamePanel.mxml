@@ -430,12 +430,14 @@
             <comp:SeatPanel actionOn="{actionOnArray.getItemAt(1)}" dealer="{dealerArray.getItemAt(1)}"
                 smallBlind="{smallBlindArray.getItemAt(1)}" bigBlind="{bigBlindArray.getItemAt(1)}"
                 userGameStatus="{table.seats.getItemAt(1).userGameStatus}"
-                requiredShowCard="{requiredShowCardArray.getItemAt(1) as PocketCards}" />
+                requiredShowCard="{requiredShowCardArray.getItemAt(1) as PocketCards}"
+                chipsInFront="{table.seats.getItemAt(1).chipsInFront}" />
             <mx:Spacer width="25%" />
             <comp:SeatPanel actionOn="{actionOnArray.getItemAt(2)}" dealer="{dealerArray.getItemAt(2)}"
                 smallBlind="{smallBlindArray.getItemAt(2)}" bigBlind="{bigBlindArray.getItemAt(2)}"
                 userGameStatus="{table.seats.getItemAt(2).userGameStatus}"
-                requiredShowCard="{requiredShowCardArray.getItemAt(2) as PocketCards}" />
+                requiredShowCard="{requiredShowCardArray.getItemAt(2) as PocketCards}"
+                chipsInFront="{table.seats.getItemAt(2).chipsInFront}" />
             <mx:Spacer width="100%" />
         </mx:HBox>
         <mx:Spacer height="45%" />
@@ -444,12 +446,14 @@
             <comp:SeatPanel actionOn="{actionOnArray.getItemAt(0)}" dealer="{dealerArray.getItemAt(0)}"
                 smallBlind="{smallBlindArray.getItemAt(0)}" bigBlind="{bigBlindArray.getItemAt(0)}"
                 userGameStatus="{table.seats.getItemAt(0).userGameStatus}"
-                requiredShowCard="{requiredShowCardArray.getItemAt(0) as PocketCards}" />
+                requiredShowCard="{requiredShowCardArray.getItemAt(0) as PocketCards}"
+                chipsInFront="{table.seats.getItemAt(0).chipsInFront}" />
             <mx:Spacer width="100%" />
             <comp:SeatPanel actionOn="{actionOnArray.getItemAt(3)}" dealer="{dealerArray.getItemAt(3)}"
                 smallBlind="{smallBlindArray.getItemAt(3)}" bigBlind="{bigBlindArray.getItemAt(3)}"
                 userGameStatus="{table.seats.getItemAt(3).userGameStatus}"
-                requiredShowCard="{requiredShowCardArray.getItemAt(3) as PocketCards}" />
+                requiredShowCard="{requiredShowCardArray.getItemAt(3) as PocketCards}"
+                chipsInFront="{table.seats.getItemAt(3).chipsInFront}" />
             <mx:Spacer width="100%" />
         </mx:HBox>
         <mx:Spacer height="100%" />
@@ -460,7 +464,8 @@
             <comp:SeatPanel actionOn="{actionOnArray.getItemAt(4)}" dealer="{dealerArray.getItemAt(4)}"
                 smallBlind="{smallBlindArray.getItemAt(4)}" bigBlind="{bigBlindArray.getItemAt(4)}"
                 userGameStatus="{table.seats.getItemAt(4).userGameStatus}"
-                requiredShowCard="{requiredShowCardArray.getItemAt(4) as PocketCards}" />
+                requiredShowCard="{requiredShowCardArray.getItemAt(4) as PocketCards}"
+                chipsInFront="{table.seats.getItemAt(4).chipsInFront}" />
             <mx:Spacer width="60%" />
         </mx:HBox>
         <mx:Spacer height="100%" />
@@ -469,12 +474,14 @@
             <comp:SeatPanel actionOn="{actionOnArray.getItemAt(8)}" dealer="{dealerArray.getItemAt(8)}"
                 smallBlind="{smallBlindArray.getItemAt(8)}" bigBlind="{bigBlindArray.getItemAt(8)}"
                 userGameStatus="{table.seats.getItemAt(8).userGameStatus}"
-                requiredShowCard="{requiredShowCardArray.getItemAt(8) as PocketCards}" />
+                requiredShowCard="{requiredShowCardArray.getItemAt(8) as PocketCards}"
+                chipsInFront="{table.seats.getItemAt(8).chipsInFront}" />
             <mx:Spacer width="100%" />
             <comp:SeatPanel actionOn="{actionOnArray.getItemAt(5)}" dealer="{dealerArray.getItemAt(5)}"
                 smallBlind="{smallBlindArray.getItemAt(5)}" bigBlind="{bigBlindArray.getItemAt(5)}"
                 userGameStatus="{table.seats.getItemAt(5).userGameStatus}"
-                requiredShowCard="{requiredShowCardArray.getItemAt(5) as PocketCards}" />
+                requiredShowCard="{requiredShowCardArray.getItemAt(5) as PocketCards}"
+                chipsInFront="{table.seats.getItemAt(5).chipsInFront}" />
             <mx:Spacer width="100%" />
         </mx:HBox>
         <mx:Spacer height="45%" />
@@ -483,12 +490,14 @@
             <comp:SeatPanel actionOn="{actionOnArray.getItemAt(7)}" dealer="{dealerArray.getItemAt(7)}"
                 smallBlind="{smallBlindArray.getItemAt(7)}" bigBlind="{bigBlindArray.getItemAt(7)}"
                 userGameStatus="{table.seats.getItemAt(7).userGameStatus}"
-                requiredShowCard="{requiredShowCardArray.getItemAt(7) as PocketCards}" />
+                requiredShowCard="{requiredShowCardArray.getItemAt(7) as PocketCards}"
+                chipsInFront="{table.seats.getItemAt(7).chipsInFront}" />
             <mx:Spacer width="25%" />
             <comp:SeatPanel actionOn="{actionOnArray.getItemAt(6)}" dealer="{dealerArray.getItemAt(6)}"
                 smallBlind="{smallBlindArray.getItemAt(6)}" bigBlind="{bigBlindArray.getItemAt(6)}"
                 userGameStatus="{table.seats.getItemAt(6).userGameStatus}"
-                requiredShowCard="{requiredShowCardArray.getItemAt(6) as PocketCards}" />
+                requiredShowCard="{requiredShowCardArray.getItemAt(6) as PocketCards}"
+                chipsInFront="{table.seats.getItemAt(6).chipsInFront}" />
             <mx:Spacer width="100%" />
         </mx:HBox>
         <mx:Spacer height="100%" />

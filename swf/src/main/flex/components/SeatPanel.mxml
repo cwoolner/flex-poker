@@ -39,6 +39,9 @@
         [Bindable]
         public var pocketCardImage2:Class;
 
+        [Bindable]
+        public var chipsInFront:int;
+
         public function set actionOn(actionOn:Boolean):void {
             _actionOn = actionOn;
             dispatchEvent(new ActionOnChangedEvent());
@@ -80,5 +83,6 @@
         <mx:Image source="{TableImages.getInstance().getBigBlindImage()}" visible="{bigBlind}" />
         <mx:Spacer width="100%" />
      </mx:HBox>
+     <mx:Label text="{chipsInFront}" visible="{chipsInFront != 0}" />
 
 </mx:VBox>
