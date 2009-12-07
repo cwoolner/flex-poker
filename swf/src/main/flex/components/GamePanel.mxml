@@ -84,6 +84,8 @@
 
         private var currentBigBlindIndex:int;
 
+        private var pokerActionBoxIndex:int;
+
         private function initializeTable() {
             gameEventConsumer.subtopic = game.id.toString() + ".*";
             gameEventConsumer.subscribe();
@@ -148,7 +150,26 @@
                         smallBlindArray.setItemAt(true, currentSmallBlindIndex);
                         bigBlindArray.setItemAt(true, currentBigBlindIndex);
 
-                        pokerActionBox.visible = true;
+                        if (table.seats.getItemAt(0).userGameStatus.user.username == username) {
+                            pokerActionBoxIndex = 0;
+                        } else if (table.seats.getItemAt(1).userGameStatus.user.username == username) {
+                            pokerActionBoxIndex = 1;
+                        } else if (table.seats.getItemAt(2).userGameStatus.user.username == username) {
+                            pokerActionBoxIndex = 2;
+                        } else if (table.seats.getItemAt(3).userGameStatus.user.username == username) {
+                            pokerActionBoxIndex = 3;
+                        } else if (table.seats.getItemAt(4).userGameStatus.user.username == username) {
+                            pokerActionBoxIndex = 4;
+                        } else if (table.seats.getItemAt(5).userGameStatus.user.username == username) {
+                            pokerActionBoxIndex = 5;
+                        } else if (table.seats.getItemAt(6).userGameStatus.user.username == username) {
+                            pokerActionBoxIndex = 6;
+                        } else if (table.seats.getItemAt(7).userGameStatus.user.username == username) {
+                            pokerActionBoxIndex = 7;
+                        } else if (table.seats.getItemAt(8).userGameStatus.user.username == username) {
+                            pokerActionBoxIndex = 8;
+                        }
+
                         setupPokerActionBox();
                     },
                     function(event:FaultEvent, token:Object = null):void {
@@ -175,7 +196,7 @@
             }
 
             if (message.headers.DSSubtopic.search("userActed") != -1) {
-                fetchTableAfterDeal();
+                fetchTableAfterDeal(false);
                 mainRemoteObject.fetchAllUserGameStatuses(game);
                 return;
             }
@@ -189,7 +210,7 @@
                         inProgressCommonPanel.flopCardImage1 = deck.getCardImage(flopCards.card1);
                         inProgressCommonPanel.flopCardImage2 = deck.getCardImage(flopCards.card2);
                         inProgressCommonPanel.flopCardImage3 = deck.getCardImage(flopCards.card3);
-                        fetchTableAfterDeal();
+                        fetchTableAfterDeal(true);
                     },
                     function(event:FaultEvent, token:Object = null):void {
                         Alert.show("Send Failed: " + event.fault.faultString);
@@ -207,7 +228,7 @@
                         var turnCard:TurnCard = event.result as TurnCard;
                         var deck:Deck = Deck.getInstance();
                         inProgressCommonPanel.turnCardImage = deck.getCardImage(turnCard.card);
-                        fetchTableAfterDeal();
+                        fetchTableAfterDeal(true);
                     },
                     function(event:FaultEvent, token:Object = null):void {
                         Alert.show("Send Failed: " + event.fault.faultString);
@@ -225,7 +246,7 @@
                         var riverCard:RiverCard = event.result as RiverCard;
                         var deck:Deck = Deck.getInstance();
                         inProgressCommonPanel.riverCardImage = deck.getCardImage(riverCard.card);
-                        fetchTableAfterDeal();
+                        fetchTableAfterDeal(true);
                     },
                     function(event:FaultEvent, token:Object = null):void {
                         Alert.show("Send Failed: " + event.fault.faultString);
@@ -258,7 +279,7 @@
                         var riverCard:RiverCard = event.result as RiverCard;
                         var deck:Deck = Deck.getInstance();
                         inProgressCommonPanel.riverCardImage = deck.getCardImage(riverCard.card);
-                        fetchTableAfterDeal();
+                        fetchTableAfterDeal(false);
                     },
                     function(event:FaultEvent, token:Object = null):void {
                         Alert.show("Send Failed: " + event.fault.faultString);
@@ -271,7 +292,7 @@
 
         }
 
-        private function fetchTableAfterDeal():void {
+        private function fetchTableAfterDeal(commonCardsDealt:Boolean):void {
             var token:AsyncToken = mainRemoteObject.fetchTable(game);
             token.addResponder(new AsyncResponder(
                 function(event:ResultEvent, token:Object = null):void {
@@ -281,6 +302,10 @@
                     actionOnArray.setItemAt(true, currentActionOnIndex);
 
                     setupPokerActionBox();
+
+                    if (commonCardsDealt) {
+                        pokerActionBox.visible = table.seats.getItemAt(pokerActionBoxIndex).stillInHand;
+                    }
                 },
                 function(event:FaultEvent, token:Object = null):void {
                     Alert.show("Send Failed: " + event.fault.faultString);
@@ -308,6 +333,7 @@
         }
 
         private function check(event:CheckEvent):void {
+            pokerActionBox.visible = false;
             mainRemoteObject.check(game, table);
         }
 
@@ -322,6 +348,7 @@
         }
 
         private function call(event:CallEvent):void {
+            pokerActionBox.visible = false;
             mainRemoteObject.call(game, table);
         }
 
@@ -333,9 +360,6 @@
         private function setupPokerActionBox():void {
             if (table.actionOn.userGameStatus.user.username == username) {
                 pokerActionBox.actionOn = true;
-                pokerActionBox.minValue = table.actionOn.userGameStatus.minBet;
-                pokerActionBox.maxValue = table.actionOn.userGameStatus.chips;
-                pokerActionBox.callAmount = table.actionOn.userGameStatus.callAmount;
                 pokerActionBox.addEventListener(CheckEvent.NAME, check);
                 pokerActionBox.addEventListener(FoldEvent.NAME, fold);
                 pokerActionBox.addEventListener(CallEvent.NAME, call);
@@ -345,6 +369,10 @@
                 pokerActionBox.removeEventListener(FoldEvent.NAME, fold);
                 pokerActionBox.removeEventListener(CallEvent.NAME, call);
             }
+
+            pokerActionBox.minValue = table.seats.getItemAt(pokerActionBoxIndex).userGameStatus.minBet;
+            pokerActionBox.maxValue = table.seats.getItemAt(pokerActionBoxIndex).userGameStatus.chips;
+            pokerActionBox.callAmount = table.seats.getItemAt(pokerActionBoxIndex).userGameStatus.callAmount;
         }
     ]]>
     </mx:Script>
