@@ -333,8 +333,13 @@
         }
 
         private function check(event:CheckEvent):void {
-            pokerActionBox.visible = false;
-            mainRemoteObject.check(game, table);
+            var token:AsyncToken = mainRemoteObject.check(game, table);
+            token.addResponder(new AsyncResponder(
+                function(event:ResultEvent, token:Object = null):void {
+                    pokerActionBox.visible = false;
+                },
+                showErrorFaultHandler
+            ))
         }
 
         private function fold(event:FoldEvent):void {
@@ -348,8 +353,13 @@
         }
 
         private function call(event:CallEvent):void {
-            pokerActionBox.visible = false;
-            mainRemoteObject.call(game, table);
+            var token:AsyncToken = mainRemoteObject.call(game, table);
+            token.addResponder(new AsyncResponder(
+                function(event:ResultEvent, token:Object = null):void {
+                    pokerActionBox.visible = false;
+                },
+                showErrorFaultHandler
+            ))
         }
 
         private function showErrorFaultHandler(event:FaultEvent):void {
@@ -427,9 +437,6 @@
     <mx:RemoteObject id="mainRemoteObject" destination="flexController">
         <mx:method name="joinGame" fault="joinGameFaultHandler(event)" />
         <mx:method name="fetchAllUserGameStatuses" result="fetchAllUserGameStatusesHandler(event)" />
-        <mx:method name="check" fault="showErrorFaultHandler(event)" />
-        <mx:method name="fold" fault="showErrorFaultHandler(event)" />
-        <mx:method name="call" fault="showErrorFaultHandler(event)" />
     </mx:RemoteObject>
 
     <mx:VBox id="registeringMain" verticalAlign="middle" horizontalAlign="middle"
