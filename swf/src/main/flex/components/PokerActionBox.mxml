@@ -22,16 +22,44 @@
 
             if (actionOn) {
                 if (_callAmount == 0) {
-                    currentState = "actionOnCheckState";
+                    if (checkFoldCheckBox.selected || checkCheckBox.selected) {
+                        dispatchEvent(new CheckEvent());
+                    } else {
+                        currentState = "actionOnCheckState";
+                    }
                 } else if (_callAmount < maxValue) {
-                    currentState = "actionOnCallState";
+                    if (callCheckBox.selected) {
+                        dispatchEvent(new CallEvent());
+                    } else if (foldCheckBox.selected) {
+                        dispatchEvent(new FoldEvent());
+                    } else {
+                        currentState = "actionOnCallState";
+                    }
                 } else {
-                    currentState = "actionOnAllInState";
+                    if (callCheckBox.selected) {
+                        dispatchEvent(new CallEvent());
+                    } else if (foldCheckBox.selected) {
+                        dispatchEvent(new FoldEvent());
+                    } else {
+                        currentState = "actionOnAllInState";
+                    }
                 }
+
+                checkFoldCheckBox.selected = false;
+                checkCheckBox.selected = false;
+                callCheckBox.selected = false;
+                foldCheckBox.selected = false;
+
             } else {
                 if (_callAmount == 0) {
                     currentState = "actionOffCheckState";
                 } else {
+                    if (checkFoldCheckBox.selected) {
+                        checkFoldCheckBox.selected = false;
+                        foldCheckBox.selected = true;
+                    } else if (checkCheckBox.selected) {
+                        checkCheckBox.selected = false;
+                    }
                     currentState = "actionOffCallState";
                 }
             }
