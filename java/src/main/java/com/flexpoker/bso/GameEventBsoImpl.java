@@ -2,7 +2,6 @@ package com.flexpoker.bso;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -49,7 +48,6 @@ public class GameEventBsoImpl implements GameEventBso {
             checkIfUserCanJoinGame(game, user);
 
             UserGameStatus userGameStatus = new UserGameStatus();
-            userGameStatus.setEnterTime(new Date());
             userGameStatus.setUser(user);
 
             realTimeGameBso.get(game).addUserGameStatus(userGameStatus);
@@ -217,12 +215,10 @@ public class GameEventBsoImpl implements GameEventBso {
                 realTimeHand.setHandRoundState(HandRoundState.ROUND_IN_PROGRESS);
                 table.setActionOn(realTimeHand.getNextToAct());
                 determineNextToAct(table, realTimeHand);
-                seat.setChipsInFront(seat.getChipsInFront() + seat
-                        .getUserGameStatus().getCallAmount());
+                seat.setChipsInFront(seat.getChipsInFront() + seat.getCallAmount());
             }
 
-            table.setTotalPotAmount(table.getTotalPotAmount() + seat
-                    .getUserGameStatus().getCallAmount());
+            table.setTotalPotAmount(table.getTotalPotAmount() + seat.getCallAmount());
 
             int amountNeededToCall = 0;
             int amountNeededToRaise = bigBlind;
@@ -231,8 +227,8 @@ public class GameEventBsoImpl implements GameEventBso {
             realTimeHand.removePossibleSeatAction(seat, GameEventType.CALL);
             realTimeHand.removePossibleSeatAction(seat, GameEventType.FOLD);
 
-            seat.getUserGameStatus().setCallAmount(amountNeededToCall);
-            seat.getUserGameStatus().setMinBet(amountNeededToRaise);
+            seat.setCallAmount(amountNeededToCall);
+            seat.setMinBet(amountNeededToRaise);
 
             realTimeHand.setAmountNeededToCall(seat, amountNeededToCall);
             realTimeHand.setAmountNeededToRaise(seat, amountNeededToRaise);
@@ -352,8 +348,8 @@ public class GameEventBsoImpl implements GameEventBso {
 
             table.setTotalPotAmount(table.getTotalPotAmount() + seat.getChipsInFront());
 
-            seat.getUserGameStatus().setCallAmount(amountNeededToCall);
-            seat.getUserGameStatus().setMinBet(amountNeededToRaise);
+            seat.setCallAmount(amountNeededToCall);
+            seat.setMinBet(amountNeededToRaise);
 
             realTimeHand.setAmountNeededToCall(seat, amountNeededToCall);
             realTimeHand.setAmountNeededToRaise(seat, amountNeededToRaise);

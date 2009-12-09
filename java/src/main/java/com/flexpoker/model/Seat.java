@@ -16,6 +16,10 @@ public class Seat implements Comparable<Seat> {
 
     private int chipsInFront;
 
+    private int minBet;
+
+    private int callAmount;
+
     public UserGameStatus getUserGameStatus() {
         return userGameStatus;
     }
@@ -62,6 +66,22 @@ public class Seat implements Comparable<Seat> {
 
     public void setChipsInFront(int chipsInFront) {
         this.chipsInFront = chipsInFront;
+    }
+
+    public int getMinBet() {
+        return minBet;
+    }
+
+    public void setMinBet(int minBet) {
+        this.minBet = minBet;
+    }
+
+    public int getCallAmount() {
+        return callAmount;
+    }
+
+    public void setCallAmount(int callAmount) {
+        this.callAmount = callAmount;
     }
 
     @Override

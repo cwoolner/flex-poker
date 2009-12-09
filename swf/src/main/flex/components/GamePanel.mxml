@@ -380,9 +380,9 @@
                 pokerActionBox.removeEventListener(CallEvent.NAME, call);
             }
 
-            pokerActionBox.minValue = table.seats.getItemAt(pokerActionBoxIndex).userGameStatus.minBet;
+            pokerActionBox.minValue = table.seats.getItemAt(pokerActionBoxIndex).minBet;
             pokerActionBox.maxValue = table.seats.getItemAt(pokerActionBoxIndex).userGameStatus.chips;
-            pokerActionBox.callAmount = table.seats.getItemAt(pokerActionBoxIndex).userGameStatus.callAmount;
+            pokerActionBox.callAmount = table.seats.getItemAt(pokerActionBoxIndex).callAmount;
         }
     ]]>
     </mx:Script>

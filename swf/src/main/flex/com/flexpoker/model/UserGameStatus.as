@@ -6,15 +6,7 @@ package com.flexpoker.model {
 
         public var user:User;
 
-        public var minBet:int;
-
-        public var callAmount:int;
-
         public var chips:int;
-
-        public var enterTime:Date;
-
-        public var exitTime:Date;
 
     }
 
