@@ -218,6 +218,8 @@ public class GameEventBsoImpl implements GameEventBso {
                 seat.setChipsInFront(seat.getChipsInFront() + seat.getCallAmount());
             }
 
+            UserGameStatus userGameStatus = seat.getUserGameStatus();
+            userGameStatus.setChips(userGameStatus.getChips() - seat.getCallAmount());
             table.setTotalPotAmount(table.getTotalPotAmount() + seat.getCallAmount());
 
             int amountNeededToCall = 0;
@@ -327,6 +329,7 @@ public class GameEventBsoImpl implements GameEventBso {
         RealTimeHand realTimeHand = new RealTimeHand(table.getSeats());
 
         for (Seat seat : table.getSeats()) {
+            UserGameStatus userGameStatus = seat.getUserGameStatus();
             int amountNeededToCall = bigBlind;
             int amountNeededToRaise = bigBlind * 2;
 
@@ -335,11 +338,13 @@ public class GameEventBsoImpl implements GameEventBso {
                 amountNeededToRaise = bigBlind;
                 realTimeHand.addPossibleSeatAction(seat, GameEventType.CHECK);
                 seat.setChipsInFront(bigBlind);
+                userGameStatus.setChips(userGameStatus.getChips() - bigBlind);
             } else if (seat.equals(table.getSmallBlind())) {
                 amountNeededToCall = smallBlind;
                 realTimeHand.addPossibleSeatAction(seat, GameEventType.CALL);
                 realTimeHand.addPossibleSeatAction(seat, GameEventType.FOLD);
                 seat.setChipsInFront(smallBlind);
+                userGameStatus.setChips(userGameStatus.getChips() - smallBlind);
             } else {
                 realTimeHand.addPossibleSeatAction(seat, GameEventType.CALL);
                 realTimeHand.addPossibleSeatAction(seat, GameEventType.FOLD);
