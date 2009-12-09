@@ -157,10 +157,10 @@
         </mx:State>
     </mx:states>
 
-    <mx:CheckBox id="checkFoldCheckBox" label="Check/Fold" />
-    <mx:CheckBox id="checkCheckBox" label="Check" />
-    <mx:CheckBox id="callCheckBox" label="Call {_callAmount}" />
-    <mx:CheckBox id="foldCheckBox" label="Fold" />
+    <mx:CheckBox id="checkFoldCheckBox" label="Check/Fold" click="checkCheckBox.selected = false" />
+    <mx:CheckBox id="checkCheckBox" label="Check" click="checkFoldCheckBox.selected = false" />
+    <mx:CheckBox id="callCheckBox" label="Call {_callAmount}" click="foldCheckBox.selected = false" />
+    <mx:CheckBox id="foldCheckBox" label="Fold" click="callCheckBox.selected = false" />
 
     <mx:HSlider id="raiseSlider" snapInterval="1" maximum="{maxValue}" minimum="{minValue}" value="{minValue}" />
     <mx:TextInput id="raiseTextBox" text="{raiseSlider.value}" />
