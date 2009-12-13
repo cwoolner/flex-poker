@@ -445,7 +445,10 @@
         <mx:Spacer height="100%" />
         <mx:HBox width="100%">
             <mx:Spacer width="160%" />
-            <mx:Label color="white" text="Total Pot: {table.totalPotAmount}" />
+            <mx:VBox>
+                <mx:Label color="white" text="Total Pot: {table.totalPotAmount}" />
+                <comp:PotAmountsPanel potAmounts="{table.potAmounts}" />
+            </mx:VBox>
             <mx:Spacer width="50%" />
             <comp:SeatPanel seat="{table.seats.getItemAt(4) as Seat}"
                 requiredShowCard="{requiredShowCardArray.getItemAt(4) as PocketCards}" />
