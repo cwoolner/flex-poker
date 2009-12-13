@@ -53,16 +53,16 @@
         private var userGameStatuses:ArrayCollection;
 
         [Bindable]
-        private var actionOnArray:ArrayCollection = new ArrayCollection(new Array(false, false, false, false, false, false, false, false, false, false));
+        private var actionOnArray:ArrayCollection = new ArrayCollection(new Array(false, false, false, false, false, false, false, false, false));
 
         [Bindable]
-        private var dealerArray:ArrayCollection = new ArrayCollection(new Array(false, false, false, false, false, false, false, false, false, false));
+        private var dealerArray:ArrayCollection = new ArrayCollection(new Array(false, false, false, false, false, false, false, false, false));
 
         [Bindable]
-        private var smallBlindArray:ArrayCollection = new ArrayCollection(new Array(false, false, false, false, false, false, false, false, false, false));
+        private var smallBlindArray:ArrayCollection = new ArrayCollection(new Array(false, false, false, false, false, false, false, false, false));
 
         [Bindable]
-        private var bigBlindArray:ArrayCollection = new ArrayCollection(new Array(false, false, false, false, false, false, false, false, false, false));
+        private var bigBlindArray:ArrayCollection = new ArrayCollection(new Array(false, false, false, false, false, false, false, false, false));
 
         [Embed(source="/assets/Table.svg")]
         [Bindable]
