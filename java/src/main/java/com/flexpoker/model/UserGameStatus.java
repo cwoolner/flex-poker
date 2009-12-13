@@ -1,5 +1,16 @@
 package com.flexpoker.model;
 
+/**
+ * This class acts as a thin wrapper for the User object when actually playing
+ * in a game.  Since it represents the user's state within a game, only fields
+ * that should not be tied to a particular seat should be included in this
+ * class.
+ *
+ * Only the number of chips has fit that criteria so far since chips are taken
+ * with the player when they are moved to a different table.
+ *
+ * @author cwoolner
+ */
 public class UserGameStatus {
 
     private User user;
