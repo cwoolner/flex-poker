@@ -10,6 +10,8 @@ public class Table {
 
     private int totalPotAmount;
 
+    private List<Integer> potAmounts;
+
     public Integer getId() {
         return id;
     }
@@ -32,6 +34,14 @@ public class Table {
 
     public void setTotalPotAmount(int totalPotAmount) {
         this.totalPotAmount = totalPotAmount;
+    }
+
+    public List<Integer> getPotAmounts() {
+        return potAmounts;
+    }
+
+    public void setPotAmounts(List<Integer> potAmounts) {
+        this.potAmounts = potAmounts;
     }
 
     @Override

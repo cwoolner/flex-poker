@@ -14,6 +14,8 @@ package com.flexpoker.model {
 
         public var totalPotAmount:int;
 
+        public var potAmounts:ArrayCollection;
+
     }
 
 }
