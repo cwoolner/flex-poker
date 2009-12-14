@@ -12,26 +12,14 @@
 
     <mx:Script>
     <![CDATA[
-        import com.flexpoker.model.UserGameStatus;
+        import com.flexpoker.model.Seat;
         import com.flexpoker.events.ActionOnChangedEvent;
-        import mx.controls.Alert;
         import com.flexpoker.model.TableImages;
         import com.flexpoker.model.PocketCards;
         import com.flexpoker.model.Deck;
 
         [Bindable]
-        public var userGameStatus:UserGameStatus;
-
-        private var _actionOn:Boolean;
-
-        [Bindable]
-        public var dealer:Boolean;
-
-        [Bindable]
-        public var smallBlind:Boolean;
-
-        [Bindable]
-        public var bigBlind:Boolean;
+        private var _seat:Seat;
 
         [Bindable]
         public var pocketCardImage1:Class;
@@ -39,11 +27,8 @@
         [Bindable]
         public var pocketCardImage2:Class;
 
-        [Bindable]
-        public var chipsInFront:int;
-
-        public function set actionOn(actionOn:Boolean):void {
-            _actionOn = actionOn;
+        public function set seat(seat:Seat):void {
+            _seat = seat;
             dispatchEvent(new ActionOnChangedEvent());
         }
 
@@ -59,7 +44,7 @@
         }
 
         private function actionOnChanged(event:ActionOnChangedEvent):void {
-            if (_actionOn) {
+            if (_seat.actionOn) {
                 styleName = "actionOnTrue";
             } else {
                 styleName = "actionOnFalse";
@@ -74,15 +59,15 @@
         <mx:Image id="myPocketCard2" height="100%" width="100%" source="{pocketCardImage2}" maintainAspectRatio="true" />
     </mx:HBox>
 
-    <mx:Label text="{userGameStatus.user.username}" />
-    <mx:Label text="{userGameStatus.chips}" />
+    <mx:Label text="{_seat.userGameStatus.user.username}" />
+    <mx:Label text="{_seat.userGameStatus.chips}" />
     <mx:HBox>
         <mx:Spacer width="100%" />
-        <mx:Image source="{TableImages.getInstance().getButtonImage()}" visible="{dealer}" />
-        <mx:Image source="{TableImages.getInstance().getSmallBlindImage()}" visible="{smallBlind}" />
-        <mx:Image source="{TableImages.getInstance().getBigBlindImage()}" visible="{bigBlind}" />
+        <mx:Image source="{TableImages.getInstance().getButtonImage()}" visible="{_seat.button}" />
+        <mx:Image source="{TableImages.getInstance().getSmallBlindImage()}" visible="{_seat.smallBlind}" />
+        <mx:Image source="{TableImages.getInstance().getBigBlindImage()}" visible="{_seat.bigBlind}" />
         <mx:Spacer width="100%" />
      </mx:HBox>
-     <mx:Label text="{chipsInFront}" visible="{chipsInFront != 0}" />
+     <mx:Label text="{_seat.chipsInFront}" visible="{_seat.chipsInFront != 0}" />
 
 </mx:VBox>
