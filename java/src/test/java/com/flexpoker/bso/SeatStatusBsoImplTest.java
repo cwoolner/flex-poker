@@ -5,12 +5,17 @@ import static org.junit.Assert.*;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.junit.Test;
 
 import com.flexpoker.model.Seat;
 import com.flexpoker.model.Table;
+import com.flexpoker.util.ActionOnSeatPredicate;
+import com.flexpoker.util.BigBlindSeatPredicate;
 import com.flexpoker.util.Context;
 import com.flexpoker.util.DataUtilsForTests;
+import com.flexpoker.util.ButtonSeatPredicate;
+import com.flexpoker.util.SmallBlindSeatPredicate;
 
 
 public class SeatStatusBsoImplTest {
@@ -27,15 +32,24 @@ public class SeatStatusBsoImplTest {
         assertTrue(table.getSeats().get(0).isStillInHand());
         assertTrue(table.getSeats().get(1).isStillInHand());
 
+        Seat buttonSeat = (Seat) CollectionUtils.find(table.getSeats(),
+                new ButtonSeatPredicate());
+        Seat smallBlindSeat = (Seat) CollectionUtils.find(table.getSeats(),
+                new SmallBlindSeatPredicate());
+        Seat bigBlindSeat = (Seat) CollectionUtils.find(table.getSeats(),
+                new BigBlindSeatPredicate());
+        Seat actionOnSeat = (Seat) CollectionUtils.find(table.getSeats(),
+                new ActionOnSeatPredicate());
+
         // since things are assigned randomly, need to do some if/else logic
-        if (table.getButton().equals(table.getSeats().get(0))) {
-            assertTrue(table.getSmallBlind().equals(table.getSeats().get(0)));
-            assertTrue(table.getBigBlind().equals(table.getSeats().get(1)));
-            assertTrue(table.getActionOn().equals(table.getSeats().get(0)));
-        } else if (table.getButton().equals(table.getSeats().get(1))){
-            assertTrue(table.getSmallBlind().equals(table.getSeats().get(1)));
-            assertTrue(table.getBigBlind().equals(table.getSeats().get(0)));
-            assertTrue(table.getActionOn().equals(table.getSeats().get(1)));
+        if (buttonSeat.equals(table.getSeats().get(0))) {
+            assertTrue(smallBlindSeat.equals(table.getSeats().get(0)));
+            assertTrue(bigBlindSeat.equals(table.getSeats().get(1)));
+            assertTrue(actionOnSeat.equals(table.getSeats().get(0)));
+        } else if (buttonSeat.equals(table.getSeats().get(1))){
+            assertTrue(smallBlindSeat.equals(table.getSeats().get(1)));
+            assertTrue(bigBlindSeat.equals(table.getSeats().get(0)));
+            assertTrue(actionOnSeat.equals(table.getSeats().get(1)));
         } else {
             fail("None of the seats were the button.");
         }
@@ -48,19 +62,28 @@ public class SeatStatusBsoImplTest {
         assertTrue(table.getSeats().get(1).isStillInHand());
         assertTrue(table.getSeats().get(2).isStillInHand());
 
+        buttonSeat = (Seat) CollectionUtils.find(table.getSeats(),
+                new ButtonSeatPredicate());
+        smallBlindSeat = (Seat) CollectionUtils.find(table.getSeats(),
+                new SmallBlindSeatPredicate());
+        bigBlindSeat = (Seat) CollectionUtils.find(table.getSeats(),
+                new BigBlindSeatPredicate());
+        actionOnSeat = (Seat) CollectionUtils.find(table.getSeats(),
+                new ActionOnSeatPredicate());
+
         // since things are assigned randomly, need to do some if/else logic
-        if (table.getButton().equals(table.getSeats().get(0))) {
-            assertTrue(table.getSmallBlind().equals(table.getSeats().get(1)));
-            assertTrue(table.getBigBlind().equals(table.getSeats().get(2)));
-            assertTrue(table.getActionOn().equals(table.getSeats().get(0)));
-        } else if (table.getButton().equals(table.getSeats().get(1))) {
-            assertTrue(table.getSmallBlind().equals(table.getSeats().get(2)));
-            assertTrue(table.getBigBlind().equals(table.getSeats().get(0)));
-            assertTrue(table.getActionOn().equals(table.getSeats().get(1)));
-        } else if (table.getButton().equals(table.getSeats().get(2))) {
-            assertTrue(table.getSmallBlind().equals(table.getSeats().get(0)));
-            assertTrue(table.getBigBlind().equals(table.getSeats().get(1)));
-            assertTrue(table.getActionOn().equals(table.getSeats().get(2)));
+        if (buttonSeat.equals(table.getSeats().get(0))) {
+            assertTrue(smallBlindSeat.equals(table.getSeats().get(1)));
+            assertTrue(bigBlindSeat.equals(table.getSeats().get(2)));
+            assertTrue(actionOnSeat.equals(table.getSeats().get(0)));
+        } else if (buttonSeat.equals(table.getSeats().get(1))) {
+            assertTrue(smallBlindSeat.equals(table.getSeats().get(2)));
+            assertTrue(bigBlindSeat.equals(table.getSeats().get(0)));
+            assertTrue(actionOnSeat.equals(table.getSeats().get(1)));
+        } else if (buttonSeat.equals(table.getSeats().get(2))) {
+            assertTrue(smallBlindSeat.equals(table.getSeats().get(0)));
+            assertTrue(bigBlindSeat.equals(table.getSeats().get(1)));
+            assertTrue(actionOnSeat.equals(table.getSeats().get(2)));
         } else {
             fail("None of the seats were the button.");
         }
@@ -76,31 +99,40 @@ public class SeatStatusBsoImplTest {
         assertTrue(table.getSeats().get(4).isStillInHand());
         assertTrue(table.getSeats().get(5).isStillInHand());
 
+        buttonSeat = (Seat) CollectionUtils.find(table.getSeats(),
+                new ButtonSeatPredicate());
+        smallBlindSeat = (Seat) CollectionUtils.find(table.getSeats(),
+                new SmallBlindSeatPredicate());
+        bigBlindSeat = (Seat) CollectionUtils.find(table.getSeats(),
+                new BigBlindSeatPredicate());
+        actionOnSeat = (Seat) CollectionUtils.find(table.getSeats(),
+                new ActionOnSeatPredicate());
+
         // since things are assigned randomly, need to do some if/else logic
-        if (table.getButton().equals(table.getSeats().get(0))) {
-            assertTrue(table.getSmallBlind().equals(table.getSeats().get(1)));
-            assertTrue(table.getBigBlind().equals(table.getSeats().get(2)));
-            assertTrue(table.getActionOn().equals(table.getSeats().get(3)));
-        } else if (table.getButton().equals(table.getSeats().get(1))) {
-            assertTrue(table.getSmallBlind().equals(table.getSeats().get(2)));
-            assertTrue(table.getBigBlind().equals(table.getSeats().get(3)));
-            assertTrue(table.getActionOn().equals(table.getSeats().get(4)));
-        } else if (table.getButton().equals(table.getSeats().get(2))) {
-            assertTrue(table.getSmallBlind().equals(table.getSeats().get(3)));
-            assertTrue(table.getBigBlind().equals(table.getSeats().get(4)));
-            assertTrue(table.getActionOn().equals(table.getSeats().get(5)));
-        } else if (table.getButton().equals(table.getSeats().get(3))) {
-            assertTrue(table.getSmallBlind().equals(table.getSeats().get(4)));
-            assertTrue(table.getBigBlind().equals(table.getSeats().get(5)));
-            assertTrue(table.getActionOn().equals(table.getSeats().get(0)));
-        } else if (table.getButton().equals(table.getSeats().get(4))) {
-            assertTrue(table.getSmallBlind().equals(table.getSeats().get(5)));
-            assertTrue(table.getBigBlind().equals(table.getSeats().get(0)));
-            assertTrue(table.getActionOn().equals(table.getSeats().get(1)));
-        } else if (table.getButton().equals(table.getSeats().get(5))) {
-            assertTrue(table.getSmallBlind().equals(table.getSeats().get(0)));
-            assertTrue(table.getBigBlind().equals(table.getSeats().get(1)));
-            assertTrue(table.getActionOn().equals(table.getSeats().get(2)));
+        if (buttonSeat.equals(table.getSeats().get(0))) {
+            assertTrue(smallBlindSeat.equals(table.getSeats().get(1)));
+            assertTrue(bigBlindSeat.equals(table.getSeats().get(2)));
+            assertTrue(actionOnSeat.equals(table.getSeats().get(3)));
+        } else if (buttonSeat.equals(table.getSeats().get(1))) {
+            assertTrue(smallBlindSeat.equals(table.getSeats().get(2)));
+            assertTrue(bigBlindSeat.equals(table.getSeats().get(3)));
+            assertTrue(actionOnSeat.equals(table.getSeats().get(4)));
+        } else if (buttonSeat.equals(table.getSeats().get(2))) {
+            assertTrue(smallBlindSeat.equals(table.getSeats().get(3)));
+            assertTrue(bigBlindSeat.equals(table.getSeats().get(4)));
+            assertTrue(actionOnSeat.equals(table.getSeats().get(5)));
+        } else if (buttonSeat.equals(table.getSeats().get(3))) {
+            assertTrue(smallBlindSeat.equals(table.getSeats().get(4)));
+            assertTrue(bigBlindSeat.equals(table.getSeats().get(5)));
+            assertTrue(actionOnSeat.equals(table.getSeats().get(0)));
+        } else if (buttonSeat.equals(table.getSeats().get(4))) {
+            assertTrue(smallBlindSeat.equals(table.getSeats().get(5)));
+            assertTrue(bigBlindSeat.equals(table.getSeats().get(0)));
+            assertTrue(actionOnSeat.equals(table.getSeats().get(1)));
+        } else if (buttonSeat.equals(table.getSeats().get(5))) {
+            assertTrue(smallBlindSeat.equals(table.getSeats().get(0)));
+            assertTrue(bigBlindSeat.equals(table.getSeats().get(1)));
+            assertTrue(actionOnSeat.equals(table.getSeats().get(2)));
         } else {
             fail("None of the seats were the button.");
         }
@@ -162,9 +194,9 @@ public class SeatStatusBsoImplTest {
             int smallBlindIndex, int bigBlindIndex, int actionOnIndex) {
         Table table = new Table();
         DataUtilsForTests.fillTableWithUsers(table, numberOfPlayers);
-        table.setButton(table.getSeats().get(0));
-        table.setSmallBlind(table.getSeats().get(1));
-        table.setBigBlind(table.getSeats().get(2));
+        table.getSeats().get(0).setButton(true);
+        table.getSeats().get(1).setSmallBlind(true);
+        table.getSeats().get(2).setBigBlind(true);
 
         for (Integer seat : seatsThatJustLeft) {
             table.getSeats().get(seat.intValue()).setUserGameStatus(null);
@@ -181,10 +213,19 @@ public class SeatStatusBsoImplTest {
             }
         }
 
-        assertTrue(table.getButton().equals(table.getSeats().get(buttonIndex)));
-        assertTrue(table.getSmallBlind().equals(table.getSeats().get(smallBlindIndex)));
-        assertTrue(table.getBigBlind().equals(table.getSeats().get(bigBlindIndex)));
-        assertTrue(table.getActionOn().equals(table.getSeats().get(actionOnIndex)));
+        Seat buttonSeat = (Seat) CollectionUtils.find(table.getSeats(),
+                new ButtonSeatPredicate());
+        Seat smallBlindSeat = (Seat) CollectionUtils.find(table.getSeats(),
+                new SmallBlindSeatPredicate());
+        Seat bigBlindSeat = (Seat) CollectionUtils.find(table.getSeats(),
+                new BigBlindSeatPredicate());
+        Seat actionOnSeat = (Seat) CollectionUtils.find(table.getSeats(),
+                new ActionOnSeatPredicate());
+
+        assertTrue(buttonSeat.equals(table.getSeats().get(buttonIndex)));
+        assertTrue(smallBlindSeat.equals(table.getSeats().get(smallBlindIndex)));
+        assertTrue(bigBlindSeat.equals(table.getSeats().get(bigBlindIndex)));
+        assertTrue(actionOnSeat.equals(table.getSeats().get(actionOnIndex)));
     }
 
     private void setStatusForNewRoundHelper(int numberOfPlayers,
@@ -192,9 +233,10 @@ public class SeatStatusBsoImplTest {
             int actionOnIndex) {
         Table table = new Table();
         DataUtilsForTests.fillTableWithUsers(table, numberOfPlayers);
-        table.setButton(table.getSeats().get(0));
-        table.setSmallBlind(table.getSeats().get(1));
-        table.setBigBlind(table.getSeats().get(2));
+        table.getSeats().get(0).setButton(true);
+        table.getSeats().get(1).setSmallBlind(true);
+        table.getSeats().get(2).setBigBlind(true);
+        table.getSeats().get(3).setActionOn(true);
 
         for (Integer seat : seatsThatJustLeft) {
             table.getSeats().get(seat.intValue()).setUserGameStatus(null);
@@ -212,7 +254,9 @@ public class SeatStatusBsoImplTest {
         }
 
         bso.setStatusForNewRound(table);
-        assertTrue(table.getActionOn().equals(table.getSeats().get(actionOnIndex)));
+        Seat actionOnSeat = (Seat) CollectionUtils.find(table.getSeats(),
+                new ActionOnSeatPredicate());
+        assertTrue(actionOnSeat.equals(table.getSeats().get(actionOnIndex)));
     }
 
 }

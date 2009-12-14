@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Service;
 
 import com.flexpoker.exception.FlexPokerException;
@@ -28,6 +29,10 @@ import com.flexpoker.model.Table;
 import com.flexpoker.model.TurnCard;
 import com.flexpoker.model.User;
 import com.flexpoker.model.UserGameStatus;
+import com.flexpoker.util.ActionOnSeatPredicate;
+import com.flexpoker.util.BigBlindSeatPredicate;
+import com.flexpoker.util.ButtonSeatPredicate;
+import com.flexpoker.util.SmallBlindSeatPredicate;
 
 @Service("gameEventBso")
 public class GameEventBsoImpl implements GameEventBso {
@@ -112,7 +117,10 @@ public class GameEventBsoImpl implements GameEventBso {
                 throw new FlexPokerException("Not allowed to check.");
             }
 
-            if (table.getActionOn().equals(realTimeHand.getLastToAct())) {
+            Seat actionOnSeat = (Seat) CollectionUtils.find(table.getSeats(),
+                    new ActionOnSeatPredicate());
+
+            if (actionOnSeat.equals(realTimeHand.getLastToAct())) {
                 realTimeHand.setHandRoundState(HandRoundState.ROUND_COMPLETE);
                 moveToNextHandDealerState(realTimeHand);
                 resetChipsInFront(table);
@@ -124,7 +132,8 @@ public class GameEventBsoImpl implements GameEventBso {
                 }
             } else {
                 realTimeHand.setHandRoundState(HandRoundState.ROUND_IN_PROGRESS);
-                table.setActionOn(realTimeHand.getNextToAct());
+                actionOnSeat.setActionOn(false);
+                realTimeHand.getNextToAct().setActionOn(true);
                 determineNextToAct(table, realTimeHand);
             }
 
@@ -153,6 +162,9 @@ public class GameEventBsoImpl implements GameEventBso {
                 }
             }
 
+            Seat actionOnSeat = (Seat) CollectionUtils.find(table.getSeats(),
+                    new ActionOnSeatPredicate());
+
             int numberOfPlayersLeft = 0;
             for (Seat seat : table.getSeats()) {
                 if (seat.isStillInHand()) {
@@ -163,7 +175,7 @@ public class GameEventBsoImpl implements GameEventBso {
             if (numberOfPlayersLeft == 1) {
                 realTimeHand.setHandRoundState(HandRoundState.ROUND_COMPLETE);
                 realTimeHand.setHandDealerState(HandDealerState.COMPLETE);
-            } else if (table.getActionOn().equals(realTimeHand.getLastToAct())) {
+            } else if (actionOnSeat.equals(realTimeHand.getLastToAct())) {
                 realTimeHand.setHandRoundState(HandRoundState.ROUND_COMPLETE);
                 moveToNextHandDealerState(realTimeHand);
                 resetChipsInFront(table);
@@ -175,7 +187,8 @@ public class GameEventBsoImpl implements GameEventBso {
                 }
             } else {
                 realTimeHand.setHandRoundState(HandRoundState.ROUND_IN_PROGRESS);
-                table.setActionOn(realTimeHand.getNextToAct());
+                actionOnSeat.setActionOn(false);
+                realTimeHand.getNextToAct().setActionOn(true);
                 determineNextToAct(table, realTimeHand);
             }
 
@@ -194,7 +207,11 @@ public class GameEventBsoImpl implements GameEventBso {
 
             RealTimeHand realTimeHand = realTimeGame.getRealTimeHand(table);
             table = realTimeGame.getTable(table);
-            Seat seat = table.getActionOn();
+
+            Seat actionOnSeat = (Seat) CollectionUtils.find(table.getSeats(),
+                    new ActionOnSeatPredicate());
+
+            Seat seat = actionOnSeat;
 
             if (!isUserAllowedToPerformAction(GameEventType.CALL, user,
                     realTimeHand, table)) {
@@ -213,7 +230,8 @@ public class GameEventBsoImpl implements GameEventBso {
                 }
             } else {
                 realTimeHand.setHandRoundState(HandRoundState.ROUND_IN_PROGRESS);
-                table.setActionOn(realTimeHand.getNextToAct());
+                seat.setActionOn(false);
+                realTimeHand.getNextToAct().setActionOn(true);
                 determineNextToAct(table, realTimeHand);
                 seat.setChipsInFront(seat.getChipsInFront() + seat.getCallAmount());
             }
@@ -327,19 +345,24 @@ public class GameEventBsoImpl implements GameEventBso {
         int bigBlind = currentBlinds.getBigBlind();
 
         RealTimeHand realTimeHand = new RealTimeHand(table.getSeats());
+        Seat smallBlindSeat = (Seat) CollectionUtils.find(table.getSeats(),
+                new SmallBlindSeatPredicate());
+        Seat bigBlindSeat = (Seat) CollectionUtils.find(table.getSeats(),
+                new BigBlindSeatPredicate());
+
 
         for (Seat seat : table.getSeats()) {
             UserGameStatus userGameStatus = seat.getUserGameStatus();
             int amountNeededToCall = bigBlind;
             int amountNeededToRaise = bigBlind * 2;
 
-            if (seat.equals(table.getBigBlind())) {
+            if (seat.equals(bigBlindSeat)) {
                 amountNeededToCall = 0;
                 amountNeededToRaise = bigBlind;
                 realTimeHand.addPossibleSeatAction(seat, GameEventType.CHECK);
                 seat.setChipsInFront(bigBlind);
                 userGameStatus.setChips(userGameStatus.getChips() - bigBlind);
-            } else if (seat.equals(table.getSmallBlind())) {
+            } else if (seat.equals(smallBlindSeat)) {
                 amountNeededToCall = smallBlind;
                 realTimeHand.addPossibleSeatAction(seat, GameEventType.CALL);
                 realTimeHand.addPossibleSeatAction(seat, GameEventType.FOLD);
@@ -361,7 +384,7 @@ public class GameEventBsoImpl implements GameEventBso {
         }
 
         determineNextToAct(table, realTimeHand);
-        realTimeHand.setLastToAct(table.getBigBlind());
+        realTimeHand.setLastToAct(bigBlindSeat);
 
         realTimeHand.setHandDealerState(HandDealerState.POCKET_CARDS_DEALT);
         realTimeHand.setHandRoundState(HandRoundState.ROUND_IN_PROGRESS);
@@ -401,8 +424,11 @@ public class GameEventBsoImpl implements GameEventBso {
     private void determineLastToAct(Table table, RealTimeHand realTimeHand) {
         List<Seat> seats = table.getSeats();
 
+        Seat buttonSeat = (Seat) CollectionUtils.find(table.getSeats(),
+                new ButtonSeatPredicate());
+
         if (realTimeHand.getOriginatingBettor() == null) {
-            int buttonIndex = seats.indexOf(table.getButton());
+            int buttonIndex = seats.indexOf(buttonSeat);
 
             for (int i = buttonIndex; i >= 0; i--) {
                 if (seats.get(i).isStillInHand()) {
@@ -424,7 +450,10 @@ public class GameEventBsoImpl implements GameEventBso {
 
     private void determineNextToAct(Table table, RealTimeHand realTimeHand) {
         List<Seat> seats = table.getSeats();
-        int actionOnIndex = seats.indexOf(table.getActionOn());
+        Seat actionOnSeat = (Seat) CollectionUtils.find(seats,
+                new ActionOnSeatPredicate());
+
+        int actionOnIndex = seats.indexOf(actionOnSeat);
 
         for (int i = actionOnIndex + 1; i < seats.size(); i++) {
             if (seats.get(i).isStillInHand()) {

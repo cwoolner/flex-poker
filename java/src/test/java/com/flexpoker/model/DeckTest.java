@@ -80,7 +80,7 @@ public class DeckTest {
         seats.add(seat1);
         seats.add(seat2);
         table.setSeats(seats);
-        table.setButton(seat1);
+        seat1.setButton(true);
         
         Deck deck = new Deck(cardList, table);
         PocketCards pocketCards1 = deck.getPocketCards(user1);
@@ -98,8 +98,9 @@ public class DeckTest {
         assertTrue(flopCards.getCard3().getId() == 8);
         assertTrue(turnCard.getCard().getId() == 10);
         assertTrue(riverCard.getCard().getId() == 12);
-        
-        table.setButton(seat2);
+
+        seat1.setButton(false);
+        seat2.setButton(true);
         deck = new Deck(cardList, table);
         pocketCards1 = deck.getPocketCards(user1);
         pocketCards2 = deck.getPocketCards(user2);

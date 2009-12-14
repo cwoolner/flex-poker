@@ -6,6 +6,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.collections.CollectionUtils;
+
+import com.flexpoker.util.ButtonSeatPredicate;
+
 public class Deck {
 
     private List<Card> deckOfCards = new ArrayList<Card>(52);
@@ -24,7 +28,10 @@ public class Deck {
         List<Seat> seats = new ArrayList<Seat>(table.getSeats());
         Collections.sort(seats);
 
-        int dealerIndex = seats.indexOf(table.getButton());
+        Seat buttonSeat = (Seat) CollectionUtils.find(seats,
+                new ButtonSeatPredicate());
+
+        int dealerIndex = seats.indexOf(buttonSeat);
         int numberOfPlayers = seats.size();
 
         determinePocketCards(seats, dealerIndex, numberOfPlayers);
