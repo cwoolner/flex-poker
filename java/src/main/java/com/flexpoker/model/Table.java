@@ -6,14 +6,6 @@ public class Table {
 
     private Integer id;
 
-    private Seat button;
-
-    private Seat smallBlind;
-
-    private Seat bigBlind;
-
-    private Seat actionOn;
-
     private List<Seat> seats;
 
     private int totalPotAmount;
@@ -24,38 +16,6 @@ public class Table {
 
     public void setId(Integer id) {
         this.id = id;
-    }
-
-    public Seat getButton() {
-        return button;
-    }
-
-    public void setButton(Seat button) {
-        this.button = button;
-    }
-
-    public Seat getSmallBlind() {
-        return smallBlind;
-    }
-
-    public void setSmallBlind(Seat smallBlind) {
-        this.smallBlind = smallBlind;
-    }
-
-    public Seat getBigBlind() {
-        return bigBlind;
-    }
-
-    public void setBigBlind(Seat bigBlind) {
-        this.bigBlind = bigBlind;
-    }
-
-    public Seat getActionOn() {
-        return actionOn;
-    }
-
-    public void setActionOn(Seat actionOn) {
-        this.actionOn = actionOn;
     }
 
     public List<Seat> getSeats() {

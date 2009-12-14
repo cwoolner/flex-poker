@@ -20,6 +20,14 @@ public class Seat implements Comparable<Seat> {
 
     private int callAmount;
 
+    private boolean button;
+
+    private boolean smallBlind;
+
+    private boolean bigBlind;
+
+    private boolean actionOn;
+
     public UserGameStatus getUserGameStatus() {
         return userGameStatus;
     }
@@ -82,6 +90,38 @@ public class Seat implements Comparable<Seat> {
 
     public void setCallAmount(int callAmount) {
         this.callAmount = callAmount;
+    }
+
+    public boolean isButton() {
+        return button;
+    }
+
+    public void setButton(boolean button) {
+        this.button = button;
+    }
+
+    public boolean isSmallBlind() {
+        return smallBlind;
+    }
+
+    public void setSmallBlind(boolean smallBlind) {
+        this.smallBlind = smallBlind;
+    }
+
+    public boolean isBigBlind() {
+        return bigBlind;
+    }
+
+    public void setBigBlind(boolean bigBlind) {
+        this.bigBlind = bigBlind;
+    }
+
+    public boolean isActionOn() {
+        return actionOn;
+    }
+
+    public void setActionOn(boolean actionOn) {
+        this.actionOn = actionOn;
     }
 
     @Override

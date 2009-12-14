@@ -22,6 +22,14 @@ package com.flexpoker.model {
 
         public var callAmount:int;
 
+        public var button:Boolean;;
+
+        public var smallBlind:Boolean;
+
+        public var bigBlind:Boolean;
+
+        public var actionOn:Boolean;
+
     }
 
 }
