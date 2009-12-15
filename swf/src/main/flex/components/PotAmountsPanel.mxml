@@ -41,6 +41,9 @@
                 case 8:
                     currentState = "potSevenState";
                     break;
+                case 9:
+                    currentState = "potEightState";
+                    break;
                 default:
                     currentState = "blankState";
                     break;
@@ -59,6 +62,7 @@
             <mx:RemoveChild target="{potFive}" />
             <mx:RemoveChild target="{potSix}" />
             <mx:RemoveChild target="{potSeven}" />
+            <mx:RemoveChild target="{potEight}" />
         </mx:State>
         <mx:State name="potZeroState">
             <mx:RemoveChild target="{potOne}" />
@@ -68,6 +72,7 @@
             <mx:RemoveChild target="{potFive}" />
             <mx:RemoveChild target="{potSix}" />
             <mx:RemoveChild target="{potSeven}" />
+            <mx:RemoveChild target="{potEight}" />
             <mx:AddChild target="{potZero}" />
         </mx:State>
         <mx:State name="potOneState">
@@ -77,6 +82,7 @@
             <mx:RemoveChild target="{potFive}" />
             <mx:RemoveChild target="{potSix}" />
             <mx:RemoveChild target="{potSeven}" />
+            <mx:RemoveChild target="{potEight}" />
             <mx:AddChild target="{potZero}" />
             <mx:AddChild target="{potOne}" />
         </mx:State>
@@ -86,6 +92,7 @@
             <mx:RemoveChild target="{potFive}" />
             <mx:RemoveChild target="{potSix}" />
             <mx:RemoveChild target="{potSeven}" />
+            <mx:RemoveChild target="{potEight}" />
             <mx:AddChild target="{potZero}" />
             <mx:AddChild target="{potOne}" />
             <mx:AddChild target="{potTwo}" />
@@ -95,6 +102,7 @@
             <mx:RemoveChild target="{potFive}" />
             <mx:RemoveChild target="{potSix}" />
             <mx:RemoveChild target="{potSeven}" />
+            <mx:RemoveChild target="{potEight}" />
             <mx:AddChild target="{potZero}" />
             <mx:AddChild target="{potOne}" />
             <mx:AddChild target="{potTwo}" />
@@ -104,6 +112,7 @@
             <mx:RemoveChild target="{potFive}" />
             <mx:RemoveChild target="{potSix}" />
             <mx:RemoveChild target="{potSeven}" />
+            <mx:RemoveChild target="{potEight}" />
             <mx:AddChild target="{potZero}" />
             <mx:AddChild target="{potOne}" />
             <mx:AddChild target="{potTwo}" />
@@ -113,6 +122,7 @@
         <mx:State name="potFiveState">
             <mx:RemoveChild target="{potSix}" />
             <mx:RemoveChild target="{potSeven}" />
+            <mx:RemoveChild target="{potEight}" />
             <mx:AddChild target="{potZero}" />
             <mx:AddChild target="{potOne}" />
             <mx:AddChild target="{potTwo}" />
@@ -122,6 +132,7 @@
         </mx:State>
         <mx:State name="potSixState">
             <mx:RemoveChild target="{potSeven}" />
+            <mx:RemoveChild target="{potEight}" />
             <mx:AddChild target="{potZero}" />
             <mx:AddChild target="{potOne}" />
             <mx:AddChild target="{potTwo}" />
@@ -131,6 +142,7 @@
             <mx:AddChild target="{potSix}" />
         </mx:State>
         <mx:State name="potSevenState">
+            <mx:RemoveChild target="{potEight}" />
             <mx:AddChild target="{potZero}" />
             <mx:AddChild target="{potOne}" />
             <mx:AddChild target="{potTwo}" />
@@ -139,6 +151,17 @@
             <mx:AddChild target="{potFive}" />
             <mx:AddChild target="{potSix}" />
             <mx:AddChild target="{potSeven}" />
+        </mx:State>
+        <mx:State name="potEightState">
+            <mx:AddChild target="{potZero}" />
+            <mx:AddChild target="{potOne}" />
+            <mx:AddChild target="{potTwo}" />
+            <mx:AddChild target="{potThree}" />
+            <mx:AddChild target="{potFour}" />
+            <mx:AddChild target="{potFive}" />
+            <mx:AddChild target="{potSix}" />
+            <mx:AddChild target="{potSeven}" />
+            <mx:AddChild target="{potEight}" />
         </mx:State>
     </mx:states>
 
@@ -150,5 +173,6 @@
     <mx:Label id="potFive" color="white" text="{_potAmounts.getItemAt(5).toString()}" paddingRight="5" />
     <mx:Label id="potSix" color="white" text="{_potAmounts.getItemAt(6).toString()}" paddingRight="5" />
     <mx:Label id="potSeven" color="white" text="{_potAmounts.getItemAt(7).toString()}" paddingRight="5" />
+    <mx:Label id="potEight" color="white" text="{_potAmounts.getItemAt(8).toString()}" />
 
 </mx:HBox>
