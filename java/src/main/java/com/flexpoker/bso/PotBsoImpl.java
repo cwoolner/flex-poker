@@ -1,9 +1,12 @@
 package com.flexpoker.bso;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Service;
@@ -13,6 +16,7 @@ import com.flexpoker.model.HandEvaluation;
 import com.flexpoker.model.Pot;
 import com.flexpoker.model.Seat;
 import com.flexpoker.model.Table;
+import com.flexpoker.util.OpenPotPredicate;
 
 @Service("potBso")
 public class PotBsoImpl implements PotBso {
@@ -22,8 +26,49 @@ public class PotBsoImpl implements PotBso {
 
     @Override
     public void calculatePotsAfterRound(Game game, Table table) {
-        // TODO Auto-generated method stub
+        Set<Integer> chipsInFrontSet = new HashSet<Integer>();
+        for (Seat seat : table.getSeats()) {
+            if (seat.getChipsInFront() != 0) {
+                chipsInFrontSet.add(seat.getChipsInFront());
+            }
+        }
 
+        if (chipsInFrontSet.isEmpty()) {
+            // nothing to do since there are no chips to add to pots
+            return;
+        }
+
+        List<Integer> chipsInFrontList = new ArrayList<Integer>(chipsInFrontSet);
+        Collections.sort(chipsInFrontList);
+
+        List<Integer> maxContributionPerSeatPerPot = new ArrayList<Integer>();
+        maxContributionPerSeatPerPot.add(chipsInFrontList.get(0));
+        for (int i = 0; i < chipsInFrontList.size() - 1; i++) {
+            maxContributionPerSeatPerPot.add(
+                    chipsInFrontList.get(i + 1) - chipsInFrontList.get(i));
+        }
+
+        List<Pot> pots = fetchAllPots(game, table);
+
+        for (Integer chipsPerLevel : maxContributionPerSeatPerPot) {
+            Pot pot = fetchOpenPot(pots);
+            if (pot.getAmount() == 0) {
+                pots.add(pot);
+            }
+
+            for (Seat seat : table.getSeats()) {
+                if (seat.getChipsInFront() == 0) {
+                    continue;
+                }
+
+                pot.getSeats().add(seat);
+                pot.setAmount(pot.getAmount() + chipsPerLevel);
+                seat.setChipsInFront(seat.getChipsInFront() - chipsPerLevel);
+                if (seat.isAllIn()) {
+                    pot.setOpen(false);
+                }
+            }
+        }
     }
 
     @Override
@@ -59,49 +104,30 @@ public class PotBsoImpl implements PotBso {
 
     @Override
     public void setWinners(Game game, Table table, List<HandEvaluation> winningHands) {
-        List<Pot> pots = gameToTableToPotsMap.get(game).get(table);
-
-        for (int i = 0; i < winningHands.size(); i++) {
-            int j;
-            for (j = i; j < winningHands.size() - 1; j++) {
-                if (winningHands.get(j).compareTo(winningHands.get(j + 1)) != 0) {
-                    break;
-                }
-            }
-
-            while (!areAllWinnersAssigned(pots)) {
-                assignWinners(winningHands.subList(i, j + 1), pots);
-            }
-        }
-    }
-
-    private boolean areAllWinnersAssigned(List<Pot> pots) {
-        for (Pot pot : pots) {
-            if (CollectionUtils.isEmpty(pot.getWinners())) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    private void assignWinners(List<HandEvaluation> winningHands, List<Pot> pots) {
-        for (Pot pot : pots) {
-            if (CollectionUtils.isNotEmpty(pot.getWinners())) {
-                break;
-            }
-
+        for (Pot pot : fetchAllPots(game, table)) {
             pot.setWinners(new ArrayList<Seat>());
-
-            for (HandEvaluation winningHand : winningHands) {
+            HandEvaluation topAssignedHand = null;
+            for (HandEvaluation hand : winningHands) {
                 for (Seat seat : pot.getSeats()) {
-                    if (seat.getUserGameStatus().getUser()
-                            .equals(winningHand.getUser())) {
+                    if (seat.getUserGameStatus().getUser().equals(hand.getUser())
+                            && (topAssignedHand == null
+                                    || topAssignedHand.compareTo(hand) == 0)) {
+                        topAssignedHand = hand;
                         pot.getWinners().add(seat);
                     }
                 }
             }
         }
+    }
+
+    private Pot fetchOpenPot(List<Pot> pots) {
+        Pot pot = (Pot) CollectionUtils.find(pots, new OpenPotPredicate());
+        if (pot == null) {
+            pot = new Pot();
+            pot.setOpen(true);
+            pot.setSeats(new ArrayList<Seat>());
+        }
+        return pot;
     }
 
 }
