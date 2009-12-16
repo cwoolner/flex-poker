@@ -1,5 +1,5 @@
 <mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml"
-   creationComplete="initializeEvents()">
+   creationComplete="initializePanel()">
 
     <mx:Style>
         .actionOnTrue {
@@ -38,9 +38,12 @@
             pocketCardImage2 = deck.getCardImage(requiredShowCard.card2);
         }
 
-        private function initializeEvents():void {
+        private function initializePanel():void {
             addEventListener(ActionOnChangedEvent.NAME, actionOnChanged);
             styleName = "actionOnFalse";
+            buttonImage.visible = false;
+            smallBlindImage.visible = false;
+            bigBlindImage.visible = false;
         }
 
         private function actionOnChanged(event:ActionOnChangedEvent):void {
@@ -63,9 +66,9 @@
     <mx:Label text="{_seat.userGameStatus.chips}" />
     <mx:HBox>
         <mx:Spacer width="100%" />
-        <mx:Image source="{TableImages.getInstance().getButtonImage()}" visible="{_seat.button}" />
-        <mx:Image source="{TableImages.getInstance().getSmallBlindImage()}" visible="{_seat.smallBlind}" />
-        <mx:Image source="{TableImages.getInstance().getBigBlindImage()}" visible="{_seat.bigBlind}" />
+        <mx:Image id="buttonImage" source="{TableImages.getInstance().getButtonImage()}" visible="{_seat.button}" />
+        <mx:Image id="smallBlindImage" source="{TableImages.getInstance().getSmallBlindImage()}" visible="{_seat.smallBlind}" />
+        <mx:Image id="bigBlindImage" source="{TableImages.getInstance().getBigBlindImage()}" visible="{_seat.bigBlind}" />
         <mx:Spacer width="100%" />
      </mx:HBox>
      <mx:Label text="{_seat.chipsInFront}" visible="{_seat.chipsInFront != 0}" />
