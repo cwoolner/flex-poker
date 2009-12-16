@@ -418,9 +418,6 @@ public class PotBsoImplTest {
         winningHands.add(handEvaluation1);
         winningHands.add(handEvaluation2);
 
-        Collections.sort(winningHands);
-        Collections.reverse(winningHands);
-
         bso.setWinners(game, table, winningHands);
 
         List<Pot> pots = bso.fetchAllPots(game, table);
@@ -479,9 +476,6 @@ public class PotBsoImplTest {
         winningHands.add(handEvaluation1);
         winningHands.add(handEvaluation2);
         winningHands.add(handEvaluation3);
-
-        Collections.sort(winningHands);
-        Collections.reverse(winningHands);
 
         bso.setWinners(game, table, winningHands);
 

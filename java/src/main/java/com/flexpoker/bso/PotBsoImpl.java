@@ -104,6 +104,9 @@ public class PotBsoImpl implements PotBso {
 
     @Override
     public void setWinners(Game game, Table table, List<HandEvaluation> winningHands) {
+        Collections.sort(winningHands);
+        Collections.reverse(winningHands);
+
         for (Pot pot : fetchAllPots(game, table)) {
             pot.setWinners(new ArrayList<Seat>());
             HandEvaluation topAssignedHand = null;
