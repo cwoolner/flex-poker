@@ -2,6 +2,7 @@ package com.flexpoker.bso;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -21,6 +22,7 @@ import com.flexpoker.model.HandRanking;
 import com.flexpoker.model.HandRoundState;
 import com.flexpoker.model.HandState;
 import com.flexpoker.model.PocketCards;
+import com.flexpoker.model.Pot;
 import com.flexpoker.model.RealTimeGame;
 import com.flexpoker.model.RealTimeHand;
 import com.flexpoker.model.RiverCard;
@@ -46,6 +48,8 @@ public class GameEventBsoImpl implements GameEventBso {
     private SeatStatusBso seatStatusBso;
 
     private HandEvaluatorBso handEvaluatorBso;
+
+    private PotBso potBso;
 
     @Override
     public boolean addUserToGame(User user, Game game) {
@@ -88,6 +92,7 @@ public class GameEventBsoImpl implements GameEventBso {
         seatStatusBso.setStatusForNewHand(table);
         deckBso.shuffleDeck(game, table);
         createNewRealTimeHand(game, table);
+        potBso.createNewHandPot(game, table);
     }
 
     @Override
@@ -123,12 +128,16 @@ public class GameEventBsoImpl implements GameEventBso {
             if (actionOnSeat.equals(realTimeHand.getLastToAct())) {
                 realTimeHand.setHandRoundState(HandRoundState.ROUND_COMPLETE);
                 moveToNextHandDealerState(realTimeHand);
+                potBso.calculatePotsAfterRound(game, table);
+                determineTablePotAmounts(game, table);
                 resetChipsInFront(table);
 
                 if (realTimeHand.getHandDealerState() != HandDealerState.COMPLETE) {
                     seatStatusBso.setStatusForNewRound(table);
                     determineNextToAct(table, realTimeHand);
                     determineLastToAct(table, realTimeHand);
+                } else {
+                    potBso.setWinners(game, table, realTimeHand.getHandEvaluationList());
                 }
             } else {
                 realTimeHand.setHandRoundState(HandRoundState.ROUND_IN_PROGRESS);
@@ -175,15 +184,21 @@ public class GameEventBsoImpl implements GameEventBso {
             if (numberOfPlayersLeft == 1) {
                 realTimeHand.setHandRoundState(HandRoundState.ROUND_COMPLETE);
                 realTimeHand.setHandDealerState(HandDealerState.COMPLETE);
+                potBso.calculatePotsAfterRound(game, table);
+                determineTablePotAmounts(game, table);
             } else if (actionOnSeat.equals(realTimeHand.getLastToAct())) {
                 realTimeHand.setHandRoundState(HandRoundState.ROUND_COMPLETE);
                 moveToNextHandDealerState(realTimeHand);
+                potBso.calculatePotsAfterRound(game, table);
+                determineTablePotAmounts(game, table);
                 resetChipsInFront(table);
 
                 if (realTimeHand.getHandDealerState() != HandDealerState.COMPLETE) {
                     seatStatusBso.setStatusForNewRound(table);
                     determineNextToAct(table, realTimeHand);
                     determineLastToAct(table, realTimeHand);
+                } else {
+                    potBso.setWinners(game, table, realTimeHand.getHandEvaluationList());
                 }
             } else {
                 realTimeHand.setHandRoundState(HandRoundState.ROUND_IN_PROGRESS);
@@ -221,12 +236,16 @@ public class GameEventBsoImpl implements GameEventBso {
             if (seat.equals(realTimeHand.getLastToAct())) {
                 realTimeHand.setHandRoundState(HandRoundState.ROUND_COMPLETE);
                 moveToNextHandDealerState(realTimeHand);
+                potBso.calculatePotsAfterRound(game, table);
+                determineTablePotAmounts(game, table);
                 resetChipsInFront(table);
 
                 if (realTimeHand.getHandDealerState() != HandDealerState.COMPLETE) {
                     seatStatusBso.setStatusForNewRound(table);
                     determineNextToAct(table, realTimeHand);
                     determineLastToAct(table, realTimeHand);
+                } else {
+                    potBso.setWinners(game, table, realTimeHand.getHandEvaluationList());
                 }
             } else {
                 realTimeHand.setHandRoundState(HandRoundState.ROUND_IN_PROGRESS);
@@ -271,32 +290,25 @@ public class GameEventBsoImpl implements GameEventBso {
     @Override
     public List<PocketCards> fetchRequiredShowCards(Game game, Table table) {
         RealTimeHand realTimeHand = realTimeGameBso.get(game).getRealTimeHand(table);
-
         HandDealerState handDealerState = realTimeHand.getHandDealerState();
 
         if (handDealerState.equals(HandDealerState.COMPLETE)) {
-            // TODO: Implement more logic.  Right now we're just sending back
-            // the winning hand.  We should be checking to see if that hand is
-            // even still in the hand.  Also calling/last aggressor logic needs
+            // TODO: implement more logic.  right now we're just sending back
+            // the winning hand of each pot.  calling/last aggressor logic needs
             // to be implemented.
+            List<Pot> pots = potBso.fetchAllPots(game, table);
+            Set<Seat> winners = new HashSet<Seat>();
 
-            List<HandEvaluation> handEvaluations = realTimeHand.getHandEvaluationList();
-            Collections.sort(handEvaluations);
-            Collections.reverse(handEvaluations);
-
-            HandEvaluation handEvaluation = handEvaluations.get(0);
-
-            PocketCards pocketCards = deckBso
-                    .fetchPocketCards(handEvaluation.getUser(), game, table);
+            for (Pot pot : pots) {
+                winners.addAll(pot.getWinners());
+            }
 
             List<PocketCards> pocketCardList = new ArrayList<PocketCards>();
 
-            for (Seat seat : table.getSeats()) {
-                if (seat.getUserGameStatus().getUser().equals(handEvaluation.getUser())) {
-                    pocketCardList.add(pocketCards);
-                } else {
-                    pocketCardList.add(null);
-                }
+            for (Seat seat : winners) {
+                PocketCards pocketCards = deckBso.fetchPocketCards(
+                        seat.getUserGameStatus().getUser(), game, table);
+                pocketCardList.add(pocketCards);
             }
 
             return pocketCardList;
@@ -475,6 +487,7 @@ public class GameEventBsoImpl implements GameEventBso {
             seatStatusBso.setStatusForNewGame(table);
             deckBso.shuffleDeck(game, table);
             createNewRealTimeHand(game, table);
+            potBso.createNewHandPot(game, table);
         }
     }
 
@@ -519,6 +532,13 @@ public class GameEventBsoImpl implements GameEventBso {
         }
     }
 
+    private void determineTablePotAmounts(Game game, Table table) {
+        table.setPotAmounts(new ArrayList<Integer>());
+        for (Pot pot : potBso.fetchAllPots(game, table)) {
+            table.getPotAmounts().add(pot.getAmount());
+        }
+    }
+
     public GameBso getGameBso() {
         return gameBso;
     }
@@ -557,6 +577,14 @@ public class GameEventBsoImpl implements GameEventBso {
 
     public void setHandEvaluatorBso(HandEvaluatorBso handEvaluatorBso) {
         this.handEvaluatorBso = handEvaluatorBso;
+    }
+
+    public PotBso getPotBso() {
+        return potBso;
+    }
+
+    public void setPotBso(PotBso potBso) {
+        this.potBso = potBso;
     }
 
 }
