@@ -1,7 +1,6 @@
 package com.flexpoker.bso;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -137,7 +136,7 @@ public class GameEventBsoImpl implements GameEventBso {
                     determineNextToAct(table, realTimeHand);
                     determineLastToAct(table, realTimeHand);
                 } else {
-                    potBso.setWinners(game, table, realTimeHand.getHandEvaluationList());
+                    determineWinners(game, table, realTimeHand.getHandEvaluationList());
                 }
             } else {
                 realTimeHand.setHandRoundState(HandRoundState.ROUND_IN_PROGRESS);
@@ -198,7 +197,7 @@ public class GameEventBsoImpl implements GameEventBso {
                     determineNextToAct(table, realTimeHand);
                     determineLastToAct(table, realTimeHand);
                 } else {
-                    potBso.setWinners(game, table, realTimeHand.getHandEvaluationList());
+                    determineWinners(game, table, realTimeHand.getHandEvaluationList());
                 }
             } else {
                 realTimeHand.setHandRoundState(HandRoundState.ROUND_IN_PROGRESS);
@@ -245,7 +244,7 @@ public class GameEventBsoImpl implements GameEventBso {
                     determineNextToAct(table, realTimeHand);
                     determineLastToAct(table, realTimeHand);
                 } else {
-                    potBso.setWinners(game, table, realTimeHand.getHandEvaluationList());
+                    determineWinners(game, table, realTimeHand.getHandEvaluationList());
                 }
             } else {
                 realTimeHand.setHandRoundState(HandRoundState.ROUND_IN_PROGRESS);
@@ -536,6 +535,25 @@ public class GameEventBsoImpl implements GameEventBso {
         table.setPotAmounts(new ArrayList<Integer>());
         for (Pot pot : potBso.fetchAllPots(game, table)) {
             table.getPotAmounts().add(pot.getAmount());
+        }
+    }
+
+    private void determineWinners(Game game, Table table, List<HandEvaluation> handEvaluationList) {
+        potBso.setWinners(game, table, handEvaluationList);
+
+        for (Pot pot : potBso.fetchAllPots(game, table)) {
+            List<Seat> winners = pot.getWinners();
+            int numberOfWinners = winners.size();
+            int numberOfChips = pot.getAmount() / numberOfWinners;
+            int bonusChips = pot.getAmount() % numberOfWinners;
+
+            winners.get(0).getUserGameStatus().setChips(
+                    winners.get(0).getUserGameStatus().getChips() + bonusChips);
+
+            for (Seat winner : winners) {
+                winner.getUserGameStatus().setChips(
+                        winner.getUserGameStatus().getChips() + numberOfChips);
+            }
         }
     }
 
