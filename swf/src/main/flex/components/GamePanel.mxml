@@ -99,9 +99,7 @@
                         tableEventConsumer.subscribe();
                         mainRemoteObject.verifyGameInProgress(game);
                     },
-                    function(event:FaultEvent, token:Object = null):void {
-                        Alert.show("Send Failed: " + event.fault.faultString);
-                    }
+                    sendFailedFaultHandler
                 ))
                 currentState = "inProgressState";
                 return;
@@ -138,9 +136,7 @@
 
                         setupPokerActionBox();
                     },
-                    function(event:FaultEvent, token:Object = null):void {
-                        Alert.show("Send Failed: " + event.fault.faultString);
-                    }
+                    sendFailedFaultHandler
                 ))
 
                 mainRemoteObject.fetchAllUserGameStatuses(game);
@@ -153,9 +149,7 @@
                         pocketCardImage1 = deck.getCardImage(pocketCards.card1);
                         pocketCardImage2 = deck.getCardImage(pocketCards.card2);
                     },
-                    function(event:FaultEvent, token:Object = null):void {
-                        Alert.show("Send Failed: " + event.fault.faultString);
-                    }
+                    sendFailedFaultHandler
                 ))
 
                 return;
@@ -178,9 +172,7 @@
                         inProgressCommonPanel.flopCardImage3 = deck.getCardImage(flopCards.card3);
                         fetchTableAfterDeal(true);
                     },
-                    function(event:FaultEvent, token:Object = null):void {
-                        Alert.show("Send Failed: " + event.fault.faultString);
-                    }
+                    sendFailedFaultHandler
                 ))
 
                 mainRemoteObject.fetchAllUserGameStatuses(game);
@@ -196,9 +188,7 @@
                         inProgressCommonPanel.turnCardImage = deck.getCardImage(turnCard.card);
                         fetchTableAfterDeal(true);
                     },
-                    function(event:FaultEvent, token:Object = null):void {
-                        Alert.show("Send Failed: " + event.fault.faultString);
-                    }
+                    sendFailedFaultHandler
                 ))
 
                 mainRemoteObject.fetchAllUserGameStatuses(game);
@@ -214,9 +204,7 @@
                         inProgressCommonPanel.riverCardImage = deck.getCardImage(riverCard.card);
                         fetchTableAfterDeal(true);
                     },
-                    function(event:FaultEvent, token:Object = null):void {
-                        Alert.show("Send Failed: " + event.fault.faultString);
-                    }
+                    sendFailedFaultHandler
                 ))
 
                 mainRemoteObject.fetchAllUserGameStatuses(game);
@@ -229,9 +217,7 @@
                     function(event:ResultEvent, token:Object = null):void {
                         requiredShowCardArray = event.result as ArrayCollection;
                     },
-                    function(event:FaultEvent, token:Object = null):void {
-                        Alert.show("Send Failed: " + event.fault.faultString);
-                    }
+                    sendFailedFaultHandler
                 ))
 
                 mainRemoteObject.fetchAllUserGameStatuses(game);
@@ -247,9 +233,7 @@
                         inProgressCommonPanel.riverCardImage = deck.getCardImage(riverCard.card);
                         fetchTableAfterDeal(false);
                     },
-                    function(event:FaultEvent, token:Object = null):void {
-                        Alert.show("Send Failed: " + event.fault.faultString);
-                    }
+                    sendFailedFaultHandler
                 ))
 
                 mainRemoteObject.fetchAllUserGameStatuses(game);
@@ -270,10 +254,12 @@
                         pokerActionBox.visible = table.seats.getItemAt(pokerActionBoxIndex).stillInHand;
                     }
                 },
-                function(event:FaultEvent, token:Object = null):void {
-                    Alert.show("Send Failed: " + event.fault.faultString);
-                }
+                sendFailedFaultHandler
             ))
+        }
+
+        private function sendFailedFaultHandler(event:FaultEvent):void {
+            Alert.show("Send Failed: " + event.fault.faultString);
         }
 
         private function fetchAllUserGameStatusesHandler(event:ResultEvent):void {
