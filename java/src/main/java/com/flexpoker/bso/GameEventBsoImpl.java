@@ -110,6 +110,21 @@ public class GameEventBsoImpl implements GameEventBso {
     }
 
     @Override
+    public boolean verifyReadyToStartNewHand(User user, Game game, Table table) {
+        synchronized (this) {
+            RealTimeGame realTimeGame = realTimeGameBso.get(game);
+            realTimeGame.verifyEvent(user, table, "readyToStartNewHand");
+
+            if (realTimeGame.isEventVerified(table, "readyToStartNewHand")) {
+                startNewHand(game, table);
+                return true;
+            }
+
+            return false;
+        }
+    }
+
+    @Override
     public HandState check(Game game, Table table, User user) {
         synchronized (this) {
             RealTimeGame realTimeGame = realTimeGameBso.get(game);

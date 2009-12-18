@@ -102,6 +102,14 @@ public class FlexControllerImpl implements FlexController {
     }
 
     @Override
+    public void verifyReadyToStartNewHand(Game game, Table table) {
+        User user = extractCurrentUser();
+        if (gameEventBso.verifyReadyToStartNewHand(user, game, table)) {
+            eventManager.sendNewHandStartingEvent(game, table);
+        }
+    }
+
+    @Override
     public Table fetchTable(Game game) {
         User user = extractCurrentUser();
         return gameBso.fetchPlayersCurrentTable(user, game);

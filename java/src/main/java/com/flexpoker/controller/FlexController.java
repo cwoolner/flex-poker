@@ -40,6 +40,8 @@ public interface FlexController {
 
     void verifyGameInProgress(Game game);
 
+    void verifyReadyToStartNewHand(Game game, Table table);
+
     void check(Game game, Table table);
 
     void fold(Game game, Table table);

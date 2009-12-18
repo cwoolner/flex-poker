@@ -18,6 +18,8 @@ public interface GameEventBso {
 
     boolean verifyGameInProgress(User user, Game game);
 
+    boolean verifyReadyToStartNewHand(User user, Game game, Table table);
+
     HandState check(Game game, Table table, User user);
 
     HandState fold(Game game, Table table, User user);

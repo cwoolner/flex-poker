@@ -12,6 +12,9 @@ public class RealTimeGame {
     private Map<String, Integer> eventVerificationMap =
             new HashMap<String, Integer>();
 
+    private Map<Table, Map<String, Integer>> tableEventVerificationMap =
+            new HashMap<Table, Map<String, Integer>>();
+
     private Blinds currentBlinds;
 
     private List<Table> tables = new ArrayList<Table>();
@@ -36,6 +39,26 @@ public class RealTimeGame {
         }
     }
 
+    public boolean isEventVerified(Table table, String event) {
+        synchronized (this) {
+            if (tableEventVerificationMap.get(table) == null
+                    || tableEventVerificationMap.get(table).get(event) == null) {
+                return false;
+            }
+
+            Integer numberOfVerified = tableEventVerificationMap.get(table).get(event);
+            Integer numberOfPlayers = 0;
+
+            for (Seat seat : table.getSeats()) {
+                if (seat.getUserGameStatus() != null) {
+                    numberOfPlayers++;
+                }
+            }
+
+            return numberOfVerified == numberOfPlayers;
+        }
+    }
+
     public void verifyEvent(User user, String string) {
         synchronized (this) {
             Integer numberOfVerified = eventVerificationMap.get(string);
@@ -43,6 +66,19 @@ public class RealTimeGame {
                 numberOfVerified = 0;
             }
             eventVerificationMap.put(string, ++numberOfVerified);
+        }
+    }
+
+    public void verifyEvent(User user, Table table, String event) {
+        synchronized (this) {
+            if (tableEventVerificationMap.get(table) == null) {
+                tableEventVerificationMap.put(table, new HashMap<String, Integer>());
+            }
+            Integer numberOfVerified = tableEventVerificationMap.get(table).get(event);
+            if (numberOfVerified == null) {
+                numberOfVerified = 0;
+            }
+            tableEventVerificationMap.get(table).put(event, ++numberOfVerified);
         }
     }
 

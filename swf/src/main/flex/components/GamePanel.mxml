@@ -216,6 +216,7 @@
                 token.addResponder(new AsyncResponder(
                     function(event:ResultEvent, token:Object = null):void {
                         requiredShowCardArray = event.result as ArrayCollection;
+                        mainRemoteObject.verifyReadyToStartNewHand(game, table);
                     },
                     sendFailedFaultHandler
                 ))
