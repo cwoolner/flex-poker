@@ -114,6 +114,12 @@
                     function(event:ResultEvent, token:Object = null):void {
                         table = event.result as Table;
 
+                        inProgressCommonPanel.flopCardImage1 = null;
+                        inProgressCommonPanel.flopCardImage2 = null;
+                        inProgressCommonPanel.flopCardImage3 = null;
+                        inProgressCommonPanel.turnCardImage = null;
+                        inProgressCommonPanel.riverCardImage = null;
+
                         if (table.seats.getItemAt(0).userGameStatus.user.username == username) {
                             pokerActionBoxIndex = 0;
                         } else if (table.seats.getItemAt(1).userGameStatus.user.username == username) {
@@ -134,6 +140,7 @@
                             pokerActionBoxIndex = 8;
                         }
 
+                        pokerActionBox.visible = true;
                         setupPokerActionBox();
                     },
                     sendFailedFaultHandler
