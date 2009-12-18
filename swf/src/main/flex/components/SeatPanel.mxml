@@ -29,13 +29,17 @@
 
         public function set seat(seat:Seat):void {
             _seat = seat;
-            dispatchEvent(new ActionOnChangedEvent());
-        }
 
-        public function set requiredShowCard(requiredShowCard:PocketCards):void {
-            var deck:Deck = Deck.getInstance();
-            pocketCardImage1 = deck.getCardImage(requiredShowCard.card1);
-            pocketCardImage2 = deck.getCardImage(requiredShowCard.card2);
+            if (_seat.showCards == null) {
+                pocketCardImage1 = null;
+                pocketCardImage2 = null;
+            } else {
+                var deck:Deck = Deck.getInstance();
+                pocketCardImage1 = deck.getCardImage(_seat.showCards.card1);
+                pocketCardImage2 = deck.getCardImage(_seat.showCards.card2);
+            }
+
+            dispatchEvent(new ActionOnChangedEvent());
         }
 
         private function initializePanel():void {

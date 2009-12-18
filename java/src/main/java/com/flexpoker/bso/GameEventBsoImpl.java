@@ -291,46 +291,6 @@ public class GameEventBsoImpl implements GameEventBso {
         }
     }
 
-    @Override
-    public List<PocketCards> fetchOptionalShowCards(Game game, Table table) {
-        // TODO: This should have an additional "can they do this? check.
-        // TODO: Dummy data
-        List<PocketCards> pocketCards = new ArrayList<PocketCards>();
-        pocketCards.add(new PocketCards());
-        pocketCards.add(new PocketCards());
-        return pocketCards;
-    }
-
-    @Override
-    public List<PocketCards> fetchRequiredShowCards(Game game, Table table) {
-        RealTimeHand realTimeHand = realTimeGameBso.get(game).getRealTimeHand(table);
-        HandDealerState handDealerState = realTimeHand.getHandDealerState();
-
-        if (handDealerState.equals(HandDealerState.COMPLETE)) {
-            // TODO: implement more logic.  right now we're just sending back
-            // the winning hand of each pot.  calling/last aggressor logic needs
-            // to be implemented.
-            List<Pot> pots = potBso.fetchAllPots(game, table);
-            Set<Seat> winners = new HashSet<Seat>();
-
-            for (Pot pot : pots) {
-                winners.addAll(pot.getWinners());
-            }
-
-            List<PocketCards> pocketCardList = new ArrayList<PocketCards>();
-
-            for (Seat seat : winners) {
-                PocketCards pocketCards = deckBso.fetchPocketCards(
-                        seat.getUserGameStatus().getUser(), game, table);
-                pocketCardList.add(pocketCards);
-            }
-
-            return pocketCardList;
-        }
-
-        throw new FlexPokerException("You are not allowed to fetch the required cards.");
-    }
-
     /**
      * Zero-out the chipsInFront field for all seats at a table.  This should
      * typically be used whenever a new round is started.
@@ -568,6 +528,9 @@ public class GameEventBsoImpl implements GameEventBso {
             for (Seat winner : winners) {
                 winner.getUserGameStatus().setChips(
                         winner.getUserGameStatus().getChips() + numberOfChips);
+                PocketCards pocketCards = deckBso.fetchPocketCards(
+                        winner.getUserGameStatus().getUser(), game, table);
+                winner.setShowCards(pocketCards);
             }
         }
     }

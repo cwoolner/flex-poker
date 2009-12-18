@@ -1,10 +1,7 @@
 package com.flexpoker.bso;
 
-import java.util.List;
-
 import com.flexpoker.model.Game;
 import com.flexpoker.model.HandState;
-import com.flexpoker.model.PocketCards;
 import com.flexpoker.model.Table;
 import com.flexpoker.model.User;
 
@@ -25,9 +22,5 @@ public interface GameEventBso {
     HandState fold(Game game, Table table, User user);
 
     HandState call(Game game, Table table, User user);
-
-    List<PocketCards> fetchRequiredShowCards(Game game, Table table);
-
-    List<PocketCards> fetchOptionalShowCards(Game game, Table table);
 
 }

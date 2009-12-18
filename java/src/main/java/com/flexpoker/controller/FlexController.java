@@ -54,8 +54,4 @@ public interface FlexController {
 
     RiverCard fetchRiverCard(Game game, Table table);
 
-    List<PocketCards> fetchRequiredShowCards(Game game, Table table);
-
-    List<PocketCards> fetchOptionalShowCards(Game game, Table table);
-
 }

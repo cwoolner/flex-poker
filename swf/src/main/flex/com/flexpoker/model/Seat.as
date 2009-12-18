@@ -30,6 +30,8 @@ package com.flexpoker.model {
 
         public var actionOn:Boolean;
 
+        public var showCards:PocketCards;
+
     }
 
 }

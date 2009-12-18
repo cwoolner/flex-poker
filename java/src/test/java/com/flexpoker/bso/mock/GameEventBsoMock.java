@@ -21,18 +21,6 @@ public class GameEventBsoMock implements GameEventBso {
     }
 
     @Override
-    public List<PocketCards> fetchOptionalShowCards(Game game, Table table) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public List<PocketCards> fetchRequiredShowCards(Game game, Table table) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
     public void startNewHand(Game game, Table table) {
         // TODO Auto-generated method stub
 
@@ -66,6 +54,12 @@ public class GameEventBsoMock implements GameEventBso {
     public HandState call(Game game, Table table, User user) {
         // TODO Auto-generated method stub
         return null;
+    }
+
+    @Override
+    public boolean verifyReadyToStartNewHand(User user, Game game, Table table) {
+        // TODO Auto-generated method stub
+        return false;
     }
 
 }

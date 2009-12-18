@@ -157,16 +157,6 @@ public class FlexControllerImpl implements FlexController {
         return dealCardActionsBso.fetchTurnCard(game, table);
     }
 
-    @Override
-    public List<PocketCards> fetchOptionalShowCards(Game game, Table table) {
-        return gameEventBso.fetchOptionalShowCards(game, table);
-    }
-
-    @Override
-    public List<PocketCards> fetchRequiredShowCards(Game game, Table table) {
-        return gameEventBso.fetchRequiredShowCards(game, table);
-    }
-
     private User extractCurrentUser() {
         return (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }

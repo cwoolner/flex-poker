@@ -28,6 +28,8 @@ public class Seat implements Comparable<Seat> {
 
     private boolean actionOn;
 
+    private PocketCards showCards;
+
     public UserGameStatus getUserGameStatus() {
         return userGameStatus;
     }
@@ -122,6 +124,14 @@ public class Seat implements Comparable<Seat> {
 
     public void setActionOn(boolean actionOn) {
         this.actionOn = actionOn;
+    }
+
+    public PocketCards getShowCards() {
+        return showCards;
+    }
+
+    public void setShowCards(PocketCards showCards) {
+        this.showCards = showCards;
     }
 
     @Override

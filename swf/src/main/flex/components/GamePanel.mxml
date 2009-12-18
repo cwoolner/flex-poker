@@ -43,9 +43,6 @@
         [Bindable]
         private var table:Table;
 
-        [Bindable]
-        private var requiredShowCardArray:ArrayCollection;
-
         public var channelSet:ChannelSet;
 
         private var startingTimer:Timer;
@@ -219,35 +216,11 @@
             }
 
             if (message.headers.DSSubtopic.search("handComplete") != -1) {
-                var token:AsyncToken = mainRemoteObject.fetchRequiredShowCards(game, table);
-                token.addResponder(new AsyncResponder(
-                    function(event:ResultEvent, token:Object = null):void {
-                        requiredShowCardArray = event.result as ArrayCollection;
-                        mainRemoteObject.verifyReadyToStartNewHand(game, table);
-                    },
-                    sendFailedFaultHandler
-                ))
-
+                fetchTableAfterDeal(false);
+                mainRemoteObject.verifyReadyToStartNewHand(game, table);
                 mainRemoteObject.fetchAllUserGameStatuses(game);
                 return;
             }
-
-            if (message.headers.DSSubtopic.search("optionalHandsShown") != -1) {
-                var token:AsyncToken = mainRemoteObject.fetchOptionalShowCards(game, table);
-                token.addResponder(new AsyncResponder(
-                    function(event:ResultEvent, token:Object = null):void {
-                        var riverCard:RiverCard = event.result as RiverCard;
-                        var deck:Deck = Deck.getInstance();
-                        inProgressCommonPanel.riverCardImage = deck.getCardImage(riverCard.card);
-                        fetchTableAfterDeal(false);
-                    },
-                    sendFailedFaultHandler
-                ))
-
-                mainRemoteObject.fetchAllUserGameStatuses(game);
-                return;
-            }
-
         }
 
         private function fetchTableAfterDeal(commonCardsDealt:Boolean):void {
@@ -419,21 +392,17 @@
         <mx:Spacer height="100%" />
         <mx:HBox width="100%">
             <mx:Spacer width="100%" />
-            <comp:SeatPanel seat="{table.seats.getItemAt(1) as Seat}"
-                requiredShowCard="{requiredShowCardArray.getItemAt(1) as PocketCards}" />
+            <comp:SeatPanel seat="{table.seats.getItemAt(1) as Seat}" />
             <mx:Spacer width="25%" />
-            <comp:SeatPanel seat="{table.seats.getItemAt(2) as Seat}"
-                requiredShowCard="{requiredShowCardArray.getItemAt(2) as PocketCards}" />
+            <comp:SeatPanel seat="{table.seats.getItemAt(2) as Seat}" />
             <mx:Spacer width="100%" />
         </mx:HBox>
         <mx:Spacer height="45%" />
         <mx:HBox width="100%">
             <mx:Spacer width="100%" />
-            <comp:SeatPanel seat="{table.seats.getItemAt(0) as Seat}"
-                requiredShowCard="{requiredShowCardArray.getItemAt(0) as PocketCards}" />
+            <comp:SeatPanel seat="{table.seats.getItemAt(0) as Seat}" />
             <mx:Spacer width="100%" />
-            <comp:SeatPanel seat="{table.seats.getItemAt(3) as Seat}"
-                requiredShowCard="{requiredShowCardArray.getItemAt(3) as PocketCards}" />
+            <comp:SeatPanel seat="{table.seats.getItemAt(3) as Seat}" />
             <mx:Spacer width="100%" />
         </mx:HBox>
         <mx:Spacer height="100%" />
@@ -444,28 +413,23 @@
                 <comp:PotAmountsPanel potAmounts="{table.potAmounts}" />
             </mx:VBox>
             <mx:Spacer width="50%" />
-            <comp:SeatPanel seat="{table.seats.getItemAt(4) as Seat}"
-                requiredShowCard="{requiredShowCardArray.getItemAt(4) as PocketCards}" />
+            <comp:SeatPanel seat="{table.seats.getItemAt(4) as Seat}" />
             <mx:Spacer width="60%" />
         </mx:HBox>
         <mx:Spacer height="100%" />
         <mx:HBox width="100%">
             <mx:Spacer width="100%" />
-            <comp:SeatPanel seat="{table.seats.getItemAt(8) as Seat}"
-                requiredShowCard="{requiredShowCardArray.getItemAt(8) as PocketCards}" />
+            <comp:SeatPanel seat="{table.seats.getItemAt(8) as Seat}" />
             <mx:Spacer width="100%" />
-            <comp:SeatPanel seat="{table.seats.getItemAt(5) as Seat}"
-                requiredShowCard="{requiredShowCardArray.getItemAt(5) as PocketCards}" />
+            <comp:SeatPanel seat="{table.seats.getItemAt(5) as Seat}" />
             <mx:Spacer width="100%" />
         </mx:HBox>
         <mx:Spacer height="45%" />
         <mx:HBox width="100%">
             <mx:Spacer width="100%" />
-            <comp:SeatPanel seat="{table.seats.getItemAt(7) as Seat}"
-                requiredShowCard="{requiredShowCardArray.getItemAt(7) as PocketCards}" />
+            <comp:SeatPanel seat="{table.seats.getItemAt(7) as Seat}" />
             <mx:Spacer width="25%" />
-            <comp:SeatPanel seat="{table.seats.getItemAt(6) as Seat}"
-                requiredShowCard="{requiredShowCardArray.getItemAt(6) as PocketCards}" />
+            <comp:SeatPanel seat="{table.seats.getItemAt(6) as Seat}" />
             <mx:Spacer width="100%" />
         </mx:HBox>
         <mx:Spacer height="100%" />
