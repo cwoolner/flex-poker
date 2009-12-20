@@ -110,6 +110,7 @@ public class GameEventBsoImpl implements GameEventBso {
             realTimeGame.verifyEvent(user, table, "readyToStartNewHand");
 
             if (realTimeGame.isEventVerified(table, "readyToStartNewHand")) {
+                realTimeGame.resetEvent(table, "readyToStartNewHand");
                 startNewHand(game, table);
                 return true;
             }

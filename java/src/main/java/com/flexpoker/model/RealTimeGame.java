@@ -82,6 +82,12 @@ public class RealTimeGame {
         }
     }
 
+    public void resetEvent(Table table, String event) {
+        synchronized (this) {
+            tableEventVerificationMap.get(table).put(event, 0);
+        }
+    }
+
     public Blinds getCurrentBlinds() {
         return currentBlinds;
     }
