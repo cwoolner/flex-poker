@@ -142,6 +142,7 @@ public class GameEventBsoImpl implements GameEventBso {
                 potBso.calculatePotsAfterRound(game, table);
                 determineTablePotAmounts(game, table);
                 resetChipsInFront(table);
+                resetPossibleSeatActionsAfterRound(table, realTimeHand);
 
                 if (realTimeHand.getHandDealerState() != HandDealerState.COMPLETE) {
                     seatStatusBso.setStatusForNewRound(table);
@@ -203,6 +204,7 @@ public class GameEventBsoImpl implements GameEventBso {
                 potBso.calculatePotsAfterRound(game, table);
                 determineTablePotAmounts(game, table);
                 resetChipsInFront(table);
+                resetPossibleSeatActionsAfterRound(table, realTimeHand);
 
                 if (realTimeHand.getHandDealerState() != HandDealerState.COMPLETE) {
                     seatStatusBso.setStatusForNewRound(table);
@@ -251,6 +253,7 @@ public class GameEventBsoImpl implements GameEventBso {
                 potBso.calculatePotsAfterRound(game, table);
                 determineTablePotAmounts(game, table);
                 resetChipsInFront(table);
+                resetPossibleSeatActionsAfterRound(table, realTimeHand);
 
                 if (realTimeHand.getHandDealerState() != HandDealerState.COMPLETE) {
                     seatStatusBso.setStatusForNewRound(table);
@@ -364,6 +367,16 @@ public class GameEventBsoImpl implements GameEventBso {
 
             return new HandState(realTimeHand.getHandDealerState(),
                     realTimeHand.getHandRoundState());
+        }
+    }
+
+    private void resetPossibleSeatActionsAfterRound(Table table,
+            RealTimeHand realTimeHand) {
+        for (Seat seat : table.getSeats()) {
+            realTimeHand.addPossibleSeatAction(seat, GameEventType.CHECK);
+            realTimeHand.addPossibleSeatAction(seat, GameEventType.RAISE);
+            realTimeHand.removePossibleSeatAction(seat, GameEventType.CALL);
+            realTimeHand.removePossibleSeatAction(seat, GameEventType.FOLD);
         }
     }
 
