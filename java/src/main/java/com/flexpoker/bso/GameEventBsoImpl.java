@@ -105,6 +105,8 @@ public class GameEventBsoImpl implements GameEventBso {
     public boolean verifyReadyToStartNewHand(User user, Game game, Table table) {
         synchronized (this) {
             RealTimeGame realTimeGame = realTimeGameBso.get(game);
+            table = realTimeGame.getTable(table);
+
             realTimeGame.verifyEvent(user, table, "readyToStartNewHand");
 
             if (realTimeGame.isEventVerified(table, "readyToStartNewHand")) {
@@ -222,12 +224,11 @@ public class GameEventBsoImpl implements GameEventBso {
     public HandState call(Game game, Table table, User user) {
         synchronized (this) {
             RealTimeGame realTimeGame = realTimeGameBso.get(game);
+            RealTimeHand realTimeHand = realTimeGame.getRealTimeHand(table);
+            table = realTimeGame.getTable(table);
 
             Blinds currentBlinds = realTimeGame.getCurrentBlinds();
             int bigBlind = currentBlinds.getBigBlind();
-
-            RealTimeHand realTimeHand = realTimeGame.getRealTimeHand(table);
-            table = realTimeGame.getTable(table);
 
             Seat actionOnSeat = (Seat) CollectionUtils.find(table.getSeats(),
                     new ActionOnSeatPredicate());
