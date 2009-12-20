@@ -253,7 +253,7 @@
             ))
         }
 
-        private function sendFailedFaultHandler(event:FaultEvent):void {
+        private function sendFailedFaultHandler(event:FaultEvent, token:Object):void {
             Alert.show("Send Failed: " + event.fault.faultString);
         }
 
@@ -316,7 +316,7 @@
             ))
         }
 
-        private function showErrorFaultHandler(event:FaultEvent):void {
+        private function showErrorFaultHandler(event:FaultEvent, token:Object):void {
             var errorMessage:ErrorMessage = event.message as ErrorMessage;
             Alert.show(errorMessage.rootCause.message);
         }
