@@ -137,6 +137,7 @@ public class GameEventBsoImpl implements GameEventBso {
                     new ActionOnSeatPredicate());
 
             if (actionOnSeat.equals(realTimeHand.getLastToAct())) {
+                realTimeHand.setOriginatingBettor(null);
                 realTimeHand.setHandRoundState(HandRoundState.ROUND_COMPLETE);
                 moveToNextHandDealerState(realTimeHand);
                 potBso.calculatePotsAfterRound(game, table);
@@ -194,11 +195,13 @@ public class GameEventBsoImpl implements GameEventBso {
             }
 
             if (numberOfPlayersLeft == 1) {
+                realTimeHand.setOriginatingBettor(null);
                 realTimeHand.setHandRoundState(HandRoundState.ROUND_COMPLETE);
                 realTimeHand.setHandDealerState(HandDealerState.COMPLETE);
                 potBso.calculatePotsAfterRound(game, table);
                 determineTablePotAmounts(game, table);
             } else if (actionOnSeat.equals(realTimeHand.getLastToAct())) {
+                realTimeHand.setOriginatingBettor(null);
                 realTimeHand.setHandRoundState(HandRoundState.ROUND_COMPLETE);
                 moveToNextHandDealerState(realTimeHand);
                 potBso.calculatePotsAfterRound(game, table);
@@ -248,6 +251,7 @@ public class GameEventBsoImpl implements GameEventBso {
             seat.setChipsInFront(seat.getChipsInFront() + seat.getCallAmount());
 
             if (seat.equals(realTimeHand.getLastToAct())) {
+                realTimeHand.setOriginatingBettor(null);
                 realTimeHand.setHandRoundState(HandRoundState.ROUND_COMPLETE);
                 moveToNextHandDealerState(realTimeHand);
                 potBso.calculatePotsAfterRound(game, table);
@@ -308,12 +312,12 @@ public class GameEventBsoImpl implements GameEventBso {
 
             int raiseAmountInt = Integer.parseInt(raiseAmount);
 
+            realTimeHand.setOriginatingBettor(actionOnSeat);
             realTimeHand.setHandRoundState(HandRoundState.ROUND_IN_PROGRESS);
             actionOnSeat.setActionOn(false);
             realTimeHand.getNextToAct().setActionOn(true);
             determineNextToAct(table, realTimeHand);
             actionOnSeat.setChipsInFront(actionOnSeat.getChipsInFront() + raiseAmountInt);
-            realTimeHand.setOriginatingBettor(actionOnSeat);
 
             UserGameStatus userGameStatus = actionOnSeat.getUserGameStatus();
             userGameStatus.setChips(userGameStatus.getChips() - raiseAmountInt);
@@ -476,28 +480,29 @@ public class GameEventBsoImpl implements GameEventBso {
     private void determineLastToAct(Table table, RealTimeHand realTimeHand) {
         List<Seat> seats = table.getSeats();
 
-        Seat buttonSeat = (Seat) CollectionUtils.find(table.getSeats(),
-                new ButtonSeatPredicate());
+        int seatIndex;
 
         if (realTimeHand.getOriginatingBettor() == null) {
-            int buttonIndex = seats.indexOf(buttonSeat);
-
-            for (int i = buttonIndex; i >= 0; i--) {
-                if (seats.get(i).isStillInHand()) {
-                    realTimeHand.setLastToAct(seats.get(i));
-                    return;
-                }
-            }
-
-            for (int i = seats.size() - 1; i > buttonIndex; i--) {
-                if (seats.get(i).isStillInHand()) {
-                    realTimeHand.setLastToAct(seats.get(i));
-                    return;
-                }
-            }
-
+            Seat buttonSeat = (Seat) CollectionUtils.find(table.getSeats(),
+                    new ButtonSeatPredicate());
+            seatIndex = seats.indexOf(buttonSeat);
+        } else {
+            seatIndex = seats.indexOf(realTimeHand.getOriginatingBettor());
         }
 
+        for (int i = seatIndex; i >= 0; i--) {
+            if (seats.get(i).isStillInHand()) {
+                realTimeHand.setLastToAct(seats.get(i));
+                return;
+            }
+        }
+
+        for (int i = seats.size() - 1; i > seatIndex; i--) {
+            if (seats.get(i).isStillInHand()) {
+                realTimeHand.setLastToAct(seats.get(i));
+                return;
+            }
+        }
     }
 
     private void determineNextToAct(Table table, RealTimeHand realTimeHand) {
