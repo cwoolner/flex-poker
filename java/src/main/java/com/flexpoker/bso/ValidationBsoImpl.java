@@ -43,7 +43,7 @@ public class ValidationBsoImpl implements ValidationBso {
     @Override
     public void validateTableAssignment(Set<UserGameStatus> userGameStatuses,
             int maxPlayersPerTable) {
-                if (CollectionUtils.isEmpty(userGameStatuses)) {
+        if (CollectionUtils.isEmpty(userGameStatuses)) {
             throw new IllegalArgumentException("userGameStatuses cannot be empty.");
         }
         if (maxPlayersPerTable > Constants.MAX_PLAYERS_PER_TABLE
@@ -55,6 +55,23 @@ public class ValidationBsoImpl implements ValidationBso {
         if (maxPlayersPerTable == 2 && userGameStatuses.size() % 2 != 0) {
             throw new IllegalArgumentException("For a heads-up tournament, you "
                     + "must have an even number of players.");
+        }
+    }
+
+    @Override
+    public void validateRaiseAmount(int minimumAmount, int maximumAmount,
+            String raiseAmount) {
+        int raiseAmountInt;
+        try {
+            raiseAmountInt = Integer.parseInt(raiseAmount);
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("Raise amount must be an integer.");
+        }
+
+        if (raiseAmountInt <= 0 || raiseAmountInt < minimumAmount
+                || raiseAmountInt > maximumAmount) {
+            throw new IllegalArgumentException("Raise amount must be between the "
+                    + "minimum and maximum values.");
         }
     }
 

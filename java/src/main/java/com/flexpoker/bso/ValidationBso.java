@@ -31,4 +31,11 @@ public interface ValidationBso {
     void validateTableAssignment(Set<UserGameStatus> userGameStatuses,
             int maxPlayersPerTable);
 
+    /**
+     * Verify that the raise amount is a valid number, and that it's between
+     * the minimum and maximum amounts.
+     */
+    void validateRaiseAmount(int minimumAmount, int maximumAmount,
+            String raiseAmount);
+
 }
