@@ -4,6 +4,7 @@
         import com.flexpoker.events.CheckEvent;
         import com.flexpoker.events.FoldEvent;
         import com.flexpoker.events.CallEvent;
+        import com.flexpoker.events.RaiseEvent;
 
         [Bindable]
         public var maxValue:int;
@@ -164,8 +165,9 @@
 
     <mx:HSlider id="raiseSlider" snapInterval="1" maximum="{maxValue}" minimum="{minValue}" value="{minValue}" />
     <mx:TextInput id="raiseTextBox" text="{raiseSlider.value}" />
-    <mx:Button id="raiseButton" label="Raise To {raiseTextBox.text}" />
+    <mx:Button id="raiseButton" label="Raise To {raiseTextBox.text}" click="dispatchEvent(new RaiseEvent(raiseTextBox.text))" />
     <mx:Button id="checkButton" label="Check" click="dispatchEvent(new CheckEvent())" />
     <mx:Button id="callButton" label="Call {_callAmount}" click="dispatchEvent(new CallEvent())" />
     <mx:Button id="foldButton" label="Fold" click="dispatchEvent(new FoldEvent())" />
+
 </mx:VBox>

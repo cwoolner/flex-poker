@@ -9,7 +9,6 @@
     <mx:Script>
     <![CDATA[
 
-        import com.flexpoker.events.SendChatMessageEvent;
         import com.flexpoker.events.GamePanelCanceledEvent;
         import com.flexpoker.model.Game;
         import com.flexpoker.model.Table;
@@ -37,6 +36,7 @@
         import com.flexpoker.events.CheckEvent;
         import com.flexpoker.events.FoldEvent;
         import com.flexpoker.events.CallEvent;
+        import com.flexpoker.events.RaiseEvent;
 
         public var game:Game;
 
@@ -306,6 +306,16 @@
             ))
         }
 
+        private function raise(event:RaiseEvent):void {
+            var token:AsyncToken = mainRemoteObject.raise(game, table, event.getRaiseAmount());
+            token.addResponder(new AsyncResponder(
+                function(event:ResultEvent, token:Object = null):void {
+                    pokerActionBox.visible = false;
+                },
+                showErrorFaultHandler
+            ))
+        }
+
         private function showErrorFaultHandler(event:FaultEvent):void {
             var errorMessage:ErrorMessage = event.message as ErrorMessage;
             Alert.show(errorMessage.rootCause.message);
@@ -317,11 +327,13 @@
                 pokerActionBox.addEventListener(CheckEvent.NAME, check);
                 pokerActionBox.addEventListener(FoldEvent.NAME, fold);
                 pokerActionBox.addEventListener(CallEvent.NAME, call);
+                pokerActionBox.addEventListener(RaiseEvent.NAME, raise);
             } else {
                 pokerActionBox.actionOn = false;
                 pokerActionBox.removeEventListener(CheckEvent.NAME, check);
                 pokerActionBox.removeEventListener(FoldEvent.NAME, fold);
                 pokerActionBox.removeEventListener(CallEvent.NAME, call);
+                pokerActionBox.removeEventListener(RaiseEvent.NAME, raise);
             }
 
             pokerActionBox.minValue = table.seats.getItemAt(pokerActionBoxIndex).minBet;
