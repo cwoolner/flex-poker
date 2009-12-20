@@ -11,8 +11,6 @@ public interface GameEventBso {
 
     boolean verifyRegistration(User user, Game game);
 
-    void startNewHand(Game game, Table table);
-
     boolean verifyGameInProgress(User user, Game game);
 
     boolean verifyReadyToStartNewHand(User user, Game game, Table table);

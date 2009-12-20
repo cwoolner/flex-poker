@@ -87,14 +87,6 @@ public class GameEventBsoImpl implements GameEventBso {
     }
 
     @Override
-    public void startNewHand(Game game, Table table) {
-        seatStatusBso.setStatusForNewHand(table);
-        deckBso.shuffleDeck(game, table);
-        createNewRealTimeHand(game, table);
-        potBso.createNewHandPot(game, table);
-    }
-
-    @Override
     public boolean verifyGameInProgress(User user, Game game) {
         synchronized (this) {
             RealTimeGame realTimeGame = realTimeGameBso.get(game);
@@ -289,6 +281,13 @@ public class GameEventBsoImpl implements GameEventBso {
             return new HandState(realTimeHand.getHandDealerState(),
                     realTimeHand.getHandRoundState());
         }
+    }
+
+    private void startNewHand(Game game, Table table) {
+        seatStatusBso.setStatusForNewHand(table);
+        deckBso.shuffleDeck(game, table);
+        createNewRealTimeHand(game, table);
+        potBso.createNewHandPot(game, table);
     }
 
     /**

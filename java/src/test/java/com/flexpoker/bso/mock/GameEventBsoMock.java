@@ -21,12 +21,6 @@ public class GameEventBsoMock implements GameEventBso {
     }
 
     @Override
-    public void startNewHand(Game game, Table table) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
     public HandState check(Game game, Table table, User user) {
         // TODO Auto-generated method stub
         return null;
