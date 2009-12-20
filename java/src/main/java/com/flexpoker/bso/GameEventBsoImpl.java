@@ -286,9 +286,7 @@ public class GameEventBsoImpl implements GameEventBso {
 
     private void startNewHand(Game game, Table table) {
         seatStatusBso.setStatusForNewHand(table);
-        deckBso.shuffleDeck(game, table);
-        createNewRealTimeHand(game, table);
-        potBso.createNewHandPot(game, table);
+        resetTableStatus(game, table);
     }
 
     /**
@@ -459,10 +457,16 @@ public class GameEventBsoImpl implements GameEventBso {
     private void startNewGameForAllTables(Game game) {
         for (Table table : gameBso.fetchTables(game)) {
             seatStatusBso.setStatusForNewGame(table);
-            deckBso.shuffleDeck(game, table);
-            createNewRealTimeHand(game, table);
-            potBso.createNewHandPot(game, table);
+            resetTableStatus(game, table);
         }
+    }
+
+    private void resetTableStatus(Game game, Table table) {
+        table.setTotalPotAmount(0);
+        deckBso.shuffleDeck(game, table);
+        potBso.createNewHandPot(game, table);
+        createNewRealTimeHand(game, table);
+        determineTablePotAmounts(game, table);
     }
 
     private boolean isUserAllowedToPerformAction(GameEventType action,
