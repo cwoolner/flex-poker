@@ -1,5 +1,5 @@
 <mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml"
-   creationComplete="initializePanel()">
+   creationComplete="initializePanel()" currentState="blankState">
 
     <mx:Style>
         .actionOnTrue {
@@ -30,13 +30,15 @@
         public function set seat(seat:Seat):void {
             _seat = seat;
 
-            if (_seat.showCards == null) {
-                pocketCardImage1 = null;
-                pocketCardImage2 = null;
+            if (_seat == null || _seat.userGameStatus == null) {
+                currentState = "blankState";
+            } else if (_seat.showCards == null) {
+                currentState = "doNotShowCardsState";
             } else {
                 var deck:Deck = Deck.getInstance();
                 pocketCardImage1 = deck.getCardImage(_seat.showCards.card1);
                 pocketCardImage2 = deck.getCardImage(_seat.showCards.card2);
+                currentState = "showCardsState";
             }
 
             dispatchEvent(new ActionOnChangedEvent());
@@ -61,20 +63,40 @@
     ]]>
     </mx:Script>
 
-    <mx:HBox width="100%">
+    <mx:HBox id="pocketCardBox" width="100%">
         <mx:Image id="myPocketCard1" height="100%" width="100%" source="{pocketCardImage1}" maintainAspectRatio="true" />
         <mx:Image id="myPocketCard2" height="100%" width="100%" source="{pocketCardImage2}" maintainAspectRatio="true" />
     </mx:HBox>
 
-    <mx:Label text="{_seat.userGameStatus.user.username}" />
-    <mx:Label text="{_seat.userGameStatus.chips}" />
-    <mx:HBox>
-        <mx:Spacer width="100%" />
-        <mx:Image id="buttonImage" source="{TableImages.getInstance().getButtonImage()}" visible="{_seat.button}" />
-        <mx:Image id="smallBlindImage" source="{TableImages.getInstance().getSmallBlindImage()}" visible="{_seat.smallBlind}" />
-        <mx:Image id="bigBlindImage" source="{TableImages.getInstance().getBigBlindImage()}" visible="{_seat.bigBlind}" />
-        <mx:Spacer width="100%" />
-     </mx:HBox>
-     <mx:Label text="{_seat.chipsInFront}" visible="{_seat.chipsInFront != 0}" />
+    <mx:VBox id="seatInformation">
+        <mx:Label text="{_seat.userGameStatus.user.username}" />
+        <mx:Label text="{_seat.userGameStatus.chips}" />
+        <mx:HBox>
+            <mx:Spacer width="100%" />
+            <mx:Image id="buttonImage" source="{TableImages.getInstance().getButtonImage()}" visible="{_seat.button}" />
+            <mx:Image id="smallBlindImage" source="{TableImages.getInstance().getSmallBlindImage()}" visible="{_seat.smallBlind}" />
+            <mx:Image id="bigBlindImage" source="{TableImages.getInstance().getBigBlindImage()}" visible="{_seat.bigBlind}" />
+            <mx:Spacer width="100%" />
+         </mx:HBox>
+         <mx:Label text="{_seat.chipsInFront}" visible="{_seat.chipsInFront != 0}" />
+     </mx:VBox>
+
+    <mx:states>
+        <mx:State name="blankState">
+            <mx:RemoveChild target="{pocketCardBox}"/>
+            <mx:RemoveChild target="{seatInformation}"/>
+        </mx:State>
+        <mx:State name="doNotShowCardsState">
+            <mx:RemoveChild target="{pocketCardBox}"/>
+            <mx:RemoveChild target="{seatInformation}"/>
+            <mx:AddChild target="{seatInformation}"/>
+        </mx:State>
+        <mx:State name="showCardsState">
+            <mx:RemoveChild target="{pocketCardBox}"/>
+            <mx:RemoveChild target="{seatInformation}"/>
+            <mx:AddChild target="{pocketCardBox}"/>
+            <mx:AddChild target="{seatInformation}"/>
+        </mx:State>
+    </mx:states>
 
 </mx:VBox>
