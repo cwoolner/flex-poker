@@ -273,18 +273,12 @@ public class GameEventBsoImpl implements GameEventBso {
             userGameStatus.setChips(userGameStatus.getChips() - seat.getCallAmount());
             table.setTotalPotAmount(table.getTotalPotAmount() + seat.getCallAmount());
 
-            int amountNeededToCall = 0;
-            int amountNeededToRaise = bigBlind;
-
             realTimeHand.addPossibleSeatAction(seat, GameEventType.CHECK);
             realTimeHand.removePossibleSeatAction(seat, GameEventType.CALL);
             realTimeHand.removePossibleSeatAction(seat, GameEventType.FOLD);
 
-            seat.setCallAmount(amountNeededToCall);
-            seat.setMinBet(amountNeededToRaise);
-
-            realTimeHand.setAmountNeededToCall(seat, amountNeededToCall);
-            realTimeHand.setAmountNeededToRaise(seat, amountNeededToRaise);
+            seat.setCallAmount(0);
+            seat.setMinBet(bigBlind);
 
             return new HandState(realTimeHand.getHandDealerState(),
                     realTimeHand.getHandRoundState());
@@ -309,7 +303,7 @@ public class GameEventBsoImpl implements GameEventBso {
                 throw new FlexPokerException("Not allowed to raise.");
             }
 
-            validationBso.validateRaiseAmount(realTimeHand.getAmountNeededToRaise(actionOnSeat),
+            validationBso.validateRaiseAmount(actionOnSeat.getMinBet(),
                     actionOnSeat.getUserGameStatus().getChips(), raiseAmount);
 
             int raiseAmountInt = Integer.parseInt(raiseAmount);
@@ -339,20 +333,13 @@ public class GameEventBsoImpl implements GameEventBso {
                     if (totalChips < raiseAmountInt) {
                         seat.setCallAmount(totalChips);
                         seat.setMinBet(0);
-                        realTimeHand.setAmountNeededToCall(actionOnSeat, totalChips);
-                        realTimeHand.setAmountNeededToRaise(actionOnSeat, 0);
                         realTimeHand.removePossibleSeatAction(seat, GameEventType.RAISE);
                     } else {
                         seat.setCallAmount(raiseAmountInt);
-                        realTimeHand.setAmountNeededToCall(actionOnSeat, raiseAmountInt);
                         realTimeHand.addPossibleSeatAction(seat, GameEventType.RAISE);
                         if (totalChips < raiseAmountInt * 2) {
-                            realTimeHand.setAmountNeededToRaise(actionOnSeat,
-                                    totalChips);
                             seat.setMinBet(totalChips);
                         } else {
-                            realTimeHand.setAmountNeededToRaise(actionOnSeat,
-                                    raiseAmountInt * 2);
                             seat.setMinBet(raiseAmountInt * 2);
                         }
                     }
@@ -361,9 +348,6 @@ public class GameEventBsoImpl implements GameEventBso {
 
             actionOnSeat.setCallAmount(0);
             actionOnSeat.setMinBet(bigBlind);
-
-            realTimeHand.setAmountNeededToCall(actionOnSeat, 0);
-            realTimeHand.setAmountNeededToRaise(actionOnSeat, bigBlind);
 
             return new HandState(realTimeHand.getHandDealerState(),
                     realTimeHand.getHandRoundState());
@@ -461,9 +445,6 @@ public class GameEventBsoImpl implements GameEventBso {
 
             seat.setCallAmount(amountNeededToCall);
             seat.setMinBet(amountNeededToRaise);
-
-            realTimeHand.setAmountNeededToCall(seat, amountNeededToCall);
-            realTimeHand.setAmountNeededToRaise(seat, amountNeededToRaise);
         }
 
         determineNextToAct(table, realTimeHand);
