@@ -38,10 +38,17 @@ public class SeatStatusBsoImpl implements SeatStatusBso {
     public void setStatusForNewHand(Table table) {
         validationBso.validateTable(table);
         assignStillInHand(table);
+        resetShowCards(table);
         assignNewHandBigBlind(table);
         assignNewHandSmallBlind(table);
         assignNewHandButton(table);
         assignNewHandActionOn(table);
+    }
+
+    private void resetShowCards(Table table) {
+        for (Seat seat : table.getSeats()) {
+            seat.setShowCards(null);
+        }
     }
 
     private void assignStillInHand(Table table) {
