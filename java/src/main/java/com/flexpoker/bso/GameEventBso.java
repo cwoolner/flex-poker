@@ -21,4 +21,6 @@ public interface GameEventBso {
 
     HandState call(Game game, Table table, User user);
 
+    HandState raise(Game game, Table table, User user, String raiseAmount);
+
 }

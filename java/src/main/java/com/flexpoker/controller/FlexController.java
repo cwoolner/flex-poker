@@ -48,6 +48,8 @@ public interface FlexController {
 
     void call(Game game, Table table);
 
+    void raise(Game game, Table table, String raiseAmount);
+
     FlopCards fetchFlopCards(Game game, Table table);
 
     TurnCard fetchTurnCard(Game game, Table table);

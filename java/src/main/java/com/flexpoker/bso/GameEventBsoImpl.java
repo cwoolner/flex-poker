@@ -50,6 +50,8 @@ public class GameEventBsoImpl implements GameEventBso {
 
     private PotBso potBso;
 
+    private ValidationBso validationBso;
+
     @Override
     public boolean addUserToGame(User user, Game game) {
         synchronized (this) {
@@ -286,6 +288,85 @@ public class GameEventBsoImpl implements GameEventBso {
         }
     }
 
+    @Override
+    public HandState raise(Game game, Table table, User user, String raiseAmount) {
+        synchronized (this) {
+            RealTimeGame realTimeGame = realTimeGameBso.get(game);
+            RealTimeHand realTimeHand = realTimeGame.getRealTimeHand(table);
+            table = realTimeGame.getTable(table);
+
+            Blinds currentBlinds = realTimeGame.getCurrentBlinds();
+            int bigBlind = currentBlinds.getBigBlind();
+
+            Seat actionOnSeat = (Seat) CollectionUtils.find(table.getSeats(),
+                    new ActionOnSeatPredicate());
+
+            if (!isUserAllowedToPerformAction(GameEventType.RAISE, user,
+                    realTimeHand, table)) {
+                throw new FlexPokerException("Not allowed to raise.");
+            }
+
+            validationBso.validateRaiseAmount(realTimeHand.getAmountNeededToRaise(actionOnSeat),
+                    actionOnSeat.getUserGameStatus().getChips(), raiseAmount);
+
+            int raiseAmountInt = Integer.parseInt(raiseAmount);
+
+            realTimeHand.setHandRoundState(HandRoundState.ROUND_IN_PROGRESS);
+            actionOnSeat.setActionOn(false);
+            realTimeHand.getNextToAct().setActionOn(true);
+            determineNextToAct(table, realTimeHand);
+            actionOnSeat.setChipsInFront(actionOnSeat.getChipsInFront() + raiseAmountInt);
+            realTimeHand.setOriginatingBettor(actionOnSeat);
+
+            UserGameStatus userGameStatus = actionOnSeat.getUserGameStatus();
+            userGameStatus.setChips(userGameStatus.getChips() - raiseAmountInt);
+            table.setTotalPotAmount(table.getTotalPotAmount() + raiseAmountInt);
+
+            realTimeHand.addPossibleSeatAction(actionOnSeat, GameEventType.CALL);
+            realTimeHand.addPossibleSeatAction(actionOnSeat, GameEventType.RAISE);
+            realTimeHand.addPossibleSeatAction(actionOnSeat, GameEventType.FOLD);
+            realTimeHand.removePossibleSeatAction(actionOnSeat, GameEventType.CHECK);
+
+            for (Seat seat : table.getSeats()) {
+                if (seat.isStillInHand() && !actionOnSeat.equals(seat)) {
+                    int totalChips = seat.getUserGameStatus().getChips();
+                    realTimeHand.addPossibleSeatAction(seat, GameEventType.CALL);
+                    realTimeHand.addPossibleSeatAction(seat, GameEventType.FOLD);
+                    realTimeHand.removePossibleSeatAction(seat, GameEventType.CHECK);
+                    if (totalChips < raiseAmountInt) {
+                        seat.setCallAmount(totalChips);
+                        seat.setMinBet(0);
+                        realTimeHand.setAmountNeededToCall(actionOnSeat, totalChips);
+                        realTimeHand.setAmountNeededToRaise(actionOnSeat, 0);
+                        realTimeHand.removePossibleSeatAction(seat, GameEventType.RAISE);
+                    } else {
+                        seat.setCallAmount(raiseAmountInt);
+                        realTimeHand.setAmountNeededToCall(actionOnSeat, raiseAmountInt);
+                        realTimeHand.addPossibleSeatAction(seat, GameEventType.RAISE);
+                        if (totalChips < raiseAmountInt * 2) {
+                            realTimeHand.setAmountNeededToRaise(actionOnSeat,
+                                    totalChips);
+                            seat.setMinBet(totalChips);
+                        } else {
+                            realTimeHand.setAmountNeededToRaise(actionOnSeat,
+                                    raiseAmountInt * 2);
+                            seat.setMinBet(raiseAmountInt * 2);
+                        }
+                    }
+                }
+            }
+
+            actionOnSeat.setCallAmount(0);
+            actionOnSeat.setMinBet(bigBlind);
+
+            realTimeHand.setAmountNeededToCall(actionOnSeat, 0);
+            realTimeHand.setAmountNeededToRaise(actionOnSeat, bigBlind);
+
+            return new HandState(realTimeHand.getHandDealerState(),
+                    realTimeHand.getHandRoundState());
+        }
+    }
+
     private void startNewHand(Game game, Table table) {
         seatStatusBso.setStatusForNewHand(table);
         resetTableStatus(game, table);
@@ -346,16 +427,19 @@ public class GameEventBsoImpl implements GameEventBso {
                 amountNeededToCall = 0;
                 amountNeededToRaise = bigBlind;
                 realTimeHand.addPossibleSeatAction(seat, GameEventType.CHECK);
+                realTimeHand.addPossibleSeatAction(seat, GameEventType.RAISE);
                 seat.setChipsInFront(bigBlind);
                 userGameStatus.setChips(userGameStatus.getChips() - bigBlind);
             } else if (seat.equals(smallBlindSeat)) {
                 amountNeededToCall = smallBlind;
                 realTimeHand.addPossibleSeatAction(seat, GameEventType.CALL);
                 realTimeHand.addPossibleSeatAction(seat, GameEventType.FOLD);
+                realTimeHand.addPossibleSeatAction(seat, GameEventType.RAISE);
                 seat.setChipsInFront(smallBlind);
                 userGameStatus.setChips(userGameStatus.getChips() - smallBlind);
             } else {
                 realTimeHand.addPossibleSeatAction(seat, GameEventType.CALL);
+                realTimeHand.addPossibleSeatAction(seat, GameEventType.RAISE);
                 realTimeHand.addPossibleSeatAction(seat, GameEventType.FOLD);
                 seat.setChipsInFront(0);
             }
@@ -587,6 +671,14 @@ public class GameEventBsoImpl implements GameEventBso {
 
     public void setPotBso(PotBso potBso) {
         this.potBso = potBso;
+    }
+
+    public ValidationBso getValidationBso() {
+        return validationBso;
+    }
+
+    public void setValidationBso(ValidationBso validationBso) {
+        this.validationBso = validationBso;
     }
 
 }

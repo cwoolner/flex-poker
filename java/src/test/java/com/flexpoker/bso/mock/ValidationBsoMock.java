@@ -18,4 +18,8 @@ public class ValidationBsoMock implements ValidationBso {
     public void validateTableAssignment(Set<UserGameStatus> userGameStatuses,
             int maxPlayersPerTable) {}
 
+    @Override
+    public void validateRaiseAmount(int minimumAmount, int maximumAmount,
+            String raiseAmount) {}
+
 }

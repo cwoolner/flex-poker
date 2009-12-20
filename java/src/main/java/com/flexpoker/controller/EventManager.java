@@ -28,4 +28,6 @@ public interface EventManager {
 
     void sendCallEvent(Game game, Table table, HandState handState, String username);
 
+    void sendRaiseEvent(Game game, Table table, HandState handState, String username);
+
 }

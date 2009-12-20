@@ -56,4 +56,10 @@ public class GameEventBsoMock implements GameEventBso {
         return false;
     }
 
+    @Override
+    public HandState raise(Game game, Table table, User user, String raiseAmount) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
 }

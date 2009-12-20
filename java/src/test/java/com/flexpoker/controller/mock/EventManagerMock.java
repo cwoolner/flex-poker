@@ -73,4 +73,7 @@ public class EventManagerMock implements EventManager {
 
     }
 
+    @Override
+    public void sendRaiseEvent(Game game, Table table, HandState handState, String username) {}
+
 }

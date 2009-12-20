@@ -26,4 +26,7 @@ public class SeatStatusBsoMock implements SeatStatusBso {
         
     }
 
+    @Override
+    public void setStatusForEndOfHand(Table table) {}
+
 }
