@@ -141,7 +141,6 @@ public class GameEventBsoImpl implements GameEventBso {
                 moveToNextHandDealerState(realTimeHand);
                 potBso.calculatePotsAfterRound(game, table);
                 determineTablePotAmounts(game, table);
-                resetChipsInFront(table);
                 resetPossibleSeatActionsAfterRound(table, realTimeHand);
 
                 if (realTimeHand.getHandDealerState() != HandDealerState.COMPLETE) {
@@ -149,6 +148,7 @@ public class GameEventBsoImpl implements GameEventBso {
                     determineNextToAct(table, realTimeHand);
                     determineLastToAct(table, realTimeHand);
                 } else {
+                    seatStatusBso.setStatusForEndOfHand(table);
                     determineWinners(game, table, realTimeHand.getHandEvaluationList());
                 }
             } else {
@@ -203,7 +203,6 @@ public class GameEventBsoImpl implements GameEventBso {
                 moveToNextHandDealerState(realTimeHand);
                 potBso.calculatePotsAfterRound(game, table);
                 determineTablePotAmounts(game, table);
-                resetChipsInFront(table);
                 resetPossibleSeatActionsAfterRound(table, realTimeHand);
 
                 if (realTimeHand.getHandDealerState() != HandDealerState.COMPLETE) {
@@ -211,6 +210,7 @@ public class GameEventBsoImpl implements GameEventBso {
                     determineNextToAct(table, realTimeHand);
                     determineLastToAct(table, realTimeHand);
                 } else {
+                    seatStatusBso.setStatusForEndOfHand(table);
                     determineWinners(game, table, realTimeHand.getHandEvaluationList());
                 }
             } else {
@@ -252,7 +252,6 @@ public class GameEventBsoImpl implements GameEventBso {
                 moveToNextHandDealerState(realTimeHand);
                 potBso.calculatePotsAfterRound(game, table);
                 determineTablePotAmounts(game, table);
-                resetChipsInFront(table);
                 resetPossibleSeatActionsAfterRound(table, realTimeHand);
 
                 if (realTimeHand.getHandDealerState() != HandDealerState.COMPLETE) {
@@ -260,6 +259,7 @@ public class GameEventBsoImpl implements GameEventBso {
                     determineNextToAct(table, realTimeHand);
                     determineLastToAct(table, realTimeHand);
                 } else {
+                    seatStatusBso.setStatusForEndOfHand(table);
                     determineWinners(game, table, realTimeHand.getHandEvaluationList());
                 }
             } else {
@@ -367,18 +367,6 @@ public class GameEventBsoImpl implements GameEventBso {
     private void startNewHand(Game game, Table table) {
         seatStatusBso.setStatusForNewHand(table);
         resetTableStatus(game, table);
-    }
-
-    /**
-     * Zero-out the chipsInFront field for all seats at a table.  This should
-     * typically be used whenever a new round is started.
-     *
-     * @param table
-     */
-    private void resetChipsInFront(Table table) {
-        for (Seat seat : table.getSeats()) {
-            seat.setChipsInFront(0);
-        }
     }
 
     private void checkIfUserCanJoinGame(Game game, User user) {

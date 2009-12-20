@@ -11,4 +11,6 @@ public interface SeatStatusBso {
 
     void setStatusForNewHand(Table table);
 
+    void setStatusForEndOfHand(Table table);
+
 }

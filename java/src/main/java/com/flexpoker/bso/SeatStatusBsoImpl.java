@@ -31,6 +31,7 @@ public class SeatStatusBsoImpl implements SeatStatusBso {
     @Override
     public void setStatusForNewRound(Table table) {
         validationBso.validateTable(table);
+        resetChipsInFront(table);
         assignNewRoundActionOn(table);
     }
 
@@ -43,6 +44,23 @@ public class SeatStatusBsoImpl implements SeatStatusBso {
         assignNewHandSmallBlind(table);
         assignNewHandButton(table);
         assignNewHandActionOn(table);
+    }
+
+    @Override
+    public void setStatusForEndOfHand(Table table) {
+        resetChipsInFront(table);
+    }
+
+    /**
+     * Zero-out the chipsInFront field for all seats at a table.  This should
+     * typically be used whenever a new round is started.
+     *
+     * @param table
+     */
+    private void resetChipsInFront(Table table) {
+        for (Seat seat : table.getSeats()) {
+            seat.setChipsInFront(0);
+        }
     }
 
     private void resetShowCards(Table table) {
