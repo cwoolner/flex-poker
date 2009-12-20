@@ -241,6 +241,8 @@ public class GameEventBsoImpl implements GameEventBso {
                 throw new FlexPokerException("Not allowed to call.");
             }
 
+            seat.setChipsInFront(seat.getChipsInFront() + seat.getCallAmount());
+
             if (seat.equals(realTimeHand.getLastToAct())) {
                 realTimeHand.setHandRoundState(HandRoundState.ROUND_COMPLETE);
                 moveToNextHandDealerState(realTimeHand);
@@ -260,7 +262,6 @@ public class GameEventBsoImpl implements GameEventBso {
                 seat.setActionOn(false);
                 realTimeHand.getNextToAct().setActionOn(true);
                 determineNextToAct(table, realTimeHand);
-                seat.setChipsInFront(seat.getChipsInFront() + seat.getCallAmount());
             }
 
             UserGameStatus userGameStatus = seat.getUserGameStatus();
