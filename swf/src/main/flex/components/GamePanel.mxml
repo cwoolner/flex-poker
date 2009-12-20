@@ -47,6 +47,8 @@
 
         private var startingTimer:Timer;
 
+        private var endOfHandDelayTimer:Timer;
+
         [Bindable]
         private var userGameStatuses:ArrayCollection;
 
@@ -216,11 +218,23 @@
             }
 
             if (message.headers.DSSubtopic.search("handComplete") != -1) {
-                fetchTableAfterDeal(false);
-                mainRemoteObject.verifyReadyToStartNewHand(game, table);
-                mainRemoteObject.fetchAllUserGameStatuses(game);
+                var token:AsyncToken = mainRemoteObject.fetchTable(game);
+                token.addResponder(new AsyncResponder(
+                    function(event:ResultEvent, token:Object = null):void {
+                        table = event.result as Table;
+                        endOfHandDelayTimer = new Timer(3000, 1);
+                        endOfHandDelayTimer.addEventListener("timerComplete", verifyReadyToStartNewHand);
+                        endOfHandDelayTimer.start();
+                    },
+                    sendFailedFaultHandler
+                ))
+
                 return;
             }
+        }
+
+        private function verifyReadyToStartNewHand(event:TimerEvent):void {
+            mainRemoteObject.verifyReadyToStartNewHand(game, table);
         }
 
         private function fetchTableAfterDeal(commonCardsDealt:Boolean):void {
