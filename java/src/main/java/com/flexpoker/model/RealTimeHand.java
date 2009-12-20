@@ -20,10 +20,6 @@ public class RealTimeHand {
     private Map<Seat, Set<GameEventType>> possibleSeatActionsMap =
             new HashMap<Seat, Set<GameEventType>>();
 
-    private Map<Seat, Integer> amountNeededToCall = new HashMap<Seat, Integer>();
-
-    private Map<Seat, Integer> amountNeededToRaise = new HashMap<Seat, Integer>();
-
     private Seat originatingBettor;
 
     private Seat lastToAct;
@@ -39,8 +35,6 @@ public class RealTimeHand {
     public RealTimeHand(List<Seat> seats) {
         for (Seat seat : seats) {
             possibleSeatActionsMap.put(seat, new HashSet<GameEventType>());
-            amountNeededToCall.put(seat, null);
-            amountNeededToRaise.put(seat, null);
         }
     }
 
@@ -52,22 +46,6 @@ public class RealTimeHand {
         possibleSeatActionsMap.get(Seat).remove(action);
     }
 
-    public Integer getAmountNeededToCall(Seat Seat) {
-        return amountNeededToCall.get(Seat);
-    }
-
-    public void setAmountNeededToCall(Seat seat, Integer amount) {
-        amountNeededToCall.put(seat, amount);
-    }
-
-    public Integer getAmountNeededToRaise(Seat Seat) {
-        return amountNeededToRaise.get(Seat);
-    }
-
-    public void setAmountNeededToRaise(Seat Seat, Integer amount) {
-        amountNeededToRaise.put(Seat, amount);
-    }
-
     public Seat getOriginatingBettor() {
         return originatingBettor;
     }
@@ -76,8 +54,7 @@ public class RealTimeHand {
         this.originatingBettor = originatingBettor;
     }
 
-    public boolean isUserAllowedToPerformAction(GameEventType action,
-            Seat seat) {
+    public boolean isUserAllowedToPerformAction(GameEventType action, Seat seat) {
         return possibleSeatActionsMap.get(seat).contains(action);
     }
 
