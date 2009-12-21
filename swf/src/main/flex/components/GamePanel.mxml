@@ -162,7 +162,20 @@
             }
 
             if (message.headers.DSSubtopic.search("userActed") != -1) {
-                fetchTableAfterDeal(false);
+                var token:AsyncToken = mainRemoteObject.fetchTable(game);
+                token.addResponder(new AsyncResponder(
+                    function(event:ResultEvent, token:Object = null):void {
+                        table = event.result as Table;
+                        setupPokerActionBox();
+
+                        var seat:Seat = table.seats.getItemAt(pokerActionBoxIndex) as Seat;
+                        if (seat.callAmount != 0 && seat.stillInHand && !seat.allIn) {
+                            pokerActionBox.visible = true;
+                        }
+                    },
+                    sendFailedFaultHandler
+                ))
+
                 mainRemoteObject.fetchAllUserGameStatuses(game);
                 return;
             }
