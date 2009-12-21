@@ -176,7 +176,7 @@
                         inProgressCommonPanel.flopCardImage1 = deck.getCardImage(flopCards.card1);
                         inProgressCommonPanel.flopCardImage2 = deck.getCardImage(flopCards.card2);
                         inProgressCommonPanel.flopCardImage3 = deck.getCardImage(flopCards.card3);
-                        fetchTableAfterDeal(true);
+                        fetchTableAfterCommonCardsDealt();
                     },
                     sendFailedFaultHandler
                 ))
@@ -192,7 +192,7 @@
                         var turnCard:TurnCard = event.result as TurnCard;
                         var deck:Deck = Deck.getInstance();
                         inProgressCommonPanel.turnCardImage = deck.getCardImage(turnCard.card);
-                        fetchTableAfterDeal(true);
+                        fetchTableAfterCommonCardsDealt();
                     },
                     sendFailedFaultHandler
                 ))
@@ -208,7 +208,7 @@
                         var riverCard:RiverCard = event.result as RiverCard;
                         var deck:Deck = Deck.getInstance();
                         inProgressCommonPanel.riverCardImage = deck.getCardImage(riverCard.card);
-                        fetchTableAfterDeal(true);
+                        fetchTableAfterCommonCardsDealt();
                     },
                     sendFailedFaultHandler
                 ))
@@ -237,17 +237,13 @@
             mainRemoteObject.verifyReadyToStartNewHand(game, table);
         }
 
-        private function fetchTableAfterDeal(commonCardsDealt:Boolean):void {
+        private function fetchTableAfterCommonCardsDealt():void {
             var token:AsyncToken = mainRemoteObject.fetchTable(game);
             token.addResponder(new AsyncResponder(
                 function(event:ResultEvent, token:Object = null):void {
                     table = event.result as Table;
-
                     setupPokerActionBox();
-
-                    if (commonCardsDealt) {
-                        pokerActionBox.visible = table.seats.getItemAt(pokerActionBoxIndex).stillInHand;
-                    }
+                    pokerActionBox.visible = table.seats.getItemAt(pokerActionBoxIndex).stillInHand;
                 },
                 sendFailedFaultHandler
             ))
