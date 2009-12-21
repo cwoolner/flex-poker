@@ -313,6 +313,7 @@ public class GameEventBsoImpl implements GameEventBso {
             int raiseAmountInt = Integer.parseInt(raiseAmount);
 
             realTimeHand.setOriginatingBettor(actionOnSeat);
+            determineLastToAct(table, realTimeHand);
             realTimeHand.setHandRoundState(HandRoundState.ROUND_IN_PROGRESS);
             actionOnSeat.setActionOn(false);
             realTimeHand.getNextToAct().setActionOn(true);
@@ -488,6 +489,11 @@ public class GameEventBsoImpl implements GameEventBso {
             seatIndex = seats.indexOf(buttonSeat);
         } else {
             seatIndex = seats.indexOf(realTimeHand.getOriginatingBettor());
+            if (seatIndex == 0) {
+                seatIndex = seats.size() - 1;
+            } else {
+                seatIndex--;
+            }
         }
 
         for (int i = seatIndex; i >= 0; i--) {
