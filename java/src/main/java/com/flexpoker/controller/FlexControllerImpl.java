@@ -10,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import com.flexpoker.bso.DealCardActionsBso;
 import com.flexpoker.bso.GameBso;
 import com.flexpoker.bso.GameEventBso;
+import com.flexpoker.bso.PlayerActionsBso;
 import com.flexpoker.model.FlopCards;
 import com.flexpoker.model.Game;
 import com.flexpoker.model.HandState;
@@ -59,6 +60,8 @@ public class FlexControllerImpl implements FlexController {
     private EventManager eventManager;
 
     private DealCardActionsBso dealCardActionsBso;
+
+    private PlayerActionsBso playerActionsBso;
 
     @Override
     public void createGame(Game game) {
@@ -124,28 +127,28 @@ public class FlexControllerImpl implements FlexController {
     @Override
     public void check(Game game, Table table) {
         User user = extractCurrentUser();
-        HandState handState = gameEventBso.check(game, table, user);
+        HandState handState = playerActionsBso.check(game, table, user);
         eventManager.sendCheckEvent(game, table, handState, user.getUsername());
     }
 
     @Override
     public void fold(Game game, Table table) {
         User user = extractCurrentUser();
-        HandState handState = gameEventBso.fold(game, table, user);
+        HandState handState = playerActionsBso.fold(game, table, user);
         eventManager.sendFoldEvent(game, table, handState, user.getUsername());
     }
 
     @Override
     public void call(Game game, Table table) {
         User user = extractCurrentUser();
-        HandState handState = gameEventBso.call(game, table, user);
+        HandState handState = playerActionsBso.call(game, table, user);
         eventManager.sendCallEvent(game, table, handState, user.getUsername());
     }
 
     @Override
     public void raise(Game game, Table table, String raiseAmount) {
         User user = extractCurrentUser();
-        HandState handState = gameEventBso.raise(game, table, user, raiseAmount);
+        HandState handState = playerActionsBso.raise(game, table, user, raiseAmount);
         eventManager.sendRaiseEvent(game, table, handState, user.getUsername());
     }
 
@@ -198,6 +201,14 @@ public class FlexControllerImpl implements FlexController {
 
     public void setDealCardActionsBso(DealCardActionsBso dealCardActionsBso) {
         this.dealCardActionsBso = dealCardActionsBso;
+    }
+
+    public PlayerActionsBso getPlayerActionsBso() {
+        return playerActionsBso;
+    }
+
+    public void setPlayerActionsBso(PlayerActionsBso playerActionsBso) {
+        this.playerActionsBso = playerActionsBso;
     }
 
 }
