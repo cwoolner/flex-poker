@@ -1,7 +1,6 @@
 package com.flexpoker.bso;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -311,6 +310,8 @@ public class GameEventBsoImpl implements GameEventBso {
                     actionOnSeat.getUserGameStatus().getChips(), raiseAmount);
 
             int raiseAmountInt = Integer.parseInt(raiseAmount);
+            int raiseAboveCall = raiseAmountInt - actionOnSeat.getCallAmount();
+            int increaseOfChipsInFront = raiseAmountInt - actionOnSeat.getChipsInFront();
 
             realTimeHand.setOriginatingBettor(actionOnSeat);
             determineLastToAct(table, realTimeHand);
@@ -318,11 +319,11 @@ public class GameEventBsoImpl implements GameEventBso {
             actionOnSeat.setActionOn(false);
             realTimeHand.getNextToAct().setActionOn(true);
             determineNextToAct(table, realTimeHand);
-            actionOnSeat.setChipsInFront(actionOnSeat.getChipsInFront() + raiseAmountInt);
+            actionOnSeat.setChipsInFront(raiseAmountInt);
 
             UserGameStatus userGameStatus = actionOnSeat.getUserGameStatus();
-            userGameStatus.setChips(userGameStatus.getChips() - raiseAmountInt);
-            table.setTotalPotAmount(table.getTotalPotAmount() + raiseAmountInt);
+            userGameStatus.setChips(userGameStatus.getChips() - increaseOfChipsInFront);
+            table.setTotalPotAmount(table.getTotalPotAmount() + increaseOfChipsInFront);
 
             realTimeHand.addPossibleSeatAction(actionOnSeat, GameEventType.CALL);
             realTimeHand.addPossibleSeatAction(actionOnSeat, GameEventType.RAISE);
@@ -331,7 +332,8 @@ public class GameEventBsoImpl implements GameEventBso {
 
             for (Seat seat : table.getSeats()) {
                 if (seat.isStillInHand() && !actionOnSeat.equals(seat)) {
-                    int totalChips = seat.getUserGameStatus().getChips();
+                    int totalChips = seat.getUserGameStatus().getChips()
+                            + seat.getChipsInFront();
                     realTimeHand.addPossibleSeatAction(seat, GameEventType.CALL);
                     realTimeHand.addPossibleSeatAction(seat, GameEventType.FOLD);
                     realTimeHand.removePossibleSeatAction(seat, GameEventType.CHECK);
@@ -340,12 +342,12 @@ public class GameEventBsoImpl implements GameEventBso {
                         seat.setMinBet(0);
                         realTimeHand.removePossibleSeatAction(seat, GameEventType.RAISE);
                     } else {
-                        seat.setCallAmount(raiseAmountInt);
+                        seat.setCallAmount(raiseAmountInt - seat.getChipsInFront());
                         realTimeHand.addPossibleSeatAction(seat, GameEventType.RAISE);
-                        if (totalChips < raiseAmountInt * 2) {
+                        if (totalChips < raiseAmountInt + raiseAboveCall) {
                             seat.setMinBet(totalChips);
                         } else {
-                            seat.setMinBet(raiseAmountInt * 2);
+                            seat.setMinBet(raiseAmountInt + raiseAboveCall);
                         }
                     }
                 }
