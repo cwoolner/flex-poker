@@ -22,6 +22,9 @@
         private var _seat:Seat;
 
         [Bindable]
+        private var chips:String;
+
+        [Bindable]
         public var pocketCardImage1:Class;
 
         [Bindable]
@@ -30,7 +33,14 @@
         public function set seat(seat:Seat):void {
             _seat = seat;
 
-            if (_seat == null || _seat.userGameStatus == null) {
+            if (_seat != null && _seat.userGameStatus != null) {
+                if (_seat.userGameStatus.chips == 0) {
+                    chips = "ALL IN";
+                } else {
+                    chips = _seat.userGameStatus.chips.toString();
+                }
+            }
+
                 currentState = "blankState";
             } else if (_seat.showCards == null) {
                 currentState = "doNotShowCardsState";
@@ -70,7 +80,7 @@
 
     <mx:VBox id="seatInformation">
         <mx:Label text="{_seat.userGameStatus.user.username}" />
-        <mx:Label text="{_seat.userGameStatus.chips}" />
+        <mx:Label text="{chips}" />
         <mx:HBox>
             <mx:Spacer width="100%" />
             <mx:Image id="buttonImage" source="{TableImages.getInstance().getButtonImage()}" visible="{_seat.button}" />
