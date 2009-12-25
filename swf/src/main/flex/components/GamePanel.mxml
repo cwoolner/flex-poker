@@ -152,8 +152,112 @@
                     function(event:ResultEvent, token:Object = null):void {
                         var pocketCards:PocketCards = event.result as PocketCards;
                         var deck:Deck = Deck.getInstance();
-                        pocketCardImage1 = deck.getCardImage(pocketCards.card1);
-                        pocketCardImage2 = deck.getCardImage(pocketCards.card2);
+                        var currentSeatPanel:SeatPanel = null;
+
+                        switch (pokerActionBoxIndex) {
+                            case 0:
+                                currentSeatPanel = seat0;
+                                seat1.setBlankCards();
+                                seat2.setBlankCards();
+                                seat3.setBlankCards();
+                                seat4.setBlankCards();
+                                seat5.setBlankCards();
+                                seat6.setBlankCards();
+                                seat7.setBlankCards();
+                                seat8.setBlankCards();
+                                break;
+                            case 1:
+                                currentSeatPanel = seat1;
+                                seat0.setBlankCards();
+                                seat2.setBlankCards();
+                                seat3.setBlankCards();
+                                seat4.setBlankCards();
+                                seat5.setBlankCards();
+                                seat6.setBlankCards();
+                                seat7.setBlankCards();
+                                seat8.setBlankCards();
+                                break;
+                            case 2:
+                                currentSeatPanel = seat2;
+                                seat0.setBlankCards();
+                                seat1.setBlankCards();
+                                seat3.setBlankCards();
+                                seat4.setBlankCards();
+                                seat5.setBlankCards();
+                                seat6.setBlankCards();
+                                seat7.setBlankCards();
+                                seat8.setBlankCards();
+                                break;
+                            case 3:
+                                currentSeatPanel = seat3;
+                                seat0.setBlankCards();
+                                seat1.setBlankCards();
+                                seat2.setBlankCards();
+                                seat4.setBlankCards();
+                                seat5.setBlankCards();
+                                seat6.setBlankCards();
+                                seat7.setBlankCards();
+                                seat8.setBlankCards();
+                                break;
+                            case 4:
+                                currentSeatPanel = seat4;
+                                seat0.setBlankCards();
+                                seat1.setBlankCards();
+                                seat2.setBlankCards();
+                                seat3.setBlankCards();
+                                seat5.setBlankCards();
+                                seat6.setBlankCards();
+                                seat7.setBlankCards();
+                                seat8.setBlankCards();
+                                break;
+                            case 5:
+                                currentSeatPanel = seat5;
+                                seat0.setBlankCards();
+                                seat1.setBlankCards();
+                                seat2.setBlankCards();
+                                seat3.setBlankCards();
+                                seat4.setBlankCards();
+                                seat6.setBlankCards();
+                                seat7.setBlankCards();
+                                seat8.setBlankCards();
+                                break;
+                            case 6:
+                                currentSeatPanel = seat6;
+                                seat0.setBlankCards();
+                                seat1.setBlankCards();
+                                seat2.setBlankCards();
+                                seat3.setBlankCards();
+                                seat4.setBlankCards();
+                                seat5.setBlankCards();
+                                seat7.setBlankCards();
+                                seat8.setBlankCards();
+                                break;
+                            case 7:
+                                currentSeatPanel = seat7;
+                                seat0.setBlankCards();
+                                seat1.setBlankCards();
+                                seat2.setBlankCards();
+                                seat3.setBlankCards();
+                                seat4.setBlankCards();
+                                seat5.setBlankCards();
+                                seat6.setBlankCards();
+                                seat8.setBlankCards();
+                                break;
+                            case 8:
+                                currentSeatPanel = seat8;
+                                seat0.setBlankCards();
+                                seat1.setBlankCards();
+                                seat2.setBlankCards();
+                                seat3.setBlankCards();
+                                seat4.setBlankCards();
+                                seat5.setBlankCards();
+                                seat6.setBlankCards();
+                                seat7.setBlankCards();
+                                break;
+                        }
+
+                        currentSeatPanel.pocketCardImage1 = deck.getCardImage(pocketCards.card1);
+                        currentSeatPanel.pocketCardImage2 = deck.getCardImage(pocketCards.card2);
                     },
                     sendFailedFaultHandler
                 ))
@@ -427,17 +531,17 @@
         <mx:Spacer height="100%" />
         <mx:HBox width="100%">
             <mx:Spacer width="100%" />
-            <comp:SeatPanel seat="{table.seats.getItemAt(1) as Seat}" />
+            <comp:SeatPanel id="seat1" seat="{table.seats.getItemAt(1) as Seat}" />
             <mx:Spacer width="25%" />
-            <comp:SeatPanel seat="{table.seats.getItemAt(2) as Seat}" />
+            <comp:SeatPanel id="seat2" seat="{table.seats.getItemAt(2) as Seat}" />
             <mx:Spacer width="100%" />
         </mx:HBox>
         <mx:Spacer height="45%" />
         <mx:HBox width="100%">
             <mx:Spacer width="100%" />
-            <comp:SeatPanel seat="{table.seats.getItemAt(0) as Seat}" />
+            <comp:SeatPanel id="seat0" seat="{table.seats.getItemAt(0) as Seat}" />
             <mx:Spacer width="100%" />
-            <comp:SeatPanel seat="{table.seats.getItemAt(3) as Seat}" />
+            <comp:SeatPanel id="seat3" seat="{table.seats.getItemAt(3) as Seat}" />
             <mx:Spacer width="100%" />
         </mx:HBox>
         <mx:Spacer height="100%" />
@@ -448,23 +552,23 @@
                 <comp:PotAmountsPanel potAmounts="{table.potAmounts}" />
             </mx:VBox>
             <mx:Spacer width="50%" />
-            <comp:SeatPanel seat="{table.seats.getItemAt(4) as Seat}" />
+            <comp:SeatPanel id="seat4" seat="{table.seats.getItemAt(4) as Seat}" />
             <mx:Spacer width="60%" />
         </mx:HBox>
         <mx:Spacer height="100%" />
         <mx:HBox width="100%">
             <mx:Spacer width="100%" />
-            <comp:SeatPanel seat="{table.seats.getItemAt(8) as Seat}" />
+            <comp:SeatPanel id="seat8" seat="{table.seats.getItemAt(8) as Seat}" />
             <mx:Spacer width="100%" />
-            <comp:SeatPanel seat="{table.seats.getItemAt(5) as Seat}" />
+            <comp:SeatPanel id="seat5" seat="{table.seats.getItemAt(5) as Seat}" />
             <mx:Spacer width="100%" />
         </mx:HBox>
         <mx:Spacer height="45%" />
         <mx:HBox width="100%">
             <mx:Spacer width="100%" />
-            <comp:SeatPanel seat="{table.seats.getItemAt(7) as Seat}" />
+            <comp:SeatPanel id="seat7" seat="{table.seats.getItemAt(7) as Seat}" />
             <mx:Spacer width="25%" />
-            <comp:SeatPanel seat="{table.seats.getItemAt(6) as Seat}" />
+            <comp:SeatPanel id="seat6" seat="{table.seats.getItemAt(6) as Seat}" />
             <mx:Spacer width="100%" />
         </mx:HBox>
         <mx:Spacer height="100%" />

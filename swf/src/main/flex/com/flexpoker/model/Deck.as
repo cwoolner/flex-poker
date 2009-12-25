@@ -6,6 +6,9 @@ package com.flexpoker.model {
 
         private static var instance:Deck = new Deck();
 
+        [Embed(source="/assets/nicubunu_Card_backs_cards_blue.svg")]
+        public var blankCard:Class;
+
         private var array:Array = new Array();
 
         [Embed(source="/assets/nicubunu_Ornamental_deck_2_of_hearts.svg")]

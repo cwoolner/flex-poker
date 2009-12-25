@@ -41,14 +41,20 @@
                 }
             }
 
+            if (_seat == null) {
                 currentState = "blankState";
-            } else if (_seat.showCards == null) {
-                currentState = "doNotShowCardsState";
+            } else if (_seat.userGameStatus == null) {
+                currentState = "emptySeatState";
+            } else if (_seat.stillInHand) {
+                currentState = "showCardsState";
             } else {
+                currentState = "doNotShowCardsState";
+            }
+
+            if (_seat != null && _seat.showCards != null) {
                 var deck:Deck = Deck.getInstance();
                 pocketCardImage1 = deck.getCardImage(_seat.showCards.card1);
                 pocketCardImage2 = deck.getCardImage(_seat.showCards.card2);
-                currentState = "showCardsState";
             }
 
             dispatchEvent(new ActionOnChangedEvent());
@@ -60,6 +66,7 @@
             buttonImage.visible = false;
             smallBlindImage.visible = false;
             bigBlindImage.visible = false;
+            setBlankCards();
         }
 
         private function actionOnChanged(event:ActionOnChangedEvent):void {
@@ -70,6 +77,11 @@
             }
         }
 
+        public function setBlankCards():void {
+            var deck:Deck = Deck.getInstance();
+            pocketCardImage1 = deck.blankCard;
+            pocketCardImage2 = deck.blankCard;
+        }
     ]]>
     </mx:Script>
 
@@ -93,6 +105,10 @@
 
     <mx:states>
         <mx:State name="blankState">
+            <mx:RemoveChild target="{pocketCardBox}"/>
+            <mx:RemoveChild target="{seatInformation}"/>
+        </mx:State>
+        <mx:State name="emptySeatState">
             <mx:RemoveChild target="{pocketCardBox}"/>
             <mx:RemoveChild target="{seatInformation}"/>
         </mx:State>
