@@ -8,6 +8,9 @@
         .actionOnFalse {
             background-color:#bc2e2e;
         }
+        .blank {
+            background-color:#ffffff;
+        }
     </mx:Style>
 
     <mx:Script>
@@ -62,7 +65,7 @@
 
         private function initializePanel():void {
             addEventListener(ActionOnChangedEvent.NAME, actionOnChanged);
-            styleName = "actionOnFalse";
+            styleName = "blank";
             buttonImage.visible = false;
             smallBlindImage.visible = false;
             bigBlindImage.visible = false;
@@ -85,12 +88,12 @@
     ]]>
     </mx:Script>
 
-    <mx:HBox id="pocketCardBox" width="100%">
-        <mx:Image id="myPocketCard1" height="100%" width="100%" source="{pocketCardImage1}" maintainAspectRatio="true" />
-        <mx:Image id="myPocketCard2" height="100%" width="100%" source="{pocketCardImage2}" maintainAspectRatio="true" />
+    <mx:HBox id="pocketCardBox" height="100%" width="100%">
+        <mx:Image id="myPocketCard1" scaleX="0.4" scaleY="0.4" source="{pocketCardImage1}" maintainAspectRatio="true" />
+        <mx:Image id="myPocketCard2" scaleX="0.4" scaleY="0.4" source="{pocketCardImage2}" maintainAspectRatio="true" />
     </mx:HBox>
 
-    <mx:VBox id="seatInformation">
+    <mx:VBox id="seatInformation" height="100%" width="100%">
         <mx:Label text="{_seat.userGameStatus.user.username}" />
         <mx:Label text="{chips}" />
         <mx:HBox>

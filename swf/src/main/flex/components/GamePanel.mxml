@@ -531,17 +531,17 @@
         <mx:Spacer height="100%" />
         <mx:HBox width="100%">
             <mx:Spacer width="100%" />
-            <comp:SeatPanel id="seat1" seat="{table.seats.getItemAt(1) as Seat}" />
+            <comp:SeatPanel id="seat1" seat="{table.seats.getItemAt(1) as Seat}" height="200" width="150" />
             <mx:Spacer width="25%" />
-            <comp:SeatPanel id="seat2" seat="{table.seats.getItemAt(2) as Seat}" />
+            <comp:SeatPanel id="seat2" seat="{table.seats.getItemAt(2) as Seat}" height="200" width="150" />
             <mx:Spacer width="100%" />
         </mx:HBox>
         <mx:Spacer height="45%" />
         <mx:HBox width="100%">
             <mx:Spacer width="100%" />
-            <comp:SeatPanel id="seat0" seat="{table.seats.getItemAt(0) as Seat}" />
+            <comp:SeatPanel id="seat0" seat="{table.seats.getItemAt(0) as Seat}" height="200" width="150" />
             <mx:Spacer width="100%" />
-            <comp:SeatPanel id="seat3" seat="{table.seats.getItemAt(3) as Seat}" />
+            <comp:SeatPanel id="seat3" seat="{table.seats.getItemAt(3) as Seat}" height="200" width="150" />
             <mx:Spacer width="100%" />
         </mx:HBox>
         <mx:Spacer height="100%" />
@@ -552,23 +552,23 @@
                 <comp:PotAmountsPanel potAmounts="{table.potAmounts}" />
             </mx:VBox>
             <mx:Spacer width="50%" />
-            <comp:SeatPanel id="seat4" seat="{table.seats.getItemAt(4) as Seat}" />
+            <comp:SeatPanel id="seat4" seat="{table.seats.getItemAt(4) as Seat}" height="200" width="150" />
             <mx:Spacer width="60%" />
         </mx:HBox>
         <mx:Spacer height="100%" />
         <mx:HBox width="100%">
             <mx:Spacer width="100%" />
-            <comp:SeatPanel id="seat8" seat="{table.seats.getItemAt(8) as Seat}" />
+            <comp:SeatPanel id="seat8" seat="{table.seats.getItemAt(8) as Seat}" height="200" width="150" />
             <mx:Spacer width="100%" />
-            <comp:SeatPanel id="seat5" seat="{table.seats.getItemAt(5) as Seat}" />
+            <comp:SeatPanel id="seat5" seat="{table.seats.getItemAt(5) as Seat}" height="200" width="150" />
             <mx:Spacer width="100%" />
         </mx:HBox>
         <mx:Spacer height="45%" />
         <mx:HBox width="100%">
             <mx:Spacer width="100%" />
-            <comp:SeatPanel id="seat7" seat="{table.seats.getItemAt(7) as Seat}" />
+            <comp:SeatPanel id="seat7" seat="{table.seats.getItemAt(7) as Seat}" height="200" width="150" />
             <mx:Spacer width="25%" />
-            <comp:SeatPanel id="seat6" seat="{table.seats.getItemAt(6) as Seat}" />
+            <comp:SeatPanel id="seat6" seat="{table.seats.getItemAt(6) as Seat}" height="200" width="150" />
             <mx:Spacer width="100%" />
         </mx:HBox>
         <mx:Spacer height="100%" />
