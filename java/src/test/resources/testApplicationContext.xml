@@ -38,7 +38,20 @@
         <property name="deckBso" ref="deckBsoMock" />
         <property name="realTimeGameBso" ref="realTimeGameBsoMock" />
         <property name="seatStatusBso" ref="seatStatusBsoMock" />
+        <property name="potBso" ref="potBsoMock" />
+        <property name="handEvaluatorBso" ref="handEvaluatorBsoMock" />
     </bean>
+
+    <bean id="handEvaluatorBso" class="com.flexpoker.bso.HandEvaluatorBsoImpl" />
+
+    <bean id="playerActionsBso" class="com.flexpoker.bso.PlayerActionsBsoImpl">
+        <property name="realTimeGameBso" ref="realTimeGameBsoMock" />
+        <property name="potBso" ref="potBsoMock" />
+        <property name="seatStatusBso" ref="seatStatusBsoMock" />
+        <property name="deckBso" ref="deckBsoMock" />
+    </bean>
+
+    <bean id="potBso" class="com.flexpoker.bso.PotBsoImpl" />
 
     <bean id="realTimeGameBso" class="com.flexpoker.bso.RealTimeGameBsoImpl" />
 
