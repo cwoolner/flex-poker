@@ -54,7 +54,6 @@ public class PlayerActionsBsoImpl implements PlayerActionsBso {
                     new ActionOnSeatPredicate());
 
             if (actionOnSeat.equals(realTimeHand.getLastToAct())) {
-                realTimeHand.setOriginatingBettor(null);
                 realTimeHand.setHandRoundState(HandRoundState.ROUND_COMPLETE);
                 moveToNextHandDealerState(realTimeHand);
                 potBso.calculatePotsAfterRound(game, table);
