@@ -48,8 +48,6 @@ public class GameEventBsoImpl implements GameEventBso {
 
     private PotBso potBso;
 
-    private ValidationBso validationBso;
-
     @Override
     public boolean addUserToGame(User user, Game game) {
         synchronized (this) {
@@ -351,14 +349,6 @@ public class GameEventBsoImpl implements GameEventBso {
 
     public void setPotBso(PotBso potBso) {
         this.potBso = potBso;
-    }
-
-    public ValidationBso getValidationBso() {
-        return validationBso;
-    }
-
-    public void setValidationBso(ValidationBso validationBso) {
-        this.validationBso = validationBso;
     }
 
 }
