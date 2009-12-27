@@ -53,6 +53,11 @@ public class PlayerActionsBsoImpl implements PlayerActionsBso {
             Seat actionOnSeat = (Seat) CollectionUtils.find(table.getSeats(),
                     new ActionOnSeatPredicate());
 
+            resetAllSeatActions(actionOnSeat, realTimeHand);
+
+            actionOnSeat.setCallAmount(0);
+            actionOnSeat.setRaiseTo(0);
+
             if (actionOnSeat.equals(realTimeHand.getLastToAct())) {
                 handleEndOfRound(game, table, realTimeHand,
                         realTimeGame.getCurrentBlinds().getBigBlind());
@@ -87,6 +92,11 @@ public class PlayerActionsBsoImpl implements PlayerActionsBso {
 
             Seat actionOnSeat = (Seat) CollectionUtils.find(table.getSeats(),
                     new ActionOnSeatPredicate());
+
+            resetAllSeatActions(actionOnSeat, realTimeHand);
+
+            actionOnSeat.setCallAmount(0);
+            actionOnSeat.setRaiseTo(0);
 
             int numberOfPlayersLeft = 0;
             for (Seat seat : table.getSeats()) {
@@ -130,13 +140,8 @@ public class PlayerActionsBsoImpl implements PlayerActionsBso {
 
             resetAllSeatActions(actionOnSeat, realTimeHand);
 
-            actionOnSeat.setChipsInFront(actionOnSeat.getChipsInFront() + actionOnSeat.getCallAmount());
-
-            if (actionOnSeat.equals(realTimeHand.getLastToAct())) {
-                handleEndOfRound(game, table, realTimeHand);
-            } else {
-                handleMiddleOfRound(table, realTimeHand, actionOnSeat);
-            }
+            actionOnSeat.setChipsInFront(actionOnSeat.getChipsInFront()
+                    + actionOnSeat.getCallAmount());
 
             UserGameStatus userGameStatus = actionOnSeat.getUserGameStatus();
             userGameStatus.setChips(userGameStatus.getChips() - actionOnSeat.getCallAmount());
