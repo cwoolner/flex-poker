@@ -240,7 +240,6 @@ public class PlayerActionsBsoImpl implements PlayerActionsBso {
         moveToNextHandDealerState(realTimeHand);
         potBso.calculatePotsAfterRound(game, table);
         determineTablePotAmounts(game, table);
-        resetPossibleSeatActionsAfterRound(table, realTimeHand);
 
         if (realTimeHand.getHandDealerState() == HandDealerState.COMPLETE) {
             seatStatusBso.setStatusForEndOfHand(table);
@@ -250,6 +249,7 @@ public class PlayerActionsBsoImpl implements PlayerActionsBso {
             determineNextToAct(table, realTimeHand);
             determineLastToAct(table, realTimeHand);
             resetRaiseAmountsAfterRound(table, bigBlindAmount);
+            resetPossibleSeatActionsAfterRound(table, realTimeHand);
         }
     }
 

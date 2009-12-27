@@ -43,6 +43,9 @@ public class FlexControllerImplIntTest extends IntegrationTest {
     private RealTimeGameBsoImpl realTimeGameBso = (RealTimeGameBsoImpl)
             IntegrationContext.instance().getBean("realTimeGameBso");
 
+    private PotBsoImpl potBso = (PotBsoImpl)
+            IntegrationContext.instance().getBean("potBso");
+
     @Test
     public void testCheck() {
         setEntityManagers(userDao, gameDao);
@@ -143,10 +146,84 @@ public class FlexControllerImplIntTest extends IntegrationTest {
             commonNotAllowedToPerformActionCheck(realTimeHand, initialActionOffSeat,
                     GameEventType.FOLD, GameEventType.CALL);
 
-            // big blind checks
-            SecurityContextHolder.getContext().setAuthentication(actionOffAuth);
-            flexController.check(game, table);
+        // big blind checks
+        SecurityContextHolder.getContext().setAuthentication(actionOffAuth);
+        flexController.check(game, table);
 
+        commonChipCheck(initialActionOnSeat, 1480, 0, 0, 20);
+        commonChipCheck(initialActionOffSeat, 1480, 0, 0, 20);
+        assertTrue(table.getTotalPotAmount() == 40);
+        commonAllowedToPerformActionCheck(realTimeHand, initialActionOnSeat,
+                GameEventType.CHECK, GameEventType.RAISE);
+        commonAllowedToPerformActionCheck(realTimeHand, initialActionOffSeat,
+                GameEventType.CHECK, GameEventType.RAISE);
+        commonNotAllowedToPerformActionCheck(realTimeHand, initialActionOnSeat,
+                GameEventType.FOLD, GameEventType.CALL);
+        commonNotAllowedToPerformActionCheck(realTimeHand, initialActionOffSeat,
+                GameEventType.FOLD, GameEventType.CALL);
+
+        // call three times for flop, turn, and river
+        checkRound(initialActionOnSeat, initialActionOffSeat, actionOnAuth,
+                actionOffAuth, game, table, realTimeHand);
+        checkRound(initialActionOnSeat, initialActionOffSeat, actionOnAuth,
+                actionOffAuth, game, table, realTimeHand);
+        checkRound(initialActionOnSeat, initialActionOffSeat, actionOnAuth,
+                actionOffAuth, game, table, realTimeHand);
+    }
+
+    private void checkRound(Seat initialActionOnSeat, Seat initialActionOffSeat,
+            Authentication actionOnAuth, Authentication actionOffAuth,
+            Game game, Table table, RealTimeHand realTimeHand) {
+        // big blind acts first in heads-up
+        SecurityContextHolder.getContext().setAuthentication(actionOffAuth);
+        flexController.check(game, table);
+
+        commonChipCheck(initialActionOnSeat, 1480, 0, 0, 20);
+        commonChipCheck(initialActionOffSeat, 1480, 0, 0, 0);
+        assertTrue(table.getTotalPotAmount() == 40);
+        commonAllowedToPerformActionCheck(realTimeHand, initialActionOnSeat,
+                GameEventType.CHECK, GameEventType.RAISE);
+        commonAllowedToPerformActionCheck(realTimeHand, initialActionOffSeat);
+        commonNotAllowedToPerformActionCheck(realTimeHand, initialActionOnSeat,
+                GameEventType.FOLD, GameEventType.CALL);
+        commonNotAllowedToPerformActionCheck(realTimeHand, initialActionOffSeat,
+                GameEventType.CHECK, GameEventType.RAISE,
+                GameEventType.FOLD, GameEventType.CALL);
+
+        // small blind acts second in heads-up
+        SecurityContextHolder.getContext().setAuthentication(actionOnAuth);
+        flexController.check(game, table);
+
+        if (realTimeHand.getHandDealerState().equals(HandDealerState.COMPLETE)) {
+            List<Seat> winners = potBso.fetchAllPots(game, table).get(0).getWinners();
+
+            int actionOnChips = 0;
+            int actionOffChips = 0;
+
+            if (winners.contains(initialActionOnSeat)
+                    && winners.contains(initialActionOffSeat)) {
+                actionOnChips = 1500;
+                actionOffChips = 1500;
+            } else if (winners.contains(initialActionOnSeat)) {
+                actionOnChips = 1520;
+                actionOffChips = 1480;
+            } else if (winners.contains(initialActionOffSeat)) {
+                actionOnChips = 1480;
+                actionOffChips = 1520;
+            }
+
+            commonChipCheck(initialActionOnSeat, actionOnChips, 0, 0, 0);
+            commonChipCheck(initialActionOffSeat, actionOffChips, 0, 0, 0);
+            assertTrue(table.getTotalPotAmount() == 40);
+            commonAllowedToPerformActionCheck(realTimeHand, initialActionOnSeat);
+            commonAllowedToPerformActionCheck(realTimeHand, initialActionOffSeat);
+            commonNotAllowedToPerformActionCheck(realTimeHand, initialActionOnSeat,
+                    GameEventType.CHECK, GameEventType.RAISE,
+                    GameEventType.FOLD, GameEventType.CALL);
+            commonNotAllowedToPerformActionCheck(realTimeHand, initialActionOffSeat,
+                    GameEventType.CHECK, GameEventType.RAISE,
+                    GameEventType.FOLD, GameEventType.CALL);
+        } else {
             commonChipCheck(initialActionOnSeat, 1480, 0, 0, 20);
             commonChipCheck(initialActionOffSeat, 1480, 0, 0, 20);
             assertTrue(table.getTotalPotAmount() == 40);
@@ -158,6 +235,7 @@ public class FlexControllerImplIntTest extends IntegrationTest {
                     GameEventType.FOLD, GameEventType.CALL);
             commonNotAllowedToPerformActionCheck(realTimeHand, initialActionOffSeat,
                     GameEventType.FOLD, GameEventType.CALL);
+        }
     }
 
     private void commonAllowedToPerformActionCheck(RealTimeHand realTimeHand,
