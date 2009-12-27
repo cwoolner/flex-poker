@@ -196,7 +196,7 @@ public class PlayerActionsBsoImpl implements PlayerActionsBso {
             table.setTotalPotAmount(table.getTotalPotAmount() + seat.getCallAmount());
 
             seat.setCallAmount(0);
-            seat.setRaiseTo(bigBlind);
+            seat.setRaiseTo(0);
 
             return new HandState(realTimeHand.getHandDealerState(),
                     realTimeHand.getHandRoundState());
