@@ -82,16 +82,10 @@ public class PlayerActionsBsoImpl implements PlayerActionsBso {
                 throw new FlexPokerException("Not allowed to fold.");
             }
 
-            for (Seat seat : table.getSeats()) {
-                if (seat.getUserGameStatus() != null
-                    && user.equals(seat.getUserGameStatus().getUser())) {
-                    seat.setStillInHand(false);
-                    break;
-                }
-            }
-
             Seat actionOnSeat = (Seat) CollectionUtils.find(table.getSeats(),
                     new ActionOnSeatPredicate());
+
+            actionOnSeat.setStillInHand(false);
 
             resetAllSeatActions(actionOnSeat, realTimeHand);
 
