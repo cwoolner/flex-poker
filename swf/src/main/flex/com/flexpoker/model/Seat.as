@@ -18,7 +18,7 @@ package com.flexpoker.model {
 
         public var chipsInFront:int;
 
-        public var minBet:int;
+        public var raiseTo:int;
 
         public var callAmount:int;
 

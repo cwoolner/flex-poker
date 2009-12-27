@@ -185,7 +185,7 @@ public class GameEventBsoImpl implements GameEventBso {
             table.setTotalPotAmount(table.getTotalPotAmount() + seat.getChipsInFront());
 
             seat.setCallAmount(amountNeededToCall);
-            seat.setMinBet(amountNeededToRaise);
+            seat.setRaiseTo(amountNeededToRaise);
         }
 
         determineNextToAct(table, realTimeHand);

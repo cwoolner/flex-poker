@@ -123,7 +123,7 @@ public class FlexControllerImplIntTest extends IntegrationTest {
         assertTrue(seat.getUserGameStatus().getChips() == chips);
         assertTrue(seat.getCallAmount() == callAmount);
         assertTrue(seat.getChipsInFront() == chipsInFront);
-        assertTrue(seat.getMinBet() == raiseTo);
+        assertTrue(seat.getRaiseTo() == raiseTo);
     }
 
 }

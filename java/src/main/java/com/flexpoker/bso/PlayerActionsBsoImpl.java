@@ -198,7 +198,7 @@ public class PlayerActionsBsoImpl implements PlayerActionsBso {
             realTimeHand.removePossibleSeatAction(seat, GameEventType.FOLD);
 
             seat.setCallAmount(0);
-            seat.setMinBet(bigBlind);
+            seat.setRaiseTo(bigBlind);
 
             return new HandState(realTimeHand.getHandDealerState(),
                     realTimeHand.getHandRoundState());
@@ -223,7 +223,7 @@ public class PlayerActionsBsoImpl implements PlayerActionsBso {
                 throw new FlexPokerException("Not allowed to raise.");
             }
 
-            validationBso.validateRaiseAmount(actionOnSeat.getMinBet(),
+            validationBso.validateRaiseAmount(actionOnSeat.getRaiseTo(),
                     actionOnSeat.getUserGameStatus().getChips(), raiseAmount);
 
             int raiseAmountInt = Integer.parseInt(raiseAmount);
@@ -256,22 +256,22 @@ public class PlayerActionsBsoImpl implements PlayerActionsBso {
                     realTimeHand.removePossibleSeatAction(seat, GameEventType.CHECK);
                     if (totalChips < raiseAmountInt) {
                         seat.setCallAmount(totalChips);
-                        seat.setMinBet(0);
+                        seat.setRaiseTo(0);
                         realTimeHand.removePossibleSeatAction(seat, GameEventType.RAISE);
                     } else {
                         seat.setCallAmount(raiseAmountInt - seat.getChipsInFront());
                         realTimeHand.addPossibleSeatAction(seat, GameEventType.RAISE);
                         if (totalChips < raiseAmountInt + raiseAboveCall) {
-                            seat.setMinBet(totalChips);
+                            seat.setRaiseTo(totalChips);
                         } else {
-                            seat.setMinBet(raiseAmountInt + raiseAboveCall);
+                            seat.setRaiseTo(raiseAmountInt + raiseAboveCall);
                         }
                     }
                 }
             }
 
             actionOnSeat.setCallAmount(0);
-            actionOnSeat.setMinBet(bigBlind);
+            actionOnSeat.setRaiseTo(bigBlind);
 
             return new HandState(realTimeHand.getHandDealerState(),
                     realTimeHand.getHandRoundState());
