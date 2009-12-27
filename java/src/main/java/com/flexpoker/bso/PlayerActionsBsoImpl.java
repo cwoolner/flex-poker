@@ -151,13 +151,8 @@ public class PlayerActionsBsoImpl implements PlayerActionsBso {
             RealTimeHand realTimeHand = realTimeGame.getRealTimeHand(table);
             table = realTimeGame.getTable(table);
 
-            Blinds currentBlinds = realTimeGame.getCurrentBlinds();
-            int bigBlind = currentBlinds.getBigBlind();
-
             Seat actionOnSeat = (Seat) CollectionUtils.find(table.getSeats(),
                     new ActionOnSeatPredicate());
-
-            Seat seat = actionOnSeat;
 
             if (!isUserAllowedToPerformAction(GameEventType.CALL, user,
                     realTimeHand, table)) {
@@ -166,9 +161,9 @@ public class PlayerActionsBsoImpl implements PlayerActionsBso {
 
             resetAllSeatActions(actionOnSeat, realTimeHand);
 
-            seat.setChipsInFront(seat.getChipsInFront() + seat.getCallAmount());
+            actionOnSeat.setChipsInFront(actionOnSeat.getChipsInFront() + actionOnSeat.getCallAmount());
 
-            if (seat.equals(realTimeHand.getLastToAct())) {
+            if (actionOnSeat.equals(realTimeHand.getLastToAct())) {
                 realTimeHand.setOriginatingBettor(null);
                 realTimeHand.setHandRoundState(HandRoundState.ROUND_COMPLETE);
                 moveToNextHandDealerState(realTimeHand);
@@ -186,17 +181,17 @@ public class PlayerActionsBsoImpl implements PlayerActionsBso {
                 }
             } else {
                 realTimeHand.setHandRoundState(HandRoundState.ROUND_IN_PROGRESS);
-                seat.setActionOn(false);
+                actionOnSeat.setActionOn(false);
                 realTimeHand.getNextToAct().setActionOn(true);
                 determineNextToAct(table, realTimeHand);
             }
 
-            UserGameStatus userGameStatus = seat.getUserGameStatus();
-            userGameStatus.setChips(userGameStatus.getChips() - seat.getCallAmount());
-            table.setTotalPotAmount(table.getTotalPotAmount() + seat.getCallAmount());
+            UserGameStatus userGameStatus = actionOnSeat.getUserGameStatus();
+            userGameStatus.setChips(userGameStatus.getChips() - actionOnSeat.getCallAmount());
+            table.setTotalPotAmount(table.getTotalPotAmount() + actionOnSeat.getCallAmount());
 
-            seat.setCallAmount(0);
-            seat.setRaiseTo(0);
+            actionOnSeat.setCallAmount(0);
+            actionOnSeat.setRaiseTo(0);
 
             return new HandState(realTimeHand.getHandDealerState(),
                     realTimeHand.getHandRoundState());
