@@ -54,25 +54,9 @@ public class PlayerActionsBsoImpl implements PlayerActionsBso {
                     new ActionOnSeatPredicate());
 
             if (actionOnSeat.equals(realTimeHand.getLastToAct())) {
-                realTimeHand.setHandRoundState(HandRoundState.ROUND_COMPLETE);
-                moveToNextHandDealerState(realTimeHand);
-                potBso.calculatePotsAfterRound(game, table);
-                determineTablePotAmounts(game, table);
-                resetPossibleSeatActionsAfterRound(table, realTimeHand);
-
-                if (realTimeHand.getHandDealerState() != HandDealerState.COMPLETE) {
-                    seatStatusBso.setStatusForNewRound(table);
-                    determineNextToAct(table, realTimeHand);
-                    determineLastToAct(table, realTimeHand);
-                } else {
-                    seatStatusBso.setStatusForEndOfHand(table);
-                    determineWinners(game, table, realTimeHand.getHandEvaluationList());
-                }
+                handleEndOfRound(game, table, realTimeHand);
             } else {
-                realTimeHand.setHandRoundState(HandRoundState.ROUND_IN_PROGRESS);
-                actionOnSeat.setActionOn(false);
-                realTimeHand.getNextToAct().setActionOn(true);
-                determineNextToAct(table, realTimeHand);
+                handleMiddleOfRound(table, realTimeHand, actionOnSeat);
             }
 
             return new HandState(realTimeHand.getHandDealerState(),
@@ -117,26 +101,9 @@ public class PlayerActionsBsoImpl implements PlayerActionsBso {
                 potBso.calculatePotsAfterRound(game, table);
                 determineTablePotAmounts(game, table);
             } else if (actionOnSeat.equals(realTimeHand.getLastToAct())) {
-                realTimeHand.setOriginatingBettor(null);
-                realTimeHand.setHandRoundState(HandRoundState.ROUND_COMPLETE);
-                moveToNextHandDealerState(realTimeHand);
-                potBso.calculatePotsAfterRound(game, table);
-                determineTablePotAmounts(game, table);
-                resetPossibleSeatActionsAfterRound(table, realTimeHand);
-
-                if (realTimeHand.getHandDealerState() != HandDealerState.COMPLETE) {
-                    seatStatusBso.setStatusForNewRound(table);
-                    determineNextToAct(table, realTimeHand);
-                    determineLastToAct(table, realTimeHand);
-                } else {
-                    seatStatusBso.setStatusForEndOfHand(table);
-                    determineWinners(game, table, realTimeHand.getHandEvaluationList());
-                }
+                handleEndOfRound(game, table, realTimeHand);
             } else {
-                realTimeHand.setHandRoundState(HandRoundState.ROUND_IN_PROGRESS);
-                actionOnSeat.setActionOn(false);
-                realTimeHand.getNextToAct().setActionOn(true);
-                determineNextToAct(table, realTimeHand);
+                handleMiddleOfRound(table, realTimeHand, actionOnSeat);
             }
 
             return new HandState(realTimeHand.getHandDealerState(),
@@ -164,26 +131,9 @@ public class PlayerActionsBsoImpl implements PlayerActionsBso {
             actionOnSeat.setChipsInFront(actionOnSeat.getChipsInFront() + actionOnSeat.getCallAmount());
 
             if (actionOnSeat.equals(realTimeHand.getLastToAct())) {
-                realTimeHand.setOriginatingBettor(null);
-                realTimeHand.setHandRoundState(HandRoundState.ROUND_COMPLETE);
-                moveToNextHandDealerState(realTimeHand);
-                potBso.calculatePotsAfterRound(game, table);
-                determineTablePotAmounts(game, table);
-                resetPossibleSeatActionsAfterRound(table, realTimeHand);
-
-                if (realTimeHand.getHandDealerState() != HandDealerState.COMPLETE) {
-                    seatStatusBso.setStatusForNewRound(table);
-                    determineNextToAct(table, realTimeHand);
-                    determineLastToAct(table, realTimeHand);
-                } else {
-                    seatStatusBso.setStatusForEndOfHand(table);
-                    determineWinners(game, table, realTimeHand.getHandEvaluationList());
-                }
+                handleEndOfRound(game, table, realTimeHand);
             } else {
-                realTimeHand.setHandRoundState(HandRoundState.ROUND_IN_PROGRESS);
-                actionOnSeat.setActionOn(false);
-                realTimeHand.getNextToAct().setActionOn(true);
-                determineNextToAct(table, realTimeHand);
+                handleMiddleOfRound(table, realTimeHand, actionOnSeat);
             }
 
             UserGameStatus userGameStatus = actionOnSeat.getUserGameStatus();
@@ -225,10 +175,7 @@ public class PlayerActionsBsoImpl implements PlayerActionsBso {
 
             realTimeHand.setOriginatingBettor(actionOnSeat);
             determineLastToAct(table, realTimeHand);
-            realTimeHand.setHandRoundState(HandRoundState.ROUND_IN_PROGRESS);
-            actionOnSeat.setActionOn(false);
-            realTimeHand.getNextToAct().setActionOn(true);
-            determineNextToAct(table, realTimeHand);
+            handleMiddleOfRound(table, realTimeHand, actionOnSeat);
             actionOnSeat.setChipsInFront(raiseAmountInt);
 
             UserGameStatus userGameStatus = actionOnSeat.getUserGameStatus();
@@ -268,6 +215,31 @@ public class PlayerActionsBsoImpl implements PlayerActionsBso {
 
             return new HandState(realTimeHand.getHandDealerState(),
                     realTimeHand.getHandRoundState());
+        }
+    }
+
+    private void handleMiddleOfRound(Table table, RealTimeHand realTimeHand, Seat actionOnSeat) {
+        realTimeHand.setHandRoundState(HandRoundState.ROUND_IN_PROGRESS);
+        actionOnSeat.setActionOn(false);
+        realTimeHand.getNextToAct().setActionOn(true);
+        determineNextToAct(table, realTimeHand);
+    }
+
+    private void handleEndOfRound(Game game, Table table, RealTimeHand realTimeHand) {
+        realTimeHand.setOriginatingBettor(null);
+        realTimeHand.setHandRoundState(HandRoundState.ROUND_COMPLETE);
+        moveToNextHandDealerState(realTimeHand);
+        potBso.calculatePotsAfterRound(game, table);
+        determineTablePotAmounts(game, table);
+        resetPossibleSeatActionsAfterRound(table, realTimeHand);
+
+        if (realTimeHand.getHandDealerState() != HandDealerState.COMPLETE) {
+            seatStatusBso.setStatusForNewRound(table);
+            determineNextToAct(table, realTimeHand);
+            determineLastToAct(table, realTimeHand);
+        } else {
+            seatStatusBso.setStatusForEndOfHand(table);
+            determineWinners(game, table, realTimeHand.getHandEvaluationList());
         }
     }
 
