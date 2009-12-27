@@ -233,13 +233,13 @@ public class PlayerActionsBsoImpl implements PlayerActionsBso {
         determineTablePotAmounts(game, table);
         resetPossibleSeatActionsAfterRound(table, realTimeHand);
 
-        if (realTimeHand.getHandDealerState() != HandDealerState.COMPLETE) {
+        if (realTimeHand.getHandDealerState() == HandDealerState.COMPLETE) {
+            seatStatusBso.setStatusForEndOfHand(table);
+            determineWinners(game, table, realTimeHand.getHandEvaluationList());
+        } else {
             seatStatusBso.setStatusForNewRound(table);
             determineNextToAct(table, realTimeHand);
             determineLastToAct(table, realTimeHand);
-        } else {
-            seatStatusBso.setStatusForEndOfHand(table);
-            determineWinners(game, table, realTimeHand.getHandEvaluationList());
         }
     }
 
