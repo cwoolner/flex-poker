@@ -157,35 +157,59 @@ public class GameEventBsoImpl implements GameEventBso {
 
 
         for (Seat seat : table.getSeats()) {
-            UserGameStatus userGameStatus = seat.getUserGameStatus();
-            int amountNeededToCall = bigBlind;
-            int amountNeededToRaise = bigBlind * 2;
-
-            if (seat.equals(bigBlindSeat)) {
-                amountNeededToCall = 0;
-                amountNeededToRaise = bigBlind;
-                realTimeHand.addPossibleSeatAction(seat, GameEventType.CHECK);
-                realTimeHand.addPossibleSeatAction(seat, GameEventType.RAISE);
-                seat.setChipsInFront(bigBlind);
-                userGameStatus.setChips(userGameStatus.getChips() - bigBlind);
-            } else if (seat.equals(smallBlindSeat)) {
-                amountNeededToCall = smallBlind;
-                realTimeHand.addPossibleSeatAction(seat, GameEventType.CALL);
-                realTimeHand.addPossibleSeatAction(seat, GameEventType.FOLD);
-                realTimeHand.addPossibleSeatAction(seat, GameEventType.RAISE);
-                seat.setChipsInFront(smallBlind);
-                userGameStatus.setChips(userGameStatus.getChips() - smallBlind);
-            } else {
-                realTimeHand.addPossibleSeatAction(seat, GameEventType.CALL);
-                realTimeHand.addPossibleSeatAction(seat, GameEventType.RAISE);
-                realTimeHand.addPossibleSeatAction(seat, GameEventType.FOLD);
-                seat.setChipsInFront(0);
+            if (seat.getUserGameStatus() == null) {
+                continue;
             }
 
-            table.setTotalPotAmount(table.getTotalPotAmount() + seat.getChipsInFront());
+            int chipsInFront = 0;
+            int callAmount = bigBlind;
+            int raiseToAmount = bigBlind * 2;
 
-            seat.setCallAmount(amountNeededToCall);
-            seat.setRaiseTo(amountNeededToRaise);
+            if (seat.equals(bigBlindSeat)) {
+                chipsInFront = bigBlind;
+                callAmount = 0;
+            } else if (seat.equals(smallBlindSeat)) {
+                chipsInFront = smallBlind;
+                callAmount = smallBlind;
+            }
+
+            if (chipsInFront > seat.getUserGameStatus().getChips()) {
+                seat.setChipsInFront(seat.getUserGameStatus().getChips());
+            } else {
+                seat.setChipsInFront(chipsInFront);
+            }
+
+            seat.getUserGameStatus().setChips(
+                    seat.getUserGameStatus().getChips() - seat.getChipsInFront());
+
+            if (callAmount > seat.getUserGameStatus().getChips()) {
+                seat.setCallAmount(seat.getUserGameStatus().getChips());
+            } else {
+                seat.setCallAmount(callAmount);
+            }
+
+            int totalChips = seat.getUserGameStatus().getChips()
+                    + seat.getChipsInFront();
+
+            if (raiseToAmount > totalChips) {
+                seat.setRaiseTo(totalChips);
+            } else {
+                seat.setRaiseTo(raiseToAmount);
+            }
+
+            table.setTotalPotAmount(table.getTotalPotAmount()
+                    + seat.getChipsInFront());
+
+            if (seat.getRaiseTo() > 0) {
+                realTimeHand.addPossibleSeatAction(seat, GameEventType.RAISE);
+            }
+
+            if (seat.getCallAmount() > 0) {
+                realTimeHand.addPossibleSeatAction(seat, GameEventType.CALL);
+                realTimeHand.addPossibleSeatAction(seat, GameEventType.FOLD);
+            } else {
+                realTimeHand.addPossibleSeatAction(seat, GameEventType.CHECK);
+            }
         }
 
         determineNextToAct(table, realTimeHand);
