@@ -97,22 +97,26 @@ public class FlexControllerImplIntTest extends IntegrationTest {
         if (actionOnSeat.equals(johnSeat)) {
             commonChipCheck(johnSeat, 1490, 10, 10, 40);
             commonChipCheck(guestSeat, 1480, 0, 20, 40);
+            assertTrue(table.getTotalPotAmount() == 30);
 
             SecurityContextHolder.getContext().setAuthentication(johnAuth);
             flexController.call(game, table);
 
             commonChipCheck(johnSeat, 1480, 0, 20, 0);
             commonChipCheck(guestSeat, 1480, 0, 20, 40);
+            assertTrue(table.getTotalPotAmount() == 40);
 
         } else if (actionOnSeat.equals(guestSeat)) {
             commonChipCheck(guestSeat, 1490, 10, 10, 40);
             commonChipCheck(johnSeat, 1480, 0, 20, 40);
+            assertTrue(table.getTotalPotAmount() == 30);
 
             SecurityContextHolder.getContext().setAuthentication(guestAuth);
             flexController.call(game, table);
 
             commonChipCheck(guestSeat, 1480, 0, 20, 0);
             commonChipCheck(johnSeat, 1480, 0, 20, 40);
+            assertTrue(table.getTotalPotAmount() == 40);
         } else {
             fail("Neither seat belongs to guest or john.");
         }
