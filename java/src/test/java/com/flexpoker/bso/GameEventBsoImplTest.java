@@ -4,9 +4,6 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-import com.flexpoker.model.Game;
-import com.flexpoker.model.Table;
-import com.flexpoker.model.User;
 import com.flexpoker.util.Context;
 
 public class GameEventBsoImplTest {

@@ -7,11 +7,9 @@ import org.springframework.stereotype.Service;
 import com.flexpoker.bso.PotBso;
 import com.flexpoker.model.Game;
 import com.flexpoker.model.HandEvaluation;
-import com.flexpoker.model.HandState;
 import com.flexpoker.model.Pot;
 import com.flexpoker.model.Seat;
 import com.flexpoker.model.Table;
-import com.flexpoker.model.User;
 
 @Service
 public class PotBsoMock implements PotBso {
