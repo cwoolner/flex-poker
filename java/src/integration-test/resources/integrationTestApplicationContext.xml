@@ -32,4 +32,6 @@
         <property name="generateDdl" value="true" />
     </bean>
 
+    <bean id="messageTemplate" class="com.flexpoker.misc.mock.MessageTemplateMock" />
+
 </beans>
