@@ -164,6 +164,8 @@ public class PlayerActionsBsoImpl implements PlayerActionsBso {
                 throw new FlexPokerException("Not allowed to call.");
             }
 
+            resetAllSeatActions(actionOnSeat, realTimeHand);
+
             seat.setChipsInFront(seat.getChipsInFront() + seat.getCallAmount());
 
             if (seat.equals(realTimeHand.getLastToAct())) {
@@ -192,10 +194,6 @@ public class PlayerActionsBsoImpl implements PlayerActionsBso {
             UserGameStatus userGameStatus = seat.getUserGameStatus();
             userGameStatus.setChips(userGameStatus.getChips() - seat.getCallAmount());
             table.setTotalPotAmount(table.getTotalPotAmount() + seat.getCallAmount());
-
-            realTimeHand.addPossibleSeatAction(seat, GameEventType.CHECK);
-            realTimeHand.removePossibleSeatAction(seat, GameEventType.CALL);
-            realTimeHand.removePossibleSeatAction(seat, GameEventType.FOLD);
 
             seat.setCallAmount(0);
             seat.setRaiseTo(bigBlind);
@@ -286,6 +284,13 @@ public class PlayerActionsBsoImpl implements PlayerActionsBso {
             realTimeHand.removePossibleSeatAction(seat, GameEventType.CALL);
             realTimeHand.removePossibleSeatAction(seat, GameEventType.FOLD);
         }
+    }
+
+    private void resetAllSeatActions(Seat seat, RealTimeHand realTimeHand) {
+        realTimeHand.removePossibleSeatAction(seat, GameEventType.CHECK);
+        realTimeHand.removePossibleSeatAction(seat, GameEventType.RAISE);
+        realTimeHand.removePossibleSeatAction(seat, GameEventType.CALL);
+        realTimeHand.removePossibleSeatAction(seat, GameEventType.FOLD);
     }
 
     private void determineLastToAct(Table table, RealTimeHand realTimeHand) {
