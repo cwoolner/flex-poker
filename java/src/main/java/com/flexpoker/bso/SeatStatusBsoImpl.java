@@ -49,6 +49,20 @@ public class SeatStatusBsoImpl implements SeatStatusBso {
     @Override
     public void setStatusForEndOfHand(Table table) {
         resetChipsInFront(table);
+        resetCallAmounts(table);
+        resetRaiseTo(table);
+    }
+
+    private void resetRaiseTo(Table table) {
+        for (Seat seat : table.getSeats()) {
+            seat.setRaiseTo(0);
+        }
+    }
+
+    private void resetCallAmounts(Table table) {
+        for (Seat seat : table.getSeats()) {
+            seat.setCallAmount(0);
+        }
     }
 
     /**
