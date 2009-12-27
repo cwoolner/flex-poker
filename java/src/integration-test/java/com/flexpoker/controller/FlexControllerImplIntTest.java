@@ -9,11 +9,14 @@ import org.springframework.security.context.SecurityContextHolder;
 import org.springframework.security.providers.UsernamePasswordAuthenticationToken;
 import org.springframework.security.Authentication;
 
+import com.flexpoker.bso.RealTimeGameBsoImpl;
 import com.flexpoker.controller.FlexControllerImpl;
 import com.flexpoker.dao.UserDaoImpl;
 import com.flexpoker.dao.GameDaoImpl;
 import com.flexpoker.model.Game;
+import com.flexpoker.model.GameEventType;
 import com.flexpoker.model.PocketCards;
+import com.flexpoker.model.RealTimeHand;
 import com.flexpoker.model.Seat;
 import com.flexpoker.model.Table;
 import com.flexpoker.model.User;
@@ -36,6 +39,9 @@ public class FlexControllerImplIntTest extends IntegrationTest {
 
     private FlexControllerImpl flexController = (FlexControllerImpl)
             IntegrationContext.instance().getBean("flexController");
+
+    private RealTimeGameBsoImpl realTimeGameBso = (RealTimeGameBsoImpl)
+            IntegrationContext.instance().getBean("realTimeGameBso");
 
     @Test
     public void testCheck() {
@@ -80,6 +86,7 @@ public class FlexControllerImplIntTest extends IntegrationTest {
         assertFalse(johnPocketCards.equals(guestPocketCards));
 
         table = flexController.fetchTable(game);
+        RealTimeHand realTimeHand = realTimeGameBso.get(game).getRealTimeHand(table);
 
         Seat actionOnSeat = (Seat) CollectionUtils.find(table.getSeats(),
                 new ActionOnSeatPredicate());
@@ -95,30 +102,75 @@ public class FlexControllerImplIntTest extends IntegrationTest {
         }
 
         if (actionOnSeat.equals(johnSeat)) {
-            commonChipCheck(johnSeat, 1490, 10, 10, 40);
-            commonChipCheck(guestSeat, 1480, 0, 20, 40);
-            assertTrue(table.getTotalPotAmount() == 30);
-
-            SecurityContextHolder.getContext().setAuthentication(johnAuth);
-            flexController.call(game, table);
-
-            commonChipCheck(johnSeat, 1480, 0, 20, 0);
-            commonChipCheck(guestSeat, 1480, 0, 20, 40);
-            assertTrue(table.getTotalPotAmount() == 40);
-
+            testCheckCommon(johnSeat, guestSeat, johnAuth, guestAuth, game,
+                    table, realTimeHand);
         } else if (actionOnSeat.equals(guestSeat)) {
-            commonChipCheck(guestSeat, 1490, 10, 10, 40);
-            commonChipCheck(johnSeat, 1480, 0, 20, 40);
-            assertTrue(table.getTotalPotAmount() == 30);
-
-            SecurityContextHolder.getContext().setAuthentication(guestAuth);
-            flexController.call(game, table);
-
-            commonChipCheck(guestSeat, 1480, 0, 20, 0);
-            commonChipCheck(johnSeat, 1480, 0, 20, 40);
-            assertTrue(table.getTotalPotAmount() == 40);
+            testCheckCommon(guestSeat, johnSeat, guestAuth, johnAuth, game,
+                    table, realTimeHand);
         } else {
             fail("Neither seat belongs to guest or john.");
+        }
+    }
+
+    private void testCheckCommon(Seat initialActionOnSeat, Seat initialActionOffSeat,
+            Authentication actionOnAuth, Authentication actionOffAuth,
+            Game game, Table table, RealTimeHand realTimeHand) {
+            commonChipCheck(initialActionOnSeat, 1490, 10, 10, 40);
+            commonChipCheck(initialActionOffSeat, 1480, 0, 20, 40);
+            assertTrue(table.getTotalPotAmount() == 30);
+            commonAllowedToPerformActionCheck(realTimeHand, initialActionOnSeat,
+                    GameEventType.CALL, GameEventType.FOLD, GameEventType.RAISE);
+            commonAllowedToPerformActionCheck(realTimeHand, initialActionOffSeat,
+                    GameEventType.CHECK, GameEventType.RAISE);
+            commonNotAllowedToPerformActionCheck(realTimeHand, initialActionOnSeat,
+                    GameEventType.CHECK);
+            commonNotAllowedToPerformActionCheck(realTimeHand, initialActionOffSeat,
+                    GameEventType.FOLD, GameEventType.CALL);
+
+            // initial call from the small blind
+            SecurityContextHolder.getContext().setAuthentication(actionOnAuth);
+            flexController.call(game, table);
+
+            commonChipCheck(initialActionOnSeat, 1480, 0, 20, 0);
+            commonChipCheck(initialActionOffSeat, 1480, 0, 20, 40);
+            assertTrue(table.getTotalPotAmount() == 40);
+            commonAllowedToPerformActionCheck(realTimeHand, initialActionOnSeat);
+            commonAllowedToPerformActionCheck(realTimeHand, initialActionOffSeat,
+                    GameEventType.CHECK, GameEventType.RAISE);
+            commonNotAllowedToPerformActionCheck(realTimeHand, initialActionOnSeat,
+                    GameEventType.CHECK, GameEventType.CALL, GameEventType.FOLD,
+                    GameEventType.RAISE);
+            commonNotAllowedToPerformActionCheck(realTimeHand, initialActionOffSeat,
+                    GameEventType.FOLD, GameEventType.CALL);
+
+            // big blind checks
+            SecurityContextHolder.getContext().setAuthentication(actionOffAuth);
+            flexController.check(game, table);
+
+            commonChipCheck(initialActionOnSeat, 1480, 0, 0, 20);
+            commonChipCheck(initialActionOffSeat, 1480, 0, 0, 20);
+            assertTrue(table.getTotalPotAmount() == 40);
+            commonAllowedToPerformActionCheck(realTimeHand, initialActionOnSeat,
+                    GameEventType.CHECK, GameEventType.RAISE);
+            commonAllowedToPerformActionCheck(realTimeHand, initialActionOffSeat,
+                    GameEventType.CHECK, GameEventType.RAISE);
+            commonNotAllowedToPerformActionCheck(realTimeHand, initialActionOnSeat,
+                    GameEventType.FOLD, GameEventType.CALL);
+            commonNotAllowedToPerformActionCheck(realTimeHand, initialActionOffSeat,
+                    GameEventType.FOLD, GameEventType.CALL);
+    }
+
+    private void commonAllowedToPerformActionCheck(RealTimeHand realTimeHand,
+            Seat seat, GameEventType...gameEventTypes) {
+        for (GameEventType gameEventType : gameEventTypes) {
+            assertTrue(realTimeHand.isUserAllowedToPerformAction(gameEventType, seat));
+        }
+    }
+
+    private void commonNotAllowedToPerformActionCheck(RealTimeHand realTimeHand,
+            Seat seat, GameEventType...gameEventTypes) {
+        for (GameEventType gameEventType : gameEventTypes) {
+            assertFalse(realTimeHand.isUserAllowedToPerformAction(gameEventType, seat));
         }
     }
 
