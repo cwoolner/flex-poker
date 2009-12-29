@@ -7,6 +7,7 @@ import com.flexpoker.model.FlopCards;
 import com.flexpoker.model.Game;
 import com.flexpoker.model.HandDealerState;
 import com.flexpoker.model.PocketCards;
+import com.flexpoker.model.RealTimeHand;
 import com.flexpoker.model.RiverCard;
 import com.flexpoker.model.Table;
 import com.flexpoker.model.TurnCard;
@@ -24,8 +25,7 @@ public class DealCardActionsBsoImpl implements DealCardActionsBso {
     @Override
     public PocketCards fetchPocketCards(User user, Game game, Table table) {
         validationBso.validateValuesAreNonNull(user, game, table);
-        HandDealerState handDealerState = realTimeGameBso.get(game)
-                .getRealTimeHand(table).getHandDealerState();
+        HandDealerState handDealerState = determineHandDealerState(game, table);
         if (handDealerState.ordinal() >= HandDealerState.POCKET_CARDS_DEALT.ordinal()) {
             return deckBso.fetchPocketCards(user, game, table);
         }
@@ -36,8 +36,7 @@ public class DealCardActionsBsoImpl implements DealCardActionsBso {
     @Override
     public FlopCards fetchFlopCards(Game game, Table table) {
         validationBso.validateValuesAreNonNull(game, table);
-        HandDealerState handDealerState = realTimeGameBso.get(game)
-                .getRealTimeHand(table).getHandDealerState();
+        HandDealerState handDealerState = determineHandDealerState(game, table);
         if (handDealerState.ordinal() >= HandDealerState.FLOP_DEALT.ordinal()) {
             return deckBso.fetchFlopCards(game, table);
         }
@@ -48,8 +47,7 @@ public class DealCardActionsBsoImpl implements DealCardActionsBso {
     @Override
     public RiverCard fetchRiverCard(Game game, Table table) {
         validationBso.validateValuesAreNonNull(game, table);
-        HandDealerState handDealerState = realTimeGameBso.get(game)
-                .getRealTimeHand(table).getHandDealerState();
+        HandDealerState handDealerState = determineHandDealerState(game, table);
         if (handDealerState.ordinal() >= HandDealerState.RIVER_DEALT.ordinal()) {
             return deckBso.fetchRiverCard(game, table);
         }
@@ -60,13 +58,20 @@ public class DealCardActionsBsoImpl implements DealCardActionsBso {
     @Override
     public TurnCard fetchTurnCard(Game game, Table table) {
         validationBso.validateValuesAreNonNull(game, table);
-        HandDealerState handDealerState = realTimeGameBso.get(game)
-                .getRealTimeHand(table).getHandDealerState();
+        HandDealerState handDealerState = determineHandDealerState(game, table);
         if (handDealerState.ordinal() >= HandDealerState.TURN_DEALT.ordinal()) {
             return deckBso.fetchTurnCard(game, table);
         }
 
         throw new FlexPokerException("You are not allowed to fetch the turn card.");
+    }
+
+    private HandDealerState determineHandDealerState(Game game, Table table) {
+        RealTimeHand realTimeHand = realTimeGameBso.get(game).getRealTimeHand(table);
+        validationBso.validateValuesAreNonNull(realTimeHand);
+
+        HandDealerState handDealerState = realTimeHand.getHandDealerState();
+        return handDealerState;
     }
 
     public DeckBso getDeckBso() {
