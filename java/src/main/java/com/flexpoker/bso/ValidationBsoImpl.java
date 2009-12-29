@@ -75,4 +75,17 @@ public class ValidationBsoImpl implements ValidationBso {
         }
     }
 
+    @Override
+    public void validateValuesAreNonNull(Object... objects) {
+        if (objects == null) {
+            throw new IllegalArgumentException("Vararg objects cannot be null.");
+        }
+
+        for (Object object : objects) {
+            if (object == null) {
+                throw new IllegalArgumentException("Object cannot be null.");
+            }
+        }
+    }
+
 }

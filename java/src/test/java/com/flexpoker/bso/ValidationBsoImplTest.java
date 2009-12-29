@@ -112,4 +112,23 @@ public class ValidationBsoImplTest {
         } catch (IllegalArgumentException e) {}
     }
 
+    @Test
+    public void testValidateValuesAreNonNull() {
+        try {
+            bso.validateValuesAreNonNull(null);
+            fail("An exception should have been thrown.  Can't raise a non-integer.");
+        } catch (IllegalArgumentException e) {}
+        try {
+            bso.validateValuesAreNonNull("kljlk", new Integer(3), null);
+            fail("An exception should have been thrown.  Can't raise a non-integer.");
+        } catch (IllegalArgumentException e) {}
+        try {
+            bso.validateValuesAreNonNull(null, null);
+            fail("An exception should have been thrown.  Can't raise a non-integer.");
+        } catch (IllegalArgumentException e) {}
+
+        bso.validateValuesAreNonNull(new Integer(3), "");
+        bso.validateValuesAreNonNull("good", "bad");
+    }
+
 }

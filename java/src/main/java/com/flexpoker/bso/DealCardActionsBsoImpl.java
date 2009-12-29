@@ -19,8 +19,11 @@ public class DealCardActionsBsoImpl implements DealCardActionsBso {
 
     private RealTimeGameBso realTimeGameBso;
 
+    private ValidationBso validationBso;
+
     @Override
     public PocketCards fetchPocketCards(User user, Game game, Table table) {
+        validationBso.validateValuesAreNonNull(user, game, table);
         HandDealerState handDealerState = realTimeGameBso.get(game)
                 .getRealTimeHand(table).getHandDealerState();
         if (handDealerState.ordinal() >= HandDealerState.POCKET_CARDS_DEALT.ordinal()) {
@@ -32,6 +35,7 @@ public class DealCardActionsBsoImpl implements DealCardActionsBso {
 
     @Override
     public FlopCards fetchFlopCards(Game game, Table table) {
+        validationBso.validateValuesAreNonNull(game, table);
         HandDealerState handDealerState = realTimeGameBso.get(game)
                 .getRealTimeHand(table).getHandDealerState();
         if (handDealerState.ordinal() >= HandDealerState.FLOP_DEALT.ordinal()) {
@@ -43,6 +47,7 @@ public class DealCardActionsBsoImpl implements DealCardActionsBso {
 
     @Override
     public RiverCard fetchRiverCard(Game game, Table table) {
+        validationBso.validateValuesAreNonNull(game, table);
         HandDealerState handDealerState = realTimeGameBso.get(game)
                 .getRealTimeHand(table).getHandDealerState();
         if (handDealerState.ordinal() >= HandDealerState.RIVER_DEALT.ordinal()) {
@@ -54,6 +59,7 @@ public class DealCardActionsBsoImpl implements DealCardActionsBso {
 
     @Override
     public TurnCard fetchTurnCard(Game game, Table table) {
+        validationBso.validateValuesAreNonNull(game, table);
         HandDealerState handDealerState = realTimeGameBso.get(game)
                 .getRealTimeHand(table).getHandDealerState();
         if (handDealerState.ordinal() >= HandDealerState.TURN_DEALT.ordinal()) {
@@ -77,6 +83,14 @@ public class DealCardActionsBsoImpl implements DealCardActionsBso {
 
     public void setRealTimeGameBso(RealTimeGameBso realTimeGameBso) {
         this.realTimeGameBso = realTimeGameBso;
+    }
+
+    public ValidationBso getValidationBso() {
+        return validationBso;
+    }
+
+    public void setValidationBso(ValidationBso validationBso) {
+        this.validationBso = validationBso;
     }
 
 }

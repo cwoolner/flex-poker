@@ -22,4 +22,7 @@ public class ValidationBsoMock implements ValidationBso {
     public void validateRaiseAmount(int minimumAmount, int maximumAmount,
             String raiseAmount) {}
 
+    @Override
+    public void validateValuesAreNonNull(Object... objects) {}
+
 }
