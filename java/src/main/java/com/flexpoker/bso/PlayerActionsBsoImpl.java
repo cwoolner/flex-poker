@@ -178,7 +178,8 @@ public class PlayerActionsBsoImpl implements PlayerActionsBso {
                     actionOnSeat.getUserGameStatus().getChips(), raiseAmount);
 
             int raiseAmountInt = Integer.parseInt(raiseAmount);
-            int raiseAboveCall = raiseAmountInt - actionOnSeat.getCallAmount();
+            int raiseAboveCall = raiseAmountInt -
+                    (actionOnSeat.getChipsInFront() + actionOnSeat.getCallAmount());
             int increaseOfChipsInFront = raiseAmountInt - actionOnSeat.getChipsInFront();
 
             realTimeHand.setOriginatingBettor(actionOnSeat);
