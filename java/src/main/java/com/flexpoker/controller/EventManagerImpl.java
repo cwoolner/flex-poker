@@ -35,6 +35,8 @@ public class EventManagerImpl implements EventManager {
 
     private static final String GAME_IN_PROGRESS = "gameInProgress";
 
+    private static final String GAME_IS_FINISHED = "gameIsFinished";
+
     private static final String NEW_HAND_STARTING = "newHandStarting";
 
     private static final String DEAL_FLOP = "dealFlop";
@@ -90,6 +92,11 @@ public class EventManagerImpl implements EventManager {
     @Override
     public void sendGameInProgressEvent(Game game) {
         messageTemplate.send(new GameStatusMessageCreator(game, GAME_IN_PROGRESS));
+    }
+
+    @Override
+    public void sendGameIsFinishedEvent(Game game) {
+        messageTemplate.send(new GameStatusMessageCreator(game, GAME_IS_FINISHED));
     }
 
     @Override

@@ -104,6 +104,11 @@
                 return;
             }
 
+            if (message.headers.DSSubtopic.search("gameIsFinished") != -1) {
+                currentState = "finishedState";
+                return;
+            }
+
         }
 
         private function tableEventMessageHandler(message:IMessage):void {

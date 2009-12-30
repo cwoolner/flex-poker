@@ -18,6 +18,8 @@ public interface EventManager {
 
     void sendGameInProgressEvent(Game game);
 
+    void sendGameIsFinishedEvent(Game game);
+
     void sendNewHandStartingEvent(Game game, Table table);
 
     void sendNewHandStartingEventForAllTables(Game game, List<Table> tables);
