@@ -101,10 +101,13 @@ public class PlayerActionsBsoImpl implements PlayerActionsBso {
 
             if (numberOfPlayersLeft == 1) {
                 realTimeHand.setOriginatingBettor(null);
-                realTimeHand.setHandRoundState(HandRoundState.ROUND_COMPLETE);
                 realTimeHand.setHandDealerState(HandDealerState.COMPLETE);
+                realTimeHand.setHandRoundState(HandRoundState.ROUND_COMPLETE);
                 potBso.calculatePotsAfterRound(game, table);
                 determineTablePotAmounts(game, table);
+                potBso.removeSeatFromPots(game, table, actionOnSeat);
+                seatStatusBso.setStatusForEndOfHand(table);
+                determineWinners(game, table, realTimeHand.getHandEvaluationList());
             } else if (actionOnSeat.equals(realTimeHand.getLastToAct())) {
                 handleEndOfRound(game, table, realTimeHand,
                         realTimeGame.getCurrentBlinds().getBigBlind());
@@ -393,6 +396,7 @@ public class PlayerActionsBsoImpl implements PlayerActionsBso {
             int numberOfWinners = winners.size();
             int numberOfChips = pot.getAmount() / numberOfWinners;
             int bonusChips = pot.getAmount() % numberOfWinners;
+            int numberOfPlayersInPot = pot.getSeats().size();
 
             winners.get(0).getUserGameStatus().setChips(
                     winners.get(0).getUserGameStatus().getChips() + bonusChips);
@@ -402,7 +406,9 @@ public class PlayerActionsBsoImpl implements PlayerActionsBso {
                         winner.getUserGameStatus().getChips() + numberOfChips);
                 PocketCards pocketCards = deckBso.fetchPocketCards(
                         winner.getUserGameStatus().getUser(), game, table);
-                winner.setShowCards(pocketCards);
+                if (numberOfPlayersInPot > 1) {
+                    winner.setShowCards(pocketCards);
+                }
             }
         }
     }
