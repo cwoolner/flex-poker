@@ -382,8 +382,7 @@
         }
 
         private function timerHandler(event:TimerEvent):void {
-            var timeLeft:int = 5 - startingTimer.currentCount
-            startingLabel.text = timeLeft.toString();
+            startingLabel.text = (5 - startingTimer.currentCount).toString();
         }
 
         private function timerCompleteHandler(event:TimerEvent):void {
