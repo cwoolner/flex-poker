@@ -23,13 +23,13 @@ public class EventManagerImpl implements EventManager {
 
     private static final String GAMES_UPDATED = "gamesUpdated";
 
-    private static final String USER_JOINED_GAME = "userJoinedGame";
-
     private static final String GAME_STATUS_UPDATES = "gameStatusUpdates";
 
     private static final String TABLE_STATUS_UPDATES = "tableStatusUpdates";
 
     private static final String JMS_CHAT = "jms-chat";
+
+    private static final String USER_JOINED_GAME = "userJoinedGame";
 
     private static final String GAME_IS_STARTING = "gameIsStarting";
 
@@ -39,15 +39,15 @@ public class EventManagerImpl implements EventManager {
 
     private static final String NEW_HAND_STARTING = "newHandStarting";
 
-    private static final String DEAL_FLOP = "dealFlop";
+    private static final String USER_ACTED = "userActed";
 
-    private static final String DEAL_RIVER = "dealRiver";
+    private static final String DEAL_FLOP = "dealFlop";
 
     private static final String DEAL_TURN = "dealTurn";
 
-    private static final String HAND_COMPLETE = "handComplete";
+    private static final String DEAL_RIVER = "dealRiver";
 
-    private static final String USER_ACTED = "userActed";
+    private static final String HAND_COMPLETE = "handComplete";
 
     private MessageTemplate messageTemplate;
 
