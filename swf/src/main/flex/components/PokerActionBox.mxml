@@ -31,7 +31,7 @@
                 } else if (_callAmount < maxValue) {
                     if (callCheckBox.selected) {
                         dispatchEvent(new CallEvent());
-                    } else if (foldCheckBox.selected) {
+                    } else if (foldCheckBox.selected || checkFoldCheckBox.selected) {
                         dispatchEvent(new FoldEvent());
                     } else {
                         currentState = "actionOnCallState";
@@ -39,7 +39,7 @@
                 } else {
                     if (callCheckBox.selected) {
                         dispatchEvent(new CallEvent());
-                    } else if (foldCheckBox.selected) {
+                    } else if (foldCheckBox.selected || checkFoldCheckBox.selected) {
                         dispatchEvent(new FoldEvent());
                     } else {
                         currentState = "actionOnAllInState";
