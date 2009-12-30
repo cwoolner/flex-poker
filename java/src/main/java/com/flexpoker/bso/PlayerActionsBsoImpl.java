@@ -86,6 +86,7 @@ public class PlayerActionsBsoImpl implements PlayerActionsBso {
                     new ActionOnSeatPredicate());
 
             actionOnSeat.setStillInHand(false);
+            potBso.removeSeatFromPots(game, table, actionOnSeat);
 
             resetAllSeatActions(actionOnSeat, realTimeHand);
 
@@ -100,14 +101,9 @@ public class PlayerActionsBsoImpl implements PlayerActionsBso {
             }
 
             if (numberOfPlayersLeft == 1) {
-                realTimeHand.setOriginatingBettor(null);
                 realTimeHand.setHandDealerState(HandDealerState.COMPLETE);
-                realTimeHand.setHandRoundState(HandRoundState.ROUND_COMPLETE);
-                potBso.calculatePotsAfterRound(game, table);
-                determineTablePotAmounts(game, table);
-                potBso.removeSeatFromPots(game, table, actionOnSeat);
-                seatStatusBso.setStatusForEndOfHand(table);
-                determineWinners(game, table, realTimeHand.getHandEvaluationList());
+                handleEndOfRound(game, table, realTimeHand,
+                        realTimeGame.getCurrentBlinds().getBigBlind());
             } else if (actionOnSeat.equals(realTimeHand.getLastToAct())) {
                 handleEndOfRound(game, table, realTimeHand,
                         realTimeGame.getCurrentBlinds().getBigBlind());
@@ -375,6 +371,8 @@ public class PlayerActionsBsoImpl implements PlayerActionsBso {
                 break;
             case RIVER_DEALT:
                 realTimeHand.setHandDealerState(HandDealerState.COMPLETE);
+                break;
+            case COMPLETE:
                 break;
             default:
                 throw new IllegalStateException("No valid state to move to.");

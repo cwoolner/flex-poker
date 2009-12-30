@@ -61,7 +61,7 @@ public class PotBsoImpl implements PotBso {
                     continue;
                 }
 
-                if (!pot.getSeats().contains(seat)) {
+                if (!pot.getSeats().contains(seat) && seat.isStillInHand()) {
                     pot.getSeats().add(seat);
                 }
                 pot.setAmount(pot.getAmount() + chipsPerLevel);
