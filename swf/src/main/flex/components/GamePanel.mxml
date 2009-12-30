@@ -346,6 +346,7 @@
                     sendFailedFaultHandler
                 ))
 
+                mainRemoteObject.fetchAllUserGameStatuses(game);
                 return;
             }
         }
