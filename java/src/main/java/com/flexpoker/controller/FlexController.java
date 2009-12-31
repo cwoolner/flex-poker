@@ -36,7 +36,9 @@ public interface FlexController {
 
     PocketCards fetchPocketCards(Game game, Table table);
 
-    Table fetchTable(Game game);
+    Table fetchTable(Game game, Table table);
+
+    Table fetchPlayersCurrentTable(Game game);
 
     void verifyGameInProgress(Game game);
 

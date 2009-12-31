@@ -13,6 +13,7 @@ import com.flexpoker.bso.GameEventBso;
 import com.flexpoker.bso.PlayerActionsBso;
 import com.flexpoker.model.FlopCards;
 import com.flexpoker.model.Game;
+import com.flexpoker.model.GameStage;
 import com.flexpoker.model.HandState;
 import com.flexpoker.model.PocketCards;
 import com.flexpoker.model.RiverCard;
@@ -108,14 +109,24 @@ public class FlexControllerImpl implements FlexController {
     public void verifyReadyToStartNewHand(Game game, Table table) {
         User user = extractCurrentUser();
         if (gameEventBso.verifyReadyToStartNewHand(user, game, table)) {
-            eventManager.sendNewHandStartingEvent(game, table);
+            game = gameBso.fetchGame(game);
+            if (GameStage.FINISHED.equals(game.getGameStage())) {
+                eventManager.sendGameIsFinishedEvent(game);
+            } else {
+                eventManager.sendNewHandStartingEvent(game, table);
+            }
         }
     }
 
     @Override
-    public Table fetchTable(Game game) {
+    public Table fetchPlayersCurrentTable(Game game) {
         User user = extractCurrentUser();
         return gameBso.fetchPlayersCurrentTable(user, game);
+    }
+
+    @Override
+    public Table fetchTable(Game game, Table table) {
+        return gameBso.fetchTable(game, table);
     }
 
     @Override

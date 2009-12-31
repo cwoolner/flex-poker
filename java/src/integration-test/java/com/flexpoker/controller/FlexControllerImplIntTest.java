@@ -86,7 +86,7 @@ public class FlexControllerImplIntTest extends IntegrationTest {
 
         SecurityContextHolder.getContext().setAuthentication(johnAuth);
 
-        Table table = flexController.fetchTable(game);
+        Table table = flexController.fetchPlayersCurrentTable(game);
         RealTimeHand realTimeHand = realTimeGameBso.get(game).getRealTimeHand(table);
 
         Seat actionOnSeat = (Seat) CollectionUtils.find(table.getSeats(),
@@ -279,7 +279,7 @@ public class FlexControllerImplIntTest extends IntegrationTest {
         Table table = null;
 
         try {
-            table = flexController.fetchTable(game);
+            table = flexController.fetchPlayersCurrentTable(game);
             fail("Should throw a FlexPokerException.");
         } catch (FlexPokerException e) {}
         assertNull(table);
@@ -295,7 +295,7 @@ public class FlexControllerImplIntTest extends IntegrationTest {
         flexController.joinGame(game);
 
         try {
-            table = flexController.fetchTable(game);
+            table = flexController.fetchPlayersCurrentTable(game);
             fail("Should throw a FlexPokerException.");
         } catch (FlexPokerException e) {}
         assertNull(table);
@@ -310,7 +310,7 @@ public class FlexControllerImplIntTest extends IntegrationTest {
         SecurityContextHolder.getContext().setAuthentication(johnAuth);
         flexController.verifyRegistrationForGame(game);
 
-        table = flexController.fetchTable(game);
+        table = flexController.fetchPlayersCurrentTable(game);
         assertNotNull(table);
 
         verifyUnableToRetrieveCards(johnAuth, guestAuth, game, table, PocketCards.class);
@@ -323,7 +323,7 @@ public class FlexControllerImplIntTest extends IntegrationTest {
         SecurityContextHolder.getContext().setAuthentication(guestAuth);
         flexController.verifyGameInProgress(game);
 
-        table = flexController.fetchTable(game);
+        table = flexController.fetchPlayersCurrentTable(game);
         assertNotNull(table);
 
         verifyUnableToRetrieveCards(johnAuth, guestAuth, game, table, FlopCards.class);

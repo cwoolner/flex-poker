@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.flexpoker.exception.FlexPokerException;
 import com.flexpoker.model.Blinds;
 import com.flexpoker.model.Game;
+import com.flexpoker.model.GameStage;
 import com.flexpoker.model.GameEventType;
 import com.flexpoker.model.HandDealerState;
 import com.flexpoker.model.HandEvaluation;
@@ -37,6 +38,8 @@ public class PlayerActionsBsoImpl implements PlayerActionsBso {
     private ValidationBso validationBso;
 
     private DeckBso deckBso;
+
+    private GameBso gameBso;
 
     @Override
     public HandState check(Game game, Table table, User user) {
@@ -148,6 +151,22 @@ public class PlayerActionsBsoImpl implements PlayerActionsBso {
                         realTimeGame.getCurrentBlinds().getBigBlind());
             } else {
                 handleMiddleOfRound(table, realTimeHand, actionOnSeat);
+            }
+
+            int numberOfPlayersLeft = 0;
+            for (Seat seat : table.getSeats()) {
+                if (seat.getUserGameStatus() != null
+                        && seat.getUserGameStatus().getChips() != 0) {
+                    numberOfPlayersLeft++;
+                }
+            }
+
+            // TODO: This should be a check with all of the tables in the game.
+            // TODO: This check should also be done at the beginning of the
+            //       hand in case the player does not have enough to call the
+            //       blinds.
+            if (numberOfPlayersLeft == 1) {
+                gameBso.changeGameStage(game, GameStage.FINISHED);
             }
 
             return new HandState(realTimeHand.getHandDealerState(),
@@ -449,6 +468,14 @@ public class PlayerActionsBsoImpl implements PlayerActionsBso {
 
     public void setDeckBso(DeckBso deckBso) {
         this.deckBso = deckBso;
+    }
+
+    public GameBso getGameBso() {
+        return gameBso;
+    }
+
+    public void setGameBso(GameBso gameBso) {
+        this.gameBso = gameBso;
     }
 
 }

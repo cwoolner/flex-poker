@@ -11,11 +11,15 @@ import com.flexpoker.model.UserGameStatus;
 
 public interface GameBso {
 
+    Game fetchGame(Game game);
+
     List<Game> fetchAllGames();
 
     void createGame(User user, Game game);
 
     void changeGameStage(Game game, GameStage starting);
+
+    Table fetchTable(Game game, Table table);
 
     Table fetchPlayersCurrentTable(User user, Game game);
 

@@ -25,6 +25,12 @@ public class EventManagerMock implements EventManager {
     }
 
     @Override
+    public void sendGameIsFinishedEvent(Game game) {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
     public void sendGameStartingEvent(Game game) {
         // TODO Auto-generated method stub
 

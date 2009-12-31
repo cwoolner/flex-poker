@@ -30,6 +30,11 @@ public class GameBsoImpl implements GameBso {
     private TableBalancerBso tableBalancerBso;
 
     @Override
+    public Game fetchGame(Game game) {
+        return gameDao.findById(game.getId());
+    }
+
+    @Override
     public List<Game> fetchAllGames() {
         return gameDao.findAll();
     }
@@ -52,6 +57,18 @@ public class GameBsoImpl implements GameBso {
         game = gameDao.findById(game.getId());
         game.setGameStage(gameStage);
         gameDao.save(game.getId(), game);
+    }
+
+    @Override
+    public Table fetchTable(Game game, Table table) {
+        List<Table> tables = fetchTables(game);
+        table = realTimeGameBso.get(game).getTable(table);
+
+        if (table == null) {
+            throw new FlexPokerException("Table does not exist.");
+        }
+
+        return table;
     }
 
     @Override

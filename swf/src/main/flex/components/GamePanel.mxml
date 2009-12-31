@@ -89,7 +89,7 @@
             }
 
             if (message.headers.DSSubtopic.search("gameInProgress") != -1) {
-                var token:AsyncToken = mainRemoteObject.fetchTable(game);
+                var token:AsyncToken = mainRemoteObject.fetchPlayersCurrentTable(game);
                 token.addResponder(new AsyncResponder(
                     function(event:ResultEvent, token:Object = null):void {
                         table = event.result as Table;
@@ -105,7 +105,7 @@
             }
 
             if (message.headers.DSSubtopic.search("gameIsFinished") != -1) {
-                var token:AsyncToken = mainRemoteObject.fetchTable(game);
+                var token:AsyncToken = mainRemoteObject.fetchTable(game, table);
                 token.addResponder(new AsyncResponder(
                     function(event:ResultEvent, token:Object = null):void {
                         table = event.result as Table;
@@ -124,7 +124,7 @@
 
         private function tableEventMessageHandler(message:IMessage):void {
             if (message.headers.DSSubtopic.search("newHandStarting") != -1) {
-                var token:AsyncToken = mainRemoteObject.fetchTable(game);
+                var token:AsyncToken = mainRemoteObject.fetchPlayersCurrentTable(game);
                 token.addResponder(new AsyncResponder(
                     function(event:ResultEvent, token:Object = null):void {
                         table = event.result as Table;
@@ -282,7 +282,7 @@
             }
 
             if (message.headers.DSSubtopic.search("userActed") != -1) {
-                var token:AsyncToken = mainRemoteObject.fetchTable(game);
+                var token:AsyncToken = mainRemoteObject.fetchPlayersCurrentTable(game);
                 token.addResponder(new AsyncResponder(
                     function(event:ResultEvent, token:Object = null):void {
                         table = event.result as Table;
@@ -309,7 +309,7 @@
                         inProgressCommonPanel.flopCardImage1 = deck.getCardImage(flopCards.card1);
                         inProgressCommonPanel.flopCardImage2 = deck.getCardImage(flopCards.card2);
                         inProgressCommonPanel.flopCardImage3 = deck.getCardImage(flopCards.card3);
-                        fetchTableAfterCommonCardsDealt();
+                        fetchPlayersCurrentTableAfterCommonCardsDealt();
                     },
                     sendFailedFaultHandler
                 ))
@@ -325,7 +325,7 @@
                         var turnCard:TurnCard = event.result as TurnCard;
                         var deck:Deck = Deck.getInstance();
                         inProgressCommonPanel.turnCardImage = deck.getCardImage(turnCard.card);
-                        fetchTableAfterCommonCardsDealt();
+                        fetchPlayersCurrentTableAfterCommonCardsDealt();
                     },
                     sendFailedFaultHandler
                 ))
@@ -341,7 +341,7 @@
                         var riverCard:RiverCard = event.result as RiverCard;
                         var deck:Deck = Deck.getInstance();
                         inProgressCommonPanel.riverCardImage = deck.getCardImage(riverCard.card);
-                        fetchTableAfterCommonCardsDealt();
+                        fetchPlayersCurrentTableAfterCommonCardsDealt();
                     },
                     sendFailedFaultHandler
                 ))
@@ -351,7 +351,7 @@
             }
 
             if (message.headers.DSSubtopic.search("handComplete") != -1) {
-                var token:AsyncToken = mainRemoteObject.fetchTable(game);
+                var token:AsyncToken = mainRemoteObject.fetchTable(game, table);
                 token.addResponder(new AsyncResponder(
                     function(event:ResultEvent, token:Object = null):void {
                         table = event.result as Table;
@@ -375,8 +375,8 @@
             currentState = "finishedState";
         }
 
-        private function fetchTableAfterCommonCardsDealt():void {
-            var token:AsyncToken = mainRemoteObject.fetchTable(game);
+        private function fetchPlayersCurrentTableAfterCommonCardsDealt():void {
+            var token:AsyncToken = mainRemoteObject.fetchPlayersCurrentTable(game);
             token.addResponder(new AsyncResponder(
                 function(event:ResultEvent, token:Object = null):void {
                     table = event.result as Table;

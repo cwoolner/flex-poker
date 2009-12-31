@@ -16,6 +16,12 @@ import com.flexpoker.model.UserGameStatus;
 public class GameBsoMock implements GameBso {
 
     @Override
+    public Game fetchGame(Game game) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
     public void changeGameStage(Game game, GameStage starting) {
         // TODO Auto-generated method stub
 
@@ -29,6 +35,12 @@ public class GameBsoMock implements GameBso {
 
     @Override
     public List<Game> fetchAllGames() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+        public Table fetchTable(Game game, Table table) {
         // TODO Auto-generated method stub
         return null;
     }
