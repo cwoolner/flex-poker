@@ -19,6 +19,10 @@
         private var _callAmount:int;
 
         public function set callAmount(callAmount:int):void {
+            if (callAmount > _callAmount) {
+                callCheckBox.selected = false;
+            }
+
             _callAmount = callAmount;
 
             if (actionOn) {
