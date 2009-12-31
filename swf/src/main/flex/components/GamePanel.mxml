@@ -105,7 +105,18 @@
             }
 
             if (message.headers.DSSubtopic.search("gameIsFinished") != -1) {
-                currentState = "finishedState";
+                var token:AsyncToken = mainRemoteObject.fetchTable(game);
+                token.addResponder(new AsyncResponder(
+                    function(event:ResultEvent, token:Object = null):void {
+                        table = event.result as Table;
+                        endOfHandDelayTimer = new Timer(3000, 1);
+                        endOfHandDelayTimer.addEventListener("timerComplete", finishGame);
+                        endOfHandDelayTimer.start();
+                    },
+                    sendFailedFaultHandler
+                ))
+
+                mainRemoteObject.fetchAllUserGameStatuses(game);
                 return;
             }
 
@@ -358,6 +369,10 @@
 
         private function verifyReadyToStartNewHand(event:TimerEvent):void {
             mainRemoteObject.verifyReadyToStartNewHand(game, table);
+        }
+
+        private function finishGame(event:TimerEvent):void {
+            currentState = "finishedState";
         }
 
         private function fetchTableAfterCommonCardsDealt():void {
