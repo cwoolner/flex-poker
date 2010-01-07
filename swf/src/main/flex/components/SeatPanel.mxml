@@ -15,6 +15,8 @@
 
     <mx:Script>
     <![CDATA[
+        import flash.utils.Timer;
+        import flash.events.TimerEvent;
         import com.flexpoker.model.Seat;
         import com.flexpoker.events.ActionOnChangedEvent;
         import com.flexpoker.model.TableImages;
@@ -32,6 +34,8 @@
 
         [Bindable]
         public var pocketCardImage2:Class;
+
+        private var actionOnTimer:Timer = new Timer(1000, 25);
 
         public function set seat(seat:Seat):void {
             _seat = seat;
@@ -70,13 +74,23 @@
             smallBlindImage.visible = false;
             bigBlindImage.visible = false;
             setBlankCards();
+            actionOnTimer.addEventListener("timer", timerHandler);
+            actionOnTimer.reset();
+            actionOnTimerLabel.visible = false;
         }
 
         private function actionOnChanged(event:ActionOnChangedEvent):void {
             if (_seat.actionOn) {
                 styleName = "actionOnTrue";
+                actionOnTimerLabel.visible = false;
+                actionOnTimer.reset();
+                actionOnTimerLabel.text = (25 - actionOnTimer.currentCount).toString();
+                actionOnTimer.start();
+                actionOnTimerLabel.visible = true;
             } else {
                 styleName = "actionOnFalse";
+                actionOnTimerLabel.visible = false;
+                actionOnTimer.reset();
             }
         }
 
@@ -85,6 +99,11 @@
             pocketCardImage1 = deck.blankCard;
             pocketCardImage2 = deck.blankCard;
         }
+
+        private function timerHandler(event:TimerEvent):void {
+            actionOnTimerLabel.text = (25 - actionOnTimer.currentCount).toString();
+        }
+
     ]]>
     </mx:Script>
 
@@ -104,6 +123,7 @@
             <mx:Spacer width="100%" />
          </mx:HBox>
          <mx:Label text="{_seat.chipsInFront}" visible="{_seat.chipsInFront != 0}" />
+         <mx:Label id="actionOnTimerLabel" text="25" />
      </mx:VBox>
 
     <mx:states>
