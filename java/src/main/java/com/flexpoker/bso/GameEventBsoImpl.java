@@ -118,7 +118,7 @@ public class GameEventBsoImpl implements GameEventBso {
     }
 
     private void startNewHand(Game game, Table table) {
-        seatStatusBso.setStatusForNewHand(table);
+        seatStatusBso.setStatusForNewHand(game, table);
         resetTableStatus(game, table);
     }
 
@@ -307,7 +307,7 @@ public class GameEventBsoImpl implements GameEventBso {
 
     private void startNewGameForAllTables(Game game) {
         for (Table table : gameBso.fetchTables(game)) {
-            seatStatusBso.setStatusForNewGame(table);
+            seatStatusBso.setStatusForNewGame(game, table);
             resetTableStatus(game, table);
         }
     }

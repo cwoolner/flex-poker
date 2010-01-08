@@ -8,6 +8,7 @@ import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
 import org.junit.Test;
 
+import com.flexpoker.model.Game;
 import com.flexpoker.model.Seat;
 import com.flexpoker.model.Table;
 import com.flexpoker.util.ActionOnSeatPredicate;
@@ -25,9 +26,10 @@ public class SeatStatusBsoImplTest {
 
     @Test
     public void testSetStatusForNewGame() {
+        Game game = new Game();
         Table table = new Table();
         DataUtilsForTests.fillTableWithUsers(table, 2);
-        bso.setStatusForNewGame(table);
+        bso.setStatusForNewGame(game, table);
 
         assertTrue(table.getSeats().get(0).isStillInHand());
         assertTrue(table.getSeats().get(1).isStillInHand());
@@ -56,7 +58,7 @@ public class SeatStatusBsoImplTest {
 
         table = new Table();
         DataUtilsForTests.fillTableWithUsers(table, 3);
-        bso.setStatusForNewGame(table);
+        bso.setStatusForNewGame(game, table);
 
         assertTrue(table.getSeats().get(0).isStillInHand());
         assertTrue(table.getSeats().get(1).isStillInHand());
@@ -90,7 +92,7 @@ public class SeatStatusBsoImplTest {
 
         table = new Table();
         DataUtilsForTests.fillTableWithUsers(table, 6);
-        bso.setStatusForNewGame(table);
+        bso.setStatusForNewGame(game, table);
 
         assertTrue(table.getSeats().get(0).isStillInHand());
         assertTrue(table.getSeats().get(1).isStillInHand());
@@ -192,6 +194,7 @@ public class SeatStatusBsoImplTest {
     private void setStatusForNewHandHelper(int numberOfPlayers,
             List<Integer> seatsThatJustLeft, int buttonIndex,
             int smallBlindIndex, int bigBlindIndex, int actionOnIndex) {
+        Game game = new Game();
         Table table = new Table();
         DataUtilsForTests.fillTableWithUsers(table, numberOfPlayers);
         table.getSeats().get(0).setButton(true);
@@ -203,7 +206,7 @@ public class SeatStatusBsoImplTest {
             table.getSeats().get(seat.intValue()).setPlayerJustLeft(true);
         }
 
-        bso.setStatusForNewHand(table);
+        bso.setStatusForNewHand(game, table);
 
         for (int i = 0; i < numberOfPlayers; i++) {
             if (seatsThatJustLeft.contains(i)) {
@@ -231,6 +234,7 @@ public class SeatStatusBsoImplTest {
     private void setStatusForNewRoundHelper(int numberOfPlayers,
             List<Integer> seatsThatJustLeft, List<Integer> seatsNotInHand,
             int actionOnIndex) {
+        Game game = new Game();
         Table table = new Table();
         DataUtilsForTests.fillTableWithUsers(table, numberOfPlayers);
         table.getSeats().get(0).setButton(true);
@@ -253,7 +257,7 @@ public class SeatStatusBsoImplTest {
             table.getSeats().get(seat.intValue()).setStillInHand(false);
         }
 
-        bso.setStatusForNewRound(table);
+        bso.setStatusForNewRound(game, table);
         Seat actionOnSeat = (Seat) CollectionUtils.find(table.getSeats(),
                 new ActionOnSeatPredicate());
         assertTrue(actionOnSeat.equals(table.getSeats().get(actionOnIndex)));

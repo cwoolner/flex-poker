@@ -41,6 +41,8 @@ public class PlayerActionsBsoImpl implements PlayerActionsBso {
 
     private GameBso gameBso;
 
+    private ActionOnTimerBso actionOnTimerBso;
+
     @Override
     public HandState check(Game game, Table table, User user) {
         synchronized (this) {
@@ -65,7 +67,7 @@ public class PlayerActionsBsoImpl implements PlayerActionsBso {
                 handleEndOfRound(game, table, realTimeHand,
                         realTimeGame.getCurrentBlinds().getBigBlind());
             } else {
-                handleMiddleOfRound(table, realTimeHand, actionOnSeat);
+                handleMiddleOfRound(game, table, realTimeHand, actionOnSeat);
             }
 
             return new HandState(realTimeHand.getHandDealerState(),
@@ -90,6 +92,7 @@ public class PlayerActionsBsoImpl implements PlayerActionsBso {
 
             actionOnSeat.setStillInHand(false);
             potBso.removeSeatFromPots(game, table, actionOnSeat);
+            actionOnTimerBso.removeSeat(game, table, actionOnSeat);
 
             resetAllSeatActions(actionOnSeat, realTimeHand);
 
@@ -111,7 +114,7 @@ public class PlayerActionsBsoImpl implements PlayerActionsBso {
                 handleEndOfRound(game, table, realTimeHand,
                         realTimeGame.getCurrentBlinds().getBigBlind());
             } else {
-                handleMiddleOfRound(table, realTimeHand, actionOnSeat);
+                handleMiddleOfRound(game, table, realTimeHand, actionOnSeat);
             }
 
             return new HandState(realTimeHand.getHandDealerState(),
@@ -150,7 +153,7 @@ public class PlayerActionsBsoImpl implements PlayerActionsBso {
                 handleEndOfRound(game, table, realTimeHand,
                         realTimeGame.getCurrentBlinds().getBigBlind());
             } else {
-                handleMiddleOfRound(table, realTimeHand, actionOnSeat);
+                handleMiddleOfRound(game, table, realTimeHand, actionOnSeat);
             }
 
             int numberOfPlayersLeft = 0;
@@ -202,7 +205,7 @@ public class PlayerActionsBsoImpl implements PlayerActionsBso {
 
             realTimeHand.setOriginatingBettor(actionOnSeat);
             determineLastToAct(table, realTimeHand);
-            handleMiddleOfRound(table, realTimeHand, actionOnSeat);
+            handleMiddleOfRound(game, table, realTimeHand, actionOnSeat);
             actionOnSeat.setChipsInFront(raiseAmountInt);
 
             UserGameStatus userGameStatus = actionOnSeat.getUserGameStatus();
@@ -245,10 +248,14 @@ public class PlayerActionsBsoImpl implements PlayerActionsBso {
         }
     }
 
-    private void handleMiddleOfRound(Table table, RealTimeHand realTimeHand, Seat actionOnSeat) {
+    private void handleMiddleOfRound(Game game, Table table,
+            RealTimeHand realTimeHand, Seat actionOnSeat) {
         realTimeHand.setHandRoundState(HandRoundState.ROUND_IN_PROGRESS);
         actionOnSeat.setActionOn(false);
-        realTimeHand.getNextToAct().setActionOn(true);
+        actionOnTimerBso.removeSeat(game, table, actionOnSeat);
+        Seat nextToActSeat = realTimeHand.getNextToAct();
+        nextToActSeat.setActionOn(true);
+        actionOnTimerBso.addSeat(game, table, nextToActSeat);
         determineNextToAct(table, realTimeHand);
     }
 
@@ -261,10 +268,10 @@ public class PlayerActionsBsoImpl implements PlayerActionsBso {
         determineTablePotAmounts(game, table);
 
         if (realTimeHand.getHandDealerState() == HandDealerState.COMPLETE) {
-            seatStatusBso.setStatusForEndOfHand(table);
+            seatStatusBso.setStatusForEndOfHand(game, table);
             determineWinners(game, table, realTimeHand.getHandEvaluationList());
         } else {
-            seatStatusBso.setStatusForNewRound(table);
+            seatStatusBso.setStatusForNewRound(game, table);
             determineNextToAct(table, realTimeHand);
             determineLastToAct(table, realTimeHand);
             resetRaiseAmountsAfterRound(table, bigBlindAmount);
@@ -476,6 +483,14 @@ public class PlayerActionsBsoImpl implements PlayerActionsBso {
 
     public void setGameBso(GameBso gameBso) {
         this.gameBso = gameBso;
+    }
+
+    public ActionOnTimerBso getActionOnTimerBso() {
+        return actionOnTimerBso;
+    }
+
+    public void setActionOnTimerBso(ActionOnTimerBso actionOnTimerBso) {
+        this.actionOnTimerBso = actionOnTimerBso;
     }
 
 }
