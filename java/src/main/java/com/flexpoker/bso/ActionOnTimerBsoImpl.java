@@ -19,28 +19,41 @@ public class ActionOnTimerBsoImpl implements ActionOnTimerBso {
 
     @Override
     public void removeGame(Game game) {
-        actionOnTimerMap.remove(game);
+        synchronized (this) {
+            actionOnTimerMap.remove(game);
+        }
     }
 
     @Override
     public void removeTable(Game game, Table table) {
-        actionOnTimerMap.get(game).remove(table);
+        Map<Table, Map<Seat, Integer>> tableMap = actionOnTimerMap.get(game);
+        synchronized (tableMap) {
+            tableMap.remove(table);
+        }
     }
 
     @Override
     public void removeSeat(Game game, Table table, Seat seat) {
-        actionOnTimerMap.get(game).get(table).remove(seat);
+        Map<Table, Map<Seat, Integer>> tableMap = actionOnTimerMap.get(game);
+        synchronized (tableMap) {
+            tableMap.get(table).remove(seat);
+        }
     }
 
     @Override
     public void addSeat(Game game, Table table, Seat seat) {
-        if (actionOnTimerMap.get(game) == null) {
-            actionOnTimerMap.put(game, new HashMap<Table, Map<Seat, Integer>>());
+        synchronized (this) {
+            if (actionOnTimerMap.get(game) == null) {
+                actionOnTimerMap.put(game, new HashMap<Table, Map<Seat, Integer>>());
+            }
+            if (actionOnTimerMap.get(game).get(table) == null) {
+                actionOnTimerMap.get(game).put(table, new HashMap<Seat, Integer>());
+            }
         }
-        if (actionOnTimerMap.get(game).get(table) == null) {
-            actionOnTimerMap.get(game).put(table, new HashMap<Seat, Integer>());
+        Map<Table, Map<Seat, Integer>> tableMap = actionOnTimerMap.get(game);
+        synchronized (tableMap) {
+            tableMap.get(table).put(seat, 28);
         }
-        actionOnTimerMap.get(game).get(table).put(seat, 28);
     }
 
     @Override
