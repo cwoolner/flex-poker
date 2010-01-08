@@ -68,4 +68,24 @@
         <property name="generateDdl" value="true" />
     </bean>
 
+    <bean id="actionOnTimerJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="actionOnTimerController" />
+        <property name="targetMethod" value="decrementTime" />
+    </bean>
+
+    <bean id="actionOnTimerTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerBean">
+        <property name="jobDetail" ref="actionOnTimerJob" />
+        <property name="repeatInterval" value="1000" />
+    </bean>
+
+    <!-- set autowire="no" because the Factory Bean has a datasource property
+         that will try to be injected with the datasource bean -->
+    <bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean" autowire="no">
+        <property name="triggers">
+            <list>
+                <ref bean="actionOnTimerTrigger" />
+            </list>
+        </property>
+    </bean>
+
 </beans>
