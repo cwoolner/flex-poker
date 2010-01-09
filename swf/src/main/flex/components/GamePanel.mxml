@@ -380,6 +380,12 @@
             token.addResponder(new AsyncResponder(
                 function(event:ResultEvent, token:Object = null):void {
                     table = event.result as Table;
+                    // add explicit call here due to a bug where the pot amount
+                    // is not being set when the table is set.  so far, this has
+                    // only been seen when a raise and call occurs before the
+                    // flop.  after the flop is shown, there is a disconnect
+                    // between the individual posts and the total pot amount.
+                    totalPotAmountLabel.text = "Total Pot: " + table.totalPotAmount.toString();
                     setupPokerActionBox();
                     pokerActionBox.visible = table.seats.getItemAt(pokerActionBoxIndex).stillInHand;
                 },
@@ -568,7 +574,7 @@
         <mx:HBox width="100%">
             <mx:Spacer width="160%" />
             <mx:VBox>
-                <mx:Label color="white" text="Total Pot: {table.totalPotAmount}" />
+                <mx:Label id="totalPotAmountLabel" color="white" text="Total Pot: {table.totalPotAmount}" />
                 <comp:PotAmountsPanel potAmounts="{table.potAmounts}" />
             </mx:VBox>
             <mx:Spacer width="50%" />
