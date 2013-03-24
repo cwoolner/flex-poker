@@ -25,8 +25,8 @@
 
     <repositories>
         <repository>
-            <id>central</id>
-            <url>http://localhost:8081/artifactory-2.0.6/repo</url>
+            <id>flex-mojos-repository</id>
+            <url>http://repository.sonatype.org/content/groups/flexgroup</url>
             <releases>
                 <enabled>true</enabled>
             </releases>
@@ -34,24 +34,22 @@
                 <enabled>false</enabled>
             </snapshots>
         </repository>
-
         <repository>
-            <id>snapshot</id>
-            <url>http://localhost:8081/artifactory-2.0.6/repo</url>
+            <id>ObjectWEB</id>
+            <url>http://maven.ow2.org/maven2/</url>
             <releases>
-                <enabled>false</enabled>
+                <enabled>true</enabled>
             </releases>
             <snapshots>
-                <enabled>true</enabled>
+                <enabled>false</enabled>
             </snapshots>
         </repository>
-
     </repositories>
 
     <pluginRepositories>
         <pluginRepository>
-            <id>central</id>
-            <url>http://localhost:8081/artifactory/repo</url>
+            <id>flex-mojos-repository</id>
+            <url>http://repository.sonatype.org/content/groups/flexgroup</url>
             <releases>
                 <enabled>true</enabled>
             </releases>
