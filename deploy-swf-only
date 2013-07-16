@@ -2,9 +2,10 @@
 
 export CATALINA_PID=~/apache-tomcat-7.0.42/catalina.pid
 kill -9 `cat $CATALINA_PID`
+cd swf/
 mvn install
-rm -rf ~/apache-tomcat-7.0.42/webapps/poker
-rm ~/apache-tomcat-7.0.42/webapps/poker.war
-cp java/target/poker.war ~/apache-tomcat-7.0.42/webapps/
+rm ~/apache-tomcat-7.0.42/webapps/poker/poker.swf
+cp ../java/target/poker/poker.swf ~/apache-tomcat-7.0.42/webapps/poker/
+cd ../
 ~/apache-tomcat-7.0.42/bin/catalina.sh jpda start
 tail -f ~/apache-tomcat-7.0.42/logs/catalina.out
