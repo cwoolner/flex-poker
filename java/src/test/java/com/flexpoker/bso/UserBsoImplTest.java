@@ -3,7 +3,7 @@ package com.flexpoker.bso;
 import static org.junit.Assert.*;
 
 import org.junit.Test;
-import org.springframework.security.userdetails.UsernameNotFoundException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import com.flexpoker.util.Context;
 

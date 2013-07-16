@@ -1,5 +1,6 @@
 package com.flexpoker.bso;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -20,8 +21,6 @@ import com.flexpoker.model.Table;
 import com.flexpoker.model.TurnCard;
 import com.flexpoker.model.User;
 
-import edu.emory.mathcs.backport.java.util.Arrays;
-
 @Service("deckBso")
 public class DeckBsoImpl implements DeckBso {
 
@@ -30,7 +29,6 @@ public class DeckBsoImpl implements DeckBso {
 
     private final List<Card> cardList;
 
-    @SuppressWarnings("unchecked")
     public DeckBsoImpl() {
         cardList = Arrays.asList(new Card[]{
             new Card(0, CardRank.TWO, CardSuit.HEARTS),

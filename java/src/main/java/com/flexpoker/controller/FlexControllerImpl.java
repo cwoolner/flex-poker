@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.springframework.flex.remoting.RemotingDestination;
-import org.springframework.security.context.SecurityContextHolder;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 
 import com.flexpoker.bso.DealCardActionsBso;

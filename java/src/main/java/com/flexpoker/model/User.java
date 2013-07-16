@@ -1,6 +1,9 @@
 package com.flexpoker.model;
 
 import java.security.Principal;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -8,9 +11,9 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.springframework.security.GrantedAuthority;
-import org.springframework.security.GrantedAuthorityImpl;
-import org.springframework.security.userdetails.UserDetails;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 @Entity
 @Table(name = "users")
@@ -24,8 +27,8 @@ public class User implements UserDetails, Principal {
 
     private String password;
     
-    private GrantedAuthority[] grantedAuthorities
-            = new GrantedAuthority[] { new GrantedAuthorityImpl("ROLE_USER") };
+    private Collection<? extends GrantedAuthority> grantedAuthorities =
+            Arrays.asList(new GrantedAuthority[] { new SimpleGrantedAuthority("ROLE_USER")});
 
     @Id
     @GeneratedValue
@@ -55,7 +58,7 @@ public class User implements UserDetails, Principal {
 
     @Override
     @Transient
-    public GrantedAuthority[] getAuthorities() {
+    public Collection<? extends GrantedAuthority> getAuthorities() {
         return grantedAuthorities;
     }
 
