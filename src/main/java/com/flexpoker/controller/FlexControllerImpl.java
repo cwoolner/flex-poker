@@ -3,7 +3,6 @@ package com.flexpoker.controller;
 import java.util.List;
 import java.util.Set;
 
-import org.springframework.flex.remoting.RemotingDestination;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 
@@ -51,7 +50,6 @@ import com.flexpoker.model.UserGameStatus;
  * @author cwoolner
  */
 @Controller("flexController")
-@RemotingDestination
 public class FlexControllerImpl implements FlexController {
 
     private GameBso gameBso;

@@ -7,16 +7,12 @@ import javax.jms.MapMessage;
 
 import org.apache.activemq.command.ActiveMQMapMessage;
 import org.apache.commons.lang.StringUtils;
-import org.springframework.flex.messaging.AsyncMessageCreator;
-import org.springframework.flex.messaging.MessageTemplate;
 import org.springframework.stereotype.Controller;
 
 import com.flexpoker.model.Game;
 import com.flexpoker.model.HandRoundState;
 import com.flexpoker.model.HandState;
 import com.flexpoker.model.Table;
-
-import flex.messaging.messages.AsyncMessage;
 
 @Controller("eventManager")
 public class EventManagerImpl implements EventManager {
@@ -49,17 +45,15 @@ public class EventManagerImpl implements EventManager {
 
     private static final String HAND_COMPLETE = "handComplete";
 
-    private MessageTemplate messageTemplate;
-
     @Override
     public void sendGamesUpdatedEvent() {
-        messageTemplate.send(GAMES_UPDATED, null);
+//        messageTemplate.send(GAMES_UPDATED, null);
     }
 
     @Override
     public void sendUserJoinedEvent(Game game, String username,
             boolean gameAtUserMax) {
-        messageTemplate.send(new GameStatusMessageCreator(game, USER_JOINED_GAME));
+//        messageTemplate.send(new GameStatusMessageCreator(game, USER_JOINED_GAME));
         sendChatEvent("System", username + " joined Game " + game.getId() + ".");
 
         if (gameAtUserMax) {
@@ -81,27 +75,27 @@ public class EventManagerImpl implements EventManager {
                 + "send chat event.");
         }
 
-        messageTemplate.send(JMS_CHAT, mapMessage);
+//        messageTemplate.send(JMS_CHAT, mapMessage);
     }
 
     @Override
     public void sendGameStartingEvent(Game game) {
-        messageTemplate.send(new GameStatusMessageCreator(game, GAME_IS_STARTING));
+//        messageTemplate.send(new GameStatusMessageCreator(game, GAME_IS_STARTING));
     }
 
     @Override
     public void sendGameInProgressEvent(Game game) {
-        messageTemplate.send(new GameStatusMessageCreator(game, GAME_IN_PROGRESS));
+//        messageTemplate.send(new GameStatusMessageCreator(game, GAME_IN_PROGRESS));
     }
 
     @Override
     public void sendGameIsFinishedEvent(Game game) {
-        messageTemplate.send(new GameStatusMessageCreator(game, GAME_IS_FINISHED));
+//        messageTemplate.send(new GameStatusMessageCreator(game, GAME_IS_FINISHED));
     }
 
     @Override
     public void sendNewHandStartingEvent(Game game, Table table) {
-        messageTemplate.send(new TableStatusMessageCreator(game, table, NEW_HAND_STARTING));
+//        messageTemplate.send(new TableStatusMessageCreator(game, table, NEW_HAND_STARTING));
     }
 
     @Override
@@ -112,23 +106,23 @@ public class EventManagerImpl implements EventManager {
     }
 
     private void sendDealFlopEvent(Game game, Table table) {
-        messageTemplate.send(new TableStatusMessageCreator(game, table, DEAL_FLOP));
+//        messageTemplate.send(new TableStatusMessageCreator(game, table, DEAL_FLOP));
     }
 
     private void sendDealRiverEvent(Game game, Table table) {
-        messageTemplate.send(new TableStatusMessageCreator(game, table, DEAL_RIVER));
+//        messageTemplate.send(new TableStatusMessageCreator(game, table, DEAL_RIVER));
     }
 
     private void sendDealTurnEvent(Game game, Table table) {
-        messageTemplate.send(new TableStatusMessageCreator(game, table, DEAL_TURN));
+//        messageTemplate.send(new TableStatusMessageCreator(game, table, DEAL_TURN));
     }
 
     private void sendHandCompleteEvent(Game game, Table table) {
-        messageTemplate.send(new TableStatusMessageCreator(game, table, HAND_COMPLETE));
+//        messageTemplate.send(new TableStatusMessageCreator(game, table, HAND_COMPLETE));
     }
 
     private void sendUserActedEvent(Game game, Table table) {
-        messageTemplate.send(new TableStatusMessageCreator(game, table, USER_ACTED));
+//        messageTemplate.send(new TableStatusMessageCreator(game, table, USER_ACTED));
     }
 
     @Override
@@ -192,66 +186,58 @@ public class EventManagerImpl implements EventManager {
         }
     }
 
-    public MessageTemplate getMessageTemplate() {
-        return messageTemplate;
-    }
-
-    public void setMessageTemplate(MessageTemplate messageTemplate) {
-        this.messageTemplate = messageTemplate;
-    }
-
-    private abstract class FlexPokerMessageCreator implements AsyncMessageCreator {
-
-        protected String fullSubtopic;
-
-        protected String destination;
-
-        @Override
-        public AsyncMessage createMessage() {
-            AsyncMessage message = messageTemplate
-                    .createMessageForDestination(destination);
-            message.setHeader(AsyncMessage.SUBTOPIC_HEADER_NAME, fullSubtopic);
-            return message;
-        }
-
-    }
-
-    private class TableStatusMessageCreator extends FlexPokerMessageCreator {
-
-        public TableStatusMessageCreator(Game game, Table table, String subtopic) {
-            super();
-            if (game == null || game.getId() == null) {
-                throw new IllegalArgumentException("Game or game id cannot "
-                        + "be null.");
-            }
-            if (table == null || table.getId() == null) {
-                throw new IllegalArgumentException("Table or table id cannot "
-                        + "be null.");
-            }
-            if (StringUtils.isBlank(subtopic)) {
-                throw new IllegalArgumentException("Subtopic cannot be blank.");
-            }
-            fullSubtopic = game.getId() + "." + table.getId() + "." + subtopic;
-            destination = TABLE_STATUS_UPDATES;
-        }
-
-    }
-
-    private class GameStatusMessageCreator extends FlexPokerMessageCreator {
-
-        public GameStatusMessageCreator(Game game, String subtopic) {
-            super();
-            if (game == null || game.getId() == null) {
-                throw new IllegalArgumentException("Game or game id cannot "
-                        + "be null.");
-            }
-            if (StringUtils.isBlank(subtopic)) {
-                throw new IllegalArgumentException("Subtopic cannot be blank.");
-            }
-            fullSubtopic = game.getId() + "." + subtopic;
-            destination = GAME_STATUS_UPDATES;
-        }
-
-    }
+//    private abstract class FlexPokerMessageCreator implements AsyncMessageCreator {
+//
+//        protected String fullSubtopic;
+//
+//        protected String destination;
+//
+//        @Override
+//        public AsyncMessage createMessage() {
+//            AsyncMessage message = messageTemplate
+//                    .createMessageForDestination(destination);
+//            message.setHeader(AsyncMessage.SUBTOPIC_HEADER_NAME, fullSubtopic);
+//            return message;
+//        }
+//
+//    }
+//
+//    private class TableStatusMessageCreator extends FlexPokerMessageCreator {
+//
+//        public TableStatusMessageCreator(Game game, Table table, String subtopic) {
+//            super();
+//            if (game == null || game.getId() == null) {
+//                throw new IllegalArgumentException("Game or game id cannot "
+//                        + "be null.");
+//            }
+//            if (table == null || table.getId() == null) {
+//                throw new IllegalArgumentException("Table or table id cannot "
+//                        + "be null.");
+//            }
+//            if (StringUtils.isBlank(subtopic)) {
+//                throw new IllegalArgumentException("Subtopic cannot be blank.");
+//            }
+//            fullSubtopic = game.getId() + "." + table.getId() + "." + subtopic;
+//            destination = TABLE_STATUS_UPDATES;
+//        }
+//
+//    }
+//
+//    private class GameStatusMessageCreator extends FlexPokerMessageCreator {
+//
+//        public GameStatusMessageCreator(Game game, String subtopic) {
+//            super();
+//            if (game == null || game.getId() == null) {
+//                throw new IllegalArgumentException("Game or game id cannot "
+//                        + "be null.");
+//            }
+//            if (StringUtils.isBlank(subtopic)) {
+//                throw new IllegalArgumentException("Subtopic cannot be blank.");
+//            }
+//            fullSubtopic = game.getId() + "." + subtopic;
+//            destination = GAME_STATUS_UPDATES;
+//        }
+//
+//    }
 
 }

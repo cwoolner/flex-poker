@@ -17,8 +17,6 @@
 
     <bean id="transactionManager" class="com.flexpoker.misc.mock.JpaTransactionManagerMock" />
 
-    <bean id="messageTemplate" class="com.flexpoker.misc.mock.MessageTemplateMock" />
-
     <bean id="dealCardActionsBso" class="com.flexpoker.bso.DealCardActionsBsoImpl">
         <property name="deckBso" ref="deckBsoMock" />
         <property name="realTimeGameBso" ref="realTimeGameBsoMock" />
