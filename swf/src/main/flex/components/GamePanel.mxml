@@ -534,14 +534,14 @@
         <mx:method name="fetchAllUserGameStatuses" result="fetchAllUserGameStatusesHandler(event)" />
     </mx:RemoteObject>
 
-    <mx:VBox id="registeringMain" verticalAlign="middle" horizontalAlign="middle"
+    <mx:VBox id="registeringMain" verticalAlign="middle" horizontalAlign="center"
         height="100%" width="80%">
         <mx:HBox width="100%">
             <mx:Spacer width="100%"/><mx:Label text="Registering..." /><mx:Spacer width="100%"/>
         </mx:HBox>
     </mx:VBox>
 
-    <mx:VBox id="startingMain" verticalAlign="middle" horizontalAlign="middle"
+    <mx:VBox id="startingMain" verticalAlign="middle" horizontalAlign="center"
         height="100%" width="80%">
         <mx:HBox width="100%">
             <mx:Spacer width="100%"/>
@@ -551,8 +551,11 @@
         </mx:HBox>
     </mx:VBox>
 
-    <mx:VBox id="inProgressMain" verticalAlign="middle" horizontalAlign="middle" height="100%"
-        width="60%" backgroundImage="{TableSvg}">
+    <!-- Commenting this out since backgroundImage= is not allowed in flex 4 on VBox -->
+    <!--mx:VBox id="inProgressMain" verticalAlign="middle" horizontalAlign="center" height="100%"
+        width="60%" backgroundImage="{TableSvg}"-->
+
+    <mx:VBox id="inProgressMain" verticalAlign="middle" horizontalAlign="center" height="100%" width="60%">
 
         <mx:Spacer height="100%" />
         <mx:HBox width="100%">
@@ -601,7 +604,7 @@
 
     </mx:VBox>
 
-    <mx:VBox id="finishedMain" verticalAlign="middle" horizontalAlign="middle"
+    <mx:VBox id="finishedMain" verticalAlign="middle" horizontalAlign="center"
         height="100%" width="80%">
         <mx:HBox width="100%">
             <mx:Spacer width="100%"/><mx:Label text="Finished..." /><mx:Spacer width="100%"/>

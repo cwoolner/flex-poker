@@ -21,7 +21,7 @@
             <plugin>
                 <groupId>org.sonatype.flexmojos</groupId>
                 <artifactId>flexmojos-maven-plugin</artifactId>
-                <version>3.4.0</version>
+                <version>3.8</version>
                 <extensions>true</extensions>
                 <configuration>
                     <output>${basedir}/../java/src/main/webapp/${project.build.finalName}.swf</output>
@@ -35,7 +35,7 @@
                     <dependency>
                         <groupId>com.adobe.flex</groupId>
                         <artifactId>compiler</artifactId>
-                        <version>3.4.0.9271</version>
+                        <version>4.5.1.21328</version>
                         <type>pom</type>
                     </dependency>
                 </dependencies>
@@ -47,7 +47,7 @@
         <dependency>
             <groupId>com.adobe.flex.framework</groupId>
             <artifactId>flex-framework</artifactId>
-            <version>3.4.0.9271</version>
+            <version>4.5.1.21328</version>
             <type>pom</type>
         </dependency>
     </dependencies>
