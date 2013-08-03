@@ -16,12 +16,10 @@ import com.flexpoker.model.Seat;
 import com.flexpoker.model.Table;
 import com.flexpoker.model.User;
 import com.flexpoker.model.UserGameStatus;
-import com.flexpoker.util.Context;
 
 public class PotBsoImplTest {
 
-    private PotBsoImpl bso = (PotBsoImpl) Context.instance()
-            .getBean("potBso");
+    private PotBsoImpl bso = new PotBsoImpl();
 
     @Test
     public void testCalculatePotsAfterRound() {

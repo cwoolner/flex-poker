@@ -1,10 +1,7 @@
-package com.flexpoker.bso.mock;
+package com.flexpoker.test.util.datageneration;
 
 import java.util.Arrays;
 
-import org.springframework.stereotype.Service;
-
-import com.flexpoker.bso.RealTimeGameBso;
 import com.flexpoker.model.Game;
 import com.flexpoker.model.HandDealerState;
 import com.flexpoker.model.RealTimeGame;
@@ -12,17 +9,14 @@ import com.flexpoker.model.RealTimeHand;
 import com.flexpoker.model.Seat;
 import com.flexpoker.model.Table;
 
-@Service
-public class RealTimeGameBsoMock implements RealTimeGameBso {
+public class RealTimeGameGenerator {
 
-    @Override
     public RealTimeGame get(Game game) {
         RealTimeGame realTimeGame = new RealTimeGame();
 
         Table table1 = new Table();
         table1.setId(1);
-        RealTimeHand realTimeHand1 = new RealTimeHand(Arrays.asList(
-                new Seat[]{new Seat()}));
+        RealTimeHand realTimeHand1 = new RealTimeHand(Arrays.asList(new Seat[]{new Seat()}));
         realTimeHand1.setHandDealerState(HandDealerState.NONE);
 
         Table table2 = new Table();
@@ -63,12 +57,6 @@ public class RealTimeGameBsoMock implements RealTimeGameBso {
         realTimeGame.addRealTimeHand(table6, realTimeHand6);
 
         return realTimeGame;
-    }
-
-    @Override
-    public RealTimeGame put(Game game, RealTimeGame realTimeGame) {
-        // TODO Auto-generated method stub
-        return null;
     }
 
 }

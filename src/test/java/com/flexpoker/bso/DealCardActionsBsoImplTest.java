@@ -8,13 +8,11 @@ import com.flexpoker.exception.FlexPokerException;
 import com.flexpoker.model.Game;
 import com.flexpoker.model.Table;
 import com.flexpoker.model.User;
-import com.flexpoker.util.Context;
 
 
 public class DealCardActionsBsoImplTest {
 
-    private DealCardActionsBsoImpl bso = (DealCardActionsBsoImpl) Context
-            .instance().getBean("dealCardActionsBso");
+    private DealCardActionsBsoImpl bso = new DealCardActionsBsoImpl();            
 
     @Test
     public void testFetchPocketCards() {

@@ -17,13 +17,10 @@ import com.flexpoker.model.PocketCards;
 import com.flexpoker.model.RiverCard;
 import com.flexpoker.model.TurnCard;
 import com.flexpoker.model.User;
-import com.flexpoker.util.Context;
-
 
 public class HandEvaluatorBsoImplTest {
 
-    private HandEvaluatorBsoImpl bso = (HandEvaluatorBsoImpl) Context.instance()
-            .getBean("handEvaluatorBso");
+    private HandEvaluatorBsoImpl bso = new HandEvaluatorBsoImpl();
 
     @Test
     public void testDeterminePossibleHands() {

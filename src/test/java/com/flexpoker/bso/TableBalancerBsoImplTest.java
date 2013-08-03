@@ -12,12 +12,11 @@ import org.junit.Test;
 import com.flexpoker.model.Seat;
 import com.flexpoker.model.Table;
 import com.flexpoker.model.UserGameStatus;
-import com.flexpoker.util.Context;
 import com.flexpoker.util.DataUtilsForTests;
 
 public class TableBalancerBsoImplTest {
 
-    private TableBalancerBso bso = (TableBalancerBso) Context.instance().getBean("tableBalancerBso");
+    private TableBalancerBsoImpl bso = new TableBalancerBsoImpl();
     
     @Test
     public void testAreTablesBalanced() {

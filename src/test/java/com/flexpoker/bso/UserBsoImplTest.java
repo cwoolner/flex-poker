@@ -5,16 +5,9 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
-import com.flexpoker.util.Context;
-
-/**
- * Test for UserBsoImpl class.
- *
- * @author chris
- */
 public class UserBsoImplTest {
 
-    private UserBsoImpl bso = (UserBsoImpl) Context.instance().getBean("userBso");
+    private UserBsoImpl bso = new UserBsoImpl();
     
     @Test
     public void testLoadUserByUsername() {

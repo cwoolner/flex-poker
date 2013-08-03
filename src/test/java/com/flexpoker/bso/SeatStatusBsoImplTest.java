@@ -13,16 +13,13 @@ import com.flexpoker.model.Seat;
 import com.flexpoker.model.Table;
 import com.flexpoker.util.ActionOnSeatPredicate;
 import com.flexpoker.util.BigBlindSeatPredicate;
-import com.flexpoker.util.Context;
-import com.flexpoker.util.DataUtilsForTests;
 import com.flexpoker.util.ButtonSeatPredicate;
+import com.flexpoker.util.DataUtilsForTests;
 import com.flexpoker.util.SmallBlindSeatPredicate;
-
 
 public class SeatStatusBsoImplTest {
 
-    private SeatStatusBsoImpl bso = (SeatStatusBsoImpl) Context.instance()
-            .getBean("seatStatusBso");
+    private SeatStatusBsoImpl bso = new SeatStatusBsoImpl();
 
     @Test
     public void testSetStatusForNewGame() {

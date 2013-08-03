@@ -16,12 +16,11 @@ import com.flexpoker.model.Table;
 import com.flexpoker.model.TurnCard;
 import com.flexpoker.model.User;
 import com.flexpoker.model.UserGameStatus;
-import com.flexpoker.util.Context;
 
 
 public class DeckBsoImplTest {
 
-    private DeckBsoImpl bso = (DeckBsoImpl) Context.instance().getBean("deckBso");
+    private DeckBsoImpl bso = new DeckBsoImpl();
 
     @Test
     public void testShuffleDeck() {
