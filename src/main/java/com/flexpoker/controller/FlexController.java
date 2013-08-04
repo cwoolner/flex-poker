@@ -3,6 +3,8 @@ package com.flexpoker.controller;
 import java.util.List;
 import java.util.Set;
 
+import javax.inject.Inject;
+
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 
@@ -49,44 +51,44 @@ import com.flexpoker.model.UserGameStatus;
  *
  * @author cwoolner
  */
-@Controller("flexController")
-public class FlexControllerImpl implements FlexController {
+@Controller
+public class FlexController {
 
+    @Inject
     private GameBso gameBso;
 
+    @Inject
     private GameEventBso gameEventBso;
 
+    @Inject
     private EventManager eventManager;
 
+    @Inject
     private DealCardActionsBso dealCardActionsBso;
 
+    @Inject
     private PlayerActionsBso playerActionsBso;
 
-    @Override
     public void createGame(Game game) {
         User user = extractCurrentUser();
         gameBso.createGame(user, game);
         eventManager.sendGamesUpdatedEvent();
     }
 
-    @Override
     public List<Game> fetchAllGames() {
         return gameBso.fetchAllGames();
     }
 
-    @Override
     public void joinGame(Game game) {
         User user = extractCurrentUser();
         boolean gameAtUserMax = gameEventBso.addUserToGame(user, game);
         eventManager.sendUserJoinedEvent(game, user.getUsername(), gameAtUserMax);
     }
     
-    @Override
     public Set<UserGameStatus> fetchAllUserGameStatuses(Game game) {
         return gameBso.fetchUserGameStatuses(game);
     }
 
-    @Override
     public void verifyRegistrationForGame(Game game) {
         User user = extractCurrentUser();
         if (gameEventBso.verifyRegistration(user, game)) {
@@ -94,7 +96,6 @@ public class FlexControllerImpl implements FlexController {
         }
     }
 
-    @Override
     public void verifyGameInProgress(Game game) {
         User user = extractCurrentUser();
         if (gameEventBso.verifyGameInProgress(user, game)) {
@@ -103,7 +104,6 @@ public class FlexControllerImpl implements FlexController {
         }
     }
 
-    @Override
     public void verifyReadyToStartNewHand(Game game, Table table) {
         User user = extractCurrentUser();
         if (gameEventBso.verifyReadyToStartNewHand(user, game, table)) {
@@ -116,108 +116,58 @@ public class FlexControllerImpl implements FlexController {
         }
     }
 
-    @Override
     public Table fetchPlayersCurrentTable(Game game) {
         User user = extractCurrentUser();
         return gameBso.fetchPlayersCurrentTable(user, game);
     }
 
-    @Override
     public Table fetchTable(Game game, Table table) {
         return gameBso.fetchTable(game, table);
     }
 
-    @Override
     public PocketCards fetchPocketCards(Game game, Table table) {
         User user = extractCurrentUser();
         return dealCardActionsBso.fetchPocketCards(user, game, table);
     }
 
-    @Override
     public void check(Game game, Table table) {
         User user = extractCurrentUser();
         HandState handState = playerActionsBso.check(game, table, user);
         eventManager.sendCheckEvent(game, table, handState, user.getUsername());
     }
 
-    @Override
     public void fold(Game game, Table table) {
         User user = extractCurrentUser();
         HandState handState = playerActionsBso.fold(game, table, user);
         eventManager.sendFoldEvent(game, table, handState, user.getUsername());
     }
 
-    @Override
     public void call(Game game, Table table) {
         User user = extractCurrentUser();
         HandState handState = playerActionsBso.call(game, table, user);
         eventManager.sendCallEvent(game, table, handState, user.getUsername());
     }
 
-    @Override
     public void raise(Game game, Table table, String raiseAmount) {
         User user = extractCurrentUser();
         HandState handState = playerActionsBso.raise(game, table, user, raiseAmount);
         eventManager.sendRaiseEvent(game, table, handState, user.getUsername());
     }
 
-    @Override
     public FlopCards fetchFlopCards(Game game, Table table) {
         return dealCardActionsBso.fetchFlopCards(game, table);
     }
 
-    @Override
     public RiverCard fetchRiverCard(Game game, Table table) {
         return dealCardActionsBso.fetchRiverCard(game, table);
     }
 
-    @Override
     public TurnCard fetchTurnCard(Game game, Table table) {
         return dealCardActionsBso.fetchTurnCard(game, table);
     }
 
     private User extractCurrentUser() {
         return (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-    }
-
-    public GameBso getGameBso() {
-        return gameBso;
-    }
-
-    public void setGameBso(GameBso gameBso) {
-        this.gameBso = gameBso;
-    }
-
-    public GameEventBso getGameEventBso() {
-        return gameEventBso;
-    }
-
-    public void setGameEventBso(GameEventBso gameEventBso) {
-        this.gameEventBso = gameEventBso;
-    }
-
-    public EventManager getEventManager() {
-        return eventManager;
-    }
-
-    public void setEventManager(EventManager eventManager) {
-        this.eventManager = eventManager;
-    }
-
-    public DealCardActionsBso getDealCardActionsBso() {
-        return dealCardActionsBso;
-    }
-
-    public void setDealCardActionsBso(DealCardActionsBso dealCardActionsBso) {
-        this.dealCardActionsBso = dealCardActionsBso;
-    }
-
-    public PlayerActionsBso getPlayerActionsBso() {
-        return playerActionsBso;
-    }
-
-    public void setPlayerActionsBso(PlayerActionsBso playerActionsBso) {
-        this.playerActionsBso = playerActionsBso;
     }
 
 }

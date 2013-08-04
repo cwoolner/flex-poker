@@ -1,7 +1,8 @@
 package com.flexpoker.controller;
 
-import java.util.HashMap;
 import java.util.Map;
+
+import javax.inject.Inject;
 
 import org.springframework.stereotype.Controller;
 
@@ -12,16 +13,18 @@ import com.flexpoker.model.HandState;
 import com.flexpoker.model.Seat;
 import com.flexpoker.model.Table;
 
-@Controller("actionOnTimerController")
-public class ActionOnTimerControllerImpl implements ActionOnTimerController {
+@Controller
+public class ActionOnTimerController {
 
+    @Inject
     private EventManager eventManager;
 
+    @Inject
     private PlayerActionsBso playerActionsBso;
 
+    @Inject
     private ActionOnTimerBso actionOnTimerBso;
 
-    @Override
     public void decrementTime() {
         synchronized (this) {
             Map<Game, Map<Table, Map<Seat, Integer>>> actionOnTimerMap =
@@ -64,30 +67,6 @@ public class ActionOnTimerControllerImpl implements ActionOnTimerController {
                 seatMap.put(seat, currentCount);
             }
         }
-    }
-
-    public EventManager getEventManager() {
-        return eventManager;
-    }
-
-    public void setEventManager(EventManager eventManager) {
-        this.eventManager = eventManager;
-    }
-
-    public PlayerActionsBso getPlayerActionsBso() {
-        return playerActionsBso;
-    }
-
-    public void setPlayerActionsBso(PlayerActionsBso playerActionsBso) {
-        this.playerActionsBso = playerActionsBso;
-    }
-
-    public ActionOnTimerBso getActionOnTimerBso() {
-        return actionOnTimerBso;
-    }
-
-    public void setActionOnTimerBso(ActionOnTimerBso actionOnTimerBso) {
-        this.actionOnTimerBso = actionOnTimerBso;
     }
 
 }

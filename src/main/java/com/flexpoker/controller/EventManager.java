@@ -6,7 +6,6 @@ import javax.jms.JMSException;
 import javax.jms.MapMessage;
 
 import org.apache.activemq.command.ActiveMQMapMessage;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Controller;
 
 import com.flexpoker.model.Game;
@@ -14,8 +13,8 @@ import com.flexpoker.model.HandRoundState;
 import com.flexpoker.model.HandState;
 import com.flexpoker.model.Table;
 
-@Controller("eventManager")
-public class EventManagerImpl implements EventManager {
+@Controller
+public class EventManager {
 
     private static final String GAMES_UPDATED = "gamesUpdated";
 
@@ -45,12 +44,10 @@ public class EventManagerImpl implements EventManager {
 
     private static final String HAND_COMPLETE = "handComplete";
 
-    @Override
     public void sendGamesUpdatedEvent() {
 //        messageTemplate.send(GAMES_UPDATED, null);
     }
 
-    @Override
     public void sendUserJoinedEvent(Game game, String username,
             boolean gameAtUserMax) {
 //        messageTemplate.send(new GameStatusMessageCreator(game, USER_JOINED_GAME));
@@ -63,7 +60,6 @@ public class EventManagerImpl implements EventManager {
 
     }
 
-    @Override
     public void sendChatEvent(String username, String text) {
         MapMessage mapMessage = new ActiveMQMapMessage();
 
@@ -78,27 +74,22 @@ public class EventManagerImpl implements EventManager {
 //        messageTemplate.send(JMS_CHAT, mapMessage);
     }
 
-    @Override
     public void sendGameStartingEvent(Game game) {
 //        messageTemplate.send(new GameStatusMessageCreator(game, GAME_IS_STARTING));
     }
 
-    @Override
     public void sendGameInProgressEvent(Game game) {
 //        messageTemplate.send(new GameStatusMessageCreator(game, GAME_IN_PROGRESS));
     }
 
-    @Override
     public void sendGameIsFinishedEvent(Game game) {
 //        messageTemplate.send(new GameStatusMessageCreator(game, GAME_IS_FINISHED));
     }
 
-    @Override
     public void sendNewHandStartingEvent(Game game, Table table) {
 //        messageTemplate.send(new TableStatusMessageCreator(game, table, NEW_HAND_STARTING));
     }
 
-    @Override
     public void sendNewHandStartingEventForAllTables(Game game, List<Table> tables) {
         for (Table table : tables) {
             sendNewHandStartingEvent(game, table);
@@ -125,26 +116,22 @@ public class EventManagerImpl implements EventManager {
 //        messageTemplate.send(new TableStatusMessageCreator(game, table, USER_ACTED));
     }
 
-    @Override
     public void sendCheckEvent(Game game, Table table, HandState handState, String username) {
         sendChatEvent("System", username + " checks.");
         determineNextEvent(game, table, handState);
 
     }
 
-    @Override
     public void sendFoldEvent(Game game, Table table, HandState handState, String username) {
         sendChatEvent("System", username + " folds.");
         determineNextEvent(game, table, handState);
     }
 
-    @Override
     public void sendCallEvent(Game game, Table table, HandState handState, String username) {
         sendChatEvent("System", username + " calls.");
         determineNextEvent(game, table, handState);
     }
 
-    @Override
     public void sendRaiseEvent(Game game, Table table, HandState handState, String username) {
         sendChatEvent("System", username + " raises.");
         determineNextEvent(game, table, handState);
