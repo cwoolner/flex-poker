@@ -4,6 +4,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
+import javax.inject.Inject;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,14 +23,19 @@ import com.flexpoker.model.UserGameStatus;
 @Service("gameBso")
 public class GameBsoImpl implements GameBso {
 
-    private GameDao gameDao;
+    private final GameDao gameDao;
 
-    private UserBso userBso;
+    private final RealTimeGameBso realTimeGameBso;
 
-    private RealTimeGameBso realTimeGameBso;
+    private final TableBalancerBso tableBalancerBso;
 
-    private TableBalancerBso tableBalancerBso;
-
+    @Inject
+    public GameBsoImpl(GameDao gameDao, RealTimeGameBso realTimeGameBso, TableBalancerBso tableBalancerBso) {
+        this.gameDao = gameDao;
+        this.realTimeGameBso = realTimeGameBso;
+        this.tableBalancerBso = tableBalancerBso;
+    }
+    
     @Override
     public Game fetchGame(Game game) {
         return gameDao.findById(game.getId());
@@ -47,7 +54,7 @@ public class GameBsoImpl implements GameBso {
         game.setCreatedOn(new Date());
         game.setGameStage(GameStage.REGISTERING);
         game.setAllowRebuys(false);
-        gameDao.save(game.getId(), game);
+        gameDao.save(game);
 
         createRealTimeGame(game);
     }
@@ -56,7 +63,7 @@ public class GameBsoImpl implements GameBso {
     public void changeGameStage(Game game, GameStage gameStage) {
         game = gameDao.findById(game.getId());
         game.setGameStage(gameStage);
-        gameDao.save(game.getId(), game);
+        gameDao.save(game);
     }
 
     @Override
@@ -117,38 +124,6 @@ public class GameBsoImpl implements GameBso {
     @Override
     public Set<UserGameStatus> fetchUserGameStatuses(Game game) {
         return realTimeGameBso.get(game).getUserGameStatuses();
-    }
-
-    public GameDao getGameDao() {
-        return gameDao;
-    }
-
-    public void setGameDao(GameDao gameDao) {
-        this.gameDao = gameDao;
-    }
-
-    public UserBso getUserBso() {
-        return userBso;
-    }
-
-    public void setUserBso(UserBso userBso) {
-        this.userBso = userBso;
-    }
-
-    public RealTimeGameBso getRealTimeGameBso() {
-        return realTimeGameBso;
-    }
-
-    public void setRealTimeGameBso(RealTimeGameBso realTimeGameBso) {
-        this.realTimeGameBso = realTimeGameBso;
-    }
-
-    public TableBalancerBso getTableBalancerBso() {
-        return tableBalancerBso;
-    }
-
-    public void setTableBalancerBso(TableBalancerBso tableBalancerBso) {
-        this.tableBalancerBso = tableBalancerBso;
     }
 
 }

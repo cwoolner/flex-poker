@@ -2,6 +2,8 @@ package com.flexpoker.bso;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.dao.DataAccessException;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -14,8 +16,13 @@ import com.flexpoker.model.User;
 @Service("userBso")
 public class UserBsoImpl implements UserBso {
 
-    private UserDao userDao;
+    private final UserDao userDao;
 
+    @Inject
+    public UserBsoImpl(UserDao userDao) {
+        this.userDao = userDao;
+    }
+    
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException, DataAccessException {
         List<User> userList = userDao.findByUsername(username);
@@ -25,14 +32,6 @@ public class UserBsoImpl implements UserBso {
         }
 
         return userList.get(0);
-    }
-
-    public UserDao getUserDao() {
-        return userDao;
-    }
-
-    public void setUserDao(UserDao userDao) {
-        this.userDao = userDao;
     }
 
 }
