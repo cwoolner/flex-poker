@@ -1,4 +1,4 @@
-package com.flexpoker.web.configuration;
+package com.flexpoker.config;
 
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
@@ -12,7 +12,7 @@ import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
 @Configuration
 @EnableWebMvc
-@ComponentScan(basePackages="com.flexpoker")
+@ComponentScan(basePackages = "com.flexpoker.controller")
 public class WebConfig extends WebMvcConfigurerAdapter {
 
     @Bean
