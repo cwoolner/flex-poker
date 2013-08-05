@@ -1,5 +1,7 @@
 package com.flexpoker.bso;
 
+import javax.inject.Inject;
+
 import org.springframework.stereotype.Service;
 
 import com.flexpoker.exception.FlexPokerException;
@@ -21,6 +23,13 @@ public class DealCardActionsBsoImpl implements DealCardActionsBso {
     private RealTimeGameBso realTimeGameBso;
 
     private ValidationBso validationBso;
+    
+    @Inject
+    public DealCardActionsBsoImpl(DeckBso deckBso, RealTimeGameBso realTimeGameBso, ValidationBso validationBso) {
+        this.deckBso = deckBso;
+        this.realTimeGameBso = realTimeGameBso;
+        this.validationBso = validationBso;
+    }
 
     @Override
     public PocketCards fetchPocketCards(User user, Game game, Table table) {
@@ -72,30 +81,6 @@ public class DealCardActionsBsoImpl implements DealCardActionsBso {
 
         HandDealerState handDealerState = realTimeHand.getHandDealerState();
         return handDealerState;
-    }
-
-    public DeckBso getDeckBso() {
-        return deckBso;
-    }
-
-    public void setDeckBso(DeckBso deckBso) {
-        this.deckBso = deckBso;
-    }
-
-    public RealTimeGameBso getRealTimeGameBso() {
-        return realTimeGameBso;
-    }
-
-    public void setRealTimeGameBso(RealTimeGameBso realTimeGameBso) {
-        this.realTimeGameBso = realTimeGameBso;
-    }
-
-    public ValidationBso getValidationBso() {
-        return validationBso;
-    }
-
-    public void setValidationBso(ValidationBso validationBso) {
-        this.validationBso = validationBso;
     }
 
 }
