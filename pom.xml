@@ -15,7 +15,6 @@
         <org.aspectj-version>1.7.0</org.aspectj-version>        
         <org.slf4j-version>1.7.2</org.slf4j-version>
         <ch.qos.logback-version>1.0.7</ch.qos.logback-version>
-        <org.apache.tiles-version>3.0.1</org.apache.tiles-version>
     </properties>
 
     <repositories>
@@ -100,11 +99,6 @@
             <artifactId>hibernate-core</artifactId>
             <version>4.2.3.Final</version>
         </dependency>
-        <dependency>
-            <groupId>org.apache.tiles</groupId>
-            <artifactId>tiles-jsp</artifactId>
-            <version>${org.apache.tiles-version}</version>
-        </dependency>        
         <dependency>
             <groupId>org.aspectj</groupId>
             <artifactId>aspectjrt</artifactId>
