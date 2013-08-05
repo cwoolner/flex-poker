@@ -2,6 +2,8 @@ package com.flexpoker.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 
@@ -15,5 +17,26 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .withUser("user").password("password").roles("USER").and()
             .withUser("admin").password("password").roles("USER", "ADMIN");
     }
-    
+
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http
+        .authorizeUrls()
+            .antMatchers("/admin/**").hasRole("ADMIN")
+            .antMatchers("/signup").permitAll()
+            .anyRequest().authenticated()
+            .and()
+        .formLogin()
+            .loginPage("/login")
+            .defaultSuccessUrl("/", true)
+            .permitAll()
+            .and()
+        .rememberMe();
+    }
+
+    @Override
+    public void configure(WebSecurity web) throws Exception {
+        web.ignoring().antMatchers("/resources/**");
+    }
+
 }
