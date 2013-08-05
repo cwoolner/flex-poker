@@ -20,7 +20,7 @@ import com.flexpoker.model.HandRanking;
 import com.flexpoker.model.PocketCards;
 import com.flexpoker.model.User;
 
-@Service("handEvaluatorBso")
+@Service
 public class HandEvaluatorBsoImpl implements HandEvaluatorBso {
 
     @Override

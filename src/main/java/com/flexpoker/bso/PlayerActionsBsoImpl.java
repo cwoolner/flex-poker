@@ -26,7 +26,7 @@ import com.flexpoker.model.UserGameStatus;
 import com.flexpoker.util.ActionOnSeatPredicate;
 import com.flexpoker.util.ButtonSeatPredicate;
 
-@Service("playerActionsBso")
+@Service
 public class PlayerActionsBsoImpl implements PlayerActionsBso {
 
     private RealTimeGameBso realTimeGameBso;

@@ -33,7 +33,7 @@ import com.flexpoker.util.BigBlindSeatPredicate;
 import com.flexpoker.util.ButtonSeatPredicate;
 import com.flexpoker.util.SmallBlindSeatPredicate;
 
-@Service("gameEventBso")
+@Service
 public class GameEventBsoImpl implements GameEventBso {
 
     private GameBso gameBso;

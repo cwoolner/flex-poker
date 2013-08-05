@@ -11,7 +11,7 @@ import com.flexpoker.model.Table;
 import com.flexpoker.model.UserGameStatus;
 import com.flexpoker.util.Constants;
 
-@Service("validationBso")
+@Service
 public class ValidationBsoImpl implements ValidationBso {
 
     @Override

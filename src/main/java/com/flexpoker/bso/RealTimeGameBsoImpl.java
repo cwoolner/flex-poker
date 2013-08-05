@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import com.flexpoker.model.Game;
 import com.flexpoker.model.RealTimeGame;
 
-@Service("realTimeGameBso")
+@Service
 public class RealTimeGameBsoImpl extends HashMap<Game, RealTimeGame>
         implements RealTimeGameBso {
 

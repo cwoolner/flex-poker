@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 import com.flexpoker.dao.UserDao;
 import com.flexpoker.model.User;
 
-@Service("userBso")
+@Service
 public class UserBsoImpl implements UserBso {
 
     private final UserDao userDao;

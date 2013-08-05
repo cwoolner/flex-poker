@@ -20,7 +20,7 @@ import com.flexpoker.model.User;
 import com.flexpoker.model.UserGameStatus;
 
 @Transactional
-@Service("gameBso")
+@Service
 public class GameBsoImpl implements GameBso {
 
     private final GameDao gameDao;

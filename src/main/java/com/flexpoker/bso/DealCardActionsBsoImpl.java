@@ -13,7 +13,7 @@ import com.flexpoker.model.Table;
 import com.flexpoker.model.TurnCard;
 import com.flexpoker.model.User;
 
-@Service("dealCardActionsBso")
+@Service
 public class DealCardActionsBsoImpl implements DealCardActionsBso {
 
     private DeckBso deckBso;

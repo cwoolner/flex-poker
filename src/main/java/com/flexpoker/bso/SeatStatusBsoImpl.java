@@ -14,7 +14,7 @@ import com.flexpoker.util.BigBlindSeatPredicate;
 import com.flexpoker.util.ButtonSeatPredicate;
 import com.flexpoker.util.SmallBlindSeatPredicate;
 
-@Service("seatStatusBso")
+@Service
 public class SeatStatusBsoImpl implements SeatStatusBso {
 
     private ValidationBso validationBso;

@@ -21,7 +21,7 @@ import com.flexpoker.model.Table;
 import com.flexpoker.model.TurnCard;
 import com.flexpoker.model.User;
 
-@Service("deckBso")
+@Service
 public class DeckBsoImpl implements DeckBso {
 
     private Map<Game, Map<Table, Deck>> gameToTableToDeckMap

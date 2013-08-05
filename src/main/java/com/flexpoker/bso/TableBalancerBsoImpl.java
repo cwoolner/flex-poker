@@ -16,7 +16,7 @@ import com.flexpoker.model.TableMovement;
 import com.flexpoker.model.UserGameStatus;
 import com.flexpoker.util.Constants;
 
-@Service("tableBalancerBso")
+@Service
 public class TableBalancerBsoImpl implements TableBalancerBso {
 
     private ValidationBso validationBso;

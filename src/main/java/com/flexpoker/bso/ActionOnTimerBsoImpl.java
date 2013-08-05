@@ -5,13 +5,11 @@ import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
-import com.flexpoker.bso.PlayerActionsBso;
 import com.flexpoker.model.Game;
-import com.flexpoker.model.HandState;
 import com.flexpoker.model.Seat;
 import com.flexpoker.model.Table;
 
-@Service("actionOnTimerBso")
+@Service
 public class ActionOnTimerBsoImpl implements ActionOnTimerBso {
 
     private Map<Game, Map<Table, Map<Seat, Integer>>> actionOnTimerMap =

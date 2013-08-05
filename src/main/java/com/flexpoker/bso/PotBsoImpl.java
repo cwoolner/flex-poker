@@ -18,7 +18,7 @@ import com.flexpoker.model.Seat;
 import com.flexpoker.model.Table;
 import com.flexpoker.util.OpenPotPredicate;
 
-@Service("potBso")
+@Service
 public class PotBsoImpl implements PotBso {
 
     private Map<Game, Map<Table, List<Pot>>> gameToTableToPotsMap
