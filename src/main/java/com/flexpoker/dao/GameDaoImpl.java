@@ -8,6 +8,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Repository;
 
+import com.flexpoker.dao.api.GameDao;
 import com.flexpoker.model.Game;
 
 @Repository

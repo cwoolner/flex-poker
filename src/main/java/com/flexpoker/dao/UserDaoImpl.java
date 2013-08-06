@@ -10,6 +10,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Property;
 import org.springframework.stereotype.Repository;
 
+import com.flexpoker.dao.api.UserDao;
 import com.flexpoker.model.User;
 
 @Repository

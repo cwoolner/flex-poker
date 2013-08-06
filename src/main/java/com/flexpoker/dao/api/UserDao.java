@@ -1,4 +1,4 @@
-package com.flexpoker.dao;
+package com.flexpoker.dao.api;
 
 import java.util.List;
 
