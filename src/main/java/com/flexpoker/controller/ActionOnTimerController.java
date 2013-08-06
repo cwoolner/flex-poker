@@ -6,8 +6,8 @@ import javax.inject.Inject;
 
 import org.springframework.stereotype.Controller;
 
-import com.flexpoker.bso.ActionOnTimerBso;
-import com.flexpoker.bso.PlayerActionsBso;
+import com.flexpoker.bso.api.ActionOnTimerBso;
+import com.flexpoker.bso.api.PlayerActionsBso;
 import com.flexpoker.model.Game;
 import com.flexpoker.model.HandState;
 import com.flexpoker.model.Seat;

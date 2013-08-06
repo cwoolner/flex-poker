@@ -1,4 +1,4 @@
-package com.flexpoker.bso;
+package com.flexpoker.bso.api;
 
 import java.util.Set;
 

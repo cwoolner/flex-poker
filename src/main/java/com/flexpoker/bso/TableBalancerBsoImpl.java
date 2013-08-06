@@ -10,6 +10,8 @@ import java.util.Set;
 
 import org.springframework.stereotype.Service;
 
+import com.flexpoker.bso.api.TableBalancerBso;
+import com.flexpoker.bso.api.ValidationBso;
 import com.flexpoker.model.Seat;
 import com.flexpoker.model.Table;
 import com.flexpoker.model.TableMovement;

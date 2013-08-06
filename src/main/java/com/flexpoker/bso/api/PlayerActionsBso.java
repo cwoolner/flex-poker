@@ -1,5 +1,5 @@
 
-package com.flexpoker.bso;
+package com.flexpoker.bso.api;
 
 import com.flexpoker.model.Game;
 import com.flexpoker.model.HandState;

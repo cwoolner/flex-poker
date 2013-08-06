@@ -9,6 +9,9 @@ import javax.inject.Inject;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.flexpoker.bso.api.GameBso;
+import com.flexpoker.bso.api.RealTimeGameBso;
+import com.flexpoker.bso.api.TableBalancerBso;
 import com.flexpoker.dao.GameDao;
 import com.flexpoker.exception.FlexPokerException;
 import com.flexpoker.model.Game;

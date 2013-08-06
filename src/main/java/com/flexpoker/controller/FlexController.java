@@ -8,10 +8,10 @@ import javax.inject.Inject;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 
-import com.flexpoker.bso.DealCardActionsBso;
-import com.flexpoker.bso.GameBso;
-import com.flexpoker.bso.GameEventBso;
-import com.flexpoker.bso.PlayerActionsBso;
+import com.flexpoker.bso.api.DealCardActionsBso;
+import com.flexpoker.bso.api.GameBso;
+import com.flexpoker.bso.api.GameEventBso;
+import com.flexpoker.bso.api.PlayerActionsBso;
 import com.flexpoker.model.FlopCards;
 import com.flexpoker.model.Game;
 import com.flexpoker.model.GameStage;

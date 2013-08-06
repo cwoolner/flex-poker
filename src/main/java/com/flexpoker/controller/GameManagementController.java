@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.flexpoker.bso.GameBso;
+import com.flexpoker.bso.api.GameBso;
 import com.flexpoker.model.Game;
 import com.flexpoker.web.model.AvailableTournamentListViewModel;
 import com.flexpoker.web.translator.GameListTranslator;

@@ -9,6 +9,7 @@ import java.util.Random;
 
 import org.springframework.stereotype.Service;
 
+import com.flexpoker.bso.api.DeckBso;
 import com.flexpoker.model.Card;
 import com.flexpoker.model.CardRank;
 import com.flexpoker.model.CardSuit;

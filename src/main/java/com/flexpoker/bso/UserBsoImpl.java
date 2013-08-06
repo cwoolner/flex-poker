@@ -10,6 +10,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import com.flexpoker.bso.api.UserBso;
 import com.flexpoker.dao.UserDao;
 import com.flexpoker.model.User;
 

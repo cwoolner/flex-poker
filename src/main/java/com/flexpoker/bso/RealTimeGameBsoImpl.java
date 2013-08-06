@@ -4,6 +4,7 @@ import java.util.HashMap;
 
 import org.springframework.stereotype.Service;
 
+import com.flexpoker.bso.api.RealTimeGameBso;
 import com.flexpoker.model.Game;
 import com.flexpoker.model.RealTimeGame;
 

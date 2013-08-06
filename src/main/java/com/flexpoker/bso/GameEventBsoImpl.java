@@ -7,6 +7,13 @@ import java.util.Set;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Service;
 
+import com.flexpoker.bso.api.DeckBso;
+import com.flexpoker.bso.api.GameBso;
+import com.flexpoker.bso.api.GameEventBso;
+import com.flexpoker.bso.api.HandEvaluatorBso;
+import com.flexpoker.bso.api.PotBso;
+import com.flexpoker.bso.api.RealTimeGameBso;
+import com.flexpoker.bso.api.SeatStatusBso;
 import com.flexpoker.exception.FlexPokerException;
 import com.flexpoker.model.Blinds;
 import com.flexpoker.model.CommonCards;

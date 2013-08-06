@@ -6,6 +6,9 @@ import static org.mockito.Mockito.*;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.flexpoker.bso.api.DeckBso;
+import com.flexpoker.bso.api.RealTimeGameBso;
+import com.flexpoker.bso.api.ValidationBso;
 import com.flexpoker.exception.FlexPokerException;
 import com.flexpoker.model.FlopCards;
 import com.flexpoker.model.Game;

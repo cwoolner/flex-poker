@@ -11,6 +11,7 @@ import java.util.Set;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Service;
 
+import com.flexpoker.bso.api.PotBso;
 import com.flexpoker.model.Game;
 import com.flexpoker.model.HandEvaluation;
 import com.flexpoker.model.Pot;
