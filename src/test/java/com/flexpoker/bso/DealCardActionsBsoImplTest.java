@@ -21,8 +21,10 @@ import com.flexpoker.model.User;
 import com.flexpoker.test.util.datageneration.RealTimeGameGenerator;
 
 
-public class DealCardActionsBsoImplTest extends AbstractBsoTest<DealCardActionsBsoImpl> {
+public class DealCardActionsBsoImplTest {
 
+    private DealCardActionsBsoImpl bso;
+    
     private DeckBso mockDeckBso;
     
     private RealTimeGameBso mockRealTimeGameBso;

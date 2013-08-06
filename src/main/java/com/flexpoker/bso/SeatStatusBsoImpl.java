@@ -3,6 +3,8 @@ package com.flexpoker.bso;
 import java.util.List;
 import java.util.Random;
 
+import javax.inject.Inject;
+
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Service;
 
@@ -20,9 +22,15 @@ import com.flexpoker.util.SmallBlindSeatPredicate;
 @Service
 public class SeatStatusBsoImpl implements SeatStatusBso {
 
-    private ValidationBso validationBso;
+    private final ValidationBso validationBso;
 
-    private ActionOnTimerBso actionOnTimerBso;
+    private final ActionOnTimerBso actionOnTimerBso;
+    
+    @Inject
+    public SeatStatusBsoImpl(ValidationBso validationBso, ActionOnTimerBso actionOnTimerBso) {
+        this.validationBso = validationBso;
+        this.actionOnTimerBso = actionOnTimerBso;
+    }
 
     @Override
     public void setStatusForNewGame(Game game, Table table) {
@@ -368,22 +376,6 @@ public class SeatStatusBsoImpl implements SeatStatusBso {
             }
         }
 
-    }
-
-    public ValidationBso getValidationBso() {
-        return validationBso;
-    }
-
-    public void setValidationBso(ValidationBso validationBso) {
-        this.validationBso = validationBso;
-    }
-
-    public ActionOnTimerBso getActionOnTimerBso() {
-        return actionOnTimerBso;
-    }
-
-    public void setActionOnTimerBso(ActionOnTimerBso actionOnTimerBso) {
-        this.actionOnTimerBso = actionOnTimerBso;
     }
 
 }

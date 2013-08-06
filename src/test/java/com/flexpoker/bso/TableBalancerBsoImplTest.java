@@ -1,14 +1,17 @@
 package com.flexpoker.bso;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
+import org.junit.Before;
 import org.junit.Test;
 
+import com.flexpoker.bso.api.ValidationBso;
 import com.flexpoker.model.Seat;
 import com.flexpoker.model.Table;
 import com.flexpoker.model.UserGameStatus;
@@ -16,7 +19,15 @@ import com.flexpoker.util.DataUtilsForTests;
 
 public class TableBalancerBsoImplTest {
 
-    private TableBalancerBsoImpl bso = new TableBalancerBsoImpl();
+    private TableBalancerBsoImpl bso;
+    
+    private ValidationBso mockValidationBso;
+    
+    @Before
+    public void setup() {
+        mockValidationBso = mock(ValidationBso.class);
+        bso = new TableBalancerBsoImpl(mockValidationBso);
+    }
     
     @Test
     public void testAreTablesBalanced() {

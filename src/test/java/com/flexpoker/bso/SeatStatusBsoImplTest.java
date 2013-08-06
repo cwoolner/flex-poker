@@ -1,13 +1,17 @@
 package com.flexpoker.bso;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.junit.Before;
 import org.junit.Test;
 
+import com.flexpoker.bso.api.ActionOnTimerBso;
+import com.flexpoker.bso.api.ValidationBso;
 import com.flexpoker.model.Game;
 import com.flexpoker.model.Seat;
 import com.flexpoker.model.Table;
@@ -19,7 +23,18 @@ import com.flexpoker.util.SmallBlindSeatPredicate;
 
 public class SeatStatusBsoImplTest {
 
-    private SeatStatusBsoImpl bso = new SeatStatusBsoImpl();
+    private SeatStatusBsoImpl bso;
+    
+    private ValidationBso mockValidationBso;
+    
+    private ActionOnTimerBso mockActionOnTimerBso;
+
+    @Before
+    public void setup() {
+        mockValidationBso = mock(ValidationBso.class);
+        mockActionOnTimerBso = mock(ActionOnTimerBso.class);
+        bso = new SeatStatusBsoImpl(mockValidationBso, mockActionOnTimerBso);
+    }
 
     @Test
     public void testSetStatusForNewGame() {

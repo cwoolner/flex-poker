@@ -8,6 +8,8 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
+import javax.inject.Inject;
+
 import org.springframework.stereotype.Service;
 
 import com.flexpoker.bso.api.TableBalancerBso;
@@ -21,7 +23,12 @@ import com.flexpoker.util.Constants;
 @Service
 public class TableBalancerBsoImpl implements TableBalancerBso {
 
-    private ValidationBso validationBso;
+    private final ValidationBso validationBso;
+    
+    @Inject
+    public TableBalancerBsoImpl(ValidationBso validationBso) {
+        this.validationBso = validationBso;
+    }
 
     @Override
     public boolean areTablesBalanced(List<Table> tables) {
@@ -173,14 +180,6 @@ public class TableBalancerBsoImpl implements TableBalancerBso {
         }
 
         return numberOfPlayers;
-    }
-
-    public ValidationBso getValidationBso() {
-        return validationBso;
-    }
-
-    public void setValidationBso(ValidationBso validationBso) {
-        this.validationBso = validationBso;
     }
 
 }
