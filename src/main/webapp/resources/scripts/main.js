@@ -1,7 +1,7 @@
 var flexpokerModule = angular.module('flexpoker', ['AngularStomp']);
 
 flexpokerModule.controller('HelloController', ['$scope', function($scope) {
-    $scope.greeting = {text: 'Hello'};
+    $scope.greeting = {text: 'Hello, World'};
 }]);
 
 flexpokerModule.controller('TournamentRegisteringController', ['$scope', 'ngstomp', function($scope, ngstomp) {

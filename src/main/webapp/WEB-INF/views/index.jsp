@@ -13,31 +13,13 @@ var rootUrl = "<c:url value='/' />";
 <script type="text/javascript" src="<c:url value='/resources/scripts/3rdparty/stomp.js' />"></script>
 <script type="text/javascript" src="<c:url value='/resources/scripts/3rdparty/angular-stomp.js' />"></script>
 <script type="text/javascript" src="<c:url value='/resources/scripts/main.js' />"></script>
+<script type="text/javascript" src="<c:url value='/resources/scripts/routes.js' />"></script>
 <title>Home</title>
 </head>
 
 <body ng-app="flexpoker">
 
-<div ng-controller='HelloController'>
-    <p>{{greeting.text}}, World</p>
-</div>
-
-<div ng-controller='TournamentRegisteringController'>
-  <table>
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Players</th>
-        <th>Per Table</th>
-      </tr>
-    </thead>
-    <tr ng-repeat="game in games">
-        <td>{{game.name}}</td>
-        <td>{{game.numberOfRegisteredPlayers}}/{{game.maxNumberOfPlayers}}</td>
-        <td>{{game.maxPlayersPerTable}}</td>
-    </tr>
-  </table>
-</div>
+<div ng-view></div>
 
 </body>
 </html>
