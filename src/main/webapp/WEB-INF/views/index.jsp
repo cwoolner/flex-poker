@@ -22,7 +22,7 @@ var rootUrl = "<c:url value='/' />";
     <p>{{greeting.text}}, World</p>
 </div>
 
-<div id="tournament-registering" ng-controller='TournamentRegisteringController'>
+<div ng-controller='TournamentRegisteringController'>
   <table>
     <thead>
       <tr>
