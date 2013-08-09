@@ -10,18 +10,24 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <org.springframework-version>4.0.0.M2</org.springframework-version>
+        <org.springframework-version>4.0.0.BUILD-SNAPSHOT</org.springframework-version>
         <org.springframework.security-version>3.2.0.M2</org.springframework.security-version>
         <org.aspectj-version>1.7.0</org.aspectj-version>        
         <org.slf4j-version>1.7.2</org.slf4j-version>
-        <ch.qos.logback-version>1.0.7</ch.qos.logback-version>
     </properties>
 
     <repositories>
         <repository>
-            <id>repository.springsource.milestone</id>
-            <name>SpringSource Milestone Repository</name>
-            <url>http://repo.springsource.org/milestone</url>
+            <id>spring-snapshots</id>
+            <url>http://repo.springsource.org/snapshot</url>
+            <snapshots><enabled>true</enabled></snapshots>
+            <releases><enabled>false</enabled></releases>
+        </repository>
+        <repository>
+            <id>spring-milestones</id>
+            <url>http://repo.springsource.org/libs-milestone</url>
+            <snapshots><enabled>false</enabled></snapshots>
+            <releases><enabled>true</enabled></releases>
         </repository>
     </repositories>
 
@@ -100,6 +106,16 @@
             <version>${org.springframework-version}</version>
         </dependency>
         <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-messaging</artifactId>
+            <version>${org.springframework-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-websocket</artifactId>
+            <version>${org.springframework-version}</version>
+        </dependency>
+        <dependency>
             <groupId>org.hsqldb</groupId>
             <artifactId>hsqldb</artifactId>
             <version>2.3.0</version>
@@ -165,6 +181,11 @@
             <version>1.9.13</version>
         </dependency>
         <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.2.1</version>
+        </dependency>
+        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.8.2</version>
@@ -202,7 +223,7 @@
             <artifactId>quartz</artifactId>
             <version>2.2.0</version>
         </dependency>
-         <dependency>
+        <dependency>
             <groupId>org.apache.activemq</groupId>
             <artifactId>activemq-core</artifactId>
             <version>5.7.0</version>
@@ -216,7 +237,19 @@
                     <artifactId>camel-core</artifactId>
                 </exclusion>
             </exclusions>
-         </dependency>
+        </dependency>
+        <!-- Required when using ReactorSubscribableChannel (vs ExecutorSubscribableChannel) -->
+        <dependency>
+            <groupId>org.projectreactor</groupId>
+            <artifactId>reactor-core</artifactId>
+            <version>1.0.0.M1</version>
+        </dependency>
+        <!-- Required when the "stomp-broker-relay" profile is enabled -->
+        <dependency>
+            <groupId>org.projectreactor</groupId>
+            <artifactId>reactor-tcp</artifactId>
+            <version>1.0.0.M1</version>
+        </dependency>
     </dependencies>
 
 </project>
