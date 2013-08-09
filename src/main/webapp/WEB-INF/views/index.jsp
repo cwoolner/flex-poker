@@ -9,10 +9,10 @@ var rootUrl = "<c:url value='/' />";
 </script>
 <script type="text/javascript" src="http://code.jquery.com/jquery-2.0.3.min.js"></script>
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"></script>
-<script type="text/javascript" src="<c:url value='/resources/scripts/main.js' />"></script>
 <script type="text/javascript" src="http://cdn.sockjs.org/sockjs-0.3.4.min.js"></script>
 <script type="text/javascript" src="<c:url value='/resources/scripts/3rdparty/stomp.js' />"></script>
-<script type="text/javascript" src="<c:url value='/resources/scripts/websocket-connect.js' />"></script>
+<script type="text/javascript" src="<c:url value='/resources/scripts/3rdparty/angular-stomp.js' />"></script>
+<script type="text/javascript" src="<c:url value='/resources/scripts/main.js' />"></script>
 <title>Home</title>
 </head>
 
