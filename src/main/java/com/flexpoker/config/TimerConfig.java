@@ -13,7 +13,7 @@ import org.springframework.scheduling.quartz.SimpleTriggerFactoryBean;
 import com.flexpoker.controller.ActionOnTimerController;
 
 @Configuration
-@ComponentScan(basePackages = "com.flexpoker.controller")
+@ComponentScan(basePackages = "com.flexpoker")
 public class TimerConfig {
 
     @Inject

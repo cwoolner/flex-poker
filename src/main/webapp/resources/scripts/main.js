@@ -9,7 +9,12 @@ flexpokerModule.controller('TournamentRegisteringController', ['$scope', 'ngstom
     $scope.client = ngstomp(new SockJS(rootUrl + 'application'));
     $scope.client.connect("", "", function() {
         $scope.client.subscribe("/app/availabletournaments", function(message) {
-            $scope.games = $.parseJSON(message.body);
+//            $scope.games = $.parseJSON(message.body);
+            alert(message);
+        });
+        $scope.client.subscribe("/topic/availabletournaments-updates", function(message) {
+//            $scope.games = $.parseJSON(message.body);
+            alert(message);
         });
     }, function() {}, '/');
 }]);

@@ -28,5 +28,7 @@ public interface GameBso {
     List<Table> fetchTables(Game game);
 
     Set<UserGameStatus> fetchUserGameStatuses(Game game);
+    
+    void doSomething();
 
 }

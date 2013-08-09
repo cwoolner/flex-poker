@@ -41,7 +41,7 @@ import org.springframework.web.socket.sockjs.transport.handler.DefaultSockJsServ
 @Configuration
 @EnableWebMvc
 @EnableScheduling
-@ComponentScan(basePackages = "com.flexpoker.controller")
+@ComponentScan(basePackages = "com.flexpoker")
 public class WebConfig extends WebMvcConfigurerAdapter {
 
     private final MessageConverter<?> messageConverter = new MappingJackson2MessageConverter();

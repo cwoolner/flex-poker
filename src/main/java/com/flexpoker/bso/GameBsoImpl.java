@@ -6,6 +6,8 @@ import java.util.Set;
 
 import javax.inject.Inject;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.core.MessageSendingOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,11 +34,19 @@ public class GameBsoImpl implements GameBso {
 
     private final TableBalancerBso tableBalancerBso;
 
-    @Inject
-    public GameBsoImpl(GameDao gameDao, RealTimeGameBso realTimeGameBso, TableBalancerBso tableBalancerBso) {
+    private final MessageSendingOperations<String> messagingTemplate;
+    
+    @Autowired
+    public GameBsoImpl(GameDao gameDao, RealTimeGameBso realTimeGameBso, TableBalancerBso tableBalancerBso, MessageSendingOperations<String> messagingTemplate) {
         this.gameDao = gameDao;
         this.realTimeGameBso = realTimeGameBso;
         this.tableBalancerBso = tableBalancerBso;
+        this.messagingTemplate = messagingTemplate;
+    }
+    
+    @Override
+    public void doSomething() {
+        this.messagingTemplate.convertAndSend("/topic/availabletournaments-updates", "UPDATE");
     }
     
     @Override
