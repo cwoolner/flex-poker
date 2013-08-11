@@ -1,7 +1,5 @@
 package com.flexpoker.dao;
 
-import java.util.List;
-
 import javax.inject.Inject;
 
 import org.hibernate.Criteria;
@@ -24,12 +22,12 @@ public class UserDaoImpl implements UserDao {
     }
     
     @Override
-    @SuppressWarnings("unchecked")
-    public List<User> findByUsername(String username) {
+    public User findByUsername(String username) {
+        username = "john";
         Session session = sessionFactory.getCurrentSession();
         Criteria criteria = session.createCriteria(User.class);
         criteria.add(Property.forName("username").eq(username));
-        return criteria.list();
+        return (User) criteria.uniqueResult();
     }
 
 }
