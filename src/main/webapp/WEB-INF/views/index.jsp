@@ -27,10 +27,6 @@ var rootUrl = "<c:url value='/' />";
 
 <body ng-app="flexpoker">
 
-<button>Test</button>
-
-<input type="submit" value="Test" />
-
 <div ng-view></div>
 
 </body>
