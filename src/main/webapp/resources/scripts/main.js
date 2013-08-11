@@ -1,9 +1,5 @@
 var flexpokerModule = angular.module('flexpoker', ['AngularStomp', 'ngGrid']);
 
-flexpokerModule.controller('HelloController', ['$scope', function($scope) {
-    $scope.greeting = {text: 'Hello, World'};
-}]);
-
 flexpokerModule.controller('TournamentRegisteringController', ['$scope', 'ngstomp', function($scope, ngstomp) {
     
     $('#create-game-dialog').hide();
