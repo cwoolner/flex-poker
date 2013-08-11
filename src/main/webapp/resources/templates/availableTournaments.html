@@ -1,3 +1,23 @@
 <div>
+  <button ng-click="openCreateGameDialog()">Create Game</button>
+
   <div class="grid-style" ng-grid="gridOptions"></div>
+  
+  <div id="create-game-dialog">
+    <form name="createGameForm" ng-submit="submit()">
+      <div>
+        <label>Name:</label> <input name="name" ng-model="name" required />
+        <span class="error" ng-show="createGameForm.name.$error.required">Required!</span>
+      </div>
+      <div>
+        <label>Players:</label> <input name="players" ng-model="players" required numbers-only="numbers-only"/>
+        <span class="error" ng-show="createGameForm.players.$error.required">Required!</span>
+      </div>
+      <div>
+        <label>Players per table:</label> <input name="playersPerTable" ng-model="playersPerTable" required numbers-only="numbers-only" />
+        <span class="error" ng-show="createGameForm.playersPerTable.$error.required">Required!</span>
+      </div>
+      <input type="submit" value="Create" />
+    </form>
+  </div>
 </div>

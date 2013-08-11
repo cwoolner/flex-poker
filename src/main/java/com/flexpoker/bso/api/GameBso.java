@@ -1,5 +1,6 @@
 package com.flexpoker.bso.api;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.Set;
 
@@ -15,7 +16,7 @@ public interface GameBso {
 
     List<Game> fetchAllGames();
 
-    void createGame(User user, Game game);
+    void createGame(Principal user, Game game);
 
     void changeGameStage(Game game, GameStage starting);
 
@@ -29,6 +30,4 @@ public interface GameBso {
 
     Set<UserGameStatus> fetchUserGameStatuses(Game game);
     
-    void doSomething();
-
 }
