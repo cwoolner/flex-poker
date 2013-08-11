@@ -1,5 +1,6 @@
 package com.flexpoker.web.translator;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,12 +12,13 @@ public class GameListTranslator {
     public List<AvailableTournamentListViewModel> translate(List<Game> gameList) {
 
         List<AvailableTournamentListViewModel> availableTournamentList = new ArrayList<>();
-
+        SimpleDateFormat dateFormat = new SimpleDateFormat("hh:mm a MM/dd/yyyy");
+        
         for (Game game : gameList) {
             AvailableTournamentListViewModel availableTournament = new AvailableTournamentListViewModel(
                     game.getId().toString(), game.getTotalPlayers(), game.getTotalPlayers(),
                     game.getMaxPlayersPerTable(), game.getCreatedByUser().getUsername(),
-                    game.getCreatedOn());
+                    dateFormat.format(game.getCreatedOn()));
             availableTournamentList.add(availableTournament);            
         }
 

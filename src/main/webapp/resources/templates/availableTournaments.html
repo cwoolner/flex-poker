@@ -1,16 +1,3 @@
 <div>
-  <table>
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Players</th>
-        <th>Per Table</th>
-      </tr>
-    </thead>
-    <tr ng-repeat="game in games">
-        <td>{{game.name}}</td>
-        <td>{{game.numberOfRegisteredPlayers}}/{{game.maxNumberOfPlayers}}</td>
-        <td>{{game.maxPlayersPerTable}}</td>
-    </tr>
-  </table>
+  <div class="grid-style" ng-grid="gridOptions"></div>
 </div>

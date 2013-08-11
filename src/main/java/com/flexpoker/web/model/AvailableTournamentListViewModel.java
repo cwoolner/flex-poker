@@ -1,7 +1,5 @@
 package com.flexpoker.web.model;
 
-import java.util.Date;
-
 public class AvailableTournamentListViewModel {
 
     private final String name;
@@ -14,10 +12,10 @@ public class AvailableTournamentListViewModel {
 
     private final String createdBy;
 
-    private final Date createdOn;
+    private final String createdOn;
     
     public AvailableTournamentListViewModel(String name, int numberOfRegisteredPlayers,
-            int maxNumberOfPlayers, int maxPlayersPerTable, String createdBy, Date createdOn) {
+            int maxNumberOfPlayers, int maxPlayersPerTable, String createdBy, String createdOn) {
         this.name = name;
         this.numberOfRegisteredPlayers = numberOfRegisteredPlayers;
         this.maxNumberOfPlayers = maxNumberOfPlayers;
@@ -46,7 +44,7 @@ public class AvailableTournamentListViewModel {
         return createdBy;
     }
 
-    public Date getCreatedOn() {
+    public String getCreatedOn() {
         return createdOn;
     }
 
