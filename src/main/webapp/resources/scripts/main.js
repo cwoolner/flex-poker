@@ -7,7 +7,7 @@ flexpokerModule.controller('HelloController', ['$scope', function($scope) {
 flexpokerModule.controller('TournamentRegisteringController', ['$scope', 'ngstomp', function($scope, ngstomp) {
     
     $('#create-game-dialog').hide();
-    $('body').skin();
+    $('body').find('button, input[type=submit]').button();
     
     $scope.games = [];
     $scope.gridOptions = { data: 'games' };
@@ -25,8 +25,6 @@ flexpokerModule.controller('TournamentRegisteringController', ['$scope', 'ngstom
         $('#create-game-dialog').dialog({ width: 550 });
     }
     
-    $scope.numberOfTables = ($scope.players / $scope.playersPerTable) + 1;
-    
     $scope.submit = function() {
         var newGame = {
                 name: $scope.name,
@@ -37,7 +35,6 @@ flexpokerModule.controller('TournamentRegisteringController', ['$scope', 'ngstom
         $scope.name = '';
         $scope.players = '';
         $scope.playersPerTable = '';
-        $scope.numberOfTables = '--';
         $('#create-game-dialog').dialog('destroy');
     }
 }]);
@@ -64,12 +61,4 @@ flexpokerModule.directive('numbersOnly', function() {
         });
       }
     };
-});
-
-$.fn.skin = function() {
-    this.find('button, input[type=submit]').button();
-};
-
-$(function() {
-    $('body').skin();
 });
