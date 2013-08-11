@@ -18,3 +18,10 @@ flexpokerModule.controller('TournamentRegisteringController', ['$scope', 'ngstom
     }, function() {}, '/');
 }]);
 
+$.fn.skin = function() {
+    this.find("button, input[type=submit]").button();
+};
+
+$(function() {
+    $("body").skin();
+});
