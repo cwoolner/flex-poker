@@ -4,6 +4,8 @@ flexpokerModule.controller('TournamentRegisteringController', ['$scope', 'ngstom
     
     $('#create-game-dialog').hide();
     $('body').find('button, input[type=submit]').button();
+    $scope.gameId = 'global';
+    $scope.tableId = 'all';
     
     $scope.games = [];
     $scope.gridOptions = { data: 'games' };
@@ -14,6 +16,12 @@ flexpokerModule.controller('TournamentRegisteringController', ['$scope', 'ngstom
         });
         $scope.client.subscribe("/topic/availabletournaments-updates", function(message) {
             $scope.games = $.parseJSON(message.body);
+        });
+        $scope.client.subscribe('/topic/chat/global/user', function(message) {
+            alert(message.body);
+        });
+        $scope.client.subscribe('/topic/chat/global/system', function(message) {
+            alert(message.body);
         });
     }, function() {}, '/');
     
@@ -32,6 +40,15 @@ flexpokerModule.controller('TournamentRegisteringController', ['$scope', 'ngstom
         $scope.players = '';
         $scope.playersPerTable = '';
         $('#create-game-dialog').dialog('destroy');
+        
+        var newGameMessage = {
+                message: 'Test message',
+                username: '',
+                gameId: '',
+                tableId: ''
+        };
+        
+        $scope.client.send('/app/sendchatmessage', {}, JSON.stringify(newGameMessage)); 
     }
 }]);
 
@@ -57,4 +74,11 @@ flexpokerModule.directive('numbersOnly', function() {
         });
       }
     };
+});
+
+flexpokerModule.directive('chat', function() {
+    return {
+        templateUrl: rootUrl + 'resources/templates/chatWindow.html',
+        restrict: 'A'
+    }
 });
