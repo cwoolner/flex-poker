@@ -1,4 +1,6 @@
-package com.flexpoker.model.chat;
+package com.flexpoker.model.chat.incoming;
+
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -7,7 +9,7 @@ public class ChatMessage {
 
     private final String message;
 
-    private final String username;
+    private final List<String> receiverUsernames;
 
     private final String gameId;
 
@@ -16,11 +18,11 @@ public class ChatMessage {
     @JsonCreator
     public ChatMessage(
             @JsonProperty(value = "message") String message,
-            @JsonProperty(value = "username") String username,
+            @JsonProperty(value = "receiverUsernames") List<String> receiverUsernames,
             @JsonProperty(value = "gameId") String gameId,
             @JsonProperty(value = "tableId") String tableId) {
         this.message = message;
-        this.username = username;
+        this.receiverUsernames = receiverUsernames;
         this.gameId = gameId;
         this.tableId = tableId;
     }
@@ -29,8 +31,8 @@ public class ChatMessage {
         return message;
     }
 
-    public String getUsername() {
-        return username;
+    public List<String> getReceiverUsernames() {
+        return receiverUsernames;
     }
 
     public String getGameId() {

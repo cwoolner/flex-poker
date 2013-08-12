@@ -6,7 +6,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.messaging.core.MessageSendingOperations;
 
-import com.flexpoker.model.chat.GlobalChatMessage;
+import com.flexpoker.model.chat.outgoing.GlobalChatMessage;
 
 public class SendSimpleGlobalChatMessageCommandTest {
 

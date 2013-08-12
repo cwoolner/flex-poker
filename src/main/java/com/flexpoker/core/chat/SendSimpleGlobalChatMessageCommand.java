@@ -6,7 +6,7 @@ import org.springframework.messaging.core.MessageSendingOperations;
 
 import com.flexpoker.config.Command;
 import com.flexpoker.core.api.chat.SendGlobalChatMessageCommand;
-import com.flexpoker.model.chat.GlobalChatMessage;
+import com.flexpoker.model.chat.outgoing.GlobalChatMessage;
 import com.flexpoker.util.MessagingConstants;
 
 @Command
@@ -26,7 +26,7 @@ public class SendSimpleGlobalChatMessageCommand implements SendGlobalChatMessage
                     "System: " + chatMessage.getMessage());
         } else {
             messagingTemplate.convertAndSend(MessagingConstants.CHAT_GLOBAL_USER,
-                    chatMessage.getUsername() + ": " + chatMessage.getMessage());
+                    chatMessage.getSenderUsername() + ": " + chatMessage.getMessage());
         }
     }
 

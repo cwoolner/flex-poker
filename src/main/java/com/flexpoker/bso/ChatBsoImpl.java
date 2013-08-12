@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.flexpoker.bso.api.ChatBso;
 import com.flexpoker.core.api.chat.SendChatMessageCommand;
-import com.flexpoker.model.chat.ChatMessage;
+import com.flexpoker.model.chat.incoming.ChatMessage;
 
 @Service
 public class ChatBsoImpl implements ChatBso {

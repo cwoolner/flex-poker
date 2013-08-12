@@ -7,8 +7,8 @@ import javax.inject.Inject;
 import com.flexpoker.config.Command;
 import com.flexpoker.core.api.chat.SendChatMessageCommand;
 import com.flexpoker.core.api.chat.SendGlobalChatMessageCommand;
-import com.flexpoker.model.chat.ChatMessage;
-import com.flexpoker.model.chat.GlobalChatMessage;
+import com.flexpoker.model.chat.incoming.ChatMessage;
+import com.flexpoker.model.chat.outgoing.GlobalChatMessage;
 
 @Command
 public class SendChatMessageRouterCommand implements SendChatMessageCommand {

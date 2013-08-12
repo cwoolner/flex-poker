@@ -8,7 +8,7 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.stereotype.Controller;
 
 import com.flexpoker.bso.api.ChatBso;
-import com.flexpoker.model.chat.ChatMessage;
+import com.flexpoker.model.chat.incoming.ChatMessage;
 
 @Controller
 public class ChatController {
