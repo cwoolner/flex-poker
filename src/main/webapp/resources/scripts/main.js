@@ -27,6 +27,15 @@ flexpokerModule.controller('TournamentRegisteringController', ['$scope', 'ngstom
         $scope.client.subscribe('/topic/chat/global/system', function(message) {
             alert(message.body);
         });
+        $scope.client.subscribe("/app/personalchatid", function(message) {
+            $scope.client.subscribe('/topic/chat/personal/user/' + $.parseJSON(message.body), function(innerMessage) {
+                alert('personal' + innerMessage.body);
+            });
+            $scope.client.subscribe('/topic/chat/personal/system/' + $.parseJSON(message.body), function(innerMessage) {
+                alert('personal' + innerMessage.body);
+            });
+        });
+
     }, function() {}, '/');
     
     $scope.openCreateGameDialog = function() {
@@ -45,14 +54,22 @@ flexpokerModule.controller('TournamentRegisteringController', ['$scope', 'ngstom
         $scope.playersPerTable = '';
         $('#create-game-dialog').dialog('destroy');
         
-        var newGameMessage = {
+        var globalMessage = {
                 message: 'Test message',
                 receiverUsernames: null,
                 gameId: null,
                 tableId: null
         };
         
-        $scope.client.send('/app/sendchatmessage', {}, JSON.stringify(newGameMessage)); 
+        var personalMessage = {
+                message: 'Test message',
+                receiverUsernames: ['user'],
+                gameId: null,
+                tableId: null
+        };
+        
+        $scope.client.send('/app/sendchatmessage', {}, JSON.stringify(globalMessage)); 
+        $scope.client.send('/app/sendchatmessage', {}, JSON.stringify(personalMessage)); 
     }
 }]);
 
