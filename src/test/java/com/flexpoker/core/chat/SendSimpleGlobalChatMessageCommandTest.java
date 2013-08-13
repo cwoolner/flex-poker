@@ -4,19 +4,21 @@ import static org.mockito.Mockito.*;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.springframework.messaging.core.MessageSendingOperations;
 
 import com.flexpoker.model.chat.outgoing.GlobalChatMessage;
 
 public class SendSimpleGlobalChatMessageCommandTest {
 
-    private MessageSendingOperations<String> mockMessageSendingOperations;
+    @Mock private MessageSendingOperations<String> mockMessageSendingOperations;
     
     private SendSimpleGlobalChatMessageCommand command;
     
     @Before
     public void setup() {
-        mockMessageSendingOperations = mock(MessageSendingOperations.class);
+        MockitoAnnotations.initMocks(this);
         command = new SendSimpleGlobalChatMessageCommand(mockMessageSendingOperations);
     }
     
