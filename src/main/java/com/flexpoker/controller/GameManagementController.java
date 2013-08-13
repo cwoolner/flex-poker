@@ -5,7 +5,9 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import org.springframework.messaging.handler.annotation.MessageExceptionHandler;
 import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.simp.annotation.ReplyToUser;
 import org.springframework.messaging.simp.annotation.SubscribeEvent;
 import org.springframework.stereotype.Controller;
 
@@ -20,21 +22,28 @@ import com.flexpoker.web.translator.GameListTranslator;
 public class GameManagementController {
 
     private final GameBso gameBso;
-    
+
     @Inject
     public GameManagementController(GameBso gameBso) {
         this.gameBso = gameBso;
     }
-    
+
     @SubscribeEvent(value = "/app/availabletournaments")
     public List<AvailableTournamentListViewModel> displayAllGames() {
         List<Game> gameList = gameBso.fetchAllGames();
         return new GameListTranslator().translate(gameList);
     }
 
-    @MessageMapping(value="/app/creategame")
+    @MessageMapping(value = "/app/creategame")
     public void createGame(CreateGameViewModel model, Principal principal) {
         Game game = new CreateGameTranslator().translate(model);
         gameBso.createGame(principal, game);
     }
+
+    @MessageExceptionHandler
+    @ReplyToUser(value = "/queue/errors")
+    public String handleException(Throwable exception) {
+        return exception.getMessage();
+    }
+
 }

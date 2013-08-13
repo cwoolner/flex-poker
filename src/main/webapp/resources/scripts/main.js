@@ -4,13 +4,17 @@ flexpokerModule.controller('TournamentRegisteringController', ['$scope', 'ngstom
     
     $('#create-game-dialog').hide();
     $('body').find('button, input[type=submit]').button();
-    $scope.gameId = 'global';
-    $scope.tableId = 'all';
     
     $scope.games = [];
     $scope.gridOptions = { data: 'games' };
     $scope.client = ngstomp(new SockJS(rootUrl + 'application'));
-    $scope.client.connect("", "", function() {
+    $scope.client.connect("", "", function(frame) {
+        var queueSuffix = frame.headers['queue-suffix'];
+
+        $scope.client.subscribe('/queue/errors' + queueSuffix, function(message) {
+            alert("Error " + message.body);
+        });
+
         $scope.client.subscribe("/app/availabletournaments", function(message) {
             $scope.games = $.parseJSON(message.body);
         });
@@ -43,9 +47,9 @@ flexpokerModule.controller('TournamentRegisteringController', ['$scope', 'ngstom
         
         var newGameMessage = {
                 message: 'Test message',
-                username: '',
-                gameId: '',
-                tableId: ''
+                receiverUsernames: null,
+                gameId: null,
+                tableId: null
         };
         
         $scope.client.send('/app/sendchatmessage', {}, JSON.stringify(newGameMessage)); 
