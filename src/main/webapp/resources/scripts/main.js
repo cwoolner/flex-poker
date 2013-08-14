@@ -4,6 +4,7 @@ flexpokerModule.controller('TournamentRegisteringController', ['$scope', 'ngstom
     
     $('#create-game-dialog').hide();
     $('body').find('button, input[type=submit]').button();
+    $scope.chatDisplay = '';
     
     $scope.games = [];
     $scope.gridOptions = { data: 'games' };
@@ -22,10 +23,14 @@ flexpokerModule.controller('TournamentRegisteringController', ['$scope', 'ngstom
             $scope.games = $.parseJSON(message.body);
         });
         $scope.client.subscribe('/topic/chat/global/user', function(message) {
-            alert(message.body);
+            var scrollHeight = $('.chat-display').prop('scrollHeight');
+            $('.chat-display').prop('scrollTop', scrollHeight);
+            $scope.chatDisplay += $.parseJSON(message.body) + '\n';
         });
         $scope.client.subscribe('/topic/chat/global/system', function(message) {
-            alert(message.body);
+            var scrollHeight = $('.chat-display').prop('scrollHeight');
+            $('.chat-display').prop('scrollTop', scrollHeight);
+            $scope.chatDisplay += $.parseJSON(message.body) + '\n';
         });
         $scope.client.subscribe("/app/personalchatid", function(message) {
             $scope.client.subscribe('/topic/chat/personal/user/' + $.parseJSON(message.body), function(innerMessage) {
@@ -53,24 +58,24 @@ flexpokerModule.controller('TournamentRegisteringController', ['$scope', 'ngstom
         $scope.players = '';
         $scope.playersPerTable = '';
         $('#create-game-dialog').dialog('destroy');
-        
+    };
+    
+    $scope.sendChat = function() {
+        if ($scope.chatMessage == '') {
+            return;
+        }
+
         var globalMessage = {
-                message: 'Test message',
+                message: $scope.chatMessage,
                 receiverUsernames: null,
                 gameId: null,
                 tableId: null
         };
-        
-        var personalMessage = {
-                message: 'Test message',
-                receiverUsernames: ['user'],
-                gameId: null,
-                tableId: null
-        };
-        
+
         $scope.client.send('/app/sendchatmessage', {}, JSON.stringify(globalMessage)); 
-        $scope.client.send('/app/sendchatmessage', {}, JSON.stringify(personalMessage)); 
-    }
+        $scope.chatMessage = '';
+    };
+
 }]);
 
 // taken from http://jsfiddle.net/thomporter/DwKZh/
@@ -100,6 +105,11 @@ flexpokerModule.directive('numbersOnly', function() {
 flexpokerModule.directive('chat', function() {
     return {
         templateUrl: rootUrl + 'resources/templates/chatWindow.html',
-        restrict: 'A'
+        restrict: 'A',
+        compile: function compile(tElement, tAttrs) {
+            return function postLink(scope, iElement, iAttrs) {
+                iElement.find('button, input[type=submit]').button();
+            }
+        }
     }
 });

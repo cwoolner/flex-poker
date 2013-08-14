@@ -14,3 +14,7 @@ textarea {
 .chat-message {
     width: 100%;
 }
+
+.chat-display {
+    background-color: white;
+}
