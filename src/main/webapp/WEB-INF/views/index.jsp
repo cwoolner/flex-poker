@@ -7,11 +7,11 @@
 <script type="text/javascript">
 var rootUrl = "<c:url value='/' />";
 </script>
-<script type="text/javascript" src="http://code.jquery.com/jquery-2.0.3.min.js"></script>
-<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"></script>
-<script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/ng-grid/2.0.7/ng-grid.min.js"></script>
-<script type="text/javascript" src="http://cdn.sockjs.org/sockjs-0.3.4.min.js"></script>
-<script type="text/javascript" src="http://codeorigin.jquery.com/ui/1.10.3/jquery-ui.min.js"></script>
+<script type="text/javascript" src="//code.jquery.com/jquery-2.0.3.min.js"></script>
+<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"></script>
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/ng-grid/2.0.7/ng-grid.min.js"></script>
+<script type="text/javascript" src="//cdn.sockjs.org/sockjs-0.3.4.min.js"></script>
+<script type="text/javascript" src="//codeorigin.jquery.com/ui/1.10.3/jquery-ui.min.js"></script>
 <script type="text/javascript" src="<c:url value='/resources/scripts/3rdparty/stomp.js' />"></script>
 <script type="text/javascript" src="<c:url value='/resources/scripts/3rdparty/angular-stomp.js' />"></script>
 
