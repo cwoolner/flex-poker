@@ -27,6 +27,13 @@ var rootUrl = "<c:url value='/' />";
 
 <body ng-app="flexpoker">
 
+<div ng-controller="MainController">
+  <ul>
+    <li><a href="#/">Home</a></li>
+    <li><a href="#/game/12345">Home2</a></li>
+  </ul>
+</div>
+
 <div ng-view></div>
 
 </body>

@@ -1,5 +1,11 @@
 var flexpokerModule = angular.module('flexpoker', ['AngularStomp', 'ngGrid']);
 
+flexpokerModule.controller('MainController', [function() {}]);
+
+flexpokerModule.controller('GameController', ['$scope', '$routeParams', function($scope, $routeParams) {
+    $scope.gameId = $routeParams['gameId'];
+}]);
+
 flexpokerModule.controller('TournamentRegisteringController', ['$scope', 'ngstomp', function($scope, ngstomp) {
     
     $('#create-game-dialog').hide();
