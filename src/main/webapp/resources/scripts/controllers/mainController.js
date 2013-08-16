@@ -1,0 +1,1 @@
+flexpokerModule.controller('MainController', [function() {}]);

@@ -16,6 +16,9 @@ var rootUrl = "<c:url value='/' />";
 <script type="text/javascript" src="<c:url value='/resources/scripts/3rdparty/angular-stomp.js' />"></script>
 
 <script type="text/javascript" src="<c:url value='/resources/scripts/main.js' />"></script>
+<script type="text/javascript" src="<c:url value='/resources/scripts/controllers/gameController.js' />"></script>
+<script type="text/javascript" src="<c:url value='/resources/scripts/controllers/mainController.js' />"></script>
+<script type="text/javascript" src="<c:url value='/resources/scripts/controllers/tournamentRegisteringController.js' />"></script>
 <script type="text/javascript" src="<c:url value='/resources/scripts/routes.js' />"></script>
 
 <link rel="stylesheet" type="text/css" href="<c:url value='/resources/css/ng-grid.min.css' />"></link>
