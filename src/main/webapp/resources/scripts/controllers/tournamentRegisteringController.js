@@ -7,13 +7,7 @@ flexpokerModule.controller('TournamentRegisteringController', ['$scope', 'ngstom
     $scope.games = [];
     $scope.gridOptions = { data: 'games' };
     $scope.client = ngstomp(new SockJS(rootUrl + 'application'));
-    $scope.client.connect("", "", function(frame) {
-        var queueSuffix = frame.headers['queue-suffix'];
-
-        $scope.client.subscribe('/queue/errors' + queueSuffix, function(message) {
-            alert("Error " + message.body);
-        });
-
+    $scope.client.connect("", "", function() {
         $scope.client.subscribe("/app/availabletournaments", function(message) {
             $scope.games = $.parseJSON(message.body);
         });

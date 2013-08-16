@@ -31,9 +31,11 @@ var rootUrl = "<c:url value='/' />";
 <body ng-app="flexpoker">
 
 <div ng-controller="MainController">
-  <ul>
+  <ul class="game-tab-container">
     <li><a href="#/">Home</a></li>
-    <li><a href="#/game/12345">Home2</a></li>
+    <li ng-repeat="gameTab in gameTabs" class="game-tab-{{gameTab.gameStage | lowercase}}">
+      <a href="#/game/{{gameTab.gameId}}">{{gameTab.name}}</a>
+    </li>
   </ul>
 </div>
 

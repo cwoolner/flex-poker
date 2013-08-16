@@ -18,3 +18,11 @@ textarea {
 .chat-display {
     background-color: white;
 }
+
+.game-tab-container li {
+    width: 100px;
+}
+
+.game-tab-registering {
+    background-color: #60EC60;
+}
