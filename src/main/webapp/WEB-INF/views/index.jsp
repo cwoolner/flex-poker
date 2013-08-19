@@ -1,4 +1,5 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -19,6 +20,7 @@ var rootUrl = "<c:url value='/' />";
 <script type="text/javascript" src="<c:url value='/resources/scripts/controllers/gameController.js' />"></script>
 <script type="text/javascript" src="<c:url value='/resources/scripts/controllers/mainController.js' />"></script>
 <script type="text/javascript" src="<c:url value='/resources/scripts/controllers/tournamentRegisteringController.js' />"></script>
+<script type="text/javascript" src="<c:url value='/resources/scripts/controllers/logoutController.js' />"></script>
 <script type="text/javascript" src="<c:url value='/resources/scripts/routes.js' />"></script>
 
 <link rel="stylesheet" type="text/css" href="<c:url value='/resources/css/ng-grid.min.css' />"></link>
@@ -29,6 +31,10 @@ var rootUrl = "<c:url value='/' />";
 </head>
 
 <body ng-app="flexpoker">
+
+<p>Logged in as: <sec:authentication property="principal.username" /></p>
+
+<p ng-controller="LogoutController"><a href='<c:url value="/logout" />' ng-click="logout()">Logout</a></p>
 
 <div ng-controller="MainController">
   <ul class="game-tab-container">
