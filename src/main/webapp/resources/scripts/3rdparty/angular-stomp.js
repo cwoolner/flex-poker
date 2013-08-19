@@ -29,9 +29,6 @@ angular.module('AngularStomp', []).
         }
 
         NGStomp.prototype.connect = function(user, password, on_connect, on_error, vhost) {
-            if (stompClient.connected) {
-                return;
-            }
             this.stompClient.connect(user, password,
                 function(frame) {
                     $rootScope.$apply(function() {
