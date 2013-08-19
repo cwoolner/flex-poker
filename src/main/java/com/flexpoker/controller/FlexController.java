@@ -1,5 +1,6 @@
 package com.flexpoker.controller;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.Set;
 
@@ -70,7 +71,7 @@ public class FlexController {
     private PlayerActionsBso playerActionsBso;
 
     public void createGame(Game game) {
-        User user = extractCurrentUser();
+        Principal user = (Principal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         gameBso.createGame(user, game);
         eventManager.sendGamesUpdatedEvent();
     }

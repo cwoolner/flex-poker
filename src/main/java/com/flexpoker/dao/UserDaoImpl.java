@@ -23,7 +23,6 @@ public class UserDaoImpl implements UserDao {
     
     @Override
     public User findByUsername(String username) {
-        username = "john";
         Session session = sessionFactory.getCurrentSession();
         Criteria criteria = session.createCriteria(User.class);
         criteria.add(Property.forName("username").eq(username));

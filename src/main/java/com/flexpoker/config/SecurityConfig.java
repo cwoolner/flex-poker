@@ -1,6 +1,10 @@
 package com.flexpoker.config;
 
+import javax.inject.Inject;
+import javax.sql.DataSource;
+
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.encoding.ShaPasswordEncoder;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
@@ -11,11 +15,15 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
+    @Inject
+    private DataSource dataSource;
+    
     @Override
     protected void registerAuthentication(AuthenticationManagerBuilder auth) throws Exception {
-        auth.inMemoryAuthentication()
-            .withUser("user").password("password").roles("USER").and()
-            .withUser("admin").password("password").roles("USER", "ADMIN");
+        auth.jdbcAuthentication()
+            .dataSource(dataSource)
+            .rolePrefix("ROLE_")
+            .passwordEncoder(new ShaPasswordEncoder());
     }
 
     @Override
@@ -24,7 +32,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         .authorizeUrls()
             .antMatchers("/admin/**").hasRole("ADMIN")
             .antMatchers("/signup").permitAll()
-            .anyRequest().authenticated()
+            .anyRequest().hasRole("USER")
             .and()
         .formLogin()
             .loginPage("/login")

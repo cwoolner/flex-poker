@@ -2,7 +2,9 @@ INSERT INTO `gameEventTypes` VALUES (1,'hand dealt'),(2,'check'),(3,'fold'),(4,'
 
 INSERT INTO `gameStages` VALUES (1,'registering'),(2,'starting'),(3,'in progress'),(4,'finished');
 
-INSERT INTO `users` VALUES (1,'a51dda7c7ff50b61eaea0444371f4a6a9301e501','john'),(2,'35675e68f4b5af7b995d9205ad0fc43842f16450','guest');
+INSERT INTO `users` VALUES (1,'a51dda7c7ff50b61eaea0444371f4a6a9301e501','john', 'true'),(2,'35675e68f4b5af7b995d9205ad0fc43842f16450','guest', 'true');
+
+INSERT INTO `authorities` VALUES ('john', 'USER'), ('guest', 'USER');
 
 INSERT INTO `cardSuits` VALUES (1,'hearts'),(2,'spades'),(3,'diamonds'),(4,'clubs');
 

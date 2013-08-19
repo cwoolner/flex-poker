@@ -69,7 +69,7 @@ public class GameBsoImpl implements GameBso {
         game.setAllowRebuys(false);
         gameDao.save(game);
 
-//        createRealTimeGame(game);
+        createRealTimeGame(game);
         
         List<AvailableTournamentListViewModel> allGames = new GameListTranslator().translate(fetchAllGames());
         
