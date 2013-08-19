@@ -1,13 +1,16 @@
-flexpokerModule.controller('MainController', ['$scope', 'ngstomp', function($scope, ngstomp) {
-    $scope.client = ngstomp(new SockJS(rootUrl + 'application'));
-    $scope.client.connect("", "", function(frame) {
+flexpokerModule.controller('MainController', ['$rootScope', '$scope', 'ngstomp', function($rootScope, $scope, ngstomp) {
+    if ($rootScope.client === undefined) {
+        $rootScope.client = ngstomp(new SockJS(rootUrl + 'application'));
+    }
+
+    $rootScope.client.connect("", "", function(frame) {
         var queueSuffix = frame.headers['queue-suffix'];
 
-        $scope.client.subscribe('/queue/errors' + queueSuffix, function(message) {
+        $rootScope.client.subscribe('/queue/errors' + queueSuffix, function(message) {
             alert("Error " + message.body);
         });
 
-        $scope.client.subscribe("/app/opengamesforuser", function(message) {
+        $rootScope.client.subscribe("/app/opengamesforuser", function(message) {
             $scope.gameTabs = $.parseJSON(message.body);
         });
     }, function() {}, '/');
