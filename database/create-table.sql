@@ -115,6 +115,7 @@ CREATE TABLE `users` (
   `id` int(11) NOT NULL auto_increment,
   `password` varchar(255) NOT NULL,
   `username` varchar(255) NOT NULL,
+  `email` varchar(255) NOT NULL,
   `enabled` bit NOT NULL
   PRIMARY KEY  (`id`)
 ) ENGINE=InnoDB;

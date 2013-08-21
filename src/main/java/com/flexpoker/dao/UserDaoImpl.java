@@ -29,4 +29,23 @@ public class UserDaoImpl implements UserDao {
         return (User) criteria.uniqueResult();
     }
 
+    @Override
+    public void insertUser(User signupUser) {
+        Session session = sessionFactory.openSession();
+        session.getTransaction().begin();
+        session.save(signupUser);
+        session.getTransaction().commit();
+    }
+
+    @Override
+    public void insertAuthority(String username, String authority) {
+        Session session = sessionFactory.openSession();
+        session.getTransaction().begin();
+        session.createSQLQuery("insert into authorities values (:username, :authority)")
+            .setParameter("username", username)
+            .setParameter("authority", authority)
+            .executeUpdate();
+        session.getTransaction().commit();
+    }
+
 }

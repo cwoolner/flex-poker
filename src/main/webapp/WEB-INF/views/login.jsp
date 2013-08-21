@@ -19,5 +19,8 @@
 		Password: <input type='password' name='password' />
 		<input name="submit" type="submit" value="Login" />
 	</form>
+  
+  <p><a href="<c:url value='signup' />">Signup</a></p>
+  
 </body>
 </html>
