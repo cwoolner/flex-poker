@@ -5,7 +5,16 @@ flexpokerModule.controller('TournamentRegisteringController', ['$rootScope', '$s
     $scope.chatDisplay = '';
     
     $scope.games = [];
-    $scope.gridOptions = { data: 'games' };
+    $scope.gridOptions = {
+            data: 'games',
+            rowTemplate:
+                '<div style="height: 100%">'
+                  + '<div ng-style="{ \'cursor\': row.cursor }" ng-repeat="col in renderedColumns" ng-class="col.colIndex()" class="ngCell" ng-dblclick="onGridDoubleClick(row)">'
+                  +     '<div class="ngVerticalBar" ng-style="{height: rowHeight}" ng-class="{ ngVerticalBarVisible: !$last }"></div>'
+                  +     '<div ng-cell></div>'
+                  + '</div>'
+              + '</div>'
+        };
     
     if ($rootScope.client === undefined) {
         $rootScope.client = ngstomp(new SockJS(rootUrl + 'application'));
@@ -43,7 +52,24 @@ flexpokerModule.controller('TournamentRegisteringController', ['$rootScope', '$s
         $('#create-game-dialog').dialog({ width: 550 });
     }
     
-    $scope.submit = function() {
+    $scope.openJoinGameDialog = function() {
+        $('#join-game-dialog').dialog({ width: 550 });
+    }
+    
+    $scope.submitCreateGame = function() {
+        var newGame = {
+                name: $scope.name,
+                players: $scope.players,
+                playersPerTable: $scope.playersPerTable
+        };
+        $scope.client.send("/app/creategame", {}, JSON.stringify(newGame));
+        $scope.name = '';
+        $scope.players = '';
+        $scope.playersPerTable = '';
+        $('#create-game-dialog').dialog('destroy');
+    };
+    
+    $scope.submitJoinGame = function() {
         var newGame = {
                 name: $scope.name,
                 players: $scope.players,
@@ -54,6 +80,10 @@ flexpokerModule.controller('TournamentRegisteringController', ['$rootScope', '$s
         $scope.players = '';
         $scope.playersPerTable = '';
         $('#create-game-dialog').dialog('destroy');
+    };
+    
+    $scope.onGridDoubleClick = function(row){
+        alert($scope.games[row.rowIndex]);
     };
     
     $scope.sendChat = function() {
