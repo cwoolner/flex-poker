@@ -9,4 +9,6 @@ public interface UserDao {
     void insertUser(User signupUser);
 
     void insertAuthority(String username, String authority);
+
+    void updateUser(User user);
 }

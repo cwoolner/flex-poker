@@ -23,10 +23,13 @@ public class UserDaoImpl implements UserDao {
     
     @Override
     public User findByUsername(String username) {
-        Session session = sessionFactory.getCurrentSession();
+        Session session = sessionFactory.openSession();
+        session.getTransaction().begin();
         Criteria criteria = session.createCriteria(User.class);
         criteria.add(Property.forName("username").eq(username));
-        return (User) criteria.uniqueResult();
+        User user = (User) criteria.uniqueResult();
+        session.getTransaction().commit();
+        return user;
     }
 
     @Override
@@ -45,6 +48,14 @@ public class UserDaoImpl implements UserDao {
             .setParameter("username", username)
             .setParameter("authority", authority)
             .executeUpdate();
+        session.getTransaction().commit();
+    }
+
+    @Override
+    public void updateUser(User user) {
+        Session session = sessionFactory.openSession();
+        session.getTransaction().begin();
+        session.update(user);
         session.getTransaction().commit();
     }
 
