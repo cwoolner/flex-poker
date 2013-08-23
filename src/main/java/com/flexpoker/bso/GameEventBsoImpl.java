@@ -12,7 +12,6 @@ import com.flexpoker.bso.api.GameBso;
 import com.flexpoker.bso.api.GameEventBso;
 import com.flexpoker.bso.api.HandEvaluatorBso;
 import com.flexpoker.bso.api.PotBso;
-import com.flexpoker.bso.api.RealTimeGameBso;
 import com.flexpoker.bso.api.SeatStatusBso;
 import com.flexpoker.exception.FlexPokerException;
 import com.flexpoker.model.Blinds;
@@ -35,6 +34,7 @@ import com.flexpoker.model.Table;
 import com.flexpoker.model.TurnCard;
 import com.flexpoker.model.User;
 import com.flexpoker.model.UserGameStatus;
+import com.flexpoker.repository.api.RealTimeGameRepository;
 import com.flexpoker.util.ActionOnSeatPredicate;
 import com.flexpoker.util.BigBlindSeatPredicate;
 import com.flexpoker.util.ButtonSeatPredicate;
@@ -47,7 +47,7 @@ public class GameEventBsoImpl implements GameEventBso {
 
     private DeckBso deckBso;
 
-    private RealTimeGameBso realTimeGameBso;
+    private RealTimeGameRepository realTimeGameBso;
 
     private SeatStatusBso seatStatusBso;
 
@@ -350,11 +350,11 @@ public class GameEventBsoImpl implements GameEventBso {
         this.deckBso = deckBso;
     }
 
-    public RealTimeGameBso getRealTimeGameBso() {
+    public RealTimeGameRepository getRealTimeGameBso() {
         return realTimeGameBso;
     }
 
-    public void setRealTimeGameBso(RealTimeGameBso realTimeGameBso) {
+    public void setRealTimeGameBso(RealTimeGameRepository realTimeGameBso) {
         this.realTimeGameBso = realTimeGameBso;
     }
 

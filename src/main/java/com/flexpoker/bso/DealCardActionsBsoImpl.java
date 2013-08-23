@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 
 import com.flexpoker.bso.api.DealCardActionsBso;
 import com.flexpoker.bso.api.DeckBso;
-import com.flexpoker.bso.api.RealTimeGameBso;
 import com.flexpoker.bso.api.ValidationBso;
 import com.flexpoker.exception.FlexPokerException;
 import com.flexpoker.model.FlopCards;
@@ -18,18 +17,19 @@ import com.flexpoker.model.RiverCard;
 import com.flexpoker.model.Table;
 import com.flexpoker.model.TurnCard;
 import com.flexpoker.model.User;
+import com.flexpoker.repository.api.RealTimeGameRepository;
 
 @Service
 public class DealCardActionsBsoImpl implements DealCardActionsBso {
 
     private DeckBso deckBso;
 
-    private RealTimeGameBso realTimeGameBso;
+    private RealTimeGameRepository realTimeGameBso;
 
     private ValidationBso validationBso;
     
     @Inject
-    public DealCardActionsBsoImpl(DeckBso deckBso, RealTimeGameBso realTimeGameBso, ValidationBso validationBso) {
+    public DealCardActionsBsoImpl(DeckBso deckBso, RealTimeGameRepository realTimeGameBso, ValidationBso validationBso) {
         this.deckBso = deckBso;
         this.realTimeGameBso = realTimeGameBso;
         this.validationBso = validationBso;

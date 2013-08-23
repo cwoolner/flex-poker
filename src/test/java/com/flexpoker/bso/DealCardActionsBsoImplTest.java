@@ -7,7 +7,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.flexpoker.bso.api.DeckBso;
-import com.flexpoker.bso.api.RealTimeGameBso;
 import com.flexpoker.bso.api.ValidationBso;
 import com.flexpoker.exception.FlexPokerException;
 import com.flexpoker.model.FlopCards;
@@ -18,6 +17,7 @@ import com.flexpoker.model.RiverCard;
 import com.flexpoker.model.Table;
 import com.flexpoker.model.TurnCard;
 import com.flexpoker.model.User;
+import com.flexpoker.repository.api.RealTimeGameRepository;
 import com.flexpoker.test.util.datageneration.RealTimeGameGenerator;
 
 
@@ -27,14 +27,14 @@ public class DealCardActionsBsoImplTest {
     
     private DeckBso mockDeckBso;
     
-    private RealTimeGameBso mockRealTimeGameBso;
+    private RealTimeGameRepository mockRealTimeGameBso;
     
     private ValidationBso mockValidationBso;
     
     @Before
     public void setup() {
         mockDeckBso = mock(DeckBso.class);
-        mockRealTimeGameBso = mock(RealTimeGameBso.class);
+        mockRealTimeGameBso = mock(RealTimeGameRepository.class);
         mockValidationBso = mock(ValidationBso.class);
         bso = new DealCardActionsBsoImpl(mockDeckBso, mockRealTimeGameBso, mockValidationBso);
     }

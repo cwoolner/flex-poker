@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.flexpoker.bso.api.GameBso;
-import com.flexpoker.bso.api.RealTimeGameBso;
 import com.flexpoker.bso.api.TableBalancerBso;
 import com.flexpoker.dao.api.GameDao;
 import com.flexpoker.dao.api.UserDao;
@@ -23,6 +22,7 @@ import com.flexpoker.model.Seat;
 import com.flexpoker.model.Table;
 import com.flexpoker.model.User;
 import com.flexpoker.model.UserGameStatus;
+import com.flexpoker.repository.api.RealTimeGameRepository;
 import com.flexpoker.web.model.AvailableTournamentListViewModel;
 import com.flexpoker.web.translator.GameListTranslator;
 
@@ -34,14 +34,14 @@ public class GameBsoImpl implements GameBso {
     
     private final GameDao gameDao;
 
-    private final RealTimeGameBso realTimeGameBso;
+    private final RealTimeGameRepository realTimeGameBso;
 
     private final TableBalancerBso tableBalancerBso;
 
     private final MessageSendingOperations<String> messagingTemplate;
     
     @Autowired
-    public GameBsoImpl(UserDao userDao, GameDao gameDao, RealTimeGameBso realTimeGameBso, TableBalancerBso tableBalancerBso, MessageSendingOperations<String> messagingTemplate) {
+    public GameBsoImpl(UserDao userDao, GameDao gameDao, RealTimeGameRepository realTimeGameBso, TableBalancerBso tableBalancerBso, MessageSendingOperations<String> messagingTemplate) {
         this.userDao = userDao;
         this.gameDao = gameDao;
         this.realTimeGameBso = realTimeGameBso;

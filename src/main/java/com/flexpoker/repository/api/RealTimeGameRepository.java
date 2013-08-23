@@ -1,9 +1,9 @@
-package com.flexpoker.bso.api;
+package com.flexpoker.repository.api;
 
 import com.flexpoker.model.Game;
 import com.flexpoker.model.RealTimeGame;
 
-public interface RealTimeGameBso {
+public interface RealTimeGameRepository {
 
     RealTimeGame get(Game game);
 
