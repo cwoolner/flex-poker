@@ -177,7 +177,7 @@ public class PlayerActionsBsoImpl implements PlayerActionsBso {
             //       hand in case the player does not have enough to call the
             //       blinds.
             if (numberOfPlayersLeft == 1) {
-                gameBso.changeGameStage(game, GameStage.FINISHED);
+                gameBso.changeGameStage(game.getId(), GameStage.FINISHED);
             }
 
             return new HandState(realTimeHand.getHandDealerState(),

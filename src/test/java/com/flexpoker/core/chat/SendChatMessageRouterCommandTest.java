@@ -63,7 +63,8 @@ public class SendChatMessageRouterCommandTest {
 
     @Test
     public void testGameMessage() {
-        UUID gameId = UUID.randomUUID();
+//        UUID gameId = UUID.randomUUID();
+        Integer gameId = 5;
         ChatMessage gameMessage = new ChatMessage("game message", null, gameId.toString(), null);
 
         command.execute(gameMessage, mockPrincipal);

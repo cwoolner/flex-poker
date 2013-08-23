@@ -12,6 +12,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.flexpoker.bso.api.GameBso;
 import com.flexpoker.bso.api.TableBalancerBso;
+import com.flexpoker.core.api.game.ChangeGameStageCommand;
+import com.flexpoker.core.api.game.JoinGameCommand;
 import com.flexpoker.dao.api.GameDao;
 import com.flexpoker.dao.api.UserDao;
 import com.flexpoker.exception.FlexPokerException;
@@ -40,13 +42,21 @@ public class GameBsoImpl implements GameBso {
 
     private final MessageSendingOperations<String> messagingTemplate;
     
+    private final JoinGameCommand joinGameCommand;
+    
+    private final ChangeGameStageCommand changeGameStageCommand;
+    
     @Autowired
-    public GameBsoImpl(UserDao userDao, GameDao gameDao, RealTimeGameRepository realTimeGameBso, TableBalancerBso tableBalancerBso, MessageSendingOperations<String> messagingTemplate) {
+    public GameBsoImpl(UserDao userDao, GameDao gameDao, RealTimeGameRepository realTimeGameBso,
+            TableBalancerBso tableBalancerBso, MessageSendingOperations<String> messagingTemplate,
+            JoinGameCommand joinGameCommand, ChangeGameStageCommand changeGameStageCommand) {
         this.userDao = userDao;
         this.gameDao = gameDao;
         this.realTimeGameBso = realTimeGameBso;
         this.tableBalancerBso = tableBalancerBso;
         this.messagingTemplate = messagingTemplate;
+        this.joinGameCommand = joinGameCommand;
+        this.changeGameStageCommand = changeGameStageCommand;
     }
     
     @Override
@@ -77,10 +87,8 @@ public class GameBsoImpl implements GameBso {
     }
 
     @Override
-    public void changeGameStage(Game game, GameStage gameStage) {
-        game = gameDao.findById(game.getId());
-        game.setGameStage(gameStage);
-        gameDao.save(game);
+    public void changeGameStage(Integer gameId, GameStage gameStage) {
+        changeGameStageCommand.execute(gameId, gameStage);
     }
 
     @Override
@@ -141,6 +149,11 @@ public class GameBsoImpl implements GameBso {
     @Override
     public Set<UserGameStatus> fetchUserGameStatuses(Game game) {
         return realTimeGameBso.get(game).getUserGameStatuses();
+    }
+
+    @Override
+    public void joinGame(Integer gameId, Principal user) {
+        joinGameCommand.execute(gameId, user);
     }
 
 }

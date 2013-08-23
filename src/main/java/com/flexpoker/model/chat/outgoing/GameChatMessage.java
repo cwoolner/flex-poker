@@ -1,17 +1,16 @@
 package com.flexpoker.model.chat.outgoing;
 
-import java.util.UUID;
 
 public class GameChatMessage extends BaseOutgoingChatMessage {
 
-    private final UUID gameId;
+    private final Integer gameId;
 
-    public GameChatMessage(String message, String senderUsername, boolean isSystemMessage, UUID gameId) {
+    public GameChatMessage(String message, String senderUsername, boolean isSystemMessage, Integer gameId) {
         super(message, senderUsername, isSystemMessage);
         this.gameId = gameId;
     }
 
-    public UUID getGameId() {
+    public Integer getGameId() {
         return gameId;
     }
 

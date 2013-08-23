@@ -18,4 +18,8 @@ public class MessagingConstants {
     
     public static final String CHAT_PERSONAL_SYSTEM = "/topic/chat/personal/system/%s";
 
+    public static final String GAME_STATUS_EVENTS = "/topic/game/%s";
+    
+    public static final String GAME_STARTING = "game-starting";
+
 }

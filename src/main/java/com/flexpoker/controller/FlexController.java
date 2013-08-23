@@ -11,7 +11,6 @@ import org.springframework.stereotype.Controller;
 
 import com.flexpoker.bso.api.DealCardActionsBso;
 import com.flexpoker.bso.api.GameBso;
-import com.flexpoker.bso.api.GameEventBso;
 import com.flexpoker.bso.api.PlayerActionsBso;
 import com.flexpoker.model.FlopCards;
 import com.flexpoker.model.Game;
@@ -59,9 +58,6 @@ public class FlexController {
     private GameBso gameBso;
 
     @Inject
-    private GameEventBso gameEventBso;
-
-    @Inject
     private EventManager eventManager;
 
     @Inject
@@ -80,40 +76,27 @@ public class FlexController {
         return gameBso.fetchAllGames();
     }
 
-    public void joinGame(Game game) {
-        User user = extractCurrentUser();
-        boolean gameAtUserMax = gameEventBso.addUserToGame(user, game);
-        eventManager.sendUserJoinedEvent(game, user.getUsername(), gameAtUserMax);
-    }
-    
     public Set<UserGameStatus> fetchAllUserGameStatuses(Game game) {
         return gameBso.fetchUserGameStatuses(game);
     }
 
     public void verifyRegistrationForGame(Game game) {
         User user = extractCurrentUser();
-        if (gameEventBso.verifyRegistration(user, game)) {
-            eventManager.sendGameInProgressEvent(game);
-        }
+        eventManager.sendGameInProgressEvent(game);
     }
 
     public void verifyGameInProgress(Game game) {
         User user = extractCurrentUser();
-        if (gameEventBso.verifyGameInProgress(user, game)) {
-            eventManager.sendNewHandStartingEventForAllTables(game,
-                    gameBso.fetchTables(game));
-        }
+        eventManager.sendNewHandStartingEventForAllTables(game, gameBso.fetchTables(game));
     }
 
     public void verifyReadyToStartNewHand(Game game, Table table) {
         User user = extractCurrentUser();
-        if (gameEventBso.verifyReadyToStartNewHand(user, game, table)) {
-            game = gameBso.fetchGame(game);
-            if (GameStage.FINISHED.equals(game.getGameStage())) {
-                eventManager.sendGameIsFinishedEvent(game);
-            } else {
-                eventManager.sendNewHandStartingEvent(game, table);
-            }
+        game = gameBso.fetchGame(game);
+        if (GameStage.FINISHED.equals(game.getGameStage())) {
+            eventManager.sendGameIsFinishedEvent(game);
+        } else {
+            eventManager.sendNewHandStartingEvent(game, table);
         }
     }
 

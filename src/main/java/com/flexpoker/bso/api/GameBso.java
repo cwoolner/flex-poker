@@ -18,7 +18,7 @@ public interface GameBso {
 
     void createGame(Principal user, Game game);
 
-    void changeGameStage(Game game, GameStage starting);
+    void changeGameStage(Integer gameId, GameStage starting);
 
     Table fetchTable(Game game, Table table);
 
@@ -30,4 +30,6 @@ public interface GameBso {
 
     Set<UserGameStatus> fetchUserGameStatuses(Game game);
     
+    void joinGame(Integer gameId, Principal user);
+
 }

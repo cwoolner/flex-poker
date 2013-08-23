@@ -1,6 +1,6 @@
 flexpokerModule.controller('TournamentRegisteringController', ['$rootScope', '$scope', 'ngstomp', function($rootScope, $scope, ngstomp) {
     
-    $('#create-game-dialog').hide();
+    $('#create-game-dialog, #join-game-dialog').hide();
     $('body').find('button, input[type=submit]').button();
     $scope.chatDisplay = '';
     
@@ -9,7 +9,7 @@ flexpokerModule.controller('TournamentRegisteringController', ['$rootScope', '$s
             data: 'games',
             rowTemplate:
                 '<div style="height: 100%">'
-                  + '<div ng-style="{ \'cursor\': row.cursor }" ng-repeat="col in renderedColumns" ng-class="col.colIndex()" class="ngCell" ng-dblclick="onGridDoubleClick(row)">'
+                  + '<div ng-style="{ \'cursor\': row.cursor }" ng-repeat="col in renderedColumns" ng-class="col.colIndex()" class="ngCell" ng-dblclick="openJoinGameDialog(row)">'
                   +     '<div class="ngVerticalBar" ng-style="{height: rowHeight}" ng-class="{ ngVerticalBarVisible: !$last }"></div>'
                   +     '<div ng-cell></div>'
                   + '</div>'
@@ -52,7 +52,8 @@ flexpokerModule.controller('TournamentRegisteringController', ['$rootScope', '$s
         $('#create-game-dialog').dialog({ width: 550 });
     }
     
-    $scope.openJoinGameDialog = function() {
+    $scope.openJoinGameDialog = function(row) {
+        $scope.joinGameId = $scope.games[row.rowIndex].name;
         $('#join-game-dialog').dialog({ width: 550 });
     }
     
@@ -70,20 +71,8 @@ flexpokerModule.controller('TournamentRegisteringController', ['$rootScope', '$s
     };
     
     $scope.submitJoinGame = function() {
-        var newGame = {
-                name: $scope.name,
-                players: $scope.players,
-                playersPerTable: $scope.playersPerTable
-        };
-        $rootScope.client.send("/app/creategame", {}, JSON.stringify(newGame));
-        $scope.name = '';
-        $scope.players = '';
-        $scope.playersPerTable = '';
-        $('#create-game-dialog').dialog('destroy');
-    };
-    
-    $scope.onGridDoubleClick = function(row){
-        alert($scope.games[row.rowIndex]);
+        $rootScope.client.send("/app/joingame", {}, $scope.joinGameId);
+        $('#join-game-dialog').dialog('destroy');
     };
     
     $scope.sendChat = function() {

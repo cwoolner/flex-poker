@@ -2,18 +2,15 @@ package com.flexpoker.bso;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Service;
 
 import com.flexpoker.bso.api.DeckBso;
 import com.flexpoker.bso.api.GameBso;
-import com.flexpoker.bso.api.GameEventBso;
 import com.flexpoker.bso.api.HandEvaluatorBso;
 import com.flexpoker.bso.api.PotBso;
 import com.flexpoker.bso.api.SeatStatusBso;
-import com.flexpoker.exception.FlexPokerException;
 import com.flexpoker.model.Blinds;
 import com.flexpoker.model.CommonCards;
 import com.flexpoker.model.FlopCards;
@@ -33,7 +30,6 @@ import com.flexpoker.model.Seat;
 import com.flexpoker.model.Table;
 import com.flexpoker.model.TurnCard;
 import com.flexpoker.model.User;
-import com.flexpoker.model.UserGameStatus;
 import com.flexpoker.repository.api.RealTimeGameRepository;
 import com.flexpoker.util.ActionOnSeatPredicate;
 import com.flexpoker.util.BigBlindSeatPredicate;
@@ -41,7 +37,7 @@ import com.flexpoker.util.ButtonSeatPredicate;
 import com.flexpoker.util.SmallBlindSeatPredicate;
 
 @Service
-public class GameEventBsoImpl implements GameEventBso {
+public class GameEventBsoImpl {
 
     private GameBso gameBso;
 
@@ -55,99 +51,14 @@ public class GameEventBsoImpl implements GameEventBso {
 
     private PotBso potBso;
 
-    @Override
-    public boolean addUserToGame(User user, Game game) {
-        synchronized (this) {
-            checkIfUserCanJoinGame(game, user);
-
-            UserGameStatus userGameStatus = new UserGameStatus();
-            userGameStatus.setUser(user);
-
-            realTimeGameBso.get(game).addUserGameStatus(userGameStatus);
-
-            if (gameBso.fetchUserGameStatuses(game).size() == game.getTotalPlayers()) {
-                gameBso.changeGameStage(game, GameStage.STARTING);
-                return true;
-            }
-
-            return false;
-        }
-    }
-
-    @Override
-    public boolean verifyRegistration(User user, Game game) {
-        synchronized (this) {
-            RealTimeGame realTimeGame = realTimeGameBso.get(game);
-            realTimeGame.verifyEvent(user, "registration");
-
-            if (realTimeGame.isEventVerified("registration")) {
-                gameBso.initializePlayersAndTables(game);
-                gameBso.changeGameStage(game, GameStage.IN_PROGRESS);
-                return true;
-            }
-
-            return false;
-        }
-
-    }
-
-    @Override
-    public boolean verifyGameInProgress(User user, Game game) {
-        synchronized (this) {
-            RealTimeGame realTimeGame = realTimeGameBso.get(game);
-            realTimeGame.verifyEvent(user, "gameInProgress");
-
-            if (realTimeGame.isEventVerified("gameInProgress")) {
-                startNewGameForAllTables(game);
-                return true;
-            }
-
-            return false;
-        }
-    }
-
-    @Override
-    public boolean verifyReadyToStartNewHand(User user, Game game, Table table) {
-        synchronized (this) {
-            RealTimeGame realTimeGame = realTimeGameBso.get(game);
-            table = realTimeGame.getTable(table);
-
-            realTimeGame.verifyEvent(user, table, "readyToStartNewHand");
-
-            if (realTimeGame.isEventVerified(table, "readyToStartNewHand")) {
-                realTimeGame.resetEvent(table, "readyToStartNewHand");
-                startNewHand(game, table);
-                return true;
-            }
-
-            return false;
-        }
+    private void readyForNewGame(Game game) {
+        gameBso.initializePlayersAndTables(game);
+        gameBso.changeGameStage(game.getId(), GameStage.IN_PROGRESS);
     }
 
     private void startNewHand(Game game, Table table) {
         seatStatusBso.setStatusForNewHand(game, table);
         resetTableStatus(game, table);
-    }
-
-    private void checkIfUserCanJoinGame(Game game, User user) {
-        GameStage gameStage = game.getGameStage();
-
-        if (GameStage.STARTING.equals(gameStage)
-            || GameStage.IN_PROGRESS.equals(gameStage)) {
-            throw new FlexPokerException("The game has already started");
-        }
-
-        if (GameStage.FINISHED.equals(gameStage)) {
-            throw new FlexPokerException("The game is already finished.");
-        }
-
-        Set<UserGameStatus> userGameStatuses = gameBso.fetchUserGameStatuses(game);
-
-        for (UserGameStatus userGameStatus : userGameStatuses) {
-            if (user.equals(userGameStatus.getUser())) {
-                throw new FlexPokerException("You are already in this game.");
-            }
-        }
     }
 
     private void createNewRealTimeHand(Game game, Table table) {
