@@ -16,38 +16,43 @@ flexpokerModule.controller('TournamentRegisteringController', ['$rootScope', '$s
               + '</div>'
         };
     
-    if ($rootScope.client === undefined) {
-        $rootScope.client = ngstomp(new SockJS(rootUrl + 'application'));
+    if ($scope.client === undefined) {
+        $scope.client = ngstomp(new SockJS(rootUrl + 'application'));
     }
 
-    $rootScope.client.connect("", "", function() {
-        $rootScope.client.subscribe("/app/availabletournaments", function(message) {
+    $scope.client.connect("", "", function() {
+        $scope.client.subscribe("/app/availabletournaments", function(message) {
             $scope.games = $.parseJSON(message.body);
         });
-        $rootScope.client.subscribe("/topic/availabletournaments-updates", function(message) {
+        $scope.client.subscribe("/topic/availabletournaments-updates", function(message) {
             $scope.games = $.parseJSON(message.body);
         });
-        $rootScope.client.subscribe('/topic/chat/global/user', function(message) {
+        $scope.client.subscribe('/topic/chat/global/user', function(message) {
             var scrollHeight = $('.chat-display').prop('scrollHeight');
             $('.chat-display').prop('scrollTop', scrollHeight);
             $scope.chatDisplay += $.parseJSON(message.body) + '\n';
         });
-        $rootScope.client.subscribe('/topic/chat/global/system', function(message) {
+        $scope.client.subscribe('/topic/chat/global/system', function(message) {
             var scrollHeight = $('.chat-display').prop('scrollHeight');
             $('.chat-display').prop('scrollTop', scrollHeight);
             $scope.chatDisplay += $.parseJSON(message.body) + '\n';
         });
-        $rootScope.client.subscribe("/app/personalchatid", function(message) {
-            $rootScope.client.subscribe('/topic/chat/personal/user/' + $.parseJSON(message.body), function(innerMessage) {
+        $scope.client.subscribe("/app/personalchatid", function(message) {
+            $scope.client.subscribe('/topic/chat/personal/user/' + $.parseJSON(message.body), function(innerMessage) {
                 alert('personal' + innerMessage.body);
             });
-            $rootScope.client.subscribe('/topic/chat/personal/system/' + $.parseJSON(message.body), function(innerMessage) {
+            $scope.client.subscribe('/topic/chat/personal/system/' + $.parseJSON(message.body), function(innerMessage) {
                 alert('personal' + innerMessage.body);
             });
         });
 
     }, function() {}, '/');
     
+    if ($rootScope.stompClients === undefined) {
+        $rootScope.stompClients = [];
+    }
+    $rootScope.stompClients.push($scope.client);
+
     $scope.openCreateGameDialog = function() {
         $('#create-game-dialog').dialog({ width: 550 });
     }
@@ -71,7 +76,7 @@ flexpokerModule.controller('TournamentRegisteringController', ['$rootScope', '$s
     };
     
     $scope.submitJoinGame = function() {
-        $rootScope.client.send("/app/joingame", {}, $scope.joinGameId);
+        $scope.client.send("/app/joingame", {}, $scope.joinGameId);
         $('#join-game-dialog').dialog('destroy');
     };
     
@@ -87,7 +92,7 @@ flexpokerModule.controller('TournamentRegisteringController', ['$rootScope', '$s
                 tableId: null
         };
 
-        $rootScope.client.send('/app/sendchatmessage', {}, JSON.stringify(globalMessage)); 
+        $scope.client.send('/app/sendchatmessage', {}, JSON.stringify(globalMessage)); 
         $scope.chatMessage = '';
     };
 
