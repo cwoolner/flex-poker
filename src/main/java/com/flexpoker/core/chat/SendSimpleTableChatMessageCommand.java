@@ -2,7 +2,7 @@ package com.flexpoker.core.chat;
 
 import javax.inject.Inject;
 
-import org.springframework.messaging.core.MessageSendingOperations;
+import org.springframework.messaging.simp.SimpMessageSendingOperations;
 
 import com.flexpoker.config.Command;
 import com.flexpoker.core.api.chat.SendTableChatMessageCommand;
@@ -12,10 +12,10 @@ import com.flexpoker.util.MessagingConstants;
 @Command
 public class SendSimpleTableChatMessageCommand implements SendTableChatMessageCommand {
 
-    private final MessageSendingOperations<String> messagingTemplate;
+    private final SimpMessageSendingOperations messagingTemplate;
 
     @Inject
-    public SendSimpleTableChatMessageCommand(MessageSendingOperations<String> messagingTemplate) {
+    public SendSimpleTableChatMessageCommand(SimpMessageSendingOperations messagingTemplate) {
         this.messagingTemplate = messagingTemplate;
     }
     

@@ -6,7 +6,7 @@ import java.util.Set;
 
 import javax.inject.Inject;
 
-import org.springframework.messaging.core.MessageSendingOperations;
+import org.springframework.messaging.simp.SimpMessageSendingOperations;
 
 import com.flexpoker.config.Command;
 import com.flexpoker.core.api.chat.SendGameChatMessageCommand;
@@ -37,7 +37,7 @@ public class JoinGameImplCommand implements JoinGameCommand {
     
     private final ChangeGameStageCommand changeGameStageCommand;
     
-    private final MessageSendingOperations<String> messagingTemplate;
+    private final SimpMessageSendingOperations messagingTemplate;
     
     private final SendGameChatMessageCommand sendGameChatMessageCommand;
 
@@ -45,7 +45,7 @@ public class JoinGameImplCommand implements JoinGameCommand {
     public JoinGameImplCommand(GameDao gameDao, UserDao userDao,
             RealTimeGameRepository realTimeGameRepository,
             ChangeGameStageCommand changeGameStageCommand,
-            MessageSendingOperations<String> messageSendingOperations,
+            SimpMessageSendingOperations messageSendingOperations,
             SendGameChatMessageCommand sendGameChatMessageCommand) {
         this.gameDao = gameDao;
         this.userDao = userDao;

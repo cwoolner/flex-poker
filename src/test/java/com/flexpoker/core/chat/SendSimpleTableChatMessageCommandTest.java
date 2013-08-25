@@ -1,6 +1,6 @@
 package com.flexpoker.core.chat;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
 
 import java.util.UUID;
 
@@ -8,13 +8,13 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.messaging.core.MessageSendingOperations;
+import org.springframework.messaging.simp.SimpMessageSendingOperations;
 
 import com.flexpoker.model.chat.outgoing.TableChatMessage;
 
 public class SendSimpleTableChatMessageCommandTest {
 
-    @Mock private MessageSendingOperations<String> mockMessageSendingOperations;
+    @Mock private SimpMessageSendingOperations mockMessageSendingOperations;
     
     private SendSimpleTableChatMessageCommand command;
     

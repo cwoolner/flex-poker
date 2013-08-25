@@ -6,13 +6,13 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.messaging.core.MessageSendingOperations;
+import org.springframework.messaging.simp.SimpMessageSendingOperations;
 
 import com.flexpoker.model.chat.outgoing.GameChatMessage;
 
 public class SendSimpleGameChatMessageCommandTest {
 
-    @Mock private MessageSendingOperations<String> mockMessageSendingOperations;
+    @Mock private SimpMessageSendingOperations mockMessageSendingOperations;
     
     private SendSimpleGameChatMessageCommand command;
     

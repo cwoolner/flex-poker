@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.messaging.core.MessageSendingOperations;
+import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -40,7 +40,7 @@ public class GameBsoImpl implements GameBso {
 
     private final TableBalancerBso tableBalancerBso;
 
-    private final MessageSendingOperations<String> messagingTemplate;
+    private final SimpMessageSendingOperations messagingTemplate;
     
     private final JoinGameCommand joinGameCommand;
     
@@ -48,7 +48,7 @@ public class GameBsoImpl implements GameBso {
     
     @Autowired
     public GameBsoImpl(UserDao userDao, GameDao gameDao, RealTimeGameRepository realTimeGameBso,
-            TableBalancerBso tableBalancerBso, MessageSendingOperations<String> messagingTemplate,
+            TableBalancerBso tableBalancerBso, SimpMessageSendingOperations messagingTemplate,
             JoinGameCommand joinGameCommand, ChangeGameStageCommand changeGameStageCommand) {
         this.userDao = userDao;
         this.gameDao = gameDao;

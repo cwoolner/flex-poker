@@ -1,18 +1,18 @@
 package com.flexpoker.core.chat;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.messaging.core.MessageSendingOperations;
+import org.springframework.messaging.simp.SimpMessageSendingOperations;
 
 import com.flexpoker.model.chat.outgoing.GlobalChatMessage;
 
 public class SendSimpleGlobalChatMessageCommandTest {
 
-    @Mock private MessageSendingOperations<String> mockMessageSendingOperations;
+    @Mock private SimpMessageSendingOperations mockMessageSendingOperations;
     
     private SendSimpleGlobalChatMessageCommand command;
     

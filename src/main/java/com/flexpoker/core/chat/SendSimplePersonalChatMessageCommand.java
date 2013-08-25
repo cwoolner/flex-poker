@@ -4,7 +4,7 @@ import java.util.UUID;
 
 import javax.inject.Inject;
 
-import org.springframework.messaging.core.MessageSendingOperations;
+import org.springframework.messaging.simp.SimpMessageSendingOperations;
 
 import com.flexpoker.config.Command;
 import com.flexpoker.core.api.chat.SendPersonalChatMessageCommand;
@@ -15,13 +15,13 @@ import com.flexpoker.util.MessagingConstants;
 @Command
 public class SendSimplePersonalChatMessageCommand implements SendPersonalChatMessageCommand {
 
-    private final MessageSendingOperations<String> messagingTemplate;
+    private final SimpMessageSendingOperations messagingTemplate;
     
     private final UserDataRepository userDataRepository;
 
     @Inject
     public SendSimplePersonalChatMessageCommand(
-            MessageSendingOperations<String> messagingTemplate,
+            SimpMessageSendingOperations messagingTemplate,
             UserDataRepository userDataRepository) {
         this.messagingTemplate = messagingTemplate;
         this.userDataRepository = userDataRepository;
