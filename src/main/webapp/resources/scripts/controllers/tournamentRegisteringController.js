@@ -37,15 +37,6 @@ flexpokerModule.controller('TournamentRegisteringController', ['$rootScope', '$s
             $('.chat-display').prop('scrollTop', scrollHeight);
             $scope.chatDisplay += $.parseJSON(message.body) + '\n';
         });
-        $scope.client.subscribe("/app/personalchatid", function(message) {
-            $scope.client.subscribe('/topic/chat/personal/user/' + $.parseJSON(message.body), function(innerMessage) {
-                alert('personal' + innerMessage.body);
-            });
-            $scope.client.subscribe('/topic/chat/personal/system/' + $.parseJSON(message.body), function(innerMessage) {
-                alert('personal' + innerMessage.body);
-            });
-        });
-
     }, function() {}, '/');
     
     if ($rootScope.stompClients === undefined) {
