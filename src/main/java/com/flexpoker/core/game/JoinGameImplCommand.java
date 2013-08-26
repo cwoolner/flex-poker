@@ -86,7 +86,7 @@ public class JoinGameImplCommand implements JoinGameCommand {
         GameStage gameStage = game.getGameStage();
 
         if (GameStage.STARTING.equals(gameStage)
-                || GameStage.IN_PROGRESS.equals(gameStage)) {
+                || GameStage.INPROGRESS.equals(gameStage)) {
             throw new FlexPokerException("The game has already started");
         }
 

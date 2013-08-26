@@ -53,7 +53,7 @@ public class GameEventBsoImpl {
 
     private void readyForNewGame(Game game) {
         gameBso.initializePlayersAndTables(game);
-        gameBso.changeGameStage(game.getId(), GameStage.IN_PROGRESS);
+        gameBso.changeGameStage(game.getId(), GameStage.INPROGRESS);
     }
 
     private void startNewHand(Game game, Table table) {
