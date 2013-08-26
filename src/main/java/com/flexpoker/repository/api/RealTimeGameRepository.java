@@ -1,12 +1,11 @@
 package com.flexpoker.repository.api;
 
-import com.flexpoker.model.Game;
 import com.flexpoker.model.RealTimeGame;
 
 public interface RealTimeGameRepository {
 
-    RealTimeGame get(Game game);
+    RealTimeGame get(Integer gameId);
 
-    RealTimeGame put(Game game, RealTimeGame realTimeGame);
+    RealTimeGame put(Integer game, RealTimeGame realTimeGame);
 
 }

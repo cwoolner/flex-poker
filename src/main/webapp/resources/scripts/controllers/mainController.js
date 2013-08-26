@@ -1,4 +1,4 @@
-flexpokerModule.controller('MainController', ['$rootScope', '$scope', 'ngstomp', function($rootScope, $scope, ngstomp) {
+flexpokerModule.controller('MainController', ['$rootScope', '$scope', 'ngstomp', '$location', function($rootScope, $scope, ngstomp, $location) {
     if ($scope.client === undefined) {
         $scope.client = ngstomp(new SockJS(rootUrl + 'application'));
     }
@@ -8,6 +8,7 @@ flexpokerModule.controller('MainController', ['$rootScope', '$scope', 'ngstomp',
 
         $scope.client.subscribe('/queue/errors' + queueSuffix, function(message) {
             alert("Error " + message.body);
+            $rootScope.tryingToJoinGameId = null;
         });
         
         $scope.client.subscribe('/topic/chat/personal/user' + queueSuffix, function(message) {
@@ -18,8 +19,16 @@ flexpokerModule.controller('MainController', ['$rootScope', '$scope', 'ngstomp',
             alert('personal' + message.body);
         });
 
-        $scope.client.subscribe("/app/opengamesforuser", function(message) {
+        $scope.client.subscribe('/app/opengamesforuser', function(message) {
             $scope.gameTabs = $.parseJSON(message.body);
+        });
+        
+        $scope.client.subscribe('/queue/opengamesforuser' + queueSuffix, function(message) {
+            $scope.gameTabs = $.parseJSON(message.body);
+            if ($rootScope.tryingToJoinGameId != null) {
+                $location.path('/game/' + $rootScope.tryingToJoinGameId)
+                $rootScope.tryingToJoinGameId = null;
+            }
         });
     }, function() {}, '/');
 

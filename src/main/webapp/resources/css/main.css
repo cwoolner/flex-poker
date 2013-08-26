@@ -24,5 +24,17 @@ textarea {
 }
 
 .game-tab-registering {
-    background-color: #60EC60;
+    background-color: #FFFFFF;
+}
+
+.game-tab-starting {
+    background-color: #0000FF;
+}
+
+.game-tab-inprogress {
+    background-color: #00FF00;
+}
+
+.game-tab-finished {
+    background-color: #FF0000;
 }

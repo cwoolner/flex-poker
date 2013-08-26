@@ -94,7 +94,7 @@ public class GameBsoImpl implements GameBso {
     @Override
     public Table fetchTable(Game game, Table table) {
         List<Table> tables = fetchTables(game);
-        table = realTimeGameBso.get(game).getTable(table);
+        table = realTimeGameBso.get(game.getId()).getTable(table);
 
         if (table == null) {
             throw new FlexPokerException("Table does not exist.");
@@ -120,7 +120,7 @@ public class GameBsoImpl implements GameBso {
 
     @Override
     public void initializePlayersAndTables(Game game) {
-        RealTimeGame realTimeGame = realTimeGameBso.get(game);
+        RealTimeGame realTimeGame = realTimeGameBso.get(game.getId());
 
         List<Table> tables = tableBalancerBso.assignInitialTablesForNewGame(
                 realTimeGame.getUserGameStatuses(), game.getMaxPlayersPerTable());
@@ -138,17 +138,17 @@ public class GameBsoImpl implements GameBso {
 
     private void createRealTimeGame(Game game) {
         game = gameDao.findById(game.getId());
-        realTimeGameBso.put(game, new RealTimeGame());
+        realTimeGameBso.put(game.getId(), new RealTimeGame());
     }
 
     @Override
     public List<Table> fetchTables(Game game) {
-        return realTimeGameBso.get(game).getTables();
+        return realTimeGameBso.get(game.getId()).getTables();
     }
 
     @Override
     public Set<UserGameStatus> fetchUserGameStatuses(Game game) {
-        return realTimeGameBso.get(game).getUserGameStatuses();
+        return realTimeGameBso.get(game.getId()).getUserGameStatuses();
     }
 
     @Override

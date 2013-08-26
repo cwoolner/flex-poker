@@ -1,22 +1,22 @@
 package com.flexpoker.model;
 
-import java.util.UUID;
-
 public class OpenGameForUser {
 
-    private final UUID gameId;
+    // private final UUID gameId;
+
+    private final Integer gameId;
 
     private final String name;
 
-    private final GameStage gameStage;
+    private GameStage gameStage;
 
-    public OpenGameForUser(UUID gameId, String name, GameStage gameStage) {
+    public OpenGameForUser(Integer gameId, String name, GameStage gameStage) {
         this.gameId = gameId;
         this.name = name;
         this.gameStage = gameStage;
     }
 
-    public UUID getGameId() {
+    public Integer getGameId() {
         return gameId;
     }
 
@@ -26,6 +26,10 @@ public class OpenGameForUser {
 
     public GameStage getGameStage() {
         return gameStage;
+    }
+    
+    public void changeGameStage(GameStage gameStage) {
+        this.gameStage = gameStage;
     }
 
 }

@@ -62,7 +62,7 @@ public class GameEventBsoImpl {
     }
 
     private void createNewRealTimeHand(Game game, Table table) {
-        RealTimeGame realTimeGame = realTimeGameBso.get(game);
+        RealTimeGame realTimeGame = realTimeGameBso.get(game.getId());
         Blinds currentBlinds = realTimeGame.getCurrentBlinds();
         int smallBlind = currentBlinds.getSmallBlind();
         int bigBlind = currentBlinds.getBigBlind();

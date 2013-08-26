@@ -1,7 +1,6 @@
 package com.flexpoker.bso;
 
 import java.security.Principal;
-import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -13,9 +12,9 @@ import org.springframework.stereotype.Service;
 import com.flexpoker.bso.api.UserBso;
 import com.flexpoker.dao.api.UserDao;
 import com.flexpoker.dto.Result;
-import com.flexpoker.model.GameStage;
 import com.flexpoker.model.OpenGameForUser;
 import com.flexpoker.model.User;
+import com.flexpoker.repository.api.OpenGameForUserRepository;
 import com.flexpoker.repository.api.SignupRepository;
 
 @Service
@@ -24,17 +23,20 @@ public class UserBsoImpl implements UserBso {
     private final UserDao userDao;
     
     private final SignupRepository signupRepository;
+    
+    private final OpenGameForUserRepository openGamesForUserRepository;
 
     @Inject
-    public UserBsoImpl(UserDao userDao, SignupRepository signupRepository) {
+    public UserBsoImpl(UserDao userDao, SignupRepository signupRepository,
+            OpenGameForUserRepository openGamesForUserRepository) {
         this.userDao = userDao;
         this.signupRepository = signupRepository;
+        this.openGamesForUserRepository = openGamesForUserRepository;
     }
     
     @Override
     public List<OpenGameForUser> fetchUsersOpenGames(Principal principal) {
-        return Arrays.asList(new OpenGameForUser[] { new OpenGameForUser(
-                UUID.randomUUID(), "Game 1", GameStage.REGISTERING)});
+        return openGamesForUserRepository.fetchAllOpenGamesForUser(principal.getName());
     }
 
     @Override

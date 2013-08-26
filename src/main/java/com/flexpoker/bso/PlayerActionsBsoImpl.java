@@ -54,7 +54,7 @@ public class PlayerActionsBsoImpl implements PlayerActionsBso {
     @Override
     public HandState check(Game game, Table table, User user) {
         synchronized (this) {
-            RealTimeGame realTimeGame = realTimeGameBso.get(game);
+            RealTimeGame realTimeGame = realTimeGameBso.get(game.getId());
             RealTimeHand realTimeHand = realTimeGame.getRealTimeHand(table);
             table = realTimeGame.getTable(table);
 
@@ -86,7 +86,7 @@ public class PlayerActionsBsoImpl implements PlayerActionsBso {
     @Override
     public HandState fold(Game game, Table table, User user) {
         synchronized (this) {
-            RealTimeGame realTimeGame = realTimeGameBso.get(game);
+            RealTimeGame realTimeGame = realTimeGameBso.get(game.getId());
             RealTimeHand realTimeHand = realTimeGame.getRealTimeHand(table);
             table = realTimeGame.getTable(table);
 
@@ -133,7 +133,7 @@ public class PlayerActionsBsoImpl implements PlayerActionsBso {
     @Override
     public HandState call(Game game, Table table, User user) {
         synchronized (this) {
-            RealTimeGame realTimeGame = realTimeGameBso.get(game);
+            RealTimeGame realTimeGame = realTimeGameBso.get(game.getId());
             RealTimeHand realTimeHand = realTimeGame.getRealTimeHand(table);
             table = realTimeGame.getTable(table);
 
@@ -188,7 +188,7 @@ public class PlayerActionsBsoImpl implements PlayerActionsBso {
     @Override
     public HandState raise(Game game, Table table, User user, String raiseAmount) {
         synchronized (this) {
-            RealTimeGame realTimeGame = realTimeGameBso.get(game);
+            RealTimeGame realTimeGame = realTimeGameBso.get(game.getId());
             RealTimeHand realTimeHand = realTimeGame.getRealTimeHand(table);
             table = realTimeGame.getTable(table);
 

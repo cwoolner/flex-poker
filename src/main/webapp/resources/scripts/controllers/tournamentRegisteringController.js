@@ -49,7 +49,9 @@ flexpokerModule.controller('TournamentRegisteringController', ['$rootScope', '$s
     }
     
     $scope.openJoinGameDialog = function(row) {
-        $scope.joinGameId = $scope.games[row.rowIndex].name;
+        var gameId = $scope.games[row.rowIndex].name;
+        $scope.joinGameId = gameId;
+        $rootScope.tryingToJoinGameId = gameId; 
         $('#join-game-dialog').dialog({ width: 550 });
     }
     

@@ -80,7 +80,7 @@ public class DealCardActionsBsoImpl implements DealCardActionsBso {
     }
 
     private HandDealerState determineHandDealerState(Game game, Table table) {
-        RealTimeHand realTimeHand = realTimeGameBso.get(game).getRealTimeHand(table);
+        RealTimeHand realTimeHand = realTimeGameBso.get(game.getId()).getRealTimeHand(table);
         validationBso.validateValuesAreNonNull(realTimeHand);
 
         HandDealerState handDealerState = realTimeHand.getHandDealerState();
