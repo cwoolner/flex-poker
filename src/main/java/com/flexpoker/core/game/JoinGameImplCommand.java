@@ -12,8 +12,6 @@ import com.flexpoker.config.Command;
 import com.flexpoker.core.api.chat.SendGameChatMessageCommand;
 import com.flexpoker.core.api.game.ChangeGameStageCommand;
 import com.flexpoker.core.api.game.JoinGameCommand;
-import com.flexpoker.dao.api.GameDao;
-import com.flexpoker.dao.api.UserDao;
 import com.flexpoker.exception.FlexPokerException;
 import com.flexpoker.model.Game;
 import com.flexpoker.model.GameStage;
@@ -22,8 +20,10 @@ import com.flexpoker.model.RealTimeGame;
 import com.flexpoker.model.User;
 import com.flexpoker.model.UserGameStatus;
 import com.flexpoker.model.chat.outgoing.GameChatMessage;
+import com.flexpoker.repository.api.GameRepository;
 import com.flexpoker.repository.api.OpenGameForUserRepository;
 import com.flexpoker.repository.api.RealTimeGameRepository;
+import com.flexpoker.repository.api.UserRepository;
 import com.flexpoker.util.MessagingConstants;
 import com.flexpoker.web.model.AvailableTournamentListViewModel;
 import com.flexpoker.web.translator.GameListTranslator;
@@ -31,9 +31,9 @@ import com.flexpoker.web.translator.GameListTranslator;
 @Command
 public class JoinGameImplCommand implements JoinGameCommand {
 
-    private final GameDao gameDao;
+    private final GameRepository gameDao;
     
-    private final UserDao userDao;
+    private final UserRepository userDao;
     
     private final RealTimeGameRepository realTimeGameRepository;
     
@@ -46,7 +46,7 @@ public class JoinGameImplCommand implements JoinGameCommand {
     private final OpenGameForUserRepository openGameForUserRepository;
 
     @Inject
-    public JoinGameImplCommand(GameDao gameDao, UserDao userDao,
+    public JoinGameImplCommand(GameRepository gameDao, UserRepository userDao,
             RealTimeGameRepository realTimeGameRepository,
             ChangeGameStageCommand changeGameStageCommand,
             SimpMessageSendingOperations messageSendingOperations,

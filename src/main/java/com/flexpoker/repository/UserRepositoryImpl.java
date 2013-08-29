@@ -1,4 +1,4 @@
-package com.flexpoker.dao;
+package com.flexpoker.repository;
 
 import javax.inject.Inject;
 
@@ -8,16 +8,16 @@ import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Property;
 import org.springframework.stereotype.Repository;
 
-import com.flexpoker.dao.api.UserDao;
 import com.flexpoker.model.User;
+import com.flexpoker.repository.api.UserRepository;
 
 @Repository
-public class UserDaoImpl implements UserDao {
+public class UserRepositoryImpl implements UserRepository {
 
     private final SessionFactory sessionFactory;
     
     @Inject
-    public UserDaoImpl(SessionFactory sessionFactory) {
+    public UserRepositoryImpl(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
     }
     

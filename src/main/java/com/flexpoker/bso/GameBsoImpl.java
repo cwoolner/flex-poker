@@ -14,8 +14,6 @@ import com.flexpoker.bso.api.GameBso;
 import com.flexpoker.bso.api.TableBalancerBso;
 import com.flexpoker.core.api.game.ChangeGameStageCommand;
 import com.flexpoker.core.api.game.JoinGameCommand;
-import com.flexpoker.dao.api.GameDao;
-import com.flexpoker.dao.api.UserDao;
 import com.flexpoker.exception.FlexPokerException;
 import com.flexpoker.model.Game;
 import com.flexpoker.model.GameStage;
@@ -24,7 +22,9 @@ import com.flexpoker.model.Seat;
 import com.flexpoker.model.Table;
 import com.flexpoker.model.User;
 import com.flexpoker.model.UserGameStatus;
+import com.flexpoker.repository.api.GameRepository;
 import com.flexpoker.repository.api.RealTimeGameRepository;
+import com.flexpoker.repository.api.UserRepository;
 import com.flexpoker.web.model.AvailableTournamentListViewModel;
 import com.flexpoker.web.translator.GameListTranslator;
 
@@ -32,9 +32,9 @@ import com.flexpoker.web.translator.GameListTranslator;
 @Service
 public class GameBsoImpl implements GameBso {
 
-    private final UserDao userDao;
+    private final UserRepository userDao;
     
-    private final GameDao gameDao;
+    private final GameRepository gameDao;
 
     private final RealTimeGameRepository realTimeGameBso;
 
@@ -47,7 +47,7 @@ public class GameBsoImpl implements GameBso {
     private final ChangeGameStageCommand changeGameStageCommand;
     
     @Autowired
-    public GameBsoImpl(UserDao userDao, GameDao gameDao, RealTimeGameRepository realTimeGameBso,
+    public GameBsoImpl(UserRepository userDao, GameRepository gameDao, RealTimeGameRepository realTimeGameBso,
             TableBalancerBso tableBalancerBso, SimpMessageSendingOperations messagingTemplate,
             JoinGameCommand joinGameCommand, ChangeGameStageCommand changeGameStageCommand) {
         this.userDao = userDao;

@@ -4,17 +4,17 @@ import javax.inject.Inject;
 
 import com.flexpoker.config.Command;
 import com.flexpoker.core.api.game.ChangeGameStageCommand;
-import com.flexpoker.dao.api.GameDao;
 import com.flexpoker.model.Game;
 import com.flexpoker.model.GameStage;
+import com.flexpoker.repository.api.GameRepository;
 
 @Command
 public class ChangeGameStageImplCommand implements ChangeGameStageCommand {
 
-    private final GameDao gameDao;
+    private final GameRepository gameDao;
     
     @Inject
-    public ChangeGameStageImplCommand(GameDao gameDao) {
+    public ChangeGameStageImplCommand(GameRepository gameDao) {
         this.gameDao = gameDao;
     }
     

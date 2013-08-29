@@ -1,10 +1,10 @@
-package com.flexpoker.dao.api;
+package com.flexpoker.repository.api;
 
 import java.util.List;
 
 import com.flexpoker.model.Game;
 
-public interface GameDao {
+public interface GameRepository {
     
     Game findById(Integer id);
     

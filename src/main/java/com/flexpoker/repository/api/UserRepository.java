@@ -1,8 +1,8 @@
-package com.flexpoker.dao.api;
+package com.flexpoker.repository.api;
 
 import com.flexpoker.model.User;
 
-public interface UserDao {
+public interface UserRepository {
 
     User findByUsername(String username);
 

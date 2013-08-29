@@ -10,24 +10,24 @@ import org.springframework.security.authentication.encoding.ShaPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.flexpoker.bso.api.UserBso;
-import com.flexpoker.dao.api.UserDao;
 import com.flexpoker.dto.Result;
 import com.flexpoker.model.OpenGameForUser;
 import com.flexpoker.model.User;
 import com.flexpoker.repository.api.OpenGameForUserRepository;
 import com.flexpoker.repository.api.SignupRepository;
+import com.flexpoker.repository.api.UserRepository;
 
 @Service
 public class UserBsoImpl implements UserBso {
 
-    private final UserDao userDao;
+    private final UserRepository userDao;
     
     private final SignupRepository signupRepository;
     
     private final OpenGameForUserRepository openGamesForUserRepository;
 
     @Inject
-    public UserBsoImpl(UserDao userDao, SignupRepository signupRepository,
+    public UserBsoImpl(UserRepository userDao, SignupRepository signupRepository,
             OpenGameForUserRepository openGamesForUserRepository) {
         this.userDao = userDao;
         this.signupRepository = signupRepository;
