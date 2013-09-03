@@ -11,9 +11,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.flexpoker.bso.api.GameBso;
-import com.flexpoker.bso.api.TableBalancerBso;
 import com.flexpoker.core.api.game.ChangeGameStageCommand;
 import com.flexpoker.core.api.game.JoinGameCommand;
+import com.flexpoker.core.api.tablebalancer.AssignInitialTablesForNewGame;
 import com.flexpoker.exception.FlexPokerException;
 import com.flexpoker.model.Game;
 import com.flexpoker.model.GameStage;
@@ -38,25 +38,30 @@ public class GameBsoImpl implements GameBso {
 
     private final RealTimeGameRepository realTimeGameBso;
 
-    private final TableBalancerBso tableBalancerBso;
-
     private final SimpMessageSendingOperations messagingTemplate;
     
     private final JoinGameCommand joinGameCommand;
     
     private final ChangeGameStageCommand changeGameStageCommand;
     
+    private final AssignInitialTablesForNewGame assignInitialTablesForNewGame;
+    
     @Autowired
-    public GameBsoImpl(UserRepository userDao, GameRepository gameDao, RealTimeGameRepository realTimeGameBso,
-            TableBalancerBso tableBalancerBso, SimpMessageSendingOperations messagingTemplate,
-            JoinGameCommand joinGameCommand, ChangeGameStageCommand changeGameStageCommand) {
+    public GameBsoImpl(
+            UserRepository userDao,
+            GameRepository gameDao,
+            RealTimeGameRepository realTimeGameBso,
+            SimpMessageSendingOperations messagingTemplate,
+            JoinGameCommand joinGameCommand,
+            ChangeGameStageCommand changeGameStageCommand,
+            AssignInitialTablesForNewGame assignInitialTablesForNewGame) {
         this.userDao = userDao;
         this.gameDao = gameDao;
         this.realTimeGameBso = realTimeGameBso;
-        this.tableBalancerBso = tableBalancerBso;
         this.messagingTemplate = messagingTemplate;
         this.joinGameCommand = joinGameCommand;
         this.changeGameStageCommand = changeGameStageCommand;
+        this.assignInitialTablesForNewGame = assignInitialTablesForNewGame;
     }
     
     @Override
@@ -120,15 +125,9 @@ public class GameBsoImpl implements GameBso {
 
     @Override
     public void initializePlayersAndTables(Game game) {
+        assignInitialTablesForNewGame.execute(game.getId());
+
         RealTimeGame realTimeGame = realTimeGameBso.get(game.getId());
-
-        List<Table> tables = tableBalancerBso.assignInitialTablesForNewGame(
-                realTimeGame.getUserGameStatuses(), game.getMaxPlayersPerTable());
-
-        for (Table table : tables) {
-            realTimeGame.addTable(table);
-        }
-
         Set<UserGameStatus> userGameStatuses = realTimeGame.getUserGameStatuses();
 
         for (UserGameStatus userGameStatus : userGameStatuses) {
