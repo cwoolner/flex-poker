@@ -36,7 +36,6 @@ public class TestAreTablesBalancedImplQuery {
         gameId = 1;
         realTimeGame = new RealTimeGame();
         game = new Game();
-        game.setMaxPlayersPerTable(9);
         when(mockRealTimeGameRepository.get(gameId)).thenReturn(realTimeGame);
         when(mockGameRepository.findById(gameId)).thenReturn(game);
         command = new AreTablesBalancedImplQuery(mockRealTimeGameRepository, mockGameRepository);
@@ -44,6 +43,7 @@ public class TestAreTablesBalancedImplQuery {
     
     @Test
     public void testSimpleSingleTable() {
+        game.setMaxPlayersPerTable(9);
         Table table1 = new Table();
         table1.setId(1);
         DataUtilsForTests.fillTableWithUsers(table1, 3, 9);
@@ -53,6 +53,7 @@ public class TestAreTablesBalancedImplQuery {
     
     @Test
     public void testImbalanceByTwoUnderMaxThreshold() {
+        game.setMaxPlayersPerTable(9);
         Table table1 = new Table();
         table1.setId(1);
         Table table2 = new Table();
@@ -67,6 +68,7 @@ public class TestAreTablesBalancedImplQuery {
     
     @Test
     public void testBalancedByOneUnderMaxThreshold() {
+        game.setMaxPlayersPerTable(9);
         Table table1 = new Table();
         table1.setId(1);
         Table table2 = new Table();
@@ -80,6 +82,7 @@ public class TestAreTablesBalancedImplQuery {
     
     @Test
     public void testShouldOnlyBeTwoTablesNotThree() {
+        game.setMaxPlayersPerTable(9);
         Table table1 = new Table();
         table1.setId(1);
         Table table2 = new Table();
@@ -97,6 +100,7 @@ public class TestAreTablesBalancedImplQuery {
     
     @Test
     public void testThreeTablesTwoOutOfBalance() {
+        game.setMaxPlayersPerTable(9);
         Table table1 = new Table();
         table1.setId(1);
         Table table2 = new Table();
@@ -114,6 +118,7 @@ public class TestAreTablesBalancedImplQuery {
     
     @Test
     public void testThreeTablesPerfectlyInBalance() {
+        game.setMaxPlayersPerTable(9);
         Table table1 = new Table();
         table1.setId(1);
         Table table2 = new Table();
@@ -131,6 +136,7 @@ public class TestAreTablesBalancedImplQuery {
     
     @Test
     public void testShouldBeExactlyTwoTablesNotThree() {
+        game.setMaxPlayersPerTable(9);
         Table table1 = new Table();
         table1.setId(1);
         Table table2 = new Table();
@@ -146,4 +152,21 @@ public class TestAreTablesBalancedImplQuery {
         assertFalse(command.execute(gameId));
     }
     
+    @Test
+    public void testShouldBeExactlyThreeTables() {
+        game.setMaxPlayersPerTable(6);
+        Table table1 = new Table();
+        table1.setId(1);
+        Table table2 = new Table();
+        table2.setId(2);
+        Table table3 = new Table();
+        table3.setId(3);
+        DataUtilsForTests.fillTableWithUsers(table1, 6, 6);
+        DataUtilsForTests.fillTableWithUsers(table2, 6, 6);
+        DataUtilsForTests.fillTableWithUsers(table3, 6, 6);
+        realTimeGame.addTable(table1);
+        realTimeGame.addTable(table2);
+        realTimeGame.addTable(table3);
+        assertTrue(command.execute(gameId));
+    }
 }
