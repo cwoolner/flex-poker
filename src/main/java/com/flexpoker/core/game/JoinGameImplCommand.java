@@ -12,6 +12,7 @@ import com.flexpoker.config.Command;
 import com.flexpoker.core.api.chat.SendGameChatMessageCommand;
 import com.flexpoker.core.api.game.ChangeGameStageCommand;
 import com.flexpoker.core.api.game.JoinGameCommand;
+import com.flexpoker.core.api.scheduling.ScheduleMoveGameToInProgressCommand;
 import com.flexpoker.exception.FlexPokerException;
 import com.flexpoker.model.Game;
 import com.flexpoker.model.GameStage;
@@ -44,6 +45,8 @@ public class JoinGameImplCommand implements JoinGameCommand {
     private final SendGameChatMessageCommand sendGameChatMessageCommand;
     
     private final OpenGameForUserRepository openGameForUserRepository;
+    
+    private final ScheduleMoveGameToInProgressCommand scheduleMoveGameToInProgressCommand;
 
     @Inject
     public JoinGameImplCommand(GameRepository gameDao, UserRepository userDao,
@@ -51,7 +54,8 @@ public class JoinGameImplCommand implements JoinGameCommand {
             ChangeGameStageCommand changeGameStageCommand,
             SimpMessageSendingOperations messageSendingOperations,
             SendGameChatMessageCommand sendGameChatMessageCommand,
-            OpenGameForUserRepository openGameForUserRepository) {
+            OpenGameForUserRepository openGameForUserRepository,
+            ScheduleMoveGameToInProgressCommand scheduleMoveGameToInProgressCommand) {
         this.gameDao = gameDao;
         this.userDao = userDao;
         this.realTimeGameRepository = realTimeGameRepository;
@@ -59,6 +63,7 @@ public class JoinGameImplCommand implements JoinGameCommand {
         this.messagingTemplate = messageSendingOperations;
         this.sendGameChatMessageCommand = sendGameChatMessageCommand;
         this.openGameForUserRepository = openGameForUserRepository;
+        this.scheduleMoveGameToInProgressCommand = scheduleMoveGameToInProgressCommand;
     }
     
     @Override
@@ -90,6 +95,9 @@ public class JoinGameImplCommand implements JoinGameCommand {
                     messagingTemplate.convertAndSendToUser(username, MessagingConstants.OPEN_GAMES_FOR_USER,
                             openGameForUserRepository.fetchAllOpenGamesForUser(username));
                 }
+                sendGameChatMessageCommand.execute(new GameChatMessage(
+                        "Game will be starting shortly", null, true, gameId));
+                scheduleMoveGameToInProgressCommand.execute(gameId);
             } else {
                 messagingTemplate.convertAndSendToUser(principal.getName(),
                         MessagingConstants.OPEN_GAMES_FOR_USER,
