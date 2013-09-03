@@ -8,9 +8,11 @@ import javax.inject.Inject;
 
 import com.flexpoker.config.Query;
 import com.flexpoker.core.api.tablebalancer.AreTablesBalancedQuery;
+import com.flexpoker.model.Game;
 import com.flexpoker.model.RealTimeGame;
 import com.flexpoker.model.Seat;
 import com.flexpoker.model.Table;
+import com.flexpoker.repository.api.GameRepository;
 import com.flexpoker.repository.api.RealTimeGameRepository;
 import com.flexpoker.util.Constants;
 
@@ -19,35 +21,42 @@ public class AreTablesBalancedImplQuery implements AreTablesBalancedQuery {
 
     private final RealTimeGameRepository realTimeGameRepository;
     
+    private final GameRepository gameRepository;
+    
     @Inject
-    public AreTablesBalancedImplQuery(RealTimeGameRepository realTimeGameRepository) {
+    public AreTablesBalancedImplQuery(
+            RealTimeGameRepository realTimeGameRepository,
+            GameRepository gameRepository) {
         this.realTimeGameRepository = realTimeGameRepository;
+        this.gameRepository = gameRepository;
     }
     
     @Override
     public boolean execute(Integer gameId) {
+        Game game = gameRepository.findById(gameId);
         RealTimeGame realTimeGame = realTimeGameRepository.get(gameId);
         List<Table> tables = realTimeGame.getTables();
         
         Map<Integer, Integer> tableSizesMap = findTableSizes(tables);
 
-        if (!isNumberOfTablesCorrect(tables, tableSizesMap)) {
+        if (!isNumberOfTablesCorrect(tables, tableSizesMap, game.getMaxPlayersPerTable())) {
             return false;
         }
 
         return arePlayersDistributedEvenly(tableSizesMap);
     }
 
-    private boolean isNumberOfTablesCorrect(List<Table> tables, Map<Integer, Integer> tableSizesMap) {
+    private boolean isNumberOfTablesCorrect(List<Table> tables,
+            Map<Integer, Integer> tableSizesMap, int maxPlayersPerTable) {
         int totalNumberOfPlayers = 0;
         
         for (Integer tableSize : tableSizesMap.values()) {
             totalNumberOfPlayers += tableSize;
         }
 
-        int numberOfRequiredTables = totalNumberOfPlayers / Constants.MAX_PLAYERS_PER_TABLE;
+        int numberOfRequiredTables = totalNumberOfPlayers / maxPlayersPerTable;
 
-        if (totalNumberOfPlayers % Constants.MAX_PLAYERS_PER_TABLE != 0) {
+        if (totalNumberOfPlayers % maxPlayersPerTable != 0) {
             numberOfRequiredTables++;
         }
 

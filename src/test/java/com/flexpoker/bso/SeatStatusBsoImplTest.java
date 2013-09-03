@@ -40,7 +40,7 @@ public class SeatStatusBsoImplTest {
     public void testSetStatusForNewGame() {
         Game game = new Game();
         Table table = new Table();
-        DataUtilsForTests.fillTableWithUsers(table, 2);
+        DataUtilsForTests.fillTableWithUsers(table, 2, 9);
         bso.setStatusForNewGame(game, table);
 
         assertTrue(table.getSeats().get(0).isStillInHand());
@@ -69,7 +69,7 @@ public class SeatStatusBsoImplTest {
         }
 
         table = new Table();
-        DataUtilsForTests.fillTableWithUsers(table, 3);
+        DataUtilsForTests.fillTableWithUsers(table, 3, 9);
         bso.setStatusForNewGame(game, table);
 
         assertTrue(table.getSeats().get(0).isStillInHand());
@@ -103,7 +103,7 @@ public class SeatStatusBsoImplTest {
         }
 
         table = new Table();
-        DataUtilsForTests.fillTableWithUsers(table, 6);
+        DataUtilsForTests.fillTableWithUsers(table, 6, 9);
         bso.setStatusForNewGame(game, table);
 
         assertTrue(table.getSeats().get(0).isStillInHand());
@@ -208,7 +208,7 @@ public class SeatStatusBsoImplTest {
             int smallBlindIndex, int bigBlindIndex, int actionOnIndex) {
         Game game = new Game();
         Table table = new Table();
-        DataUtilsForTests.fillTableWithUsers(table, numberOfPlayers);
+        DataUtilsForTests.fillTableWithUsers(table, numberOfPlayers, 9);
         table.getSeats().get(0).setButton(true);
         table.getSeats().get(1).setSmallBlind(true);
         table.getSeats().get(2).setBigBlind(true);
@@ -248,7 +248,7 @@ public class SeatStatusBsoImplTest {
             int actionOnIndex) {
         Game game = new Game();
         Table table = new Table();
-        DataUtilsForTests.fillTableWithUsers(table, numberOfPlayers);
+        DataUtilsForTests.fillTableWithUsers(table, numberOfPlayers, 9);
         table.getSeats().get(0).setButton(true);
         table.getSeats().get(1).setSmallBlind(true);
         table.getSeats().get(2).setBigBlind(true);

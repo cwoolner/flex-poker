@@ -22,9 +22,9 @@ public class DataUtilsForTests {
         return userGameStatuses;
     }
 
-    public static void fillTableWithUsers(Table table, int numberOfUsers) {
+    public static void fillTableWithUsers(Table table, int numberOfUsers, int maxPlayersPerTable) {
         List<Seat> seats = new ArrayList<Seat>();
-        for (int i = 0; i < Constants.MAX_PLAYERS_PER_TABLE; i++) {
+        for (int i = 0; i < maxPlayersPerTable; i++) {
             Seat seat = new Seat();
             seat.setPosition(i);
             seats.add(seat);
