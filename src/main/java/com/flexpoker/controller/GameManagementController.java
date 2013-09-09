@@ -7,7 +7,7 @@ import javax.inject.Inject;
 
 import org.springframework.messaging.handler.annotation.MessageExceptionHandler;
 import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.simp.annotation.ReplyToUser;
+import org.springframework.messaging.simp.annotation.SendToUser;
 import org.springframework.messaging.simp.annotation.SubscribeEvent;
 import org.springframework.stereotype.Controller;
 
@@ -56,7 +56,7 @@ public class GameManagementController {
     }
 
     @MessageExceptionHandler
-    @ReplyToUser(value = "/queue/errors")
+    @SendToUser(value = "/queue/errors")
     public String handleException(Throwable exception) {
         return exception.getMessage();
     }
