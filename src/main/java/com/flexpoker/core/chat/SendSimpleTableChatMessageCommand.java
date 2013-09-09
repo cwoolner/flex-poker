@@ -22,10 +22,12 @@ public class SendSimpleTableChatMessageCommand implements SendTableChatMessageCo
     @Override
     public void execute(TableChatMessage chatMessage) {
         if (chatMessage.isSystemMessage()) {
-            messagingTemplate.convertAndSend(String.format(MessagingConstants.CHAT_TABLE_SYSTEM, chatMessage.getTableId()),
+            messagingTemplate.convertAndSend(String.format(MessagingConstants.CHAT_TABLE_SYSTEM,
+                    chatMessage.getGameId(), chatMessage.getTableId()),
                     "System: " + chatMessage.getMessage());
         } else {
-            messagingTemplate.convertAndSend(String.format(MessagingConstants.CHAT_TABLE_USER, chatMessage.getTableId()),
+            messagingTemplate.convertAndSend(String.format(MessagingConstants.CHAT_TABLE_USER,
+                    chatMessage.getGameId(), chatMessage.getTableId()),
                     chatMessage.getSenderUsername() + ": " + chatMessage.getMessage());
         }
     }

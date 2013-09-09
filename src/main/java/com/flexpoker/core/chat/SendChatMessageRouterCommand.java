@@ -1,7 +1,6 @@
 package com.flexpoker.core.chat;
 
 import java.security.Principal;
-import java.util.UUID;
 
 import javax.inject.Inject;
 
@@ -50,19 +49,19 @@ public class SendChatMessageRouterCommand implements SendChatMessageCommand {
                     principal.getName(), false));
         } else if (chatMessage.getReceiverUsernames() == null
                 && chatMessage.getGameId() != null
+                && chatMessage.getTableId() == null
                 && chatMessage.getMessage() != null) {
-            
-//            GameChatMessage gameChatMessage = new GameChatMessage(chatMessage.getMessage(),
-//                    principal.getName(), false, UUID.fromString(chatMessage.getGameId()));
             GameChatMessage gameChatMessage = new GameChatMessage(chatMessage.getMessage(),
                     principal.getName(), false, Integer.valueOf(chatMessage.getGameId()));
-            
             sendGameChatMessageCommand.execute(gameChatMessage);
         } else if (chatMessage.getReceiverUsernames() == null
+                && chatMessage.getGameId() != null
                 && chatMessage.getTableId() != null
                 && chatMessage.getMessage() != null) {
-            sendTableChatMessageCommand.execute(new TableChatMessage(chatMessage.getMessage(),
-                    principal.getName(), false, UUID.fromString(chatMessage.getTableId())));
+            sendTableChatMessageCommand.execute(new TableChatMessage(
+                    chatMessage.getMessage(), principal.getName(), false,
+                    Integer.parseInt(chatMessage.getGameId()),
+                    Integer.parseInt(chatMessage.getTableId())));
         } else if (chatMessage.getReceiverUsernames() != null
                 && chatMessage.getMessage() != null) {
             sendPersonalChatMessageCommand.execute(new PersonalChatMessage(chatMessage.getMessage(),

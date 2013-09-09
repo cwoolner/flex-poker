@@ -5,7 +5,6 @@ import static org.mockito.Mockito.*;
 
 import java.security.Principal;
 import java.util.Arrays;
-import java.util.UUID;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -79,8 +78,10 @@ public class SendChatMessageRouterCommandTest {
 
     @Test
     public void testTableMessage() {
-        UUID tableId = UUID.randomUUID();
-        ChatMessage tableMessage = new ChatMessage("table message", null, null, tableId.toString());
+        Integer gameId = 1;
+        Integer tableId = 2;
+        ChatMessage tableMessage = new ChatMessage("table message", null,
+                gameId.toString(), tableId.toString());
 
         command.execute(tableMessage, mockPrincipal);
 

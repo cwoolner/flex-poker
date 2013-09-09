@@ -1,8 +1,6 @@
 package com.flexpoker.core.chat;
 
-import static org.mockito.Mockito.verify;
-
-import java.util.UUID;
+import static org.mockito.Mockito.*;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -26,16 +24,24 @@ public class SendSimpleTableChatMessageCommandTest {
     
     @Test
     public void testNonSystemUser() {
-        UUID tableId = UUID.randomUUID();
-        command.execute(new TableChatMessage("this is a message from a user", "testuser", false, tableId));
-        verify(mockMessageSendingOperations).convertAndSend("/topic/chat/table/user/" + tableId, "testuser: this is a message from a user");
+        int gameId = 1;
+        int tableId = 2;
+        command.execute(new TableChatMessage("this is a message from a user",
+                "testuser", false, gameId, tableId));
+        verify(mockMessageSendingOperations).convertAndSend(
+                "/topic/chat/game/" + gameId + "/table/" + tableId + "/user",
+                "testuser: this is a message from a user");
     }
     
     @Test
     public void testSystemUser() {
-        UUID tableId = UUID.randomUUID();
-        command.execute(new TableChatMessage("this is a message from the system", null, true, tableId));
-        verify(mockMessageSendingOperations).convertAndSend("/topic/chat/table/system/" + tableId, "System: this is a message from the system");
+        int gameId = 1;
+        int tableId = 2;
+        command.execute(new TableChatMessage("this is a message from the system",
+                null, true, gameId, tableId));
+        verify(mockMessageSendingOperations).convertAndSend(
+                "/topic/chat/game/" + gameId + "/table/" + tableId + "/system",
+                "System: this is a message from the system");
     }
 
 }
