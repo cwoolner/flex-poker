@@ -23,20 +23,28 @@ public class GameRepositoryImpl implements GameRepository {
     
     @Override
     public Game findById(Integer id) {
-        Session session = sessionFactory.getCurrentSession();
-        return (Game) session.get(Game.class, id);
+        Session session = sessionFactory.openSession();
+        session.getTransaction().begin();
+        Game game = (Game) session.get(Game.class, id);
+        session.getTransaction().commit();
+        return game;
     }
 
     @SuppressWarnings("unchecked")
     @Override
     public List<Game> findAll() {
-        Session session = sessionFactory.getCurrentSession();
-        return session.createCriteria(Game.class).list();
+        Session session = sessionFactory.openSession();
+        session.getTransaction().begin();
+        List<Game> gameList = session.createCriteria(Game.class).list();
+        session.getTransaction().commit();
+        return gameList;
     }
 
     @Override
     public void save(Game entity) {
-        Session session = sessionFactory.getCurrentSession();
+        Session session = sessionFactory.openSession();
+        session.getTransaction().begin();
         session.saveOrUpdate(entity);
+        session.getTransaction().commit();
     }
 }

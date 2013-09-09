@@ -8,7 +8,6 @@ import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.flexpoker.bso.api.GameBso;
 import com.flexpoker.core.api.game.ChangeGameStageCommand;
@@ -28,7 +27,6 @@ import com.flexpoker.repository.api.UserRepository;
 import com.flexpoker.web.model.AvailableTournamentListViewModel;
 import com.flexpoker.web.translator.GameListTranslator;
 
-@Transactional
 @Service
 public class GameBsoImpl implements GameBso {
 
