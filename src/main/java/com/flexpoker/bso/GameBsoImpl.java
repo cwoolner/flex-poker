@@ -41,9 +41,7 @@ public class GameBsoImpl implements GameBso {
     private final JoinGameCommand joinGameCommand;
     
     private final ChangeGameStageCommand changeGameStageCommand;
-    
-    private final AssignInitialTablesForNewGame assignInitialTablesForNewGame;
-    
+
     @Autowired
     public GameBsoImpl(
             UserRepository userDao,
@@ -59,7 +57,6 @@ public class GameBsoImpl implements GameBso {
         this.messagingTemplate = messagingTemplate;
         this.joinGameCommand = joinGameCommand;
         this.changeGameStageCommand = changeGameStageCommand;
-        this.assignInitialTablesForNewGame = assignInitialTablesForNewGame;
     }
     
     @Override
@@ -119,18 +116,6 @@ public class GameBsoImpl implements GameBso {
         }
 
         throw new FlexPokerException("Player is not at any table.");
-    }
-
-    @Override
-    public void initializePlayersAndTables(Game game) {
-        assignInitialTablesForNewGame.execute(game.getId());
-
-        RealTimeGame realTimeGame = realTimeGameBso.get(game.getId());
-        Set<UserGameStatus> userGameStatuses = realTimeGame.getUserGameStatuses();
-
-        for (UserGameStatus userGameStatus : userGameStatuses) {
-            userGameStatus.setChips(1500);
-        }
     }
 
     private void createRealTimeGame(Game game) {

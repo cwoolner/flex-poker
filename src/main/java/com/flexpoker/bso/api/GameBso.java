@@ -24,8 +24,6 @@ public interface GameBso {
 
     Table fetchPlayersCurrentTable(User user, Game game);
 
-    void initializePlayersAndTables(Game game);
-
     List<Table> fetchTables(Game game);
 
     Set<UserGameStatus> fetchUserGameStatuses(Game game);

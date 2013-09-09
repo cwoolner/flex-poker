@@ -18,6 +18,7 @@ var rootUrl = "<c:url value='/' />";
 
 <script type="text/javascript" src="<c:url value='/resources/scripts/main.js' />"></script>
 <script type="text/javascript" src="<c:url value='/resources/scripts/controllers/gameController.js' />"></script>
+<script type="text/javascript" src="<c:url value='/resources/scripts/controllers/tableController.js' />"></script>
 <script type="text/javascript" src="<c:url value='/resources/scripts/controllers/mainController.js' />"></script>
 <script type="text/javascript" src="<c:url value='/resources/scripts/controllers/tournamentRegisteringController.js' />"></script>
 <script type="text/javascript" src="<c:url value='/resources/scripts/controllers/logoutController.js' />"></script>

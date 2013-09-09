@@ -30,6 +30,12 @@ flexpokerModule.controller('MainController', ['$rootScope', '$scope', 'ngstomp',
                 $rootScope.tryingToJoinGameId = null;
             }
         });
+        
+        $scope.client.subscribe('/queue/opentable' + queueSuffix, function(message) {
+            var openTable = $.parseJSON(message.body);
+            $location.path('/game/' + openTable.gameId + '/table/' + openTable.tableId);
+        });
+
     }, function() {}, '/');
 
     if ($rootScope.stompClients === undefined) {

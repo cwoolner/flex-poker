@@ -51,11 +51,6 @@ public class GameEventBsoImpl {
 
     private PotBso potBso;
 
-    private void readyForNewGame(Game game) {
-        gameBso.initializePlayersAndTables(game);
-        gameBso.changeGameStage(game.getId(), GameStage.INPROGRESS);
-    }
-
     private void startNewHand(Game game, Table table) {
         seatStatusBso.setStatusForNewHand(game, table);
         resetTableStatus(game, table);

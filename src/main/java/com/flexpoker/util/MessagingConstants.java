@@ -21,5 +21,7 @@ public class MessagingConstants {
     public static final String GAME_STATUS_EVENTS = "/topic/game/%s";
     
     public static final String OPEN_GAMES_FOR_USER = "/queue/opengamesforuser";
+    
+    public static final String OPEN_TABLE_FOR_USER = "/queue/opentable";
 
 }
