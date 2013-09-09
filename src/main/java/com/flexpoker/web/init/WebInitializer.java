@@ -1,7 +1,5 @@
 package com.flexpoker.web.init;
 
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
 import javax.servlet.ServletRegistration.Dynamic;
 
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
@@ -11,13 +9,14 @@ import com.flexpoker.config.RedisConfig;
 import com.flexpoker.config.SecurityConfig;
 import com.flexpoker.config.TimerConfig;
 import com.flexpoker.config.WebConfig;
+import com.flexpoker.config.WebSocketConfig;
 
 public class WebInitializer extends AbstractAnnotationConfigDispatcherServletInitializer {
 
     @Override
     protected Class<?>[] getRootConfigClasses() {
         return new Class<?>[] { DataSourceConfig.class, SecurityConfig.class,
-                TimerConfig.class, RedisConfig.class };
+                TimerConfig.class, RedisConfig.class, WebSocketConfig.class };
     }
 
     @Override
@@ -33,13 +32,6 @@ public class WebInitializer extends AbstractAnnotationConfigDispatcherServletIni
     @Override
     protected void customizeRegistration(Dynamic registration) {
         registration.setInitParameter("dispatchOptionsRequest", "true");
-    }
-
-    @Override
-    public void onStartup(ServletContext servletContext) throws ServletException {
-        servletContext.setInitParameter("spring.profiles.active", "simple-broker");
-        //servletContext.setInitParameter("spring.profiles.active", "stomp-broker-relay");
-        super.onStartup(servletContext);
     }
 
 }
