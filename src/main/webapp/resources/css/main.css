@@ -38,3 +38,11 @@ textarea {
 .game-tab-finished {
     background-color: #FF0000;
 }
+
+.action-on-true {
+    background-color: #00FF00;
+}
+
+.action-on-false {
+    background-color: #FF0000;
+}

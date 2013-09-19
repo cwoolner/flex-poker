@@ -36,6 +36,14 @@ flexpokerModule.controller('MainController', ['$rootScope', '$scope', 'ngstomp',
             $location.path('/game/' + openTable.gameId + '/table/' + openTable.tableId);
         });
 
+        $scope.client.subscribe('/queue/personaltablestatus' + queueSuffix, function(message) {
+            alert($.parseJSON(message.body));
+        });
+
+        $scope.client.subscribe('/queue/pocketcards' + queueSuffix, function(message) {
+            alert($.parseJSON(message.body));
+        });
+
     }, function() {}, '/');
 
     if ($rootScope.stompClients === undefined) {

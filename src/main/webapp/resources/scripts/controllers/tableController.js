@@ -16,12 +16,19 @@ flexpokerModule.controller('TableController', ['$scope', '$rootScope', '$routePa
             $('.chat-display').prop('scrollTop', scrollHeight);
             $scope.chatDisplay += $.parseJSON(message.body) + '\n';
         });
+
         $scope.client.subscribe('/topic/chat/game/' + $scope.gameId
                 + '/table/' + $scope.tableId + '/system', function(message) {
             var scrollHeight = $('.chat-display').prop('scrollHeight');
             $('.chat-display').prop('scrollTop', scrollHeight);
             $scope.chatDisplay += $.parseJSON(message.body) + '\n';
         });
+
+        $scope.client.subscribe('/topic/game/' + $scope.gameId
+                + '/table/' + $scope.tableId, function(message) {
+            $scope.table = $.parseJSON(message.body);
+        });
+
     }, function() {}, '/');
     
     if ($rootScope.stompClients === undefined) {
