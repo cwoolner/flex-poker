@@ -45,7 +45,6 @@ public class UserBsoImpl implements UserBso {
         signupUser.setEnabled(false);
         signupUser.setPassword(new ShaPasswordEncoder().encodePassword(signupUser.getPassword(), null));
         userDao.insertUser(signupUser);
-        userDao.insertAuthority(signupUser.getUsername(), "USER");
         
         UUID signupCode = UUID.randomUUID();
         signupRepository.storeSignupCode(signupUser.getUsername(), signupCode, 10);

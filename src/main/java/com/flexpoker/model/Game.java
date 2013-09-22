@@ -2,17 +2,6 @@ package com.flexpoker.model;
 
 import java.util.Date;
 
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
-
-@Entity
-@Table(name = "games")
 public class Game {
 
     private Integer id;
@@ -39,8 +28,6 @@ public class Game {
 
     private GameStage gameStage;
 
-    @Id
-    @GeneratedValue
     public Integer getId() {
         return id;
     }
@@ -65,8 +52,6 @@ public class Game {
         this.endTime = endTime;
     }
 
-    @OneToOne
-    @JoinColumn(name = "winner")
     public User getWinningUser() {
         return winningUser;
     }
@@ -75,8 +60,6 @@ public class Game {
         this.winningUser = winningUser;
     }
 
-    @OneToOne
-    @JoinColumn(name = "createdBy")
     public User getCreatedByUser() {
         return createdByUser;
     }
@@ -125,7 +108,6 @@ public class Game {
         this.allowRebuys = allowRebuys;
     }
 
-    @Enumerated(EnumType.STRING)
     public GameStage getGameStage() {
         return gameStage;
     }

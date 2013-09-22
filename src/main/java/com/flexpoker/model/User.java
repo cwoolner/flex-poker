@@ -1,12 +1,5 @@
 package com.flexpoker.model;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
-
-@Entity
-@Table(name = "users")
 public class User {
 
     private Integer id;
@@ -19,8 +12,6 @@ public class User {
     
     private boolean enabled;
     
-    @Id
-    @GeneratedValue
     public Integer getId() {
         return id;
     }

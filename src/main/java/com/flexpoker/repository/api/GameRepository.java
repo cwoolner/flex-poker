@@ -10,5 +10,8 @@ public interface GameRepository {
     
     List<Game> findAll();
     
-    void save(Game entity);
+    void saveNew(Game game);
+    
+    void update(Game game);
+
 }

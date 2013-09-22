@@ -77,7 +77,7 @@ public class GameBsoImpl implements GameBso {
         game.setCreatedOn(new Date());
         game.setGameStage(GameStage.REGISTERING);
         game.setAllowRebuys(false);
-        gameDao.save(game);
+        gameDao.saveNew(game);
 
         createRealTimeGame(game);
         

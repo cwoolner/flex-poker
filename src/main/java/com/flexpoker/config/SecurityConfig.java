@@ -15,15 +15,13 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Inject
-    private DataSource dataSource;
-    
     @Override
     protected void registerAuthentication(AuthenticationManagerBuilder auth) throws Exception {
-        auth.jdbcAuthentication()
-            .dataSource(dataSource)
-            .rolePrefix("ROLE_")
-            .passwordEncoder(new ShaPasswordEncoder());
+        auth.inMemoryAuthentication()
+                .withUser("player1").password("player1").roles("USER").and()
+                .withUser("player2").password("player2").roles("USER").and()
+                .withUser("player3").password("player3").roles("USER").and()
+                .withUser("player4").password("player4").roles("USER");
     }
 
     @Override

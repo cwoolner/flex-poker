@@ -22,7 +22,6 @@ public class ChangeGameStageImplCommand implements ChangeGameStageCommand {
     public void execute(Integer gameId, GameStage gameStage) {
         Game game = gameDao.findById(gameId);
         game.setGameStage(gameStage);
-        gameDao.save(game);
     }
 
 }

@@ -8,7 +8,6 @@ public interface UserRepository {
 
     void insertUser(User signupUser);
 
-    void insertAuthority(String username, String authority);
-
     void updateUser(User user);
+
 }
