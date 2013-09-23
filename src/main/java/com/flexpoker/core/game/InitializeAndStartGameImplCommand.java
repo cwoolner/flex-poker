@@ -84,9 +84,9 @@ public class InitializeAndStartGameImplCommand implements InitializeAndStartGame
 
         private final UUID gameId;
         
-        private final Integer tableId;
+        private final UUID tableId;
         
-        public OpenTableForUserDto(UUID gameId, Integer tableId) {
+        public OpenTableForUserDto(UUID gameId, UUID tableId) {
             this.gameId = gameId;
             this.tableId = tableId;
         }
@@ -95,7 +95,7 @@ public class InitializeAndStartGameImplCommand implements InitializeAndStartGame
             return gameId;
         }
 
-        public Integer getTableId() {
+        public UUID getTableId() {
             return tableId;
         }
 

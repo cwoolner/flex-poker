@@ -38,7 +38,7 @@ public class AreTablesBalancedImplQuery implements AreTablesBalancedQuery {
         RealTimeGame realTimeGame = realTimeGameRepository.get(gameId);
         List<Table> tables = realTimeGame.getTables();
         
-        Map<Integer, Integer> tableSizesMap = findTableSizes(tables);
+        Map<UUID, Integer> tableSizesMap = findTableSizes(tables);
 
         if (!isNumberOfTablesCorrect(tables, tableSizesMap, game.getMaxPlayersPerTable())) {
             return false;
@@ -48,7 +48,7 @@ public class AreTablesBalancedImplQuery implements AreTablesBalancedQuery {
     }
 
     private boolean isNumberOfTablesCorrect(List<Table> tables,
-            Map<Integer, Integer> tableSizesMap, int maxPlayersPerTable) {
+            Map<UUID, Integer> tableSizesMap, int maxPlayersPerTable) {
         int totalNumberOfPlayers = 0;
         
         for (Integer tableSize : tableSizesMap.values()) {
@@ -64,7 +64,7 @@ public class AreTablesBalancedImplQuery implements AreTablesBalancedQuery {
         return numberOfRequiredTables == tables.size();
     }
 
-    private boolean arePlayersDistributedEvenly(Map<Integer, Integer> tableSizesMap) {
+    private boolean arePlayersDistributedEvenly(Map<UUID, Integer> tableSizesMap) {
         int minSize = -1;
         int maxSize = -1;
 
@@ -87,8 +87,8 @@ public class AreTablesBalancedImplQuery implements AreTablesBalancedQuery {
         return minSize + 2 > maxSize;
     }
 
-    private Map<Integer, Integer> findTableSizes(List<Table> tables) {
-        Map<Integer, Integer> tableSizesMap = new HashMap<Integer, Integer>();
+    private Map<UUID, Integer> findTableSizes(List<Table> tables) {
+        Map<UUID, Integer> tableSizesMap = new HashMap<>();
 
         for (Table table : tables) {
             tableSizesMap.put(table.getId(), determineNumberOfPlayers(table));

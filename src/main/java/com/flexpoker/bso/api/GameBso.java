@@ -21,8 +21,6 @@ public interface GameBso {
 
     void changeGameStage(UUID gameId, GameStage starting);
 
-    Table fetchTable(Game game, Table table);
-
     Table fetchPlayersCurrentTable(User user, Game game);
 
     List<Table> fetchTables(Game game);

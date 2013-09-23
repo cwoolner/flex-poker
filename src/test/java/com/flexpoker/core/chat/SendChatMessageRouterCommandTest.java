@@ -78,8 +78,8 @@ public class SendChatMessageRouterCommandTest {
 
     @Test
     public void testTableMessage() {
-        Integer gameId = 1;
-        Integer tableId = 2;
+        UUID gameId = UUID.randomUUID();
+        UUID tableId = UUID.randomUUID();
         ChatMessage tableMessage = new ChatMessage("table message", null,
                 gameId.toString(), tableId.toString());
 

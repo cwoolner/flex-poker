@@ -1,6 +1,7 @@
 package com.flexpoker.model;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.apache.commons.collections.CollectionUtils;
 
@@ -8,7 +9,7 @@ import com.flexpoker.util.Constants;
 
 public class Table {
 
-    private Integer id;
+    private UUID id;
 
     private List<Seat> seats;
 
@@ -16,11 +17,11 @@ public class Table {
 
     private List<Integer> potAmounts;
     
-    public Integer getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 

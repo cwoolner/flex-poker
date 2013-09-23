@@ -93,18 +93,6 @@ public class GameBsoImpl implements GameBso {
     }
 
     @Override
-    public Table fetchTable(Game game, Table table) {
-        List<Table> tables = fetchTables(game);
-        table = realTimeGameBso.get(game.getId()).getTable(table);
-
-        if (table == null) {
-            throw new FlexPokerException("Table does not exist.");
-        }
-
-        return table;
-    }
-
-    @Override
     public Table fetchPlayersCurrentTable(User user, Game game) {
         List<Table> tables = fetchTables(game);
 

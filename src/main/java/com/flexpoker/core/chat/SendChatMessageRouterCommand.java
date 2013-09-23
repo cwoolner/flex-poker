@@ -61,8 +61,8 @@ public class SendChatMessageRouterCommand implements SendChatMessageCommand {
                 && chatMessage.getMessage() != null) {
             sendTableChatMessageCommand.execute(new TableChatMessage(
                     chatMessage.getMessage(), principal.getName(), false,
-                    Integer.parseInt(chatMessage.getGameId()),
-                    Integer.parseInt(chatMessage.getTableId())));
+                    UUID.fromString(chatMessage.getGameId()),
+                    UUID.fromString(chatMessage.getTableId())));
         } else if (chatMessage.getReceiverUsernames() != null
                 && chatMessage.getMessage() != null) {
             sendPersonalChatMessageCommand.execute(new PersonalChatMessage(chatMessage.getMessage(),

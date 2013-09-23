@@ -105,10 +105,6 @@ public class FlexController {
         return gameBso.fetchPlayersCurrentTable(user, game);
     }
 
-    public Table fetchTable(Game game, Table table) {
-        return gameBso.fetchTable(game, table);
-    }
-
     public PocketCards fetchPocketCards(Game game, Table table) {
         User user = extractCurrentUser();
         return dealCardActionsBso.fetchPocketCards(user, game, table);

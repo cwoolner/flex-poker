@@ -81,7 +81,7 @@ public class PlayerActionsBsoImpl implements PlayerActionsBso {
         synchronized (this) {
             RealTimeGame realTimeGame = realTimeGameBso.get(game.getId());
             RealTimeHand realTimeHand = realTimeGame.getRealTimeHand(table);
-            table = realTimeGame.getTable(table);
+            table = realTimeGame.getTable(table.getId());
 
             if (!isUserAllowedToPerformAction(GameEventType.CHECK, user,
                     realTimeHand, table)) {
@@ -113,7 +113,7 @@ public class PlayerActionsBsoImpl implements PlayerActionsBso {
         synchronized (this) {
             RealTimeGame realTimeGame = realTimeGameBso.get(game.getId());
             RealTimeHand realTimeHand = realTimeGame.getRealTimeHand(table);
-            table = realTimeGame.getTable(table);
+            table = realTimeGame.getTable(table.getId());
 
             if (!isUserAllowedToPerformAction(GameEventType.FOLD, user,
                     realTimeHand, table)) {
@@ -160,7 +160,7 @@ public class PlayerActionsBsoImpl implements PlayerActionsBso {
         synchronized (this) {
             RealTimeGame realTimeGame = realTimeGameBso.get(game.getId());
             RealTimeHand realTimeHand = realTimeGame.getRealTimeHand(table);
-            table = realTimeGame.getTable(table);
+            table = realTimeGame.getTable(table.getId());
 
             Seat actionOnSeat = (Seat) CollectionUtils.find(table.getSeats(),
                     new ActionOnSeatPredicate());
@@ -215,7 +215,7 @@ public class PlayerActionsBsoImpl implements PlayerActionsBso {
         synchronized (this) {
             RealTimeGame realTimeGame = realTimeGameBso.get(game.getId());
             RealTimeHand realTimeHand = realTimeGame.getRealTimeHand(table);
-            table = realTimeGame.getTable(table);
+            table = realTimeGame.getTable(table.getId());
 
             Blinds currentBlinds = realTimeGame.getCurrentBlinds();
             int bigBlind = currentBlinds.getBigBlind();

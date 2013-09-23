@@ -27,7 +27,7 @@ public class PotBsoImplTest {
         Game game = new Game();
         game.setId(UUID.randomUUID());
         Table table = new Table();
-        table.setId(1);
+        table.setId(UUID.randomUUID());
 
         testCalculatePotsAfterRound1(game, table);
         testCalculatePotsAfterRound2(game, table);
@@ -40,9 +40,9 @@ public class PotBsoImplTest {
         Game game = new Game();
         game.setId(UUID.randomUUID());
         Table table1 = new Table();
-        table1.setId(1);
+        table1.setId(UUID.randomUUID());
         Table table2 = new Table();
-        table2.setId(2);
+        table2.setId(UUID.randomUUID());
         bso.createNewHandPot(game, table1);
         bso.createNewHandPot(game, table2);
 
@@ -57,7 +57,7 @@ public class PotBsoImplTest {
         Game game = new Game();
         game.setId(UUID.randomUUID());
         Table table = new Table();
-        table.setId(1);
+        table.setId(UUID.randomUUID());
         bso.removeGame(game);
         bso.createNewHandPot(game, table);
         assertEquals(0, bso.fetchAllPots(game, table).size());
@@ -69,7 +69,7 @@ public class PotBsoImplTest {
         Game game = new Game();
         game.setId(UUID.randomUUID());
         Table table = new Table();
-        table.setId(1);
+        table.setId(UUID.randomUUID());
         bso.createNewHandPot(game, table);
         bso.fetchAllPots(game, table);
 
@@ -85,7 +85,7 @@ public class PotBsoImplTest {
         Game game = new Game();
         game.setId(UUID.randomUUID());
         Table table = new Table();
-        table.setId(1);
+        table.setId(UUID.randomUUID());
 
         bso.createNewHandPot(game, table);
 
@@ -149,7 +149,7 @@ public class PotBsoImplTest {
         Game game = new Game();
         game.setId(UUID.randomUUID());
         Table table = new Table();
-        table.setId(1);
+        table.setId(UUID.randomUUID());
         bso.createNewHandPot(game, table);
         bso.fetchAllPots(game, table);
 
@@ -163,7 +163,7 @@ public class PotBsoImplTest {
         Game game = new Game();
         game.setId(UUID.randomUUID());
         Table table = new Table();
-        table.setId(1);
+        table.setId(UUID.randomUUID());
 
         User user1 = new User();
         user1.setId(1);

@@ -6,6 +6,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.Predicate;
 
 public class RealTimeGame {
 
@@ -15,7 +19,7 @@ public class RealTimeGame {
 
     private Set<UserGameStatus> userGameStatuses = new HashSet<UserGameStatus>();
 
-    private Map<Table, RealTimeHand> realTimeHands = new HashMap<Table, RealTimeHand>();
+    private Map<Table, RealTimeHand> realTimeHands = new HashMap<>();
 
     public RealTimeGame() {
         currentBlinds = new Blinds(10, 20);
@@ -34,7 +38,7 @@ public class RealTimeGame {
      * current number of tables.
      */
     public void addTable(Table table) {
-        table.setId(tables.size());
+        table.setId(UUID.randomUUID());
         tables.add(table);
     }
 
@@ -42,8 +46,20 @@ public class RealTimeGame {
         tables.remove(table);
     }
 
-    public Table getTable(Table table) {
-        return tables.get(table.getId().intValue());
+    public Table getTable(final UUID tableId) {
+        Object table = CollectionUtils.find(tables, new Predicate() {
+            
+            @Override
+            public boolean evaluate(Object table) {
+                return ((Table) table).getId().equals(tableId);
+            }
+        });
+        
+        if (table == null) {
+            return null;
+        }
+        
+        return (Table) table;
     }
 
     public void addUserGameStatus(UserGameStatus userGameStatus) {
