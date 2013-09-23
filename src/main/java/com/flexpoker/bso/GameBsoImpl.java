@@ -4,6 +4,7 @@ import java.security.Principal;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
@@ -87,7 +88,7 @@ public class GameBsoImpl implements GameBso {
     }
 
     @Override
-    public void changeGameStage(Integer gameId, GameStage gameStage) {
+    public void changeGameStage(UUID gameId, GameStage gameStage) {
         changeGameStageCommand.execute(gameId, gameStage);
     }
 
@@ -134,7 +135,7 @@ public class GameBsoImpl implements GameBso {
     }
 
     @Override
-    public void joinGame(Integer gameId, Principal user) {
+    public void joinGame(UUID gameId, Principal user) {
         joinGameCommand.execute(gameId, user);
     }
 

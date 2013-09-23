@@ -2,6 +2,8 @@ package com.flexpoker.core.chat;
 
 import static org.mockito.Mockito.*;
 
+import java.util.UUID;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -24,7 +26,7 @@ public class SendSimpleGameChatMessageCommandTest {
     
     @Test
     public void testNonSystemUser() {
-        Integer gameId = 5;
+        UUID gameId = UUID.randomUUID();
         command.execute(new GameChatMessage("this is a message from a user", "testuser", false, gameId));
         verify(mockMessageSendingOperations).convertAndSend("/topic/chat/game/" + gameId + "/user",
                 "testuser: this is a message from a user");
@@ -32,7 +34,7 @@ public class SendSimpleGameChatMessageCommandTest {
     
     @Test
     public void testSystemUser() {
-        Integer gameId = 5;
+        UUID gameId = UUID.randomUUID();
         command.execute(new GameChatMessage("this is a message from the system", null, true, gameId));
         verify(mockMessageSendingOperations).convertAndSend("/topic/chat/game/" + gameId + "/system",
                 "System: this is a message from the system");

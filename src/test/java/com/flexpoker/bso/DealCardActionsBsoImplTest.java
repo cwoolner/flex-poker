@@ -3,6 +3,8 @@ package com.flexpoker.bso;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
+import java.util.UUID;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -42,7 +44,7 @@ public class DealCardActionsBsoImplTest {
     @Test
     public void testFetchPocketCards() {
         RealTimeGame generatedRealTimeGame = new RealTimeGameGenerator().get(new Game());
-        when(mockRealTimeGameBso.get(any(Integer.class))).thenReturn(generatedRealTimeGame);
+        when(mockRealTimeGameBso.get(any(UUID.class))).thenReturn(generatedRealTimeGame);
         when(mockDeckBso.fetchPocketCards(any(User.class), any(Game.class), any(Table.class))).thenReturn(new PocketCards());
 
         Table table = new Table();
@@ -73,7 +75,7 @@ public class DealCardActionsBsoImplTest {
     @Test
     public void testFetchFlopCards() {
         RealTimeGame generatedRealTimeGame = new RealTimeGameGenerator().get(new Game());
-        when(mockRealTimeGameBso.get(any(Integer.class))).thenReturn(generatedRealTimeGame);
+        when(mockRealTimeGameBso.get(any(UUID.class))).thenReturn(generatedRealTimeGame);
         when(mockDeckBso.fetchFlopCards(any(Game.class), any(Table.class))).thenReturn(new FlopCards());
 
         Table table = new Table();
@@ -106,7 +108,7 @@ public class DealCardActionsBsoImplTest {
     @Test
     public void testFetchRiverCard() {
         RealTimeGame generatedRealTimeGame = new RealTimeGameGenerator().get(new Game());
-        when(mockRealTimeGameBso.get(any(Integer.class))).thenReturn(generatedRealTimeGame);
+        when(mockRealTimeGameBso.get(any(UUID.class))).thenReturn(generatedRealTimeGame);
         when(mockDeckBso.fetchRiverCard(any(Game.class), any(Table.class))).thenReturn(new RiverCard());
 
         Table table = new Table();
@@ -145,7 +147,7 @@ public class DealCardActionsBsoImplTest {
     @Test
     public void testFetchTurnCard() {
         RealTimeGame generatedRealTimeGame = new RealTimeGameGenerator().get(new Game());
-        when(mockRealTimeGameBso.get(any(Integer.class))).thenReturn(generatedRealTimeGame);
+        when(mockRealTimeGameBso.get(any(UUID.class))).thenReturn(generatedRealTimeGame);
         when(mockDeckBso.fetchTurnCard(any(Game.class), any(Table.class))).thenReturn(new TurnCard());
 
         Table table = new Table();

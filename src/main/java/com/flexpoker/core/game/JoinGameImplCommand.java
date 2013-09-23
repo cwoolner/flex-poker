@@ -3,6 +3,7 @@ package com.flexpoker.core.game;
 import java.security.Principal;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 import javax.inject.Inject;
 
@@ -67,7 +68,7 @@ public class JoinGameImplCommand implements JoinGameCommand {
     }
     
     @Override
-    public void execute(Integer gameId, Principal principal) {
+    public void execute(UUID gameId, Principal principal) {
         synchronized (this) {
             Game game = gameDao.findById(gameId);
             User user = userDao.findByUsername(principal.getName());

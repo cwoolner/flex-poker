@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.junit.Test;
 
@@ -24,7 +25,7 @@ public class PotBsoImplTest {
     @Test
     public void testCalculatePotsAfterRound() {
         Game game = new Game();
-        game.setId(1);
+        game.setId(UUID.randomUUID());
         Table table = new Table();
         table.setId(1);
 
@@ -37,7 +38,7 @@ public class PotBsoImplTest {
     @Test
     public void testCreateNewHandPot() {
         Game game = new Game();
-        game.setId(1);
+        game.setId(UUID.randomUUID());
         Table table1 = new Table();
         table1.setId(1);
         Table table2 = new Table();
@@ -54,7 +55,7 @@ public class PotBsoImplTest {
     @Test
     public void testFetchAllPots() {
         Game game = new Game();
-        game.setId(1);
+        game.setId(UUID.randomUUID());
         Table table = new Table();
         table.setId(1);
         bso.removeGame(game);
@@ -66,7 +67,7 @@ public class PotBsoImplTest {
     @Test
     public void testRemoveGame() {
         Game game = new Game();
-        game.setId(1);
+        game.setId(UUID.randomUUID());
         Table table = new Table();
         table.setId(1);
         bso.createNewHandPot(game, table);
@@ -82,7 +83,7 @@ public class PotBsoImplTest {
     @Test
     public void testRemoveSeatFromPots() {
         Game game = new Game();
-        game.setId(1);
+        game.setId(UUID.randomUUID());
         Table table = new Table();
         table.setId(1);
 
@@ -146,7 +147,7 @@ public class PotBsoImplTest {
     @Test
     public void testRemoveTable() {
         Game game = new Game();
-        game.setId(1);
+        game.setId(UUID.randomUUID());
         Table table = new Table();
         table.setId(1);
         bso.createNewHandPot(game, table);
@@ -160,7 +161,7 @@ public class PotBsoImplTest {
     @Test
     public void testSetWinners() {
         Game game = new Game();
-        game.setId(1);
+        game.setId(UUID.randomUUID());
         Table table = new Table();
         table.setId(1);
 

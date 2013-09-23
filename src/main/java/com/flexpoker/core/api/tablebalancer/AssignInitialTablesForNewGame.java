@@ -1,7 +1,9 @@
 package com.flexpoker.core.api.tablebalancer;
 
+import java.util.UUID;
+
 public interface AssignInitialTablesForNewGame {
 
-    void execute(Integer gameId);
+    void execute(UUID gameId);
 
 }

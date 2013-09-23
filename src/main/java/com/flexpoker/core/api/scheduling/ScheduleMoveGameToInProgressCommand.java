@@ -1,7 +1,9 @@
 package com.flexpoker.core.api.scheduling;
 
+import java.util.UUID;
+
 public interface ScheduleMoveGameToInProgressCommand {
 
-    void execute(Integer gameId);
+    void execute(UUID gameId);
 
 }

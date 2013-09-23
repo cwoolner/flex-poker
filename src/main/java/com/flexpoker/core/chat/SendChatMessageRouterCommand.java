@@ -1,6 +1,7 @@
 package com.flexpoker.core.chat;
 
 import java.security.Principal;
+import java.util.UUID;
 
 import javax.inject.Inject;
 
@@ -52,7 +53,7 @@ public class SendChatMessageRouterCommand implements SendChatMessageCommand {
                 && chatMessage.getTableId() == null
                 && chatMessage.getMessage() != null) {
             GameChatMessage gameChatMessage = new GameChatMessage(chatMessage.getMessage(),
-                    principal.getName(), false, Integer.valueOf(chatMessage.getGameId()));
+                    principal.getName(), false, UUID.fromString(chatMessage.getGameId()));
             sendGameChatMessageCommand.execute(gameChatMessage);
         } else if (chatMessage.getReceiverUsernames() == null
                 && chatMessage.getGameId() != null

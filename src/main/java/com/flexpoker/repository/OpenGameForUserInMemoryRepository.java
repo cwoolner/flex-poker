@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Predicate;
@@ -33,7 +34,7 @@ public class OpenGameForUserInMemoryRepository implements OpenGameForUserReposit
     }
 
     @Override
-    public void deleteOpenGameForUser(final String username, final Integer gameId) {
+    public void deleteOpenGameForUser(final String username, final UUID gameId) {
         synchronized (openGameForUserMap) {
             List<OpenGameForUser> openGameForUserList = openGameForUserMap.get(username);
             
@@ -61,7 +62,7 @@ public class OpenGameForUserInMemoryRepository implements OpenGameForUserReposit
     }
 
     @Override
-    public void setGameStage(String username, final Integer gameId, GameStage gameStage) {
+    public void setGameStage(String username, final UUID gameId, GameStage gameStage) {
         synchronized (openGameForUserMap) {
             List<OpenGameForUser> openGameForUserList = openGameForUserMap.get(username);
             
@@ -70,7 +71,7 @@ public class OpenGameForUserInMemoryRepository implements OpenGameForUserReposit
                 
                 @Override
                 public boolean evaluate(Object openGameForUser) {
-                    return gameId == ((OpenGameForUser) openGameForUser).getGameId();
+                    return gameId.equals(((OpenGameForUser) openGameForUser).getGameId());
                 }
             });
             openGameForUser.changeGameStage(gameStage);

@@ -1,12 +1,13 @@
 package com.flexpoker.repository.api;
 
 import java.util.List;
+import java.util.UUID;
 
 import com.flexpoker.model.Game;
 
 public interface GameRepository {
     
-    Game findById(Integer id);
+    Game findById(UUID id);
     
     List<Game> findAll();
     

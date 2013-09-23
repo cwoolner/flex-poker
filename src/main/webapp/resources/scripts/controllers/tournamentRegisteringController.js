@@ -69,7 +69,7 @@ flexpokerModule.controller('TournamentRegisteringController', ['$rootScope', '$s
     };
     
     $scope.submitJoinGame = function() {
-        $scope.client.send("/app/joingame", {}, $scope.joinGameId);
+        $scope.client.send("/app/joingame", {}, JSON.stringify($scope.joinGameId));
         $('#join-game-dialog').dialog('destroy');
     };
     

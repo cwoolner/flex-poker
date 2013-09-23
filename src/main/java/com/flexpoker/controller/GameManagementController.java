@@ -2,6 +2,7 @@ package com.flexpoker.controller;
 
 import java.security.Principal;
 import java.util.List;
+import java.util.UUID;
 
 import javax.inject.Inject;
 
@@ -51,8 +52,9 @@ public class GameManagementController {
     }
     
     @MessageMapping(value = "/joingame")
-    public void joinGame(Integer gameId, Principal principal) {
-        gameBso.joinGame(gameId, principal);
+    public void joinGame(String gameId, Principal principal) {
+        UUID gameUUID = UUID.fromString(gameId);
+        gameBso.joinGame(gameUUID, principal);
     }
 
     @MessageExceptionHandler

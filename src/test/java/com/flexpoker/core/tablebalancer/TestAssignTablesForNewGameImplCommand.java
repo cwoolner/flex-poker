@@ -8,6 +8,7 @@ import static org.mockito.Mockito.when;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -34,7 +35,7 @@ public class TestAssignTablesForNewGameImplCommand {
     
     private AssignTablesForNewGameImplCommand command;
 
-    private Integer gameId;
+    private UUID gameId;
     
     private RealTimeGame realTimeGame;
     
@@ -43,7 +44,7 @@ public class TestAssignTablesForNewGameImplCommand {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        gameId = 1;
+        gameId = UUID.randomUUID();
         realTimeGame = new RealTimeGame();
         game = new Game();
         when(mockRealTimeGameRepository.get(gameId)).thenReturn(realTimeGame);

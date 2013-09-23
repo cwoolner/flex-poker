@@ -2,6 +2,7 @@ package com.flexpoker.core.scheduling;
 
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.UUID;
 
 import javax.inject.Inject;
 
@@ -33,7 +34,7 @@ public class ScheduleMoveGameToInProgressJdkTimerCommand implements ScheduleMove
     }
     
     @Override
-    public void execute(final Integer gameId) {
+    public void execute(final UUID gameId) {
         final Timer timer = new Timer();
         timer.schedule(new TimerTask() {
             

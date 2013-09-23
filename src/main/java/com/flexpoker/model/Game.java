@@ -1,10 +1,11 @@
 package com.flexpoker.model;
 
 import java.util.Date;
+import java.util.UUID;
 
 public class Game {
 
-    private Integer id;
+    private UUID id;
 
     private Date startTime;
 
@@ -28,11 +29,11 @@ public class Game {
 
     private GameStage gameStage;
 
-    public Integer getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 

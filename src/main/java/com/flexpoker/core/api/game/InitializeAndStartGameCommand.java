@@ -1,7 +1,9 @@
 package com.flexpoker.core.api.game;
 
+import java.util.UUID;
+
 public interface InitializeAndStartGameCommand {
 
-    void execute(Integer gameId);
+    void execute(UUID gameId);
 
 }

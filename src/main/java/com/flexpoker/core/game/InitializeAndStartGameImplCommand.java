@@ -3,6 +3,7 @@ package com.flexpoker.core.game;
 import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.UUID;
 
 import javax.inject.Inject;
 
@@ -43,7 +44,7 @@ public class InitializeAndStartGameImplCommand implements InitializeAndStartGame
     }
     
     @Override
-    public void execute(final Integer gameId) {
+    public void execute(final UUID gameId) {
         assignInitialTablesForNewGame.execute(gameId);
 
         final RealTimeGame realTimeGame = realTimeGameRepository.get(gameId);
@@ -81,16 +82,16 @@ public class InitializeAndStartGameImplCommand implements InitializeAndStartGame
     
     private class OpenTableForUserDto {
 
-        private final Integer gameId;
+        private final UUID gameId;
         
         private final Integer tableId;
         
-        public OpenTableForUserDto(Integer gameId, Integer tableId) {
+        public OpenTableForUserDto(UUID gameId, Integer tableId) {
             this.gameId = gameId;
             this.tableId = tableId;
         }
 
-        public Integer getGameId() {
+        public UUID getGameId() {
             return gameId;
         }
 

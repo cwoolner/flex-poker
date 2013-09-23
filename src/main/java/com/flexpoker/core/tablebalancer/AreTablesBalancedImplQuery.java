@@ -3,6 +3,7 @@ package com.flexpoker.core.tablebalancer;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.inject.Inject;
 
@@ -32,7 +33,7 @@ public class AreTablesBalancedImplQuery implements AreTablesBalancedQuery {
     }
     
     @Override
-    public boolean execute(Integer gameId) {
+    public boolean execute(UUID gameId) {
         Game game = gameRepository.findById(gameId);
         RealTimeGame realTimeGame = realTimeGameRepository.get(gameId);
         List<Table> tables = realTimeGame.getTables();

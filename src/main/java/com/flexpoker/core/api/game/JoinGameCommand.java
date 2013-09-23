@@ -1,9 +1,10 @@
 package com.flexpoker.core.api.game;
 
 import java.security.Principal;
+import java.util.UUID;
 
 public interface JoinGameCommand {
 
-    void execute(Integer gameId, Principal principal);
+    void execute(UUID gameId, Principal principal);
 
 }

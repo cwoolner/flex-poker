@@ -4,6 +4,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
+import java.util.UUID;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -24,7 +26,7 @@ public class TestAreTablesBalancedImplQuery {
     
     private AreTablesBalancedImplQuery command;
     
-    private Integer gameId;
+    private UUID gameId;
     
     private RealTimeGame realTimeGame;
     
@@ -33,7 +35,7 @@ public class TestAreTablesBalancedImplQuery {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        gameId = 1;
+        gameId = UUID.randomUUID();
         realTimeGame = new RealTimeGame();
         game = new Game();
         when(mockRealTimeGameRepository.get(gameId)).thenReturn(realTimeGame);

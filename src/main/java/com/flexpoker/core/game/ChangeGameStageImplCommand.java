@@ -1,5 +1,7 @@
 package com.flexpoker.core.game;
 
+import java.util.UUID;
+
 import javax.inject.Inject;
 
 import com.flexpoker.config.Command;
@@ -19,7 +21,7 @@ public class ChangeGameStageImplCommand implements ChangeGameStageCommand {
     }
     
     @Override
-    public void execute(Integer gameId, GameStage gameStage) {
+    public void execute(UUID gameId, GameStage gameStage) {
         Game game = gameDao.findById(gameId);
         game.setGameStage(gameStage);
     }

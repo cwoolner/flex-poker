@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.junit.Test;
 
@@ -25,7 +26,7 @@ public class DeckBsoImplTest {
     @Test
     public void testShuffleDeck() {
         Game game = new Game();
-        game.setId(1);
+        game.setId(UUID.randomUUID());
         Table table = setupTable();
 
         // just make sure that it doesn't throw an exception
@@ -35,7 +36,7 @@ public class DeckBsoImplTest {
     @Test
     public void testRemoveDeck() {
         Game game = new Game();
-        game.setId(1);
+        game.setId(UUID.randomUUID());
         Table table = setupTable();
         bso.shuffleDeck(game, table);
 
@@ -46,7 +47,7 @@ public class DeckBsoImplTest {
     @Test
     public void testFetchFlopCards() {
         Game game = new Game();
-        game.setId(1);
+        game.setId(UUID.randomUUID());
         Table table = setupTable();
         bso.shuffleDeck(game, table);
 
@@ -60,7 +61,7 @@ public class DeckBsoImplTest {
     @Test
     public void testFetchPocketCards() {
         Game game = new Game();
-        game.setId(1);
+        game.setId(UUID.randomUUID());
         Table table = setupTable();
         bso.shuffleDeck(game, table);
 
@@ -86,7 +87,7 @@ public class DeckBsoImplTest {
     @Test
     public void testFetchRiverCard() {
         Game game = new Game();
-        game.setId(1);
+        game.setId(UUID.randomUUID());
         Table table = setupTable();
         bso.shuffleDeck(game, table);
 
@@ -98,7 +99,7 @@ public class DeckBsoImplTest {
     @Test
     public void testFetchTurnCard() {
         Game game = new Game();
-        game.setId(1);
+        game.setId(UUID.randomUUID());
         Table table = setupTable();
         bso.shuffleDeck(game, table);
 

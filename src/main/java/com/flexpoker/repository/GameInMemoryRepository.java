@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.UUID;
 
 import org.springframework.stereotype.Repository;
 
@@ -14,17 +14,14 @@ import com.flexpoker.repository.api.GameRepository;
 @Repository
 public class GameInMemoryRepository implements GameRepository {
 
-    private final Map<Integer, Game> gameMap;
-    
-    private final AtomicInteger currentGameId;
+    private final Map<UUID, Game> gameMap;
     
     public GameInMemoryRepository() {
         gameMap = new HashMap<>();
-        currentGameId = new AtomicInteger(0);
     }
     
     @Override
-    public Game findById(Integer id) {
+    public Game findById(UUID id) {
         return gameMap.get(id);
     }
 
@@ -35,7 +32,7 @@ public class GameInMemoryRepository implements GameRepository {
 
     @Override
     public void saveNew(Game game) {
-        game.setId(currentGameId.incrementAndGet());
+        game.setId(UUID.randomUUID());
         gameMap.put(game.getId(), game);
     }
 

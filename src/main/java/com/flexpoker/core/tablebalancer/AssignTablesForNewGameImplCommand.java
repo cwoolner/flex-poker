@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
+import java.util.UUID;
 
 import javax.inject.Inject;
 
@@ -39,7 +40,7 @@ public class AssignTablesForNewGameImplCommand implements AssignInitialTablesFor
     }
     
     @Override
-    public void execute(Integer gameId) {
+    public void execute(UUID gameId) {
         Game game = gameRepository.findById(gameId);
         RealTimeGame realTimeGame = realTimeGameRepository.get(gameId);
         
