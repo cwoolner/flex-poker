@@ -19,12 +19,6 @@ import com.flexpoker.model.UserGameStatus;
 public interface ValidationBso {
 
     /**
-     * Verify that the table is in a valid state before performing operations
-     * on it.
-     */
-    void validateTable(Table table);
-
-    /**
      * Verify that the set of users to be assigned to tables is valid, and that
      * the maximum number of players per table is valid.
      */

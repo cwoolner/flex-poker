@@ -3,6 +3,8 @@ package com.flexpoker.bso;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Service;
 
@@ -11,13 +13,14 @@ import com.flexpoker.bso.api.DeckBso;
 import com.flexpoker.bso.api.GameBso;
 import com.flexpoker.bso.api.PlayerActionsBso;
 import com.flexpoker.bso.api.PotBso;
-import com.flexpoker.bso.api.SeatStatusBso;
 import com.flexpoker.bso.api.ValidationBso;
+import com.flexpoker.core.api.seatstatus.SetSeatStatusForEndOfHandCommand;
+import com.flexpoker.core.api.seatstatus.SetSeatStatusForNewRoundCommand;
 import com.flexpoker.exception.FlexPokerException;
 import com.flexpoker.model.Blinds;
 import com.flexpoker.model.Game;
-import com.flexpoker.model.GameStage;
 import com.flexpoker.model.GameEventType;
+import com.flexpoker.model.GameStage;
 import com.flexpoker.model.HandDealerState;
 import com.flexpoker.model.HandEvaluation;
 import com.flexpoker.model.HandRoundState;
@@ -37,19 +40,41 @@ import com.flexpoker.util.ButtonSeatPredicate;
 @Service
 public class PlayerActionsBsoImpl implements PlayerActionsBso {
 
-    private RealTimeGameRepository realTimeGameBso;
+    private final RealTimeGameRepository realTimeGameBso;
 
-    private PotBso potBso;
+    private final PotBso potBso;
 
-    private SeatStatusBso seatStatusBso;
+    private final SetSeatStatusForEndOfHandCommand setSeatStatusForEndOfHandCommand;
+    
+    private final SetSeatStatusForNewRoundCommand setSeatStatusForNewRoundCommand;
 
-    private ValidationBso validationBso;
+    private final ValidationBso validationBso;
 
-    private DeckBso deckBso;
+    private final DeckBso deckBso;
 
-    private GameBso gameBso;
+    private final GameBso gameBso;
 
-    private ActionOnTimerBso actionOnTimerBso;
+    private final ActionOnTimerBso actionOnTimerBso;
+    
+    @Inject
+    public PlayerActionsBsoImpl(
+            RealTimeGameRepository realTimeGameRepository,
+            PotBso potBso,
+            SetSeatStatusForEndOfHandCommand setSeatStatusForEndOfHandCommand,
+            SetSeatStatusForNewRoundCommand setSeatStatusForNewRoundCommand,
+            ValidationBso validationBso,
+            DeckBso deckBso,
+            GameBso gameBso,
+            ActionOnTimerBso actionOnTimerBso) {
+        this.realTimeGameBso = realTimeGameRepository;
+        this.potBso = potBso;
+        this.setSeatStatusForEndOfHandCommand = setSeatStatusForEndOfHandCommand;
+        this.setSeatStatusForNewRoundCommand = setSeatStatusForNewRoundCommand;
+        this.validationBso = validationBso;
+        this.deckBso = deckBso;
+        this.gameBso = gameBso;
+        this.actionOnTimerBso = actionOnTimerBso;
+    }
 
     @Override
     public HandState check(Game game, Table table, User user) {
@@ -100,7 +125,7 @@ public class PlayerActionsBsoImpl implements PlayerActionsBso {
 
             actionOnSeat.setStillInHand(false);
             potBso.removeSeatFromPots(game, table, actionOnSeat);
-            actionOnTimerBso.removeSeat(game, table, actionOnSeat);
+            actionOnTimerBso.removeSeat(table, actionOnSeat);
 
             resetAllSeatActions(actionOnSeat, realTimeHand);
 
@@ -260,10 +285,10 @@ public class PlayerActionsBsoImpl implements PlayerActionsBso {
             RealTimeHand realTimeHand, Seat actionOnSeat) {
         realTimeHand.setHandRoundState(HandRoundState.ROUND_IN_PROGRESS);
         actionOnSeat.setActionOn(false);
-        actionOnTimerBso.removeSeat(game, table, actionOnSeat);
+        actionOnTimerBso.removeSeat(table, actionOnSeat);
         Seat nextToActSeat = realTimeHand.getNextToAct();
         nextToActSeat.setActionOn(true);
-        actionOnTimerBso.addSeat(game, table, nextToActSeat);
+        actionOnTimerBso.addSeat(table, nextToActSeat);
         determineNextToAct(table, realTimeHand);
     }
 
@@ -276,10 +301,10 @@ public class PlayerActionsBsoImpl implements PlayerActionsBso {
         determineTablePotAmounts(game, table);
 
         if (realTimeHand.getHandDealerState() == HandDealerState.COMPLETE) {
-            seatStatusBso.setStatusForEndOfHand(game, table);
+            setSeatStatusForEndOfHandCommand.execute(table);
             determineWinners(game, table, realTimeHand.getHandEvaluationList());
         } else {
-            seatStatusBso.setStatusForNewRound(game, table);
+            setSeatStatusForNewRoundCommand.execute(table);
             determineNextToAct(table, realTimeHand);
             determineLastToAct(table, realTimeHand);
             resetRaiseAmountsAfterRound(table, bigBlindAmount);
@@ -444,61 +469,5 @@ public class PlayerActionsBsoImpl implements PlayerActionsBso {
             }
         }
     }
-
-    public RealTimeGameRepository getRealTimeGameBso() {
-        return realTimeGameBso;
-    }
-
-    public void setRealTimeGameBso(RealTimeGameRepository realTimeGameBso) {
-        this.realTimeGameBso = realTimeGameBso;
-    }
-
-    public PotBso getPotBso() {
-        return potBso;
-    }
-
-    public void setPotBso(PotBso potBso) {
-        this.potBso = potBso;
-    }
-
-    public SeatStatusBso getSeatStatusBso() {
-        return seatStatusBso;
-    }
-
-    public void setSeatStatusBso(SeatStatusBso seatStatusBso) {
-        this.seatStatusBso = seatStatusBso;
-    }
-
-    public ValidationBso getValidationBso() {
-        return validationBso;
-    }
-
-    public void setValidationBso(ValidationBso validationBso) {
-        this.validationBso = validationBso;
-    }
-
-    public DeckBso getDeckBso() {
-        return deckBso;
-    }
-
-    public void setDeckBso(DeckBso deckBso) {
-        this.deckBso = deckBso;
-    }
-
-    public GameBso getGameBso() {
-        return gameBso;
-    }
-
-    public void setGameBso(GameBso gameBso) {
-        this.gameBso = gameBso;
-    }
-
-    public ActionOnTimerBso getActionOnTimerBso() {
-        return actionOnTimerBso;
-    }
-
-    public void setActionOnTimerBso(ActionOnTimerBso actionOnTimerBso) {
-        this.actionOnTimerBso = actionOnTimerBso;
-    }
-
+    
 }

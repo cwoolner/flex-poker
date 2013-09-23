@@ -6,7 +6,6 @@ import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatche
 
 import com.flexpoker.config.RedisConfig;
 import com.flexpoker.config.SecurityConfig;
-import com.flexpoker.config.TimerConfig;
 import com.flexpoker.config.WebConfig;
 import com.flexpoker.config.WebSocketConfig;
 
@@ -14,8 +13,7 @@ public class WebInitializer extends AbstractAnnotationConfigDispatcherServletIni
 
     @Override
     protected Class<?>[] getRootConfigClasses() {
-        return new Class<?>[] { SecurityConfig.class, TimerConfig.class,
-                RedisConfig.class, WebSocketConfig.class };
+        return new Class<?>[] { SecurityConfig.class, RedisConfig.class, WebSocketConfig.class };
     }
 
     @Override

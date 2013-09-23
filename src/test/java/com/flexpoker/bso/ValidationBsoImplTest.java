@@ -17,41 +17,6 @@ import com.flexpoker.util.DataUtilsForTests;
 public class ValidationBsoImplTest {
 
     private ValidationBsoImpl bso = new ValidationBsoImpl();
-    
-    @Test
-    public void testValidateTable() {
-        Table table = new Table();
-        List<Seat> seats = new ArrayList<Seat>();
-        table.setSeats(seats);
-
-        try {
-            bso.validateTable(table);
-            fail("Should have thrown an IllegalArgumentException.");
-        } catch (IllegalArgumentException e) {}
-
-        Seat seat1 = new Seat();
-        seat1.setPosition(0);
-        seats.add(seat1);
-
-        try {
-            bso.validateTable(table);
-            fail("Should have thrown an IllegalArgumentException.");
-        } catch (IllegalArgumentException e) {}
-
-        Seat seat2 = new Seat();
-        seat2.setPosition(1);
-        seats.add(seat2);
-
-        try {
-            bso.validateTable(table);
-            fail("Should have thrown an IllegalArgumentException.");
-        } catch (IllegalArgumentException e) {}
-
-        seat1.setUserGameStatus(new UserGameStatus());
-        seat2.setUserGameStatus(new UserGameStatus());
-
-        bso.validateTable(table);
-    }
 
     @Test
     public void testValidateTableAssignment() {

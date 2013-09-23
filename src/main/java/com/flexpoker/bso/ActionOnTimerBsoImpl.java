@@ -6,57 +6,35 @@ import java.util.Map;
 import org.springframework.stereotype.Service;
 
 import com.flexpoker.bso.api.ActionOnTimerBso;
-import com.flexpoker.model.Game;
 import com.flexpoker.model.Seat;
 import com.flexpoker.model.Table;
 
 @Service
 public class ActionOnTimerBsoImpl implements ActionOnTimerBso {
 
-    private Map<Game, Map<Table, Map<Seat, Integer>>> actionOnTimerMap =
-            new HashMap<Game, Map<Table, Map<Seat, Integer>>>();
+    private Map<Table, Map<Seat, Integer>> actionOnTimerMap = new HashMap<>();
 
     @Override
-    public void removeGame(Game game) {
-        synchronized (this) {
-            actionOnTimerMap.remove(game);
-        }
+    public void removeTable(Table table) {
+        actionOnTimerMap.remove(table);
     }
 
     @Override
-    public void removeTable(Game game, Table table) {
-        Map<Table, Map<Seat, Integer>> tableMap = actionOnTimerMap.get(game);
-        synchronized (tableMap) {
-            tableMap.remove(table);
-        }
+    public void removeSeat(Table table, Seat seat) {
+        Map<Seat, Integer> tableMap = actionOnTimerMap.get(table);
+        tableMap.remove(seat);
     }
 
     @Override
-    public void removeSeat(Game game, Table table, Seat seat) {
-        Map<Table, Map<Seat, Integer>> tableMap = actionOnTimerMap.get(game);
-        synchronized (tableMap) {
-            tableMap.get(table).remove(seat);
+    public void addSeat(Table table, Seat seat) {
+        if (actionOnTimerMap.get(table) == null) {
+            actionOnTimerMap.put(table, new HashMap<Seat, Integer>());
         }
+        actionOnTimerMap.get(table).put(seat, 28);
     }
 
     @Override
-    public void addSeat(Game game, Table table, Seat seat) {
-        synchronized (this) {
-            if (actionOnTimerMap.get(game) == null) {
-                actionOnTimerMap.put(game, new HashMap<Table, Map<Seat, Integer>>());
-            }
-            if (actionOnTimerMap.get(game).get(table) == null) {
-                actionOnTimerMap.get(game).put(table, new HashMap<Seat, Integer>());
-            }
-        }
-        Map<Table, Map<Seat, Integer>> tableMap = actionOnTimerMap.get(game);
-        synchronized (tableMap) {
-            tableMap.get(table).put(seat, 28);
-        }
-    }
-
-    @Override
-    public Map<Game, Map<Table, Map<Seat, Integer>>> getActionOnTimerMap() {
+    public Map<Table, Map<Seat, Integer>> getActionOnTimerMap() {
         return actionOnTimerMap;
     }
 

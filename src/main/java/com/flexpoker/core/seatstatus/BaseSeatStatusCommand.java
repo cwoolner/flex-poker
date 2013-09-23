@@ -1,17 +1,11 @@
-package com.flexpoker.bso;
+package com.flexpoker.core.seatstatus;
 
 import java.util.List;
 import java.util.Random;
 
-import javax.inject.Inject;
-
 import org.apache.commons.collections.CollectionUtils;
-import org.springframework.stereotype.Service;
 
 import com.flexpoker.bso.api.ActionOnTimerBso;
-import com.flexpoker.bso.api.SeatStatusBso;
-import com.flexpoker.bso.api.ValidationBso;
-import com.flexpoker.model.Game;
 import com.flexpoker.model.Seat;
 import com.flexpoker.model.Table;
 import com.flexpoker.util.ActionOnSeatPredicate;
@@ -19,107 +13,17 @@ import com.flexpoker.util.BigBlindSeatPredicate;
 import com.flexpoker.util.ButtonSeatPredicate;
 import com.flexpoker.util.SmallBlindSeatPredicate;
 
-@Service
-public class SeatStatusBsoImpl implements SeatStatusBso {
-
-    private final ValidationBso validationBso;
-
-    private final ActionOnTimerBso actionOnTimerBso;
+public abstract class BaseSeatStatusCommand {
     
-    @Inject
-    public SeatStatusBsoImpl(ValidationBso validationBso, ActionOnTimerBso actionOnTimerBso) {
-        this.validationBso = validationBso;
-        this.actionOnTimerBso = actionOnTimerBso;
-    }
+    protected ActionOnTimerBso actionOnTimerBso;
 
-    @Override
-    public void setStatusForNewGame(Game game, Table table) {
-        validationBso.validateTable(table);
-        assignStillInHand(table);
-        assignNewGameButton(table);
-        assignNewGameSmallBlind(table);
-        assignNewGameBigBlind(table);
-        assignNewHandActionOn(game, table);
-    }
-    
-    @Override
-    public void setStatusForNewRound(Game game, Table table) {
-        validationBso.validateTable(table);
-        resetChipsInFront(table);
-        assignNewRoundActionOn(game, table);
-    }
-
-    @Override
-    public void setStatusForNewHand(Game game, Table table) {
-        validationBso.validateTable(table);
-        assignStillInHand(table);
-        resetShowCards(table);
-        assignNewHandBigBlind(table);
-        assignNewHandSmallBlind(table);
-        assignNewHandButton(table);
-        assignNewHandActionOn(game, table);
-    }
-
-    @Override
-    public void setStatusForEndOfHand(Game game, Table table) {
-        resetChipsInFront(table);
-        resetCallAmounts(table);
-        resetRaiseTo(table);
-        resetActionOn(table);
-        resetActionOnTimer(game, table);
-    }
-
-    private void resetRaiseTo(Table table) {
+    protected void resetActionOnTimer(Table table) {
         for (Seat seat : table.getSeats()) {
-            seat.setRaiseTo(0);
+            actionOnTimerBso.removeSeat(table, seat);
         }
     }
 
-    private void resetCallAmounts(Table table) {
-        for (Seat seat : table.getSeats()) {
-            seat.setCallAmount(0);
-        }
-    }
-
-    /**
-     * Zero-out the chipsInFront field for all seats at a table.  This should
-     * typically be used whenever a new round is started.
-     *
-     * @param table
-     */
-    private void resetChipsInFront(Table table) {
-        for (Seat seat : table.getSeats()) {
-            seat.setChipsInFront(0);
-        }
-    }
-
-    private void resetShowCards(Table table) {
-        for (Seat seat : table.getSeats()) {
-            seat.setShowCards(null);
-        }
-    }
-
-    private void assignStillInHand(Table table) {
-        for (Seat seat : table.getSeats()) {
-            if (seat.getUserGameStatus() != null) {
-                seat.setStillInHand(true);
-            }
-        }
-    }
-
-    private void resetActionOn(Table table) {
-        for (Seat seat : table.getSeats()) {
-            seat.setActionOn(false);
-        }
-    }
-
-    private void resetActionOnTimer(Game game, Table table) {
-        for (Seat seat : table.getSeats()) {
-            actionOnTimerBso.removeSeat(game, table, seat);
-        }
-    }
-
-    private void assignNewHandActionOn(Game game, Table table) {
+    protected void assignNewHandActionOn(Table table) {
         List<Seat> seats = table.getSeats();
         Seat bigBlindSeat = (Seat) CollectionUtils.find(seats,
                 new BigBlindSeatPredicate());
@@ -131,10 +35,10 @@ public class SeatStatusBsoImpl implements SeatStatusBso {
             if (seats.get(i).isStillInHand()) {
                 if (actionOnSeat != null) {
                     actionOnSeat.setActionOn(false);
-                    actionOnTimerBso.removeSeat(game, table, actionOnSeat);
+                    actionOnTimerBso.removeSeat(table, actionOnSeat);
                 }
                 seats.get(i).setActionOn(true);
-                actionOnTimerBso.addSeat(game, table, seats.get(i));
+                actionOnTimerBso.addSeat(table, seats.get(i));
                 return;
             }
         }
@@ -143,16 +47,16 @@ public class SeatStatusBsoImpl implements SeatStatusBso {
             if (seats.get(i).isStillInHand()) {
                 if (actionOnSeat != null) {
                     actionOnSeat.setActionOn(false);
-                    actionOnTimerBso.removeSeat(game, table, actionOnSeat);
+                    actionOnTimerBso.removeSeat(table, actionOnSeat);
                 }
                 seats.get(i).setActionOn(true);
-                actionOnTimerBso.addSeat(game, table, seats.get(i));
+                actionOnTimerBso.addSeat(table, seats.get(i));
                 return;
             }
         }
     }
 
-    private void assignNewGameBigBlind(Table table) {
+    protected void assignNewGameBigBlind(Table table) {
         List<Seat> seats = table.getSeats();
         int numberOfPlayers = determineNumberOfPlayers(table);
         Seat buttonSeat = (Seat) CollectionUtils.find(seats,
@@ -195,7 +99,7 @@ public class SeatStatusBsoImpl implements SeatStatusBso {
         }
     }
 
-    private void assignNewGameSmallBlind(Table table) {
+    protected void assignNewGameSmallBlind(Table table) {
         List<Seat> seats = table.getSeats();
         int numberOfPlayers = determineNumberOfPlayers(table);
         Seat buttonSeat = (Seat) CollectionUtils.find(seats,
@@ -222,7 +126,7 @@ public class SeatStatusBsoImpl implements SeatStatusBso {
         }
     }
 
-    private void assignNewGameButton(Table table) {
+    protected void assignNewGameButton(Table table) {
         int numberOfPlayersAtTable = table.getSeats().size();
         while (true) {
             int dealerPosition = new Random().nextInt(numberOfPlayersAtTable);
@@ -234,7 +138,7 @@ public class SeatStatusBsoImpl implements SeatStatusBso {
         }
     }
 
-    private void assignNewRoundActionOn(Game game, Table table) {
+    protected void assignNewRoundActionOn(Table table) {
         List<Seat> seats = table.getSeats();
 
         Seat buttonSeat = (Seat) CollectionUtils.find(seats,
@@ -248,9 +152,9 @@ public class SeatStatusBsoImpl implements SeatStatusBso {
             if (seats.get(i).isStillInHand()
                     && !seats.get(i).isAllIn()) {
                 actionOnSeat.setActionOn(false);
-                actionOnTimerBso.removeSeat(game, table, actionOnSeat);
+                actionOnTimerBso.removeSeat(table, actionOnSeat);
                 seats.get(i).setActionOn(true);
-                actionOnTimerBso.addSeat(game, table, seats.get(i));
+                actionOnTimerBso.addSeat(table, seats.get(i));
                 return;
             }
         }
@@ -259,16 +163,16 @@ public class SeatStatusBsoImpl implements SeatStatusBso {
             if (seats.get(i).isStillInHand()
                     && !seats.get(i).isAllIn()) {
                 actionOnSeat.setActionOn(false);
-                actionOnTimerBso.removeSeat(game, table, actionOnSeat);
+                actionOnTimerBso.removeSeat(table, actionOnSeat);
                 seats.get(i).setActionOn(true);
-                actionOnTimerBso.addSeat(game, table, seats.get(i));
+                actionOnTimerBso.addSeat(table, seats.get(i));
                 return;
             }
         }
 
     }
 
-    private Integer determineNumberOfPlayers(Table table) {
+    protected Integer determineNumberOfPlayers(Table table) {
         int numberOfPlayers = 0;
 
         for (Seat seat : table.getSeats()) {
@@ -280,7 +184,7 @@ public class SeatStatusBsoImpl implements SeatStatusBso {
         return numberOfPlayers;
     }
 
-    private void assignNewHandBigBlind(Table table) {
+    protected void assignNewHandBigBlind(Table table) {
         Seat bigBlindSeat = (Seat) CollectionUtils.find(table.getSeats(),
                 new BigBlindSeatPredicate());
         List<Seat> seats = table.getSeats();
@@ -303,7 +207,7 @@ public class SeatStatusBsoImpl implements SeatStatusBso {
         }
     }
 
-    private void assignNewHandSmallBlind(Table table) {
+    protected void assignNewHandSmallBlind(Table table) {
         List<Seat> seats = table.getSeats();
         Seat smallBlindSeat = (Seat) CollectionUtils.find(seats,
                 new SmallBlindSeatPredicate());
@@ -344,7 +248,7 @@ public class SeatStatusBsoImpl implements SeatStatusBso {
 
     }
 
-    private void assignNewHandButton(Table table) {
+    protected void assignNewHandButton(Table table) {
         Seat buttonSeat = (Seat) CollectionUtils.find(table.getSeats(),
                 new ButtonSeatPredicate());
         Seat smallBlindSeat = (Seat) CollectionUtils.find(table.getSeats(),

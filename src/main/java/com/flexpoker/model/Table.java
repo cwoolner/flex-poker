@@ -2,6 +2,10 @@ package com.flexpoker.model;
 
 import java.util.List;
 
+import org.apache.commons.collections.CollectionUtils;
+
+import com.flexpoker.util.Constants;
+
 public class Table {
 
     private Integer id;
@@ -11,7 +15,7 @@ public class Table {
     private int totalPotAmount;
 
     private List<Integer> potAmounts;
-
+    
     public Integer getId() {
         return id;
     }
@@ -42,6 +46,79 @@ public class Table {
 
     public void setPotAmounts(List<Integer> potAmounts) {
         this.potAmounts = potAmounts;
+    }
+    
+    public void resetRaiseTo() {
+        for (Seat seat : seats) {
+            seat.setRaiseTo(0);
+        }
+    }
+
+    public void resetCallAmounts() {
+        for (Seat seat : seats) {
+            seat.setCallAmount(0);
+        }
+    }
+
+    public void resetChipsInFront() {
+        for (Seat seat : seats) {
+            seat.setChipsInFront(0);
+        }
+    }
+
+    public void resetShowCards() {
+        for (Seat seat : seats) {
+            seat.setShowCards(null);
+        }
+    }
+    
+    public void resetActionOn() {
+        for (Seat seat : seats) {
+            seat.setActionOn(false);
+        }
+    }
+    
+    public void resetStillInHand() {
+        for (Seat seat : seats) {
+            if (seat.getUserGameStatus() != null) {
+                seat.setStillInHand(true);
+            }
+        }
+    }
+    
+    public int getNumberOfPlayers() {
+        int numberOfUsers = 0;
+
+        for (Seat seat : seats) {
+            if (seat.getUserGameStatus() != null) {
+                numberOfUsers++;
+            }
+        }
+
+        return numberOfUsers;
+    }
+    
+    /**
+     * Verify that the table is in a valid state before performing operations
+     * on it.
+     */
+    public void validateTable() {
+        if (CollectionUtils.isEmpty(seats)) {
+            throw new IllegalArgumentException("seats cannot be empty.");
+        }
+        if (seats.size() > Constants.MAX_PLAYERS_PER_TABLE
+                || seats.size() < Constants.MIN_PLAYERS_PER_TABLE) {
+            throw new IllegalArgumentException("Number of seats must be "
+                    + "between: " + Constants.MIN_PLAYERS_PER_TABLE
+                    + " and " + Constants.MAX_PLAYERS_PER_TABLE);
+        }
+        int numberOfUsers = getNumberOfPlayers();
+        if (numberOfUsers > Constants.MAX_PLAYERS_PER_TABLE
+                || numberOfUsers < Constants.MIN_PLAYERS_PER_TABLE) {
+            throw new IllegalArgumentException("Number of users must be "
+                    + "between: " + Constants.MIN_PLAYERS_PER_TABLE
+                    + " and " + Constants.MAX_PLAYERS_PER_TABLE);
+        }
     }
 
     @Override

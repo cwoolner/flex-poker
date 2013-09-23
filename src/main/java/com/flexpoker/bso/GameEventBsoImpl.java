@@ -3,6 +3,8 @@ package com.flexpoker.bso;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Service;
 
@@ -10,13 +12,13 @@ import com.flexpoker.bso.api.DeckBso;
 import com.flexpoker.bso.api.GameBso;
 import com.flexpoker.bso.api.HandEvaluatorBso;
 import com.flexpoker.bso.api.PotBso;
-import com.flexpoker.bso.api.SeatStatusBso;
+import com.flexpoker.core.api.seatstatus.SetSeatStatusForNewGameCommand;
+import com.flexpoker.core.api.seatstatus.SetSeatStatusForNewHandCommand;
 import com.flexpoker.model.Blinds;
 import com.flexpoker.model.CommonCards;
 import com.flexpoker.model.FlopCards;
 import com.flexpoker.model.Game;
 import com.flexpoker.model.GameEventType;
-import com.flexpoker.model.GameStage;
 import com.flexpoker.model.HandDealerState;
 import com.flexpoker.model.HandEvaluation;
 import com.flexpoker.model.HandRanking;
@@ -39,20 +41,37 @@ import com.flexpoker.util.SmallBlindSeatPredicate;
 @Service
 public class GameEventBsoImpl {
 
-    private GameBso gameBso;
+    private final GameBso gameBso;
 
-    private DeckBso deckBso;
+    private final DeckBso deckBso;
 
-    private RealTimeGameRepository realTimeGameBso;
+    private final RealTimeGameRepository realTimeGameBso;
 
-    private SeatStatusBso seatStatusBso;
+    private final SetSeatStatusForNewHandCommand setSeatStatusForNewHandCommand;
+    
+    private final SetSeatStatusForNewGameCommand setSeatStatusForNewGameCommand;
 
-    private HandEvaluatorBso handEvaluatorBso;
+    private final HandEvaluatorBso handEvaluatorBso;
 
-    private PotBso potBso;
+    private final PotBso potBso;
+    
+    @Inject
+    public GameEventBsoImpl(GameBso gameBso, DeckBso deckBso,
+            RealTimeGameRepository realTimeGameRepository,
+            SetSeatStatusForNewHandCommand setSeatStatusForNewHandCommand,
+            SetSeatStatusForNewGameCommand setSeatStatusForNewGameCommand,
+            HandEvaluatorBso handEvaluatorBso, PotBso potBso) {
+        this.gameBso = gameBso;
+        this.deckBso = deckBso;
+        this.realTimeGameBso = realTimeGameRepository;
+        this.setSeatStatusForNewHandCommand = setSeatStatusForNewHandCommand;
+        this.setSeatStatusForNewGameCommand = setSeatStatusForNewGameCommand;
+        this.handEvaluatorBso = handEvaluatorBso;
+        this.potBso = potBso;
+    }
 
     private void startNewHand(Game game, Table table) {
-        seatStatusBso.setStatusForNewHand(game, table);
+        setSeatStatusForNewHandCommand.execute(table);
         resetTableStatus(game, table);
     }
 
@@ -220,7 +239,7 @@ public class GameEventBsoImpl {
 
     private void startNewGameForAllTables(Game game) {
         for (Table table : gameBso.fetchTables(game)) {
-            seatStatusBso.setStatusForNewGame(game, table);
+            setSeatStatusForNewGameCommand.execute(table);
             resetTableStatus(game, table);
         }
     }
@@ -238,54 +257,6 @@ public class GameEventBsoImpl {
         for (Pot pot : potBso.fetchAllPots(game, table)) {
             table.getPotAmounts().add(pot.getAmount());
         }
-    }
-
-    public GameBso getGameBso() {
-        return gameBso;
-    }
-
-    public void setGameBso(GameBso gameBso) {
-        this.gameBso = gameBso;
-    }
-
-    public DeckBso getDeckBso() {
-        return deckBso;
-    }
-
-    public void setDeckBso(DeckBso deckBso) {
-        this.deckBso = deckBso;
-    }
-
-    public RealTimeGameRepository getRealTimeGameBso() {
-        return realTimeGameBso;
-    }
-
-    public void setRealTimeGameBso(RealTimeGameRepository realTimeGameBso) {
-        this.realTimeGameBso = realTimeGameBso;
-    }
-
-    public SeatStatusBso getSeatStatusBso() {
-        return seatStatusBso;
-    }
-
-    public void setSeatStatusBso(SeatStatusBso seatStatusBso) {
-        this.seatStatusBso = seatStatusBso;
-    }
-
-    public HandEvaluatorBso getHandEvaluatorBso() {
-        return handEvaluatorBso;
-    }
-
-    public void setHandEvaluatorBso(HandEvaluatorBso handEvaluatorBso) {
-        this.handEvaluatorBso = handEvaluatorBso;
-    }
-
-    public PotBso getPotBso() {
-        return potBso;
-    }
-
-    public void setPotBso(PotBso potBso) {
-        this.potBso = potBso;
     }
 
 }

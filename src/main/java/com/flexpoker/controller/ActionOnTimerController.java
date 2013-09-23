@@ -25,29 +25,11 @@ public class ActionOnTimerController {
     @Inject
     private ActionOnTimerBso actionOnTimerBso;
 
-    public void decrementTime() {
-        synchronized (this) {
-            Map<Game, Map<Table, Map<Seat, Integer>>> actionOnTimerMap =
-                    actionOnTimerBso.getActionOnTimerMap();
-
-            for (Game game : actionOnTimerMap.keySet()) {
-                for (Table table : actionOnTimerMap.get(game).keySet()) {
-                    Map<Seat, Integer> seatMap = actionOnTimerMap.get(game).get(table);
-                    if (seatMap.size() > 1) {
-                        throw new IllegalArgumentException("Timer should only be on "
-                                + "one user per table.");
-                    }
-                    handleSeat(game, table, seatMap);
-                }
-            }
-        }
-    }
-
     private void handleSeat(Game game, Table table, Map<Seat, Integer> seatMap) {
         for (Seat seat : seatMap.keySet()) {
             Integer currentCount = seatMap.get(seat);
             if (currentCount == 0) {
-                actionOnTimerBso.removeSeat(game, table, seat);
+                actionOnTimerBso.removeSeat(table, seat);
 
                 if (seat.getCallAmount() == 0) {
                     // if they only need to check, then just check

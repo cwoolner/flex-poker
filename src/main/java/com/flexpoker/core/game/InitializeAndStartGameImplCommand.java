@@ -10,6 +10,7 @@ import org.springframework.messaging.simp.SimpMessageSendingOperations;
 
 import com.flexpoker.config.Command;
 import com.flexpoker.core.api.game.InitializeAndStartGameCommand;
+import com.flexpoker.core.api.seatstatus.SetSeatStatusForNewGameCommand;
 import com.flexpoker.core.api.tablebalancer.AssignInitialTablesForNewGame;
 import com.flexpoker.model.RealTimeGame;
 import com.flexpoker.model.Seat;
@@ -27,14 +28,18 @@ public class InitializeAndStartGameImplCommand implements InitializeAndStartGame
 
     private final SimpMessageSendingOperations messagingTemplate;
     
+    private final SetSeatStatusForNewGameCommand setSeatStatusForNewGameCommand;
+    
     @Inject
     public InitializeAndStartGameImplCommand(
             AssignInitialTablesForNewGame assignInitialTablesForNewGame,
             RealTimeGameRepository realTimeGameRepository,
-            SimpMessageSendingOperations messagingTemplate) {
+            SimpMessageSendingOperations messagingTemplate,
+            SetSeatStatusForNewGameCommand setSeatStatusForNewGameCommand) {
         this.assignInitialTablesForNewGame = assignInitialTablesForNewGame;
         this.realTimeGameRepository = realTimeGameRepository;
         this.messagingTemplate = messagingTemplate;
+        this.setSeatStatusForNewGameCommand = setSeatStatusForNewGameCommand;
     }
     
     @Override
@@ -64,6 +69,7 @@ public class InitializeAndStartGameImplCommand implements InitializeAndStartGame
             @Override
             public void run() {
                 for (Table table: realTimeGame.getTables()) {
+                    setSeatStatusForNewGameCommand.execute(table);
                     messagingTemplate.convertAndSend(String.format(
                             MessagingConstants.TABLE_STATUS, gameId, table.getId()),
                             table);
