@@ -46,3 +46,7 @@ textarea {
 .action-on-false {
     background-color: #FF0000;
 }
+
+.table {
+    background: url(/flexpoker/resources/img/Table.svg) no-repeat;
+}

@@ -2,11 +2,12 @@
   <p>game: {{gameId}}</p>
   <p>table: {{tableId}}</p>
   
-  <div ng-repeat="seat in table.seats">
-      <div seat ng-model="seat"></div>
+  <div class="table">
+      <div ng-bind="table.totalPotAmount"></div>
+      <div ng-repeat="seat in table.seats">
+          <div seat ng-model="seat"></div>
+      </div>
   </div>
 
-  <img src="http://localhost:8080/flexpoker/resources/img/Table.svg" type="image/svg+xml" />
-  
   <div chat></div>
 </div>
