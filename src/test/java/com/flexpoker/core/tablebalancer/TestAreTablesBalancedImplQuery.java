@@ -12,23 +12,17 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import com.flexpoker.model.Game;
-import com.flexpoker.model.RealTimeGame;
 import com.flexpoker.model.Table;
 import com.flexpoker.repository.api.GameRepository;
-import com.flexpoker.repository.api.RealTimeGameRepository;
 import com.flexpoker.util.DataUtilsForTests;
 
 public class TestAreTablesBalancedImplQuery {
 
-    @Mock private RealTimeGameRepository mockRealTimeGameRepository;
-    
     @Mock private GameRepository mockGameRepository;
     
     private AreTablesBalancedImplQuery command;
     
     private UUID gameId;
-    
-    private RealTimeGame realTimeGame;
     
     private Game game;
     
@@ -36,11 +30,9 @@ public class TestAreTablesBalancedImplQuery {
     public void setup() {
         MockitoAnnotations.initMocks(this);
         gameId = UUID.randomUUID();
-        realTimeGame = new RealTimeGame();
         game = new Game();
-        when(mockRealTimeGameRepository.get(gameId)).thenReturn(realTimeGame);
         when(mockGameRepository.findById(gameId)).thenReturn(game);
-        command = new AreTablesBalancedImplQuery(mockRealTimeGameRepository, mockGameRepository);
+        command = new AreTablesBalancedImplQuery(mockGameRepository);
     }
     
     @Test
@@ -49,7 +41,7 @@ public class TestAreTablesBalancedImplQuery {
         Table table1 = new Table();
         table1.setId(UUID.randomUUID());
         DataUtilsForTests.fillTableWithUsers(table1, 3, 9);
-        realTimeGame.addTable(table1);
+        game.addTable(table1);
         assertTrue(command.execute(gameId));
     }
     
@@ -62,8 +54,8 @@ public class TestAreTablesBalancedImplQuery {
         table2.setId(UUID.randomUUID());
         DataUtilsForTests.fillTableWithUsers(table1, 3, 9);
         DataUtilsForTests.fillTableWithUsers(table2, 5, 9);
-        realTimeGame.addTable(table1);
-        realTimeGame.addTable(table2);
+        game.addTable(table1);
+        game.addTable(table2);
         assertFalse(command.execute(gameId));
     }
     
@@ -77,8 +69,8 @@ public class TestAreTablesBalancedImplQuery {
         table2.setId(UUID.randomUUID());
         DataUtilsForTests.fillTableWithUsers(table1, 7, 9);
         DataUtilsForTests.fillTableWithUsers(table2, 6, 9);
-        realTimeGame.addTable(table1);
-        realTimeGame.addTable(table2);
+        game.addTable(table1);
+        game.addTable(table2);
         assertTrue(command.execute(gameId));
     }
     
@@ -94,9 +86,9 @@ public class TestAreTablesBalancedImplQuery {
         DataUtilsForTests.fillTableWithUsers(table1, 4, 9);
         DataUtilsForTests.fillTableWithUsers(table2, 5, 9);
         DataUtilsForTests.fillTableWithUsers(table3, 4, 9);
-        realTimeGame.addTable(table1);
-        realTimeGame.addTable(table2);
-        realTimeGame.addTable(table3);
+        game.addTable(table1);
+        game.addTable(table2);
+        game.addTable(table3);
         assertFalse(command.execute(gameId));
     }
     
@@ -112,9 +104,9 @@ public class TestAreTablesBalancedImplQuery {
         DataUtilsForTests.fillTableWithUsers(table1, 7, 9);
         DataUtilsForTests.fillTableWithUsers(table2, 9, 9);
         DataUtilsForTests.fillTableWithUsers(table3, 8, 9);
-        realTimeGame.addTable(table1);
-        realTimeGame.addTable(table2);
-        realTimeGame.addTable(table3);
+        game.addTable(table1);
+        game.addTable(table2);
+        game.addTable(table3);
         assertFalse(command.execute(gameId));
     }
     
@@ -130,9 +122,9 @@ public class TestAreTablesBalancedImplQuery {
         DataUtilsForTests.fillTableWithUsers(table1, 7, 9);
         DataUtilsForTests.fillTableWithUsers(table2, 7, 9);
         DataUtilsForTests.fillTableWithUsers(table3, 7, 9);
-        realTimeGame.addTable(table1);
-        realTimeGame.addTable(table2);
-        realTimeGame.addTable(table3);
+        game.addTable(table1);
+        game.addTable(table2);
+        game.addTable(table3);
         assertTrue(command.execute(gameId));
     }
     
@@ -148,9 +140,9 @@ public class TestAreTablesBalancedImplQuery {
         DataUtilsForTests.fillTableWithUsers(table1, 6, 9);
         DataUtilsForTests.fillTableWithUsers(table2, 6, 9);
         DataUtilsForTests.fillTableWithUsers(table3, 6, 9);
-        realTimeGame.addTable(table1);
-        realTimeGame.addTable(table2);
-        realTimeGame.addTable(table3);
+        game.addTable(table1);
+        game.addTable(table2);
+        game.addTable(table3);
         assertFalse(command.execute(gameId));
     }
     
@@ -166,9 +158,9 @@ public class TestAreTablesBalancedImplQuery {
         DataUtilsForTests.fillTableWithUsers(table1, 6, 6);
         DataUtilsForTests.fillTableWithUsers(table2, 6, 6);
         DataUtilsForTests.fillTableWithUsers(table3, 6, 6);
-        realTimeGame.addTable(table1);
-        realTimeGame.addTable(table2);
-        realTimeGame.addTable(table3);
+        game.addTable(table1);
+        game.addTable(table2);
+        game.addTable(table3);
         assertTrue(command.execute(gameId));
     }
 }

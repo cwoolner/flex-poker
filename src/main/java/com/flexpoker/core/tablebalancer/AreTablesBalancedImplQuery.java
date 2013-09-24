@@ -10,33 +10,24 @@ import javax.inject.Inject;
 import com.flexpoker.config.Query;
 import com.flexpoker.core.api.tablebalancer.AreTablesBalancedQuery;
 import com.flexpoker.model.Game;
-import com.flexpoker.model.RealTimeGame;
 import com.flexpoker.model.Seat;
 import com.flexpoker.model.Table;
 import com.flexpoker.repository.api.GameRepository;
-import com.flexpoker.repository.api.RealTimeGameRepository;
-import com.flexpoker.util.Constants;
 
 @Query
 public class AreTablesBalancedImplQuery implements AreTablesBalancedQuery {
 
-    private final RealTimeGameRepository realTimeGameRepository;
-    
     private final GameRepository gameRepository;
     
     @Inject
-    public AreTablesBalancedImplQuery(
-            RealTimeGameRepository realTimeGameRepository,
-            GameRepository gameRepository) {
-        this.realTimeGameRepository = realTimeGameRepository;
+    public AreTablesBalancedImplQuery(GameRepository gameRepository) {
         this.gameRepository = gameRepository;
     }
     
     @Override
     public boolean execute(UUID gameId) {
         Game game = gameRepository.findById(gameId);
-        RealTimeGame realTimeGame = realTimeGameRepository.get(gameId);
-        List<Table> tables = realTimeGame.getTables();
+        List<Table> tables = game.getTables();
         
         Map<UUID, Integer> tableSizesMap = findTableSizes(tables);
 

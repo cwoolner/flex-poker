@@ -5,16 +5,13 @@ import java.util.UUID;
 
 import com.flexpoker.model.Game;
 import com.flexpoker.model.HandDealerState;
-import com.flexpoker.model.RealTimeGame;
 import com.flexpoker.model.RealTimeHand;
 import com.flexpoker.model.Seat;
 import com.flexpoker.model.Table;
 
-public class RealTimeGameGenerator {
+public class GameGenerator {
 
-    public RealTimeGame get(Game game, UUID[] uuidArray) {
-        RealTimeGame realTimeGame = new RealTimeGame();
-
+    public Game get(Game game, UUID[] uuidArray) {
         Table table1 = new Table();
         table1.setId(uuidArray[0]);
         RealTimeHand realTimeHand1 = new RealTimeHand(Arrays.asList(new Seat[]{new Seat()}));
@@ -50,14 +47,14 @@ public class RealTimeGameGenerator {
                 new Seat[]{new Seat()}));
         realTimeHand6.setHandDealerState(HandDealerState.COMPLETE);
 
-        realTimeGame.addRealTimeHand(table1, realTimeHand1);
-        realTimeGame.addRealTimeHand(table2, realTimeHand2);
-        realTimeGame.addRealTimeHand(table3, realTimeHand3);
-        realTimeGame.addRealTimeHand(table4, realTimeHand4);
-        realTimeGame.addRealTimeHand(table5, realTimeHand5);
-        realTimeGame.addRealTimeHand(table6, realTimeHand6);
+        game.addRealTimeHand(table1, realTimeHand1);
+        game.addRealTimeHand(table2, realTimeHand2);
+        game.addRealTimeHand(table3, realTimeHand3);
+        game.addRealTimeHand(table4, realTimeHand4);
+        game.addRealTimeHand(table5, realTimeHand5);
+        game.addRealTimeHand(table6, realTimeHand6);
 
-        return realTimeGame;
+        return game;
     }
 
 }

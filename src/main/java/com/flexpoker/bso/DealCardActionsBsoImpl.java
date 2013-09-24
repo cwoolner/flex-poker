@@ -17,21 +17,17 @@ import com.flexpoker.model.RiverCard;
 import com.flexpoker.model.Table;
 import com.flexpoker.model.TurnCard;
 import com.flexpoker.model.User;
-import com.flexpoker.repository.api.RealTimeGameRepository;
 
 @Service
 public class DealCardActionsBsoImpl implements DealCardActionsBso {
 
     private DeckBso deckBso;
 
-    private RealTimeGameRepository realTimeGameBso;
-
     private ValidationBso validationBso;
     
     @Inject
-    public DealCardActionsBsoImpl(DeckBso deckBso, RealTimeGameRepository realTimeGameBso, ValidationBso validationBso) {
+    public DealCardActionsBsoImpl(DeckBso deckBso, ValidationBso validationBso) {
         this.deckBso = deckBso;
-        this.realTimeGameBso = realTimeGameBso;
         this.validationBso = validationBso;
     }
 
@@ -80,7 +76,7 @@ public class DealCardActionsBsoImpl implements DealCardActionsBso {
     }
 
     private HandDealerState determineHandDealerState(Game game, Table table) {
-        RealTimeHand realTimeHand = realTimeGameBso.get(game.getId()).getRealTimeHand(table);
+        RealTimeHand realTimeHand = game.getRealTimeHand(table);
         validationBso.validateValuesAreNonNull(realTimeHand);
 
         HandDealerState handDealerState = realTimeHand.getHandDealerState();

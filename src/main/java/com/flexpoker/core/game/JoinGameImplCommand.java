@@ -18,13 +18,11 @@ import com.flexpoker.exception.FlexPokerException;
 import com.flexpoker.model.Game;
 import com.flexpoker.model.GameStage;
 import com.flexpoker.model.OpenGameForUser;
-import com.flexpoker.model.RealTimeGame;
 import com.flexpoker.model.User;
 import com.flexpoker.model.UserGameStatus;
 import com.flexpoker.model.chat.outgoing.GameChatMessage;
 import com.flexpoker.repository.api.GameRepository;
 import com.flexpoker.repository.api.OpenGameForUserRepository;
-import com.flexpoker.repository.api.RealTimeGameRepository;
 import com.flexpoker.repository.api.UserRepository;
 import com.flexpoker.util.MessagingConstants;
 import com.flexpoker.web.model.AvailableTournamentListViewModel;
@@ -36,8 +34,6 @@ public class JoinGameImplCommand implements JoinGameCommand {
     private final GameRepository gameDao;
     
     private final UserRepository userDao;
-    
-    private final RealTimeGameRepository realTimeGameRepository;
     
     private final ChangeGameStageCommand changeGameStageCommand;
     
@@ -51,7 +47,6 @@ public class JoinGameImplCommand implements JoinGameCommand {
 
     @Inject
     public JoinGameImplCommand(GameRepository gameDao, UserRepository userDao,
-            RealTimeGameRepository realTimeGameRepository,
             ChangeGameStageCommand changeGameStageCommand,
             SimpMessageSendingOperations messageSendingOperations,
             SendGameChatMessageCommand sendGameChatMessageCommand,
@@ -59,7 +54,6 @@ public class JoinGameImplCommand implements JoinGameCommand {
             ScheduleMoveGameToInProgressCommand scheduleMoveGameToInProgressCommand) {
         this.gameDao = gameDao;
         this.userDao = userDao;
-        this.realTimeGameRepository = realTimeGameRepository;
         this.changeGameStageCommand = changeGameStageCommand;
         this.messagingTemplate = messageSendingOperations;
         this.sendGameChatMessageCommand = sendGameChatMessageCommand;
@@ -72,25 +66,24 @@ public class JoinGameImplCommand implements JoinGameCommand {
         synchronized (this) {
             Game game = gameDao.findById(gameId);
             User user = userDao.findByUsername(principal.getName());
-            RealTimeGame realTimeGame = realTimeGameRepository.get(game.getId());
 
-            checkIfUserCanJoinGame(game, realTimeGame, user);
+            checkIfUserCanJoinGame(game, user);
 
             UserGameStatus userGameStatus = new UserGameStatus();
             userGameStatus.setUser(user);
 
-            realTimeGame.addUserGameStatus(userGameStatus);
+            game.addUserGameStatus(userGameStatus);
 
             OpenGameForUser openGameForUser = new OpenGameForUser(gameId,
                     game.getId().toString(), GameStage.REGISTERING);
             openGameForUserRepository.addOpenGameForUser(principal.getName(), openGameForUser);
             
-            if (realTimeGame.getUserGameStatuses().size() == game.getTotalPlayers()) {
+            if (game.getUserGameStatuses().size() == game.getTotalPlayers()) {
                 changeGameStageCommand.execute(gameId, GameStage.STARTING);
                 List<AvailableTournamentListViewModel> allGames = new GameListTranslator().translate(gameDao.findAll());
                 messagingTemplate.convertAndSend("/topic/availabletournaments-updates", allGames);
                 
-                for (UserGameStatus joinUserGameStatus : realTimeGame.getUserGameStatuses()) {
+                for (UserGameStatus joinUserGameStatus : game.getUserGameStatuses()) {
                     String username = joinUserGameStatus.getUser().getUsername();
                     openGameForUserRepository.setGameStage(username, gameId, GameStage.STARTING);
                     messagingTemplate.convertAndSendToUser(username, MessagingConstants.OPEN_GAMES_FOR_USER,
@@ -110,7 +103,7 @@ public class JoinGameImplCommand implements JoinGameCommand {
         }
     }
 
-    private void checkIfUserCanJoinGame(Game game, RealTimeGame realTimeGame, User user) {
+    private void checkIfUserCanJoinGame(Game game, User user) {
         GameStage gameStage = game.getGameStage();
 
         if (GameStage.STARTING.equals(gameStage)
@@ -122,7 +115,7 @@ public class JoinGameImplCommand implements JoinGameCommand {
             throw new FlexPokerException("The game is already finished.");
         }
 
-        Set<UserGameStatus> userGameStatuses = realTimeGame.getUserGameStatuses();
+        Set<UserGameStatus> userGameStatuses = game.getUserGameStatuses();
 
         for (UserGameStatus userGameStatus : userGameStatuses) {
             if (user.equals(userGameStatus.getUser())) {

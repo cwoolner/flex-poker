@@ -1,9 +1,7 @@
 package com.flexpoker.core.tablebalancer;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 import java.util.Arrays;
 import java.util.List;
@@ -17,19 +15,15 @@ import org.mockito.MockitoAnnotations;
 
 import com.flexpoker.bso.api.ValidationBso;
 import com.flexpoker.model.Game;
-import com.flexpoker.model.RealTimeGame;
 import com.flexpoker.model.Seat;
 import com.flexpoker.model.Table;
 import com.flexpoker.model.UserGameStatus;
 import com.flexpoker.repository.api.GameRepository;
-import com.flexpoker.repository.api.RealTimeGameRepository;
 import com.flexpoker.util.DataUtilsForTests;
 
 public class TestAssignTablesForNewGameImplCommand {
 
     @Mock private ValidationBso mockValidationBso;
-    
-    @Mock private RealTimeGameRepository mockRealTimeGameRepository;
     
     @Mock private GameRepository mockGameRepository;
     
@@ -37,20 +31,15 @@ public class TestAssignTablesForNewGameImplCommand {
 
     private UUID gameId;
     
-    private RealTimeGame realTimeGame;
-    
     private Game game;
     
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
         gameId = UUID.randomUUID();
-        realTimeGame = new RealTimeGame();
         game = new Game();
-        when(mockRealTimeGameRepository.get(gameId)).thenReturn(realTimeGame);
         when(mockGameRepository.findById(gameId)).thenReturn(game);
-        command = new AssignTablesForNewGameImplCommand(mockValidationBso,
-                mockRealTimeGameRepository, mockGameRepository);
+        command = new AssignTablesForNewGameImplCommand(mockValidationBso, mockGameRepository);
     }
     
     @Test
@@ -59,7 +48,7 @@ public class TestAssignTablesForNewGameImplCommand {
         game.setMaxPlayersPerTable(9);
         addUserGameStatusesToRealTimeGame(userGameStatuses);
         command.execute(gameId);
-        List<Table> tables = realTimeGame.getTables();
+        List<Table> tables = game.getTables();
         assertEquals(1, tables.size());
         verifyEqualDistribution(tables, 9, 4);
     }
@@ -70,7 +59,7 @@ public class TestAssignTablesForNewGameImplCommand {
         game.setMaxPlayersPerTable(6);
         addUserGameStatusesToRealTimeGame(userGameStatuses);
         command.execute(gameId);
-        List<Table> tables = realTimeGame.getTables();
+        List<Table> tables = game.getTables();
         assertEquals(1, tables.size());
         verifyEqualDistribution(tables, 6, 4);
     }
@@ -81,7 +70,7 @@ public class TestAssignTablesForNewGameImplCommand {
         game.setMaxPlayersPerTable(4);
         addUserGameStatusesToRealTimeGame(userGameStatuses);
         command.execute(gameId);
-        List<Table> tables = realTimeGame.getTables();
+        List<Table> tables = game.getTables();
         assertEquals(1, tables.size());
         verifyEqualDistribution(tables, 4, 4);
     }
@@ -92,7 +81,7 @@ public class TestAssignTablesForNewGameImplCommand {
         game.setMaxPlayersPerTable(3);
         addUserGameStatusesToRealTimeGame(userGameStatuses);
         command.execute(gameId);
-        List<Table> tables = realTimeGame.getTables();
+        List<Table> tables = game.getTables();
         assertEquals(2, tables.size());
         verifyEqualDistribution(tables, 3, 2, 2);
     }
@@ -103,7 +92,7 @@ public class TestAssignTablesForNewGameImplCommand {
         game.setMaxPlayersPerTable(2);
         addUserGameStatusesToRealTimeGame(userGameStatuses);
         command.execute(gameId);
-        List<Table> tables = realTimeGame.getTables();
+        List<Table> tables = game.getTables();
         assertEquals(2, tables.size());
         verifyEqualDistribution(tables, 2, 2, 2);
     }
@@ -114,7 +103,7 @@ public class TestAssignTablesForNewGameImplCommand {
         game.setMaxPlayersPerTable(9);
         addUserGameStatusesToRealTimeGame(userGameStatuses);
         command.execute(gameId);
-        List<Table> tables = realTimeGame.getTables();
+        List<Table> tables = game.getTables();
         assertEquals(3, tables.size());
         verifyEqualDistribution(tables, 9, 7, 7, 6);
     }
@@ -125,7 +114,7 @@ public class TestAssignTablesForNewGameImplCommand {
         game.setMaxPlayersPerTable(6);
         addUserGameStatusesToRealTimeGame(userGameStatuses);
         command.execute(gameId);
-        List<Table> tables = realTimeGame.getTables();
+        List<Table> tables = game.getTables();
         assertEquals(4, tables.size());
         verifyEqualDistribution(tables, 6, 5, 5, 5, 5);
     }
@@ -136,7 +125,7 @@ public class TestAssignTablesForNewGameImplCommand {
         game.setMaxPlayersPerTable(4);
         addUserGameStatusesToRealTimeGame(userGameStatuses);
         command.execute(gameId);
-        List<Table> tables = realTimeGame.getTables();
+        List<Table> tables = game.getTables();
         assertEquals(5, tables.size());
         verifyEqualDistribution(tables, 4, 4, 4, 4, 4, 4);
     }
@@ -147,7 +136,7 @@ public class TestAssignTablesForNewGameImplCommand {
         game.setMaxPlayersPerTable(3);
         addUserGameStatusesToRealTimeGame(userGameStatuses);
         command.execute(gameId);
-        List<Table> tables = realTimeGame.getTables();
+        List<Table> tables = game.getTables();
         assertEquals(7, tables.size());
         verifyEqualDistribution(tables, 3, 3, 3, 3, 3, 3, 3, 2);
     }
@@ -158,7 +147,7 @@ public class TestAssignTablesForNewGameImplCommand {
         game.setMaxPlayersPerTable(2);
         addUserGameStatusesToRealTimeGame(userGameStatuses);
         command.execute(gameId);
-        List<Table> tables = realTimeGame.getTables();
+        List<Table> tables = game.getTables();
         assertEquals(10, tables.size());
         verifyEqualDistribution(tables, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2);
     }
@@ -169,7 +158,7 @@ public class TestAssignTablesForNewGameImplCommand {
         game.setMaxPlayersPerTable(9);
         addUserGameStatusesToRealTimeGame(userGameStatuses);
         command.execute(gameId);
-        List<Table> tables = realTimeGame.getTables();
+        List<Table> tables = game.getTables();
         assertEquals(1, tables.size());
         verifyEqualDistribution(tables, 9, 2);
     }
@@ -180,7 +169,7 @@ public class TestAssignTablesForNewGameImplCommand {
         game.setMaxPlayersPerTable(6);
         addUserGameStatusesToRealTimeGame(userGameStatuses);
         command.execute(gameId);
-        List<Table> tables = realTimeGame.getTables();
+        List<Table> tables = game.getTables();
         assertEquals(1, tables.size());
         verifyEqualDistribution(tables, 6, 2);
     }
@@ -191,7 +180,7 @@ public class TestAssignTablesForNewGameImplCommand {
         game.setMaxPlayersPerTable(4);
         addUserGameStatusesToRealTimeGame(userGameStatuses);
         command.execute(gameId);
-        List<Table> tables = realTimeGame.getTables();
+        List<Table> tables = game.getTables();
         assertEquals(1, tables.size());
         verifyEqualDistribution(tables, 4, 2);
     }
@@ -202,7 +191,7 @@ public class TestAssignTablesForNewGameImplCommand {
         game.setMaxPlayersPerTable(3);
         addUserGameStatusesToRealTimeGame(userGameStatuses);
         command.execute(gameId);
-        List<Table> tables = realTimeGame.getTables();
+        List<Table> tables = game.getTables();
         assertEquals(1, tables.size());
         verifyEqualDistribution(tables, 3, 2);
     }
@@ -213,7 +202,7 @@ public class TestAssignTablesForNewGameImplCommand {
         game.setMaxPlayersPerTable(2);
         addUserGameStatusesToRealTimeGame(userGameStatuses);
         command.execute(gameId);
-        List<Table> tables = realTimeGame.getTables();
+        List<Table> tables = game.getTables();
         assertEquals(1, tables.size());
         verifyEqualDistribution(tables, 2, 2);
     }
@@ -247,7 +236,7 @@ public class TestAssignTablesForNewGameImplCommand {
 
     private void addUserGameStatusesToRealTimeGame(Set<UserGameStatus> userGameStatuses) {
         for (UserGameStatus userGameStatus : userGameStatuses) {
-            realTimeGame.addUserGameStatus(userGameStatus);
+            game.addUserGameStatus(userGameStatus);
         }
     }
     

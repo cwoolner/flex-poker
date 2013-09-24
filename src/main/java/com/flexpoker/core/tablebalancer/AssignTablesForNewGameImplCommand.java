@@ -13,38 +13,30 @@ import com.flexpoker.bso.api.ValidationBso;
 import com.flexpoker.config.Command;
 import com.flexpoker.core.api.tablebalancer.AssignInitialTablesForNewGame;
 import com.flexpoker.model.Game;
-import com.flexpoker.model.RealTimeGame;
 import com.flexpoker.model.Seat;
 import com.flexpoker.model.Table;
 import com.flexpoker.model.UserGameStatus;
 import com.flexpoker.repository.api.GameRepository;
-import com.flexpoker.repository.api.RealTimeGameRepository;
 
 @Command
 public class AssignTablesForNewGameImplCommand implements AssignInitialTablesForNewGame {
 
     private final ValidationBso validationBso;
 
-    private final RealTimeGameRepository realTimeGameRepository;
-    
     private final GameRepository gameRepository;
 
     @Inject
     public AssignTablesForNewGameImplCommand(
             ValidationBso validationBso,
-            RealTimeGameRepository realTimeGameRepository,
             GameRepository gameRepository) {
         this.validationBso = validationBso;
-        this.realTimeGameRepository = realTimeGameRepository;
         this.gameRepository = gameRepository;
     }
     
     @Override
     public void execute(UUID gameId) {
         Game game = gameRepository.findById(gameId);
-        RealTimeGame realTimeGame = realTimeGameRepository.get(gameId);
-        
-        Set<UserGameStatus> userGameStatuses = realTimeGame.getUserGameStatuses();
+        Set<UserGameStatus> userGameStatuses = game.getUserGameStatuses();
         int maxPlayersPerTable = game.getMaxPlayersPerTable();
         
         validationBso.validateTableAssignment(userGameStatuses, maxPlayersPerTable);
@@ -55,7 +47,7 @@ public class AssignTablesForNewGameImplCommand implements AssignInitialTablesFor
         distributeUserGameStatusesToTables(randomOrderedUserGameStatusList, tables);
 
         for (Table table : tables) {
-            realTimeGame.addTable(table);
+            game.addTable(table);
         }
     }
 

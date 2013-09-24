@@ -30,7 +30,6 @@ import com.flexpoker.model.HandRanking;
 import com.flexpoker.model.HandRoundState;
 import com.flexpoker.model.PocketCards;
 import com.flexpoker.model.Pot;
-import com.flexpoker.model.RealTimeGame;
 import com.flexpoker.model.RealTimeHand;
 import com.flexpoker.model.RiverCard;
 import com.flexpoker.model.Seat;
@@ -39,7 +38,6 @@ import com.flexpoker.model.TurnCard;
 import com.flexpoker.model.User;
 import com.flexpoker.model.UserGameStatus;
 import com.flexpoker.repository.api.GameRepository;
-import com.flexpoker.repository.api.RealTimeGameRepository;
 import com.flexpoker.util.ActionOnSeatPredicate;
 import com.flexpoker.util.BigBlindSeatPredicate;
 import com.flexpoker.util.MessagingConstants;
@@ -50,8 +48,6 @@ public class InitializeAndStartGameImplCommand implements InitializeAndStartGame
 
     private final AssignInitialTablesForNewGame assignInitialTablesForNewGame;
     
-    private final RealTimeGameRepository realTimeGameRepository;
-
     private final SimpMessageSendingOperations messagingTemplate;
     
     private final SetSeatStatusForNewGameCommand setSeatStatusForNewGameCommand;
@@ -67,7 +63,6 @@ public class InitializeAndStartGameImplCommand implements InitializeAndStartGame
     @Inject
     public InitializeAndStartGameImplCommand(
             AssignInitialTablesForNewGame assignInitialTablesForNewGame,
-            RealTimeGameRepository realTimeGameRepository,
             SimpMessageSendingOperations messagingTemplate,
             SetSeatStatusForNewGameCommand setSeatStatusForNewGameCommand,
             GameRepository gameRepository,
@@ -75,7 +70,6 @@ public class InitializeAndStartGameImplCommand implements InitializeAndStartGame
             PotBso potBso,
             HandEvaluatorBso handEvaluatorBso) {
         this.assignInitialTablesForNewGame = assignInitialTablesForNewGame;
-        this.realTimeGameRepository = realTimeGameRepository;
         this.messagingTemplate = messagingTemplate;
         this.setSeatStatusForNewGameCommand = setSeatStatusForNewGameCommand;
         this.gameRepository = gameRepository;
@@ -87,15 +81,16 @@ public class InitializeAndStartGameImplCommand implements InitializeAndStartGame
     @Override
     public void execute(final UUID gameId) {
         assignInitialTablesForNewGame.execute(gameId);
+        
+        final Game game = gameRepository.findById(gameId);
 
-        final RealTimeGame realTimeGame = realTimeGameRepository.get(gameId);
-        Set<UserGameStatus> userGameStatuses = realTimeGame.getUserGameStatuses();
+        Set<UserGameStatus> userGameStatuses = game.getUserGameStatuses();
 
         for (UserGameStatus userGameStatus : userGameStatuses) {
             userGameStatus.setChips(1500);
         }
         
-        for (Table table : realTimeGame.getTables()) {
+        for (Table table : game.getTables()) {
             for (Seat seat : table.getSeats()) {
                 if (seat.getUserGameStatus() != null) {
                     messagingTemplate.convertAndSendToUser(
@@ -110,7 +105,7 @@ public class InitializeAndStartGameImplCommand implements InitializeAndStartGame
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                for (Table table: realTimeGame.getTables()) {
+                for (Table table: game.getTables()) {
                     setSeatStatusForNewGameCommand.execute(table);
                     Game game = gameRepository.findById(gameId);
                     resetTableStatus(game, table);
@@ -132,8 +127,7 @@ public class InitializeAndStartGameImplCommand implements InitializeAndStartGame
     }
     
     private void createNewRealTimeHand(Game game, Table table) {
-        RealTimeGame realTimeGame = realTimeGameRepository.get(game.getId());
-        Blinds currentBlinds = realTimeGame.getCurrentBlinds();
+        Blinds currentBlinds = game.getCurrentBlinds();
         int smallBlind = currentBlinds.getSmallBlind();
         int bigBlind = currentBlinds.getBigBlind();
 
@@ -208,7 +202,7 @@ public class InitializeAndStartGameImplCommand implements InitializeAndStartGame
         List<HandEvaluation> handEvaluations = determineHandEvaluations(game, table);
         realTimeHand.setHandEvaluationList(handEvaluations);
 
-        realTimeGame.addRealTimeHand(table, realTimeHand);
+        game.addRealTimeHand(table, realTimeHand);
     }
 
     private List<HandEvaluation> determineHandEvaluations(Game game, Table table) {

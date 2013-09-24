@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 
 import com.flexpoker.bso.api.ActionOnTimerBso;
 import com.flexpoker.bso.api.DeckBso;
-import com.flexpoker.bso.api.GameBso;
 import com.flexpoker.bso.api.PlayerActionsBso;
 import com.flexpoker.bso.api.PotBso;
 import com.flexpoker.bso.api.ValidationBso;
@@ -28,20 +27,16 @@ import com.flexpoker.model.HandRoundState;
 import com.flexpoker.model.HandState;
 import com.flexpoker.model.PocketCards;
 import com.flexpoker.model.Pot;
-import com.flexpoker.model.RealTimeGame;
 import com.flexpoker.model.RealTimeHand;
 import com.flexpoker.model.Seat;
 import com.flexpoker.model.Table;
 import com.flexpoker.model.User;
 import com.flexpoker.model.UserGameStatus;
-import com.flexpoker.repository.api.RealTimeGameRepository;
 import com.flexpoker.util.ActionOnSeatPredicate;
 import com.flexpoker.util.ButtonSeatPredicate;
 
 @Service
 public class PlayerActionsBsoImpl implements PlayerActionsBso {
-
-    private final RealTimeGameRepository realTimeGameBso;
 
     private final PotBso potBso;
 
@@ -59,7 +54,6 @@ public class PlayerActionsBsoImpl implements PlayerActionsBso {
     
     @Inject
     public PlayerActionsBsoImpl(
-            RealTimeGameRepository realTimeGameRepository,
             PotBso potBso,
             SetSeatStatusForEndOfHandCommand setSeatStatusForEndOfHandCommand,
             SetSeatStatusForNewRoundCommand setSeatStatusForNewRoundCommand,
@@ -67,7 +61,6 @@ public class PlayerActionsBsoImpl implements PlayerActionsBso {
             DeckBso deckBso,
             ActionOnTimerBso actionOnTimerBso,
             ChangeGameStageCommand changeGameStageCommand) {
-        this.realTimeGameBso = realTimeGameRepository;
         this.potBso = potBso;
         this.setSeatStatusForEndOfHandCommand = setSeatStatusForEndOfHandCommand;
         this.setSeatStatusForNewRoundCommand = setSeatStatusForNewRoundCommand;
@@ -80,9 +73,8 @@ public class PlayerActionsBsoImpl implements PlayerActionsBso {
     @Override
     public HandState check(Game game, Table table, User user) {
         synchronized (this) {
-            RealTimeGame realTimeGame = realTimeGameBso.get(game.getId());
-            RealTimeHand realTimeHand = realTimeGame.getRealTimeHand(table);
-            table = realTimeGame.getTable(table.getId());
+            RealTimeHand realTimeHand = game.getRealTimeHand(table);
+            table = game.getTable(table.getId());
 
             if (!isUserAllowedToPerformAction(GameEventType.CHECK, user,
                     realTimeHand, table)) {
@@ -99,7 +91,7 @@ public class PlayerActionsBsoImpl implements PlayerActionsBso {
 
             if (actionOnSeat.equals(realTimeHand.getLastToAct())) {
                 handleEndOfRound(game, table, realTimeHand,
-                        realTimeGame.getCurrentBlinds().getBigBlind());
+                        game.getCurrentBlinds().getBigBlind());
             } else {
                 handleMiddleOfRound(game, table, realTimeHand, actionOnSeat);
             }
@@ -112,7 +104,7 @@ public class PlayerActionsBsoImpl implements PlayerActionsBso {
     @Override
     public HandState fold(Game game, Table table, User user) {
         synchronized (this) {
-            RealTimeGame realTimeGame = realTimeGameBso.get(game.getId());
+            Game realTimeGame = game;
             RealTimeHand realTimeHand = realTimeGame.getRealTimeHand(table);
             table = realTimeGame.getTable(table.getId());
 
@@ -159,9 +151,8 @@ public class PlayerActionsBsoImpl implements PlayerActionsBso {
     @Override
     public HandState call(Game game, Table table, User user) {
         synchronized (this) {
-            RealTimeGame realTimeGame = realTimeGameBso.get(game.getId());
-            RealTimeHand realTimeHand = realTimeGame.getRealTimeHand(table);
-            table = realTimeGame.getTable(table.getId());
+            RealTimeHand realTimeHand = game.getRealTimeHand(table);
+            table = game.getTable(table.getId());
 
             Seat actionOnSeat = (Seat) CollectionUtils.find(table.getSeats(),
                     new ActionOnSeatPredicate());
@@ -185,7 +176,7 @@ public class PlayerActionsBsoImpl implements PlayerActionsBso {
 
             if (actionOnSeat.equals(realTimeHand.getLastToAct())) {
                 handleEndOfRound(game, table, realTimeHand,
-                        realTimeGame.getCurrentBlinds().getBigBlind());
+                        game.getCurrentBlinds().getBigBlind());
             } else {
                 handleMiddleOfRound(game, table, realTimeHand, actionOnSeat);
             }
@@ -214,11 +205,10 @@ public class PlayerActionsBsoImpl implements PlayerActionsBso {
     @Override
     public HandState raise(Game game, Table table, User user, String raiseAmount) {
         synchronized (this) {
-            RealTimeGame realTimeGame = realTimeGameBso.get(game.getId());
-            RealTimeHand realTimeHand = realTimeGame.getRealTimeHand(table);
-            table = realTimeGame.getTable(table.getId());
+            RealTimeHand realTimeHand = game.getRealTimeHand(table);
+            table = game.getTable(table.getId());
 
-            Blinds currentBlinds = realTimeGame.getCurrentBlinds();
+            Blinds currentBlinds = game.getCurrentBlinds();
             int bigBlind = currentBlinds.getBigBlind();
 
             Seat actionOnSeat = (Seat) CollectionUtils.find(table.getSeats(),
