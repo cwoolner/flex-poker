@@ -88,11 +88,6 @@ public class GameBsoImpl implements GameBso {
     }
 
     @Override
-    public void changeGameStage(UUID gameId, GameStage gameStage) {
-        changeGameStageCommand.execute(gameId, gameStage);
-    }
-
-    @Override
     public Table fetchPlayersCurrentTable(User user, Game game) {
         List<Table> tables = fetchTables(game);
 

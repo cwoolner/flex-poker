@@ -6,7 +6,6 @@ import java.util.Set;
 import java.util.UUID;
 
 import com.flexpoker.model.Game;
-import com.flexpoker.model.GameStage;
 import com.flexpoker.model.Table;
 import com.flexpoker.model.User;
 import com.flexpoker.model.UserGameStatus;
@@ -18,8 +17,6 @@ public interface GameBso {
     List<Game> fetchAllGames();
 
     void createGame(Principal user, Game game);
-
-    void changeGameStage(UUID gameId, GameStage starting);
 
     Table fetchPlayersCurrentTable(User user, Game game);
 

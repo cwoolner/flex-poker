@@ -14,6 +14,7 @@ import com.flexpoker.bso.api.GameBso;
 import com.flexpoker.bso.api.PlayerActionsBso;
 import com.flexpoker.bso.api.PotBso;
 import com.flexpoker.bso.api.ValidationBso;
+import com.flexpoker.core.api.game.ChangeGameStageCommand;
 import com.flexpoker.core.api.seatstatus.SetSeatStatusForEndOfHandCommand;
 import com.flexpoker.core.api.seatstatus.SetSeatStatusForNewRoundCommand;
 import com.flexpoker.exception.FlexPokerException;
@@ -52,9 +53,9 @@ public class PlayerActionsBsoImpl implements PlayerActionsBso {
 
     private final DeckBso deckBso;
 
-    private final GameBso gameBso;
-
     private final ActionOnTimerBso actionOnTimerBso;
+    
+    private final ChangeGameStageCommand changeGameStageCommand;
     
     @Inject
     public PlayerActionsBsoImpl(
@@ -64,16 +65,16 @@ public class PlayerActionsBsoImpl implements PlayerActionsBso {
             SetSeatStatusForNewRoundCommand setSeatStatusForNewRoundCommand,
             ValidationBso validationBso,
             DeckBso deckBso,
-            GameBso gameBso,
-            ActionOnTimerBso actionOnTimerBso) {
+            ActionOnTimerBso actionOnTimerBso,
+            ChangeGameStageCommand changeGameStageCommand) {
         this.realTimeGameBso = realTimeGameRepository;
         this.potBso = potBso;
         this.setSeatStatusForEndOfHandCommand = setSeatStatusForEndOfHandCommand;
         this.setSeatStatusForNewRoundCommand = setSeatStatusForNewRoundCommand;
         this.validationBso = validationBso;
         this.deckBso = deckBso;
-        this.gameBso = gameBso;
         this.actionOnTimerBso = actionOnTimerBso;
+        this.changeGameStageCommand = changeGameStageCommand;
     }
 
     @Override
@@ -202,7 +203,7 @@ public class PlayerActionsBsoImpl implements PlayerActionsBso {
             //       hand in case the player does not have enough to call the
             //       blinds.
             if (numberOfPlayersLeft == 1) {
-                gameBso.changeGameStage(game.getId(), GameStage.FINISHED);
+                changeGameStageCommand.execute(game.getId(), GameStage.FINISHED);
             }
 
             return new HandState(realTimeHand.getHandDealerState(),
