@@ -1,12 +1,18 @@
 flexpokerModule.controller('TableController', ['$scope', '$rootScope', '$routeParams', 'ngstomp', function($scope, $rootScope, $routeParams, ngstomp) {
     $scope.gameId = $routeParams['gameId'];
     $scope.tableId = $routeParams['tableId'];
+    $scope.username = $rootScope.username;
 
     $scope.chatDisplay = '';
     
     if ($scope.client === undefined) {
         $scope.client = ngstomp(new SockJS(rootUrl + 'application'));
     }
+    
+    $rootScope.$on('pocketCardsReceived' + $scope.tableId, function(event, data) {
+        $scope.myLeftCardUrl = cardData[data.cardId1];
+        $scope.myRightCardUrl = cardData[data.cardId2];
+    });
 
     $scope.client.connect("", "", function() {
         

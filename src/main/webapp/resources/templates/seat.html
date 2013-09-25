@@ -1,4 +1,4 @@
-<div class="seat action-on-{{seat.actionOn}}">
+<div class="seat action-on-{{seat.actionOn}} still-in-hand-{{seat.stillInHand}}" ng-class="{'my-seat': seat.userGameStatus.user.username == username}">
   <p>{{seat.userGameStatus.user.username}}</p>
   <p>{{seat.userGameStatus.chips}}</p>
   <img src="http://localhost:8080/flexpoker/resources/img/button.png" ng-show="seat.button" />

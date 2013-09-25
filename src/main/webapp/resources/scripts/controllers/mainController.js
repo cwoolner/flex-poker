@@ -1,4 +1,6 @@
 flexpokerModule.controller('MainController', ['$rootScope', '$scope', 'ngstomp', '$location', function($rootScope, $scope, ngstomp, $location) {
+    $rootScope.username = $('.username').prop('innerText');
+    
     if ($scope.client === undefined) {
         $scope.client = ngstomp(new SockJS(rootUrl + 'application'));
     }
@@ -41,7 +43,9 @@ flexpokerModule.controller('MainController', ['$rootScope', '$scope', 'ngstomp',
         });
 
         $scope.client.subscribe('/queue/pocketcards' + queueSuffix, function(message) {
-            alert($.parseJSON(message.body));
+            var pocketCards = $.parseJSON(message.body);
+            $rootScope.$broadcast('pocketCardsReceived' + pocketCards.tableId,
+                    {cardId1: pocketCards.cardId1, cardId2: pocketCards.cardId2});
         });
 
     }, function() {}, '/');

@@ -42,6 +42,7 @@ import com.flexpoker.util.ActionOnSeatPredicate;
 import com.flexpoker.util.BigBlindSeatPredicate;
 import com.flexpoker.util.MessagingConstants;
 import com.flexpoker.util.SmallBlindSeatPredicate;
+import com.flexpoker.web.model.PocketCardsViewModel;
 
 @Command
 public class InitializeAndStartGameImplCommand implements InitializeAndStartGameCommand {
@@ -225,6 +226,12 @@ public class InitializeAndStartGameImplCommand implements InitializeAndStartGame
                         .determineHandEvaluation(commonCards, user, pocketCards,
                          possibleHands);
                 handEvaluations.add(handEvaluation);
+                
+                PocketCardsViewModel pocketCardsViewModel = new PocketCardsViewModel(
+                        pocketCards.getCard1().getId(),
+                        pocketCards.getCard2().getId(),
+                        table.getId());
+                messagingTemplate.convertAndSendToUser(user.getUsername(), MessagingConstants.POCKET_CARDS, pocketCardsViewModel);
             }
         }
 

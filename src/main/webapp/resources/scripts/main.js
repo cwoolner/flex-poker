@@ -39,9 +39,6 @@ flexpokerModule.directive('chat', function() {
 flexpokerModule.directive('seat', function() {
     return {
         templateUrl: rootUrl + 'resources/templates/seat.html',
-        restrict: 'A',
-        link: function(scope, element, attrs) {
-            alert('');
-        }
+        restrict: 'A'
     }
 });

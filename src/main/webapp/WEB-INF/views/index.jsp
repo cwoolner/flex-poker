@@ -23,6 +23,7 @@ var rootUrl = "<c:url value='/' />";
 <script type="text/javascript" src="<c:url value='/resources/scripts/controllers/tournamentRegisteringController.js' />"></script>
 <script type="text/javascript" src="<c:url value='/resources/scripts/controllers/logoutController.js' />"></script>
 <script type="text/javascript" src="<c:url value='/resources/scripts/routes.js' />"></script>
+<script type="text/javascript" src="<c:url value='/resources/scripts/cardData.js' />"></script>
 
 <link rel="stylesheet" type="text/css" href="<c:url value='/resources/css/ng-grid.min.css' />"></link>
 <link rel="stylesheet" type="text/css" href="<c:url value='/resources/css/main.css' />"></link>
@@ -33,7 +34,7 @@ var rootUrl = "<c:url value='/' />";
 
 <body ng-app="flexpoker">
 
-<p>Logged in as: <sec:authentication property="principal.username" /></p>
+<p>Logged in as: <span class="username"><sec:authentication property="principal.username" /></span></p>
 
 <p ng-controller="LogoutController"><a href='<c:url value="/logout" />' ng-click="logout()">Logout</a></p>
 

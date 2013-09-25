@@ -50,3 +50,12 @@ textarea {
 .table {
     background: url(/flexpoker/resources/img/Table.svg) no-repeat;
 }
+
+.my-seat {
+    box-shadow: inset 0 0 1em gold;
+}
+
+.my-cards {
+    width: 100px;
+    height: 100px;
+}
