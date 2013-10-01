@@ -2,14 +2,10 @@ package com.flexpoker.bso;
 
 import static org.junit.Assert.*;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 
 import org.junit.Test;
 
-import com.flexpoker.model.Seat;
-import com.flexpoker.model.Table;
 import com.flexpoker.model.UserGameStatus;
 import com.flexpoker.util.DataUtilsForTests;
 

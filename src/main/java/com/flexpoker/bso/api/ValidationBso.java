@@ -2,7 +2,6 @@ package com.flexpoker.bso.api;
 
 import java.util.Set;
 
-import com.flexpoker.model.Table;
 import com.flexpoker.model.UserGameStatus;
 
 /**
