@@ -33,7 +33,6 @@ public class DealCardActionsBsoImpl implements DealCardActionsBso {
 
     @Override
     public PocketCards fetchPocketCards(User user, Game game, Table table) {
-        validationBso.validateValuesAreNonNull(user, game, table);
         HandDealerState handDealerState = determineHandDealerState(game, table);
         if (handDealerState.ordinal() >= HandDealerState.POCKET_CARDS_DEALT.ordinal()) {
             return deckBso.fetchPocketCards(user, game, table);
@@ -44,7 +43,6 @@ public class DealCardActionsBsoImpl implements DealCardActionsBso {
 
     @Override
     public FlopCards fetchFlopCards(Game game, Table table) {
-        validationBso.validateValuesAreNonNull(game, table);
         HandDealerState handDealerState = determineHandDealerState(game, table);
         if (handDealerState.ordinal() >= HandDealerState.FLOP_DEALT.ordinal()) {
             return deckBso.fetchFlopCards(game, table);
@@ -55,7 +53,6 @@ public class DealCardActionsBsoImpl implements DealCardActionsBso {
 
     @Override
     public RiverCard fetchRiverCard(Game game, Table table) {
-        validationBso.validateValuesAreNonNull(game, table);
         HandDealerState handDealerState = determineHandDealerState(game, table);
         if (handDealerState.ordinal() >= HandDealerState.RIVER_DEALT.ordinal()) {
             return deckBso.fetchRiverCard(game, table);
@@ -66,7 +63,6 @@ public class DealCardActionsBsoImpl implements DealCardActionsBso {
 
     @Override
     public TurnCard fetchTurnCard(Game game, Table table) {
-        validationBso.validateValuesAreNonNull(game, table);
         HandDealerState handDealerState = determineHandDealerState(game, table);
         if (handDealerState.ordinal() >= HandDealerState.TURN_DEALT.ordinal()) {
             return deckBso.fetchTurnCard(game, table);
@@ -77,8 +73,6 @@ public class DealCardActionsBsoImpl implements DealCardActionsBso {
 
     private HandDealerState determineHandDealerState(Game game, Table table) {
         RealTimeHand realTimeHand = game.getRealTimeHand(table);
-        validationBso.validateValuesAreNonNull(realTimeHand);
-
         HandDealerState handDealerState = realTimeHand.getHandDealerState();
         return handDealerState;
     }

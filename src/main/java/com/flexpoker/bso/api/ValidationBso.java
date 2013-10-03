@@ -31,11 +31,4 @@ public interface ValidationBso {
     void validateRaiseAmount(int minimumAmount, int maximumAmount,
             String raiseAmount);
 
-    /**
-     * Verify that the values sent in are not null.
-     *
-     * @param objects
-     */
-    void validateValuesAreNonNull(Object... objects);
-
 }
