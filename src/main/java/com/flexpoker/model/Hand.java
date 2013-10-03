@@ -15,7 +15,7 @@ import java.util.Set;
  *
  * @author cwoolner
  */
-public class RealTimeHand {
+public class Hand {
 
     private Map<Seat, Set<GameEventType>> possibleSeatActionsMap =
             new HashMap<Seat, Set<GameEventType>>();
@@ -32,7 +32,7 @@ public class RealTimeHand {
 
     private List<HandEvaluation> handEvaluationList;
 
-    public RealTimeHand(List<Seat> seats) {
+    public Hand(List<Seat> seats) {
         for (Seat seat : seats) {
             possibleSeatActionsMap.put(seat, new HashSet<GameEventType>());
         }

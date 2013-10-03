@@ -30,7 +30,7 @@ import com.flexpoker.model.HandRanking;
 import com.flexpoker.model.HandRoundState;
 import com.flexpoker.model.PocketCards;
 import com.flexpoker.model.Pot;
-import com.flexpoker.model.RealTimeHand;
+import com.flexpoker.model.Hand;
 import com.flexpoker.model.RiverCard;
 import com.flexpoker.model.Seat;
 import com.flexpoker.model.Table;
@@ -132,7 +132,7 @@ public class InitializeAndStartGameImplCommand implements InitializeAndStartGame
         int smallBlind = currentBlinds.getSmallBlind();
         int bigBlind = currentBlinds.getBigBlind();
 
-        RealTimeHand realTimeHand = new RealTimeHand(table.getSeats());
+        Hand realTimeHand = new Hand(table.getSeats());
         Seat smallBlindSeat = (Seat) CollectionUtils.find(table.getSeats(),
                 new SmallBlindSeatPredicate());
         Seat bigBlindSeat = (Seat) CollectionUtils.find(table.getSeats(),
@@ -203,7 +203,7 @@ public class InitializeAndStartGameImplCommand implements InitializeAndStartGame
         List<HandEvaluation> handEvaluations = determineHandEvaluations(game, table);
         realTimeHand.setHandEvaluationList(handEvaluations);
 
-        game.addRealTimeHand(table, realTimeHand);
+        table.setCurrentHand(realTimeHand);
     }
 
     private List<HandEvaluation> determineHandEvaluations(Game game, Table table) {
@@ -238,7 +238,7 @@ public class InitializeAndStartGameImplCommand implements InitializeAndStartGame
         return handEvaluations;
     }
 
-    private void determineNextToAct(Table table, RealTimeHand realTimeHand) {
+    private void determineNextToAct(Table table, Hand realTimeHand) {
         List<Seat> seats = table.getSeats();
         Seat actionOnSeat = (Seat) CollectionUtils.find(seats,
                 new ActionOnSeatPredicate());

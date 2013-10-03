@@ -17,6 +17,8 @@ public class Table {
 
     private List<Integer> potAmounts;
     
+    private Hand currentHand;
+    
     public UUID getId() {
         return id;
     }
@@ -120,6 +122,14 @@ public class Table {
                     + "between: " + Constants.MIN_PLAYERS_PER_TABLE
                     + " and " + Constants.MAX_PLAYERS_PER_TABLE);
         }
+    }
+
+    public Hand getCurrentHand() {
+        return currentHand;
+    }
+
+    public void setCurrentHand(Hand currentHand) {
+        this.currentHand = currentHand;
     }
 
     @Override

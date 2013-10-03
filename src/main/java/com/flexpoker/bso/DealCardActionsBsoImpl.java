@@ -6,13 +6,12 @@ import org.springframework.stereotype.Service;
 
 import com.flexpoker.bso.api.DealCardActionsBso;
 import com.flexpoker.bso.api.DeckBso;
-import com.flexpoker.bso.api.ValidationBso;
 import com.flexpoker.exception.FlexPokerException;
 import com.flexpoker.model.FlopCards;
 import com.flexpoker.model.Game;
 import com.flexpoker.model.HandDealerState;
 import com.flexpoker.model.PocketCards;
-import com.flexpoker.model.RealTimeHand;
+import com.flexpoker.model.Hand;
 import com.flexpoker.model.RiverCard;
 import com.flexpoker.model.Table;
 import com.flexpoker.model.TurnCard;
@@ -23,12 +22,9 @@ public class DealCardActionsBsoImpl implements DealCardActionsBso {
 
     private DeckBso deckBso;
 
-    private ValidationBso validationBso;
-    
     @Inject
-    public DealCardActionsBsoImpl(DeckBso deckBso, ValidationBso validationBso) {
+    public DealCardActionsBsoImpl(DeckBso deckBso) {
         this.deckBso = deckBso;
-        this.validationBso = validationBso;
     }
 
     @Override
@@ -72,7 +68,7 @@ public class DealCardActionsBsoImpl implements DealCardActionsBso {
     }
 
     private HandDealerState determineHandDealerState(Game game, Table table) {
-        RealTimeHand realTimeHand = game.getRealTimeHand(table);
+        Hand realTimeHand = table.getCurrentHand();
         HandDealerState handDealerState = realTimeHand.getHandDealerState();
         return handDealerState;
     }

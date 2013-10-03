@@ -27,7 +27,7 @@ import com.flexpoker.model.HandRoundState;
 import com.flexpoker.model.HandState;
 import com.flexpoker.model.PocketCards;
 import com.flexpoker.model.Pot;
-import com.flexpoker.model.RealTimeHand;
+import com.flexpoker.model.Hand;
 import com.flexpoker.model.Seat;
 import com.flexpoker.model.Table;
 import com.flexpoker.model.User;
@@ -73,7 +73,7 @@ public class PlayerActionsBsoImpl implements PlayerActionsBso {
     @Override
     public HandState check(Game game, Table table, User user) {
         synchronized (this) {
-            RealTimeHand realTimeHand = game.getRealTimeHand(table);
+            Hand realTimeHand = table.getCurrentHand();
             table = game.getTable(table.getId());
 
             if (!isUserAllowedToPerformAction(GameEventType.CHECK, user,
@@ -105,7 +105,7 @@ public class PlayerActionsBsoImpl implements PlayerActionsBso {
     public HandState fold(Game game, Table table, User user) {
         synchronized (this) {
             Game realTimeGame = game;
-            RealTimeHand realTimeHand = realTimeGame.getRealTimeHand(table);
+            Hand realTimeHand = table.getCurrentHand();
             table = realTimeGame.getTable(table.getId());
 
             if (!isUserAllowedToPerformAction(GameEventType.FOLD, user,
@@ -151,7 +151,7 @@ public class PlayerActionsBsoImpl implements PlayerActionsBso {
     @Override
     public HandState call(Game game, Table table, User user) {
         synchronized (this) {
-            RealTimeHand realTimeHand = game.getRealTimeHand(table);
+            Hand realTimeHand = table.getCurrentHand();
             table = game.getTable(table.getId());
 
             Seat actionOnSeat = (Seat) CollectionUtils.find(table.getSeats(),
@@ -205,7 +205,7 @@ public class PlayerActionsBsoImpl implements PlayerActionsBso {
     @Override
     public HandState raise(Game game, Table table, User user, String raiseAmount) {
         synchronized (this) {
-            RealTimeHand realTimeHand = game.getRealTimeHand(table);
+            Hand realTimeHand = table.getCurrentHand();
             table = game.getTable(table.getId());
 
             Blinds currentBlinds = game.getCurrentBlinds();
@@ -273,7 +273,7 @@ public class PlayerActionsBsoImpl implements PlayerActionsBso {
     }
 
     private void handleMiddleOfRound(Game game, Table table,
-            RealTimeHand realTimeHand, Seat actionOnSeat) {
+            Hand realTimeHand, Seat actionOnSeat) {
         realTimeHand.setHandRoundState(HandRoundState.ROUND_IN_PROGRESS);
         actionOnSeat.setActionOn(false);
         actionOnTimerBso.removeSeat(table, actionOnSeat);
@@ -284,7 +284,7 @@ public class PlayerActionsBsoImpl implements PlayerActionsBso {
     }
 
     private void handleEndOfRound(Game game, Table table,
-            RealTimeHand realTimeHand, int bigBlindAmount) {
+            Hand realTimeHand, int bigBlindAmount) {
         realTimeHand.setOriginatingBettor(null);
         realTimeHand.setHandRoundState(HandRoundState.ROUND_COMPLETE);
         moveToNextHandDealerState(realTimeHand);
@@ -315,7 +315,7 @@ public class PlayerActionsBsoImpl implements PlayerActionsBso {
     }
 
     private void resetPossibleSeatActionsAfterRound(Table table,
-            RealTimeHand realTimeHand) {
+            Hand realTimeHand) {
         for (Seat seat : table.getSeats()) {
             realTimeHand.addPossibleSeatAction(seat, GameEventType.CHECK);
             realTimeHand.addPossibleSeatAction(seat, GameEventType.RAISE);
@@ -324,14 +324,14 @@ public class PlayerActionsBsoImpl implements PlayerActionsBso {
         }
     }
 
-    private void resetAllSeatActions(Seat seat, RealTimeHand realTimeHand) {
+    private void resetAllSeatActions(Seat seat, Hand realTimeHand) {
         realTimeHand.removePossibleSeatAction(seat, GameEventType.CHECK);
         realTimeHand.removePossibleSeatAction(seat, GameEventType.RAISE);
         realTimeHand.removePossibleSeatAction(seat, GameEventType.CALL);
         realTimeHand.removePossibleSeatAction(seat, GameEventType.FOLD);
     }
 
-    private void determineLastToAct(Table table, RealTimeHand realTimeHand) {
+    private void determineLastToAct(Table table, Hand realTimeHand) {
         List<Seat> seats = table.getSeats();
 
         int seatIndex;
@@ -364,7 +364,7 @@ public class PlayerActionsBsoImpl implements PlayerActionsBso {
         }
     }
 
-    private void determineNextToAct(Table table, RealTimeHand realTimeHand) {
+    private void determineNextToAct(Table table, Hand realTimeHand) {
         List<Seat> seats = table.getSeats();
         Seat actionOnSeat = (Seat) CollectionUtils.find(seats,
                 new ActionOnSeatPredicate());
@@ -387,7 +387,7 @@ public class PlayerActionsBsoImpl implements PlayerActionsBso {
     }
 
     private boolean isUserAllowedToPerformAction(GameEventType action,
-            User user, RealTimeHand realTimeHand, Table table) {
+            User user, Hand realTimeHand, Table table) {
 
         if (realTimeHand.getHandDealerState() == HandDealerState.COMPLETE) {
             return false;
@@ -406,7 +406,7 @@ public class PlayerActionsBsoImpl implements PlayerActionsBso {
         return realTimeHand.isUserAllowedToPerformAction(action, usersSeat);
     }
 
-    private void moveToNextHandDealerState(RealTimeHand realTimeHand) {
+    private void moveToNextHandDealerState(Hand realTimeHand) {
         HandDealerState handDealerState = realTimeHand.getHandDealerState();
 
         switch (handDealerState) {

@@ -2,10 +2,8 @@ package com.flexpoker.model;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -43,8 +41,6 @@ public class Game {
     private List<Table> tables = new ArrayList<Table>();
 
     private Set<UserGameStatus> userGameStatuses = new HashSet<UserGameStatus>();
-
-    private Map<Table, RealTimeHand> realTimeHands = new HashMap<>();
 
     public Game() {
         currentBlinds = new Blinds(10, 20);
@@ -185,18 +181,6 @@ public class Game {
 
     public Set<UserGameStatus> getUserGameStatuses() {
         return userGameStatuses;
-    }
-
-    public RealTimeHand getRealTimeHand(Table table) {
-        return realTimeHands.get(table);
-    }
-
-    public void addRealTimeHand(Table table, RealTimeHand realTimeHand) {
-        realTimeHands.put(table, realTimeHand);
-    }
-
-    public void removeRealTimeHand(Table table, RealTimeHand realTimeHand) {
-        realTimeHands.remove(table);
     }
 
     @Override

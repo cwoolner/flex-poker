@@ -18,7 +18,7 @@ public class RealTimeHandTest {
         seats.add(seat1);
         seats.add(seat2);
 
-        RealTimeHand realTimeHand = new RealTimeHand(seats);
+        Hand realTimeHand = new Hand(seats);
 
         assertFalse(realTimeHand.isUserAllowedToPerformAction(GameEventType.CHECK, seat1));
         assertFalse(realTimeHand.isUserAllowedToPerformAction(GameEventType.CHECK, seat2));

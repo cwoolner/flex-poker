@@ -5,7 +5,7 @@ import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Service;
 
-import com.flexpoker.model.RealTimeHand;
+import com.flexpoker.model.Hand;
 import com.flexpoker.model.Seat;
 import com.flexpoker.model.Table;
 import com.flexpoker.util.ButtonSeatPredicate;
@@ -13,7 +13,7 @@ import com.flexpoker.util.ButtonSeatPredicate;
 @Service
 public class GameEventBsoImpl {
 
-    private void determineLastToAct(Table table, RealTimeHand realTimeHand) {
+    private void determineLastToAct(Table table, Hand realTimeHand) {
         List<Seat> seats = table.getSeats();
 
         int seatIndex;
