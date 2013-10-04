@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import com.flexpoker.model.CardRank;
@@ -20,8 +21,13 @@ import com.flexpoker.model.UserGameStatus;
 
 public class PotBsoImplTest {
 
-    private PotBsoImpl bso = new PotBsoImpl();
+    private PotBsoImpl bso;
 
+    @Before
+    public void setup() {
+        bso = new PotBsoImpl();
+    }
+    
     @Test
     public void testCalculatePotsAfterRound() {
         Game game = new Game();
@@ -58,26 +64,8 @@ public class PotBsoImplTest {
         game.setId(UUID.randomUUID());
         Table table = new Table();
         table.setId(UUID.randomUUID());
-        bso.removeGame(game);
         bso.createNewHandPot(game, table);
         assertEquals(0, bso.fetchAllPots(game, table).size());
-        bso.removeGame(game);
-    }
-
-    @Test
-    public void testRemoveGame() {
-        Game game = new Game();
-        game.setId(UUID.randomUUID());
-        Table table = new Table();
-        table.setId(UUID.randomUUID());
-        bso.createNewHandPot(game, table);
-        bso.fetchAllPots(game, table);
-
-        bso.removeGame(game);
-        try {
-            bso.fetchAllPots(game, table);
-            fail("Should have thrown NPE.");
-        } catch (NullPointerException e) {}
     }
 
     @Test
@@ -140,22 +128,6 @@ public class PotBsoImplTest {
         assertTrue(pots.get(0).getSeats().contains(seat2));
         assertFalse(pots.get(0).getSeats().contains(seat3));
         assertFalse(pots.get(0).getSeats().contains(seat4));
-
-        bso.removeGame(game);
-    }
-
-    @Test
-    public void testRemoveTable() {
-        Game game = new Game();
-        game.setId(UUID.randomUUID());
-        Table table = new Table();
-        table.setId(UUID.randomUUID());
-        bso.createNewHandPot(game, table);
-        bso.fetchAllPots(game, table);
-
-        bso.removeTable(game, table);
-        assertNull(bso.fetchAllPots(game, table));
-        bso.removeGame(game);
     }
 
     @Test
@@ -201,7 +173,6 @@ public class PotBsoImplTest {
         assertEquals(1, pots.size());
         assertEquals(30, pots.get(0).getAmount());
         assertTrue(pots.get(0).getSeats().contains(seat1));
-        bso.removeGame(game);
     }
 
     private void testCalculatePotsAfterRound2(Game game, Table table) {
@@ -228,7 +199,6 @@ public class PotBsoImplTest {
         assertTrue(pots.get(0).isOpen());
         assertTrue(pots.get(0).getSeats().contains(seat1));
         assertTrue(pots.get(0).getSeats().contains(seat2));
-        bso.removeGame(game);
     }
 
     private void testCalculatePotsAfterRound3(Game game, Table table) {
@@ -256,7 +226,6 @@ public class PotBsoImplTest {
         assertFalse(pots.get(0).isOpen());
         assertTrue(pots.get(0).getSeats().contains(seat1));
         assertTrue(pots.get(0).getSeats().contains(seat2));
-        bso.removeGame(game);
     }
 
     private void testCalculatePotsAfterRound4(Game game, Table table) {
@@ -374,8 +343,6 @@ public class PotBsoImplTest {
         assertFalse(pots.get(3).getSeats().contains(seat2));
         assertFalse(pots.get(3).getSeats().contains(seat3));
         assertTrue(pots.get(3).getSeats().contains(seat4));
-
-        bso.removeGame(game);
     }
 
     private void testSetWinners1(Game game, Table table, User user1, User user2,

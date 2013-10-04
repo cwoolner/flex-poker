@@ -20,8 +20,4 @@ public interface PotBso {
 
     void setWinners(Game game, Table table, List<HandEvaluation> winningHands);
 
-    void removeTable(Game game, Table table);
-
-    void removeGame(Game game);
-
 }

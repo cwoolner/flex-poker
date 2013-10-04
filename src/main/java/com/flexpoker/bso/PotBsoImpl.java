@@ -88,21 +88,11 @@ public class PotBsoImpl implements PotBso {
     }
 
     @Override
-    public void removeGame(Game game) {
-        gameToTableToPotsMap.remove(game);
-    }
-
-    @Override
     public void removeSeatFromPots(Game game, Table table, Seat seat) {
         List<Pot> pots = gameToTableToPotsMap.get(game).get(table);
         for (Pot pot : pots) {
             pot.getSeats().remove(seat);
         }
-    }
-
-    @Override
-    public void removeTable(Game game, Table table) {
-        gameToTableToPotsMap.get(game).remove(table);
     }
 
     @Override
