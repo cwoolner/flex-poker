@@ -1,6 +1,6 @@
 package com.flexpoker.bso;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -21,13 +21,13 @@ import com.flexpoker.model.Blinds;
 import com.flexpoker.model.Game;
 import com.flexpoker.model.GameEventType;
 import com.flexpoker.model.GameStage;
+import com.flexpoker.model.Hand;
 import com.flexpoker.model.HandDealerState;
 import com.flexpoker.model.HandEvaluation;
 import com.flexpoker.model.HandRoundState;
 import com.flexpoker.model.HandState;
 import com.flexpoker.model.PocketCards;
 import com.flexpoker.model.Pot;
-import com.flexpoker.model.Hand;
 import com.flexpoker.model.Seat;
 import com.flexpoker.model.Table;
 import com.flexpoker.model.User;
@@ -169,8 +169,7 @@ public class PlayerActionsBsoImpl implements PlayerActionsBso {
 
             UserGameStatus userGameStatus = actionOnSeat.getUserGameStatus();
             userGameStatus.setChips(userGameStatus.getChips() - actionOnSeat.getCallAmount());
-            table.getCurrentHand().setTotalPotAmount(table.getCurrentHand()
-                    .getTotalPotAmount() + actionOnSeat.getCallAmount());
+            table.getCurrentHand().addToTotalPot(actionOnSeat.getCallAmount());
 
             actionOnSeat.setCallAmount(0);
             actionOnSeat.setRaiseTo(0);
@@ -235,8 +234,7 @@ public class PlayerActionsBsoImpl implements PlayerActionsBso {
 
             UserGameStatus userGameStatus = actionOnSeat.getUserGameStatus();
             userGameStatus.setChips(userGameStatus.getChips() - increaseOfChipsInFront);
-            table.getCurrentHand().setTotalPotAmount(table.getCurrentHand()
-                    .getTotalPotAmount() + increaseOfChipsInFront);
+            table.getCurrentHand().addToTotalPot(increaseOfChipsInFront);
 
             realTimeHand.addPossibleSeatAction(actionOnSeat, GameEventType.CALL);
             realTimeHand.addPossibleSeatAction(actionOnSeat, GameEventType.RAISE);
@@ -291,7 +289,7 @@ public class PlayerActionsBsoImpl implements PlayerActionsBso {
         realTimeHand.setHandRoundState(HandRoundState.ROUND_COMPLETE);
         moveToNextHandDealerState(realTimeHand);
         potBso.calculatePotsAfterRound(game, table);
-        determineTablePotAmounts(game, table);
+        table.getCurrentHand().setPots(new HashSet<>(potBso.fetchAllPots(game, table)));
 
         if (realTimeHand.getHandDealerState() == HandDealerState.COMPLETE) {
             setSeatStatusForEndOfHandCommand.execute(table);
@@ -428,13 +426,6 @@ public class PlayerActionsBsoImpl implements PlayerActionsBso {
                 break;
             default:
                 throw new IllegalStateException("No valid state to move to.");
-        }
-    }
-
-    private void determineTablePotAmounts(Game game, Table table) {
-        table.getCurrentHand().setPotAmounts(new ArrayList<Integer>());
-        for (Pot pot : potBso.fetchAllPots(game, table)) {
-            table.getCurrentHand().getPotAmounts().add(pot.getAmount());
         }
     }
 

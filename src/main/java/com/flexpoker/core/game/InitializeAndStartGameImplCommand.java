@@ -1,6 +1,7 @@
 package com.flexpoker.core.game;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.Timer;
@@ -24,13 +25,12 @@ import com.flexpoker.model.CommonCards;
 import com.flexpoker.model.FlopCards;
 import com.flexpoker.model.Game;
 import com.flexpoker.model.GameEventType;
+import com.flexpoker.model.Hand;
 import com.flexpoker.model.HandDealerState;
 import com.flexpoker.model.HandEvaluation;
 import com.flexpoker.model.HandRanking;
 import com.flexpoker.model.HandRoundState;
 import com.flexpoker.model.PocketCards;
-import com.flexpoker.model.Pot;
-import com.flexpoker.model.Hand;
 import com.flexpoker.model.RiverCard;
 import com.flexpoker.model.Seat;
 import com.flexpoker.model.Table;
@@ -123,7 +123,7 @@ public class InitializeAndStartGameImplCommand implements InitializeAndStartGame
         deckBso.shuffleDeck(game, table);
         potBso.createNewHandPot(game, table);
         createNewRealTimeHand(game, table);
-        determineTablePotAmounts(game, table);
+        table.getCurrentHand().setPots(new HashSet<>(potBso.fetchAllPots(game, table)));
     }
     
     private void createNewRealTimeHand(Game game, Table table) {
@@ -180,8 +180,7 @@ public class InitializeAndStartGameImplCommand implements InitializeAndStartGame
                 seat.setRaiseTo(raiseToAmount);
             }
 
-            table.getCurrentHand().setTotalPotAmount(table.getCurrentHand()
-                    .getTotalPotAmount() + seat.getChipsInFront());
+            table.getCurrentHand().addToTotalPot(seat.getChipsInFront());
 
             if (seat.getRaiseTo() > 0) {
                 realTimeHand.addPossibleSeatAction(seat, GameEventType.RAISE);
@@ -259,13 +258,6 @@ public class InitializeAndStartGameImplCommand implements InitializeAndStartGame
         }
     }
     
-    private void determineTablePotAmounts(Game game, Table table) {
-        table.getCurrentHand().setPotAmounts(new ArrayList<Integer>());
-        for (Pot pot : potBso.fetchAllPots(game, table)) {
-            table.getCurrentHand().getPotAmounts().add(pot.getAmount());
-        }
-    }
-
     private class OpenTableForUserDto {
 
         private final UUID gameId;

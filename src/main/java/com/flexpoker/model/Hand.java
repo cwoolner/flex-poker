@@ -33,8 +33,8 @@ public class Hand {
     private List<HandEvaluation> handEvaluationList;
     
     private int totalPotAmount;
-
-    private List<Integer> potAmounts;
+    
+    private Set<Pot> pots;
     
     public Hand(List<Seat> seats) {
         for (Seat seat : seats) {
@@ -102,20 +102,20 @@ public class Hand {
         this.handEvaluationList = handEvaluationList;
     }
 
+    public Set<Pot> getPots() {
+        return pots;
+    }
+
+    public void setPots(Set<Pot> pots) {
+        this.pots = pots;
+    }
+
+    public void addToTotalPot(int chipsInFront) {
+        totalPotAmount += chipsInFront;
+    }
+
     public int getTotalPotAmount() {
         return totalPotAmount;
-    }
-
-    public void setTotalPotAmount(int totalPotAmount) {
-        this.totalPotAmount = totalPotAmount;
-    }
-
-    public List<Integer> getPotAmounts() {
-        return potAmounts;
-    }
-
-    public void setPotAmounts(List<Integer> potAmounts) {
-        this.potAmounts = potAmounts;
     }
 
 }
