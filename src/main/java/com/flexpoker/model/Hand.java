@@ -31,7 +31,11 @@ public class Hand {
     private HandRoundState handRoundState = HandRoundState.ROUND_COMPLETE;
 
     private List<HandEvaluation> handEvaluationList;
+    
+    private int totalPotAmount;
 
+    private List<Integer> potAmounts;
+    
     public Hand(List<Seat> seats) {
         for (Seat seat : seats) {
             possibleSeatActionsMap.put(seat, new HashSet<GameEventType>());
@@ -96,6 +100,22 @@ public class Hand {
 
     public void setHandEvaluationList(List<HandEvaluation> handEvaluationList) {
         this.handEvaluationList = handEvaluationList;
+    }
+
+    public int getTotalPotAmount() {
+        return totalPotAmount;
+    }
+
+    public void setTotalPotAmount(int totalPotAmount) {
+        this.totalPotAmount = totalPotAmount;
+    }
+
+    public List<Integer> getPotAmounts() {
+        return potAmounts;
+    }
+
+    public void setPotAmounts(List<Integer> potAmounts) {
+        this.potAmounts = potAmounts;
     }
 
 }

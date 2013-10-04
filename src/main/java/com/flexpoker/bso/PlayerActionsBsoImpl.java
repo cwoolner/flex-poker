@@ -169,7 +169,8 @@ public class PlayerActionsBsoImpl implements PlayerActionsBso {
 
             UserGameStatus userGameStatus = actionOnSeat.getUserGameStatus();
             userGameStatus.setChips(userGameStatus.getChips() - actionOnSeat.getCallAmount());
-            table.setTotalPotAmount(table.getTotalPotAmount() + actionOnSeat.getCallAmount());
+            table.getCurrentHand().setTotalPotAmount(table.getCurrentHand()
+                    .getTotalPotAmount() + actionOnSeat.getCallAmount());
 
             actionOnSeat.setCallAmount(0);
             actionOnSeat.setRaiseTo(0);
@@ -234,7 +235,8 @@ public class PlayerActionsBsoImpl implements PlayerActionsBso {
 
             UserGameStatus userGameStatus = actionOnSeat.getUserGameStatus();
             userGameStatus.setChips(userGameStatus.getChips() - increaseOfChipsInFront);
-            table.setTotalPotAmount(table.getTotalPotAmount() + increaseOfChipsInFront);
+            table.getCurrentHand().setTotalPotAmount(table.getCurrentHand()
+                    .getTotalPotAmount() + increaseOfChipsInFront);
 
             realTimeHand.addPossibleSeatAction(actionOnSeat, GameEventType.CALL);
             realTimeHand.addPossibleSeatAction(actionOnSeat, GameEventType.RAISE);
@@ -430,9 +432,9 @@ public class PlayerActionsBsoImpl implements PlayerActionsBso {
     }
 
     private void determineTablePotAmounts(Game game, Table table) {
-        table.setPotAmounts(new ArrayList<Integer>());
+        table.getCurrentHand().setPotAmounts(new ArrayList<Integer>());
         for (Pot pot : potBso.fetchAllPots(game, table)) {
-            table.getPotAmounts().add(pot.getAmount());
+            table.getCurrentHand().getPotAmounts().add(pot.getAmount());
         }
     }
 

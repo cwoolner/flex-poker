@@ -13,10 +13,6 @@ public class Table {
 
     private List<Seat> seats;
 
-    private int totalPotAmount;
-
-    private List<Integer> potAmounts;
-    
     private Hand currentHand;
     
     public UUID getId() {
@@ -35,22 +31,6 @@ public class Table {
         this.seats = seats;
     }
 
-    public int getTotalPotAmount() {
-        return totalPotAmount;
-    }
-
-    public void setTotalPotAmount(int totalPotAmount) {
-        this.totalPotAmount = totalPotAmount;
-    }
-
-    public List<Integer> getPotAmounts() {
-        return potAmounts;
-    }
-
-    public void setPotAmounts(List<Integer> potAmounts) {
-        this.potAmounts = potAmounts;
-    }
-    
     public void resetRaiseTo() {
         for (Seat seat : seats) {
             seat.setRaiseTo(0);

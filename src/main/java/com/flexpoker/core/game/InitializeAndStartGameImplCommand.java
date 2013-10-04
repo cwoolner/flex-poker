@@ -120,7 +120,6 @@ public class InitializeAndStartGameImplCommand implements InitializeAndStartGame
     }
     
     private void resetTableStatus(Game game, Table table) {
-        table.setTotalPotAmount(0);
         deckBso.shuffleDeck(game, table);
         potBso.createNewHandPot(game, table);
         createNewRealTimeHand(game, table);
@@ -133,6 +132,8 @@ public class InitializeAndStartGameImplCommand implements InitializeAndStartGame
         int bigBlind = currentBlinds.getBigBlind();
 
         Hand realTimeHand = new Hand(table.getSeats());
+        table.setCurrentHand(realTimeHand);
+
         Seat smallBlindSeat = (Seat) CollectionUtils.find(table.getSeats(),
                 new SmallBlindSeatPredicate());
         Seat bigBlindSeat = (Seat) CollectionUtils.find(table.getSeats(),
@@ -179,8 +180,8 @@ public class InitializeAndStartGameImplCommand implements InitializeAndStartGame
                 seat.setRaiseTo(raiseToAmount);
             }
 
-            table.setTotalPotAmount(table.getTotalPotAmount()
-                    + seat.getChipsInFront());
+            table.getCurrentHand().setTotalPotAmount(table.getCurrentHand()
+                    .getTotalPotAmount() + seat.getChipsInFront());
 
             if (seat.getRaiseTo() > 0) {
                 realTimeHand.addPossibleSeatAction(seat, GameEventType.RAISE);
@@ -202,8 +203,6 @@ public class InitializeAndStartGameImplCommand implements InitializeAndStartGame
 
         List<HandEvaluation> handEvaluations = determineHandEvaluations(game, table);
         realTimeHand.setHandEvaluationList(handEvaluations);
-
-        table.setCurrentHand(realTimeHand);
     }
 
     private List<HandEvaluation> determineHandEvaluations(Game game, Table table) {
@@ -261,9 +260,9 @@ public class InitializeAndStartGameImplCommand implements InitializeAndStartGame
     }
     
     private void determineTablePotAmounts(Game game, Table table) {
-        table.setPotAmounts(new ArrayList<Integer>());
+        table.getCurrentHand().setPotAmounts(new ArrayList<Integer>());
         for (Pot pot : potBso.fetchAllPots(game, table)) {
-            table.getPotAmounts().add(pot.getAmount());
+            table.getCurrentHand().getPotAmounts().add(pot.getAmount());
         }
     }
 
