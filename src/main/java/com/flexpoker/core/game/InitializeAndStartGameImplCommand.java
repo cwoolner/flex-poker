@@ -43,6 +43,8 @@ import com.flexpoker.util.BigBlindSeatPredicate;
 import com.flexpoker.util.MessagingConstants;
 import com.flexpoker.util.SmallBlindSeatPredicate;
 import com.flexpoker.web.model.PocketCardsViewModel;
+import com.flexpoker.web.model.table.TableViewModel;
+import com.flexpoker.web.translator.table.TableTranslator;
 
 @Command
 public class InitializeAndStartGameImplCommand implements InitializeAndStartGameCommand {
@@ -110,9 +112,10 @@ public class InitializeAndStartGameImplCommand implements InitializeAndStartGame
                     setSeatStatusForNewGameCommand.execute(table);
                     Game game = gameRepository.findById(gameId);
                     resetTableStatus(game, table);
+                    TableViewModel tableViewModel = new TableTranslator().translate(table);
                     messagingTemplate.convertAndSend(String.format(
                             MessagingConstants.TABLE_STATUS, gameId, table.getId()),
-                            table);
+                            tableViewModel);
                 }
                 timer.cancel();
             }
