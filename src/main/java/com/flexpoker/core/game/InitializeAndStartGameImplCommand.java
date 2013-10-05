@@ -13,16 +13,15 @@ import javax.inject.Inject;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 
-import com.flexpoker.bso.api.DeckBso;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.flexpoker.bso.api.HandEvaluatorBso;
 import com.flexpoker.bso.api.PotBso;
 import com.flexpoker.config.Command;
+import com.flexpoker.core.api.deck.CreateShuffledDeckCommand;
 import com.flexpoker.core.api.game.InitializeAndStartGameCommand;
 import com.flexpoker.core.api.seatstatus.SetSeatStatusForNewGameCommand;
 import com.flexpoker.core.api.tablebalancer.AssignInitialTablesForNewGame;
 import com.flexpoker.model.Blinds;
-import com.flexpoker.model.CommonCards;
-import com.flexpoker.model.FlopCards;
 import com.flexpoker.model.Game;
 import com.flexpoker.model.GameEventType;
 import com.flexpoker.model.Hand;
@@ -30,13 +29,15 @@ import com.flexpoker.model.HandDealerState;
 import com.flexpoker.model.HandEvaluation;
 import com.flexpoker.model.HandRanking;
 import com.flexpoker.model.HandRoundState;
-import com.flexpoker.model.PocketCards;
-import com.flexpoker.model.RiverCard;
 import com.flexpoker.model.Seat;
 import com.flexpoker.model.Table;
-import com.flexpoker.model.TurnCard;
 import com.flexpoker.model.User;
 import com.flexpoker.model.UserGameStatus;
+import com.flexpoker.model.card.Deck;
+import com.flexpoker.model.card.FlopCards;
+import com.flexpoker.model.card.PocketCards;
+import com.flexpoker.model.card.RiverCard;
+import com.flexpoker.model.card.TurnCard;
 import com.flexpoker.repository.api.GameRepository;
 import com.flexpoker.util.ActionOnSeatPredicate;
 import com.flexpoker.util.BigBlindSeatPredicate;
@@ -57,7 +58,7 @@ public class InitializeAndStartGameImplCommand implements InitializeAndStartGame
     
     private final GameRepository gameRepository;
     
-    private final DeckBso deckBso;
+    private final CreateShuffledDeckCommand createShuffledDeckCommand;
 
     private final PotBso potBso;
     
@@ -69,14 +70,14 @@ public class InitializeAndStartGameImplCommand implements InitializeAndStartGame
             SimpMessageSendingOperations messagingTemplate,
             SetSeatStatusForNewGameCommand setSeatStatusForNewGameCommand,
             GameRepository gameRepository,
-            DeckBso deckBso,
+            CreateShuffledDeckCommand createShuffledDeckCommand,
             PotBso potBso,
             HandEvaluatorBso handEvaluatorBso) {
         this.assignInitialTablesForNewGame = assignInitialTablesForNewGame;
         this.messagingTemplate = messagingTemplate;
         this.setSeatStatusForNewGameCommand = setSeatStatusForNewGameCommand;
         this.gameRepository = gameRepository;
-        this.deckBso = deckBso;
+        this.createShuffledDeckCommand = createShuffledDeckCommand;
         this.potBso = potBso;
         this.handEvaluatorBso = handEvaluatorBso;
     }
@@ -123,7 +124,6 @@ public class InitializeAndStartGameImplCommand implements InitializeAndStartGame
     }
     
     private void resetTableStatus(Game game, Table table) {
-        deckBso.shuffleDeck(game, table);
         potBso.createNewHandPot(game, table);
         createNewRealTimeHand(game, table);
         table.getCurrentHand().setPots(new HashSet<>(potBso.fetchAllPots(game, table)));
@@ -134,7 +134,9 @@ public class InitializeAndStartGameImplCommand implements InitializeAndStartGame
         int smallBlind = currentBlinds.getSmallBlind();
         int bigBlind = currentBlinds.getBigBlind();
 
-        Hand realTimeHand = new Hand(table.getSeats());
+        Deck deck = createShuffledDeckCommand.execute(table.getNumberOfPlayers());
+
+        Hand realTimeHand = new Hand(table.getSeats(), deck);
         table.setCurrentHand(realTimeHand);
 
         Seat smallBlindSeat = (Seat) CollectionUtils.find(table.getSeats(),
@@ -208,13 +210,11 @@ public class InitializeAndStartGameImplCommand implements InitializeAndStartGame
     }
 
     private List<HandEvaluation> determineHandEvaluations(Game game, Table table) {
-        FlopCards flopCards = deckBso.fetchFlopCards(game, table);
-        TurnCard turnCard = deckBso.fetchTurnCard(game, table);
-        RiverCard riverCard = deckBso.fetchRiverCard(game, table);
+        FlopCards flopCards = table.getCurrentHand().getDeck().getFlopCards();
+        TurnCard turnCard = table.getCurrentHand().getDeck().getTurnCard();
+        RiverCard riverCard = table.getCurrentHand().getDeck().getRiverCard();
 
-        CommonCards commonCards = new CommonCards(flopCards, turnCard, riverCard);
-
-        List<HandRanking> possibleHands = handEvaluatorBso.determinePossibleHands(commonCards);
+        List<HandRanking> possibleHands = handEvaluatorBso.determinePossibleHands(flopCards, turnCard, riverCard);
 
         List<HandEvaluation> handEvaluations = new ArrayList<>();
 
@@ -222,10 +222,11 @@ public class InitializeAndStartGameImplCommand implements InitializeAndStartGame
             if (seat.getUserGameStatus() != null
                     && seat.getUserGameStatus().getUser() != null) {
                 User user = seat.getUserGameStatus().getUser();
-                PocketCards pocketCards = deckBso.fetchPocketCards(user, game, table);
+                PocketCards pocketCards = table.getCurrentHand().getDeck()
+                        .getPocketCards(seat.getPosition());
                 HandEvaluation handEvaluation = handEvaluatorBso
-                        .determineHandEvaluation(commonCards, user, pocketCards,
-                         possibleHands);
+                        .determineHandEvaluation(flopCards, turnCard, riverCard,
+                                user, pocketCards, possibleHands);
                 handEvaluations.add(handEvaluation);
                 
                 PocketCardsViewModel pocketCardsViewModel = new PocketCardsViewModel(
@@ -263,21 +264,15 @@ public class InitializeAndStartGameImplCommand implements InitializeAndStartGame
     
     private class OpenTableForUserDto {
 
+        @JsonProperty
         private final UUID gameId;
         
+        @JsonProperty
         private final UUID tableId;
         
         public OpenTableForUserDto(UUID gameId, UUID tableId) {
             this.gameId = gameId;
             this.tableId = tableId;
-        }
-
-        public UUID getGameId() {
-            return gameId;
-        }
-
-        public UUID getTableId() {
-            return tableId;
         }
 
     }

@@ -2,6 +2,8 @@ package com.flexpoker.model;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 
+import com.flexpoker.model.card.PocketCards;
+
 public class Seat implements Comparable<Seat> {
 
     private UserGameStatus userGameStatus;

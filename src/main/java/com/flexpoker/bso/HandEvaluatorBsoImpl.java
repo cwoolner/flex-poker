@@ -12,20 +12,27 @@ import java.util.Set;
 import org.springframework.stereotype.Service;
 
 import com.flexpoker.bso.api.HandEvaluatorBso;
-import com.flexpoker.model.Card;
-import com.flexpoker.model.CardRank;
-import com.flexpoker.model.CardSuit;
-import com.flexpoker.model.CommonCards;
+import com.flexpoker.dto.CommonCards;
 import com.flexpoker.model.HandEvaluation;
 import com.flexpoker.model.HandRanking;
-import com.flexpoker.model.PocketCards;
 import com.flexpoker.model.User;
+import com.flexpoker.model.card.Card;
+import com.flexpoker.model.card.CardRank;
+import com.flexpoker.model.card.CardSuit;
+import com.flexpoker.model.card.FlopCards;
+import com.flexpoker.model.card.PocketCards;
+import com.flexpoker.model.card.RiverCard;
+import com.flexpoker.model.card.TurnCard;
 
 @Service
 public class HandEvaluatorBsoImpl implements HandEvaluatorBso {
 
     @Override
-    public List<HandRanking> determinePossibleHands(CommonCards commonCards) {
+    public List<HandRanking> determinePossibleHands(FlopCards flopCards,
+            TurnCard turnCard, RiverCard riverCard) {
+        
+        CommonCards commonCards = new CommonCards(flopCards, turnCard, riverCard);
+        
         List<HandRanking> possibleHandRankings
                 = new ArrayList<HandRanking>(Arrays.asList(HandRanking.values()));
 
@@ -42,8 +49,12 @@ public class HandEvaluatorBsoImpl implements HandEvaluatorBso {
     }
 
     @Override
-    public HandEvaluation determineHandEvaluation(CommonCards commonCards, User user,
+    public HandEvaluation determineHandEvaluation(FlopCards flopCards,
+            TurnCard turnCard, RiverCard riverCard, User user,
             PocketCards pocketCards, List<HandRanking> possibleHandRankings) {
+
+        CommonCards commonCards = new CommonCards(flopCards, turnCard, riverCard);
+        
         HandEvaluation handEvaluation = new HandEvaluation();
         handEvaluation.setUser(user);
 

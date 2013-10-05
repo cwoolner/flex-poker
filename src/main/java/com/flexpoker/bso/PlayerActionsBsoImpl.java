@@ -9,7 +9,6 @@ import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Service;
 
 import com.flexpoker.bso.api.ActionOnTimerBso;
-import com.flexpoker.bso.api.DeckBso;
 import com.flexpoker.bso.api.PlayerActionsBso;
 import com.flexpoker.bso.api.PotBso;
 import com.flexpoker.bso.api.ValidationBso;
@@ -26,12 +25,12 @@ import com.flexpoker.model.HandDealerState;
 import com.flexpoker.model.HandEvaluation;
 import com.flexpoker.model.HandRoundState;
 import com.flexpoker.model.HandState;
-import com.flexpoker.model.PocketCards;
 import com.flexpoker.model.Pot;
 import com.flexpoker.model.Seat;
 import com.flexpoker.model.Table;
 import com.flexpoker.model.User;
 import com.flexpoker.model.UserGameStatus;
+import com.flexpoker.model.card.PocketCards;
 import com.flexpoker.util.ActionOnSeatPredicate;
 import com.flexpoker.util.ButtonSeatPredicate;
 
@@ -46,8 +45,6 @@ public class PlayerActionsBsoImpl implements PlayerActionsBso {
 
     private final ValidationBso validationBso;
 
-    private final DeckBso deckBso;
-
     private final ActionOnTimerBso actionOnTimerBso;
     
     private final ChangeGameStageCommand changeGameStageCommand;
@@ -58,14 +55,12 @@ public class PlayerActionsBsoImpl implements PlayerActionsBso {
             SetSeatStatusForEndOfHandCommand setSeatStatusForEndOfHandCommand,
             SetSeatStatusForNewRoundCommand setSeatStatusForNewRoundCommand,
             ValidationBso validationBso,
-            DeckBso deckBso,
             ActionOnTimerBso actionOnTimerBso,
             ChangeGameStageCommand changeGameStageCommand) {
         this.potBso = potBso;
         this.setSeatStatusForEndOfHandCommand = setSeatStatusForEndOfHandCommand;
         this.setSeatStatusForNewRoundCommand = setSeatStatusForNewRoundCommand;
         this.validationBso = validationBso;
-        this.deckBso = deckBso;
         this.actionOnTimerBso = actionOnTimerBso;
         this.changeGameStageCommand = changeGameStageCommand;
     }
@@ -445,8 +440,8 @@ public class PlayerActionsBsoImpl implements PlayerActionsBso {
             for (Seat winner : winners) {
                 winner.getUserGameStatus().setChips(
                         winner.getUserGameStatus().getChips() + numberOfChips);
-                PocketCards pocketCards = deckBso.fetchPocketCards(
-                        winner.getUserGameStatus().getUser(), game, table);
+                PocketCards pocketCards = table.getCurrentHand().getDeck()
+                        .getPocketCards(winner.getPosition());
                 if (numberOfPlayersInPot > 1) {
                     winner.setShowCards(pocketCards);
                 }

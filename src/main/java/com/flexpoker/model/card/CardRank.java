@@ -1,4 +1,4 @@
-package com.flexpoker.model;
+package com.flexpoker.model.card;
 
 public enum CardRank {
 

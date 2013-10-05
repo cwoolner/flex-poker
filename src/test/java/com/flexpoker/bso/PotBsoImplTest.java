@@ -9,7 +9,6 @@ import java.util.UUID;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.flexpoker.model.CardRank;
 import com.flexpoker.model.Game;
 import com.flexpoker.model.HandEvaluation;
 import com.flexpoker.model.HandRanking;
@@ -18,6 +17,7 @@ import com.flexpoker.model.Seat;
 import com.flexpoker.model.Table;
 import com.flexpoker.model.User;
 import com.flexpoker.model.UserGameStatus;
+import com.flexpoker.model.card.CardRank;
 
 public class PotBsoImplTest {
 

@@ -12,16 +12,15 @@ import org.springframework.stereotype.Controller;
 import com.flexpoker.bso.api.DealCardActionsBso;
 import com.flexpoker.bso.api.GameBso;
 import com.flexpoker.bso.api.PlayerActionsBso;
-import com.flexpoker.model.FlopCards;
 import com.flexpoker.model.Game;
 import com.flexpoker.model.GameStage;
 import com.flexpoker.model.HandState;
-import com.flexpoker.model.PocketCards;
-import com.flexpoker.model.RiverCard;
 import com.flexpoker.model.Table;
-import com.flexpoker.model.TurnCard;
 import com.flexpoker.model.User;
 import com.flexpoker.model.UserGameStatus;
+import com.flexpoker.model.card.FlopCards;
+import com.flexpoker.model.card.RiverCard;
+import com.flexpoker.model.card.TurnCard;
 
 /**
  * This implements the main and only interface used to communicate between the
@@ -103,11 +102,6 @@ public class FlexController {
     public Table fetchPlayersCurrentTable(Game game) {
         User user = extractCurrentUser();
         return gameBso.fetchPlayersCurrentTable(user, game);
-    }
-
-    public PocketCards fetchPocketCards(Game game, Table table) {
-        User user = extractCurrentUser();
-        return dealCardActionsBso.fetchPocketCards(user, game, table);
     }
 
     public void check(Game game, Table table) {

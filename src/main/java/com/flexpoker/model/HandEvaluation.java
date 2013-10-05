@@ -1,5 +1,7 @@
 package com.flexpoker.model;
 
+import com.flexpoker.model.card.CardRank;
+
 public class HandEvaluation implements Comparable<HandEvaluation> {
 
     private User user;

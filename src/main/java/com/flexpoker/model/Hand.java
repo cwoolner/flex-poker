@@ -6,6 +6,8 @@ import java.util.Map;
 import java.util.List;
 import java.util.Set;
 
+import com.flexpoker.model.card.Deck;
+
 /**
  * Class to store some real-time information about the hand that is currently
  * being played on a specific table.
@@ -36,10 +38,14 @@ public class Hand {
     
     private Set<Pot> pots;
     
-    public Hand(List<Seat> seats) {
+    private final Deck deck;
+    
+    public Hand(List<Seat> seats, Deck deck) {
         for (Seat seat : seats) {
             possibleSeatActionsMap.put(seat, new HashSet<GameEventType>());
         }
+        
+        this.deck = deck;
     }
 
     public void addPossibleSeatAction(Seat Seat, GameEventType action) {
@@ -116,6 +122,10 @@ public class Hand {
 
     public int getTotalPotAmount() {
         return totalPotAmount;
+    }
+
+    public Deck getDeck() {
+        return deck;
     }
 
 }
