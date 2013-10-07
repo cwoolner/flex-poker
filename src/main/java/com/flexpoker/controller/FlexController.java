@@ -9,7 +9,6 @@ import javax.inject.Inject;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 
-import com.flexpoker.bso.api.DealCardActionsBso;
 import com.flexpoker.bso.api.GameBso;
 import com.flexpoker.bso.api.PlayerActionsBso;
 import com.flexpoker.model.Game;
@@ -18,9 +17,6 @@ import com.flexpoker.model.HandState;
 import com.flexpoker.model.Table;
 import com.flexpoker.model.User;
 import com.flexpoker.model.UserGameStatus;
-import com.flexpoker.model.card.FlopCards;
-import com.flexpoker.model.card.RiverCard;
-import com.flexpoker.model.card.TurnCard;
 
 /**
  * This implements the main and only interface used to communicate between the
@@ -58,9 +54,6 @@ public class FlexController {
 
     @Inject
     private EventManager eventManager;
-
-    @Inject
-    private DealCardActionsBso dealCardActionsBso;
 
     @Inject
     private PlayerActionsBso playerActionsBso;
@@ -126,18 +119,6 @@ public class FlexController {
         User user = extractCurrentUser();
         HandState handState = playerActionsBso.raise(game, table, user, raiseAmount);
         eventManager.sendRaiseEvent(game, table, handState, user.getUsername());
-    }
-
-    public FlopCards fetchFlopCards(Game game, Table table) {
-        return dealCardActionsBso.fetchFlopCards(game, table);
-    }
-
-    public RiverCard fetchRiverCard(Game game, Table table) {
-        return dealCardActionsBso.fetchRiverCard(game, table);
-    }
-
-    public TurnCard fetchTurnCard(Game game, Table table) {
-        return dealCardActionsBso.fetchTurnCard(game, table);
     }
 
     private User extractCurrentUser() {
