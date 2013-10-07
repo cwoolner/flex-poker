@@ -1,4 +1,10 @@
-flexpokerModule.controller('MainController', ['$rootScope', '$scope', 'ngstomp', '$location', function($rootScope, $scope, ngstomp, $location) {
+flexpokerModule.controller('MainController', ['$rootScope', '$scope', 'ngstomp', '$location', '$templateCache',
+    function($rootScope, $scope, ngstomp, $location, $templateCache) {
+    
+    $scope.clearCache = function() { 
+        $templateCache.removeAll();
+    };
+    
     $rootScope.username = $('.username').prop('innerText');
     
     if ($scope.client === undefined) {
