@@ -16,10 +16,15 @@ public class TableViewModel {
     @JsonProperty
     private Set<PotViewModel> pots;
 
-    public TableViewModel(List<SeatViewModel> seats, int totalPot, Set<PotViewModel> pots) {
+    @JsonProperty
+    private List<CardViewModel> visibleCommonCards;
+
+    public TableViewModel(List<SeatViewModel> seats, int totalPot,
+            Set<PotViewModel> pots, List<CardViewModel> visibleCommonCards) {
         this.seats = seats;
         this.totalPot = totalPot;
         this.pots = pots;
+        this.visibleCommonCards = visibleCommonCards;
     }
 
 }

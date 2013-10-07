@@ -33,6 +33,10 @@ flexpokerModule.controller('TableController', ['$scope', '$rootScope', '$routePa
         $scope.client.subscribe('/topic/game/' + $scope.gameId
                 + '/table/' + $scope.tableId, function(message) {
             $scope.table = $.parseJSON(message.body);
+            $scope.commonCards = [];
+            $scope.table.visibleCommonCards.forEach(function(commonCard) {
+                $scope.commonCards.push(cardData[commonCard.id]);
+            });
         });
 
     }, function() {}, '/');
