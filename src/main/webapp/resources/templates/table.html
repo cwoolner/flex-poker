@@ -3,7 +3,7 @@
   <p>table: {{tableId}}</p>
   
   <div class="table">
-      <div ng-bind="table.currentHand.totalPotAmount"></div>
+      <div ng-bind="table.totalPot"></div>
       <div ng-repeat="seat in table.seats">
           <div seat ng-model="seat"></div>
       </div>
