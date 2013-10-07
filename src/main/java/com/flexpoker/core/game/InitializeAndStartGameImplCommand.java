@@ -13,7 +13,6 @@ import javax.inject.Inject;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.flexpoker.bso.api.HandEvaluatorBso;
 import com.flexpoker.bso.api.PotBso;
 import com.flexpoker.config.Command;
@@ -43,6 +42,7 @@ import com.flexpoker.util.ActionOnSeatPredicate;
 import com.flexpoker.util.BigBlindSeatPredicate;
 import com.flexpoker.util.MessagingConstants;
 import com.flexpoker.util.SmallBlindSeatPredicate;
+import com.flexpoker.web.model.OpenTableForUserViewModel;
 import com.flexpoker.web.model.PocketCardsViewModel;
 import com.flexpoker.web.model.table.TableViewModel;
 import com.flexpoker.web.translator.table.TableTranslator;
@@ -100,7 +100,7 @@ public class InitializeAndStartGameImplCommand implements InitializeAndStartGame
                     messagingTemplate.convertAndSendToUser(
                             seat.getUserGameStatus().getUser().getUsername(),
                             MessagingConstants.OPEN_TABLE_FOR_USER,
-                            new OpenTableForUserDto(gameId, table.getId()));
+                            new OpenTableForUserViewModel(gameId, table.getId()));
                 }
             }
         }
@@ -260,21 +260,6 @@ public class InitializeAndStartGameImplCommand implements InitializeAndStartGame
                 return;
             }
         }
-    }
-    
-    private class OpenTableForUserDto {
-
-        @JsonProperty
-        private final UUID gameId;
-        
-        @JsonProperty
-        private final UUID tableId;
-        
-        public OpenTableForUserDto(UUID gameId, UUID tableId) {
-            this.gameId = gameId;
-            this.tableId = tableId;
-        }
-
     }
 
 }
