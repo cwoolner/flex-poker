@@ -27,8 +27,8 @@ public class TableTranslator {
         
         int totalPot = 0;
         
-        for (PotViewModel potViewModel : potViewModels) {
-            totalPot += potViewModel.getAmount();
+        for (Pot pot : table.getCurrentHand().getPots()) {
+            totalPot += pot.getAmount();
         }
         
         return new TableViewModel(seatViewModels, totalPot, potViewModels);

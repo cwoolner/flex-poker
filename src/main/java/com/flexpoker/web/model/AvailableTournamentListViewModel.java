@@ -1,17 +1,25 @@
 package com.flexpoker.web.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class AvailableTournamentListViewModel {
 
+    @JsonProperty
     private final String name;
     
+    @JsonProperty
     private final int numberOfRegisteredPlayers;
     
+    @JsonProperty
     private final int maxNumberOfPlayers;
 
+    @JsonProperty
     private final int maxPlayersPerTable;
 
+    @JsonProperty
     private final String createdBy;
 
+    @JsonProperty
     private final String createdOn;
     
     public AvailableTournamentListViewModel(String name, int numberOfRegisteredPlayers,
@@ -22,30 +30,6 @@ public class AvailableTournamentListViewModel {
         this.maxPlayersPerTable = maxPlayersPerTable;
         this.createdBy = createdBy;
         this.createdOn = createdOn;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public int getNumberOfRegisteredPlayers() {
-        return numberOfRegisteredPlayers;
-    }
-
-    public int getMaxNumberOfPlayers() {
-        return maxNumberOfPlayers;
-    }
-
-    public int getMaxPlayersPerTable() {
-        return maxPlayersPerTable;
-    }
-
-    public String getCreatedBy() {
-        return createdBy;
-    }
-
-    public String getCreatedOn() {
-        return createdOn;
     }
 
 }

@@ -1,27 +1,40 @@
 package com.flexpoker.web.model.table;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class SeatViewModel {
 
+    @JsonProperty
     private int position;
     
+    @JsonProperty
     private String name;
     
+    @JsonProperty
     private int chipsInBack;
     
+    @JsonProperty
     private int chipsInFront;
     
+    @JsonProperty
     private boolean stillInHand;
 
+    @JsonProperty
     private int raiseTo;
 
+    @JsonProperty
     private int callAmount;
 
+    @JsonProperty
     private boolean button;
 
+    @JsonProperty
     private boolean smallBlind;
 
+    @JsonProperty
     private boolean bigBlind;
 
+    @JsonProperty
     private boolean actionOn;
     
     public SeatViewModel(int position, String name, int chipsInBack, int chipsInFront,
@@ -38,50 +51,6 @@ public class SeatViewModel {
         this.smallBlind = smallBlind;
         this.bigBlind = bigBlind;
         this.actionOn = actionOn;
-    }
-
-    public int getPosition() {
-        return position;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public int getChipsInBack() {
-        return chipsInBack;
-    }
-
-    public int getChipsInFront() {
-        return chipsInFront;
-    }
-
-    public boolean isStillInHand() {
-        return stillInHand;
-    }
-
-    public int getRaiseTo() {
-        return raiseTo;
-    }
-
-    public int getCallAmount() {
-        return callAmount;
-    }
-
-    public boolean isButton() {
-        return button;
-    }
-
-    public boolean isSmallBlind() {
-        return smallBlind;
-    }
-
-    public boolean isBigBlind() {
-        return bigBlind;
-    }
-
-    public boolean isActionOn() {
-        return actionOn;
     }
 
 }
