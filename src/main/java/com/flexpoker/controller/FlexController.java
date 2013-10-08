@@ -1,8 +1,6 @@
 package com.flexpoker.controller;
 
 import java.security.Principal;
-import java.util.List;
-import java.util.Set;
 
 import javax.inject.Inject;
 
@@ -16,7 +14,6 @@ import com.flexpoker.model.GameStage;
 import com.flexpoker.model.HandState;
 import com.flexpoker.model.Table;
 import com.flexpoker.model.User;
-import com.flexpoker.model.UserGameStatus;
 
 /**
  * This implements the main and only interface used to communicate between the
@@ -64,22 +61,9 @@ public class FlexController {
         eventManager.sendGamesUpdatedEvent();
     }
 
-    public List<Game> fetchAllGames() {
-        return gameBso.fetchAllGames();
-    }
-
-    public Set<UserGameStatus> fetchAllUserGameStatuses(Game game) {
-        return gameBso.fetchUserGameStatuses(game);
-    }
-
     public void verifyRegistrationForGame(Game game) {
         User user = extractCurrentUser();
         eventManager.sendGameInProgressEvent(game);
-    }
-
-    public void verifyGameInProgress(Game game) {
-        User user = extractCurrentUser();
-        eventManager.sendNewHandStartingEventForAllTables(game, gameBso.fetchTables(game));
     }
 
     public void verifyReadyToStartNewHand(Game game, Table table) {
@@ -90,11 +74,6 @@ public class FlexController {
         } else {
             eventManager.sendNewHandStartingEvent(game, table);
         }
-    }
-
-    public Table fetchPlayersCurrentTable(Game game) {
-        User user = extractCurrentUser();
-        return gameBso.fetchPlayersCurrentTable(user, game);
     }
 
     public void check(Game game, Table table) {

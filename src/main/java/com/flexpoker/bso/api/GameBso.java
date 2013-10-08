@@ -2,13 +2,9 @@ package com.flexpoker.bso.api;
 
 import java.security.Principal;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 
 import com.flexpoker.model.Game;
-import com.flexpoker.model.Table;
-import com.flexpoker.model.User;
-import com.flexpoker.model.UserGameStatus;
 
 public interface GameBso {
 
@@ -18,12 +14,6 @@ public interface GameBso {
 
     void createGame(Principal user, Game game);
 
-    Table fetchPlayersCurrentTable(User user, Game game);
-
-    List<Table> fetchTables(Game game);
-
-    Set<UserGameStatus> fetchUserGameStatuses(Game game);
-    
     void joinGame(UUID gameId, Principal user);
 
 }
