@@ -11,7 +11,7 @@ import java.util.UUID;
 import javax.inject.Inject;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.springframework.messaging.simp.SimpMessageSendingOperations;
+import org.springframework.context.ApplicationEventPublisher;
 
 import com.flexpoker.bso.api.HandEvaluatorBso;
 import com.flexpoker.bso.api.PotBso;
@@ -20,6 +20,9 @@ import com.flexpoker.core.api.deck.CreateShuffledDeckCommand;
 import com.flexpoker.core.api.game.InitializeAndStartGameCommand;
 import com.flexpoker.core.api.seatstatus.SetSeatStatusForNewGameCommand;
 import com.flexpoker.core.api.tablebalancer.AssignInitialTablesForNewGame;
+import com.flexpoker.event.OpenTableForUserEvent;
+import com.flexpoker.event.SendUserPocketCardsEvent;
+import com.flexpoker.event.TableUpdatedEvent;
 import com.flexpoker.model.Blinds;
 import com.flexpoker.model.Game;
 import com.flexpoker.model.GameEventType;
@@ -40,19 +43,12 @@ import com.flexpoker.model.card.TurnCard;
 import com.flexpoker.repository.api.GameRepository;
 import com.flexpoker.util.ActionOnSeatPredicate;
 import com.flexpoker.util.BigBlindSeatPredicate;
-import com.flexpoker.util.MessagingConstants;
 import com.flexpoker.util.SmallBlindSeatPredicate;
-import com.flexpoker.web.model.OpenTableForUserViewModel;
-import com.flexpoker.web.model.PocketCardsViewModel;
-import com.flexpoker.web.model.table.TableViewModel;
-import com.flexpoker.web.translator.table.TableTranslator;
 
 @Command
 public class InitializeAndStartGameImplCommand implements InitializeAndStartGameCommand {
 
     private final AssignInitialTablesForNewGame assignInitialTablesForNewGame;
-    
-    private final SimpMessageSendingOperations messagingTemplate;
     
     private final SetSeatStatusForNewGameCommand setSeatStatusForNewGameCommand;
     
@@ -64,17 +60,17 @@ public class InitializeAndStartGameImplCommand implements InitializeAndStartGame
     
     private final HandEvaluatorBso handEvaluatorBso;
     
+    private ApplicationEventPublisher eventPublisher;
+    
     @Inject
     public InitializeAndStartGameImplCommand(
             AssignInitialTablesForNewGame assignInitialTablesForNewGame,
-            SimpMessageSendingOperations messagingTemplate,
             SetSeatStatusForNewGameCommand setSeatStatusForNewGameCommand,
             GameRepository gameRepository,
             CreateShuffledDeckCommand createShuffledDeckCommand,
             PotBso potBso,
             HandEvaluatorBso handEvaluatorBso) {
         this.assignInitialTablesForNewGame = assignInitialTablesForNewGame;
-        this.messagingTemplate = messagingTemplate;
         this.setSeatStatusForNewGameCommand = setSeatStatusForNewGameCommand;
         this.gameRepository = gameRepository;
         this.createShuffledDeckCommand = createShuffledDeckCommand;
@@ -97,10 +93,9 @@ public class InitializeAndStartGameImplCommand implements InitializeAndStartGame
         for (Table table : game.getTables()) {
             for (Seat seat : table.getSeats()) {
                 if (seat.getUserGameStatus() != null) {
-                    messagingTemplate.convertAndSendToUser(
+                    eventPublisher.publishEvent(new OpenTableForUserEvent(this,
                             seat.getUserGameStatus().getUser().getUsername(),
-                            MessagingConstants.OPEN_TABLE_FOR_USER,
-                            new OpenTableForUserViewModel(gameId, table.getId()));
+                            gameId, table.getId()));
                 }
             }
         }
@@ -113,10 +108,7 @@ public class InitializeAndStartGameImplCommand implements InitializeAndStartGame
                     setSeatStatusForNewGameCommand.execute(table);
                     Game game = gameRepository.findById(gameId);
                     resetTableStatus(game, table);
-                    TableViewModel tableViewModel = new TableTranslator().translate(table);
-                    messagingTemplate.convertAndSend(String.format(
-                            MessagingConstants.TABLE_STATUS, gameId, table.getId()),
-                            tableViewModel);
+                    eventPublisher.publishEvent(new TableUpdatedEvent(this, gameId, table));
                 }
                 timer.cancel();
             }
@@ -228,12 +220,8 @@ public class InitializeAndStartGameImplCommand implements InitializeAndStartGame
                         .determineHandEvaluation(flopCards, turnCard, riverCard,
                                 user, pocketCards, possibleHands);
                 handEvaluations.add(handEvaluation);
-                
-                PocketCardsViewModel pocketCardsViewModel = new PocketCardsViewModel(
-                        pocketCards.getCard1().getId(),
-                        pocketCards.getCard2().getId(),
-                        table.getId());
-                messagingTemplate.convertAndSendToUser(user.getUsername(), MessagingConstants.POCKET_CARDS, pocketCardsViewModel);
+                eventPublisher.publishEvent(new SendUserPocketCardsEvent(this,
+                        user.getUsername(), pocketCards, table.getId()));
             }
         }
 
@@ -260,6 +248,12 @@ public class InitializeAndStartGameImplCommand implements InitializeAndStartGame
                 return;
             }
         }
+    }
+
+    @Override
+    public void setApplicationEventPublisher(
+            ApplicationEventPublisher applicationEventPublisher) {
+        this.eventPublisher = applicationEventPublisher;
     }
 
 }
