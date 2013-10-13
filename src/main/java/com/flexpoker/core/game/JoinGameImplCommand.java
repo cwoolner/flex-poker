@@ -75,7 +75,7 @@ public class JoinGameImplCommand implements JoinGameCommand {
             game.addUserGameStatus(userGameStatus);
 
             OpenGameForUser openGameForUser = new OpenGameForUser(gameId,
-                    game.getId().toString(), GameStage.REGISTERING);
+                    game.getName(), GameStage.REGISTERING);
             openGameForUserRepository.addOpenGameForUser(principal.getName(), openGameForUser);
             
             if (game.getUserGameStatuses().size() == game.getTotalPlayers()) {

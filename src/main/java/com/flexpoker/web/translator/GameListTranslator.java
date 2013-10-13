@@ -16,10 +16,10 @@ public class GameListTranslator {
         
         for (Game game : gameList) {
             AvailableTournamentListViewModel availableTournament = new AvailableTournamentListViewModel(
-                    game.getId().toString(), game.getTotalPlayers(), game.getTotalPlayers(),
-                    game.getMaxPlayersPerTable(), game.getCreatedByUser().getUsername(),
-                    dateFormat.format(game.getCreatedOn()));
-            availableTournamentList.add(availableTournament);            
+                    game.getId(), game.getName(), game.getUserGameStatuses().size(),
+                    game.getTotalPlayers(), game.getMaxPlayersPerTable(),
+                    game.getCreatedByUser().getUsername(), dateFormat.format(game.getCreatedOn()));
+            availableTournamentList.add(availableTournament);
         }
 
         return availableTournamentList;

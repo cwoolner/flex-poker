@@ -13,7 +13,13 @@ flexpokerModule.controller('TournamentRegisteringController', ['$rootScope', '$s
                   +     '<div class="ngVerticalBar" ng-style="{height: rowHeight}" ng-class="{ ngVerticalBarVisible: !$last }"></div>'
                   +     '<div ng-cell></div>'
                   + '</div>'
-              + '</div>'
+              + '</div>',
+            columnDefs: [ {field: 'name', displayName: 'Name'},
+                          {field: 'numberOfRegisteredPlayers', displayName: 'Registered Players'},
+                          {field: 'maxNumberOfPlayers', displayName: 'Total Players'},
+                          {field: 'maxPlayersPerTable', displayName: 'Players Per Table'},
+                          {field: 'createdBy', displayName: 'Creator'}, 
+                          {field: 'createdOn', displayName: 'Created'}]
         };
     
     if ($scope.client === undefined) {
@@ -49,7 +55,7 @@ flexpokerModule.controller('TournamentRegisteringController', ['$rootScope', '$s
     }
     
     $scope.openJoinGameDialog = function(row) {
-        var gameId = $scope.games[row.rowIndex].name;
+        var gameId = $scope.games[row.rowIndex].id;
         $scope.joinGameId = gameId;
         $rootScope.tryingToJoinGameId = gameId; 
         $('#join-game-dialog').dialog({ width: 550 });

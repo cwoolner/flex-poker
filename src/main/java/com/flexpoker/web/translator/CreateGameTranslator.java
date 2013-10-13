@@ -7,6 +7,7 @@ public class CreateGameTranslator {
 
     public Game translate(CreateGameViewModel viewModel) {
         Game game = new Game();
+        game.setName(viewModel.getName());
         game.setTotalPlayers(viewModel.getPlayers());
         game.setMaxPlayersPerTable(viewModel.getPlayersPerTable());
         return game;

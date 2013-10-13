@@ -13,6 +13,8 @@ import org.apache.commons.collections.Predicate;
 public class Game {
 
     private UUID id;
+    
+    private String name;
 
     private Date startTime;
 
@@ -38,12 +40,14 @@ public class Game {
 
     private Blinds currentBlinds;
 
-    private List<Table> tables = new ArrayList<Table>();
+    private List<Table> tables;
 
-    private Set<UserGameStatus> userGameStatuses = new HashSet<UserGameStatus>();
+    private Set<UserGameStatus> userGameStatuses;
 
     public Game() {
         currentBlinds = new Blinds(10, 20);
+        tables = new ArrayList<>();
+        userGameStatuses = new HashSet<>();
     }
 
     public UUID getId() {
@@ -52,6 +56,14 @@ public class Game {
 
     public void setId(UUID id) {
         this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public Date getStartTime() {
