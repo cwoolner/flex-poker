@@ -60,7 +60,7 @@ public class InitializeAndStartGameImplCommand implements InitializeAndStartGame
     
     private final HandEvaluatorBso handEvaluatorBso;
     
-    private ApplicationEventPublisher eventPublisher;
+    private final ApplicationEventPublisher applicationEventPublisher;
     
     @Inject
     public InitializeAndStartGameImplCommand(
@@ -69,13 +69,15 @@ public class InitializeAndStartGameImplCommand implements InitializeAndStartGame
             GameRepository gameRepository,
             CreateShuffledDeckCommand createShuffledDeckCommand,
             PotBso potBso,
-            HandEvaluatorBso handEvaluatorBso) {
+            HandEvaluatorBso handEvaluatorBso,
+            ApplicationEventPublisher applicationEventPublisher) {
         this.assignInitialTablesForNewGame = assignInitialTablesForNewGame;
         this.setSeatStatusForNewGameCommand = setSeatStatusForNewGameCommand;
         this.gameRepository = gameRepository;
         this.createShuffledDeckCommand = createShuffledDeckCommand;
         this.potBso = potBso;
         this.handEvaluatorBso = handEvaluatorBso;
+        this.applicationEventPublisher = applicationEventPublisher;
     }
     
     @Override
@@ -93,7 +95,7 @@ public class InitializeAndStartGameImplCommand implements InitializeAndStartGame
         for (Table table : game.getTables()) {
             for (Seat seat : table.getSeats()) {
                 if (seat.getUserGameStatus() != null) {
-                    eventPublisher.publishEvent(new OpenTableForUserEvent(this,
+                    applicationEventPublisher.publishEvent(new OpenTableForUserEvent(this,
                             seat.getUserGameStatus().getUser().getUsername(),
                             gameId, table.getId()));
                 }
@@ -108,7 +110,7 @@ public class InitializeAndStartGameImplCommand implements InitializeAndStartGame
                     setSeatStatusForNewGameCommand.execute(table);
                     Game game = gameRepository.findById(gameId);
                     resetTableStatus(game, table);
-                    eventPublisher.publishEvent(new TableUpdatedEvent(this, gameId, table));
+                    applicationEventPublisher.publishEvent(new TableUpdatedEvent(this, gameId, table));
                 }
                 timer.cancel();
             }
@@ -220,7 +222,7 @@ public class InitializeAndStartGameImplCommand implements InitializeAndStartGame
                         .determineHandEvaluation(flopCards, turnCard, riverCard,
                                 user, pocketCards, possibleHands);
                 handEvaluations.add(handEvaluation);
-                eventPublisher.publishEvent(new SendUserPocketCardsEvent(this,
+                applicationEventPublisher.publishEvent(new SendUserPocketCardsEvent(this,
                         user.getUsername(), pocketCards, table.getId()));
             }
         }
@@ -248,12 +250,6 @@ public class InitializeAndStartGameImplCommand implements InitializeAndStartGame
                 return;
             }
         }
-    }
-
-    @Override
-    public void setApplicationEventPublisher(
-            ApplicationEventPublisher applicationEventPublisher) {
-        this.eventPublisher = applicationEventPublisher;
     }
 
 }

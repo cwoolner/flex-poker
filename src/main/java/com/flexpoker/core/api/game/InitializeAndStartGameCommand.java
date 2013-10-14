@@ -2,10 +2,7 @@ package com.flexpoker.core.api.game;
 
 import java.util.UUID;
 
-import org.springframework.context.ApplicationEventPublisherAware;
-
-public interface InitializeAndStartGameCommand extends
-        ApplicationEventPublisherAware {
+public interface InitializeAndStartGameCommand {
 
     void execute(UUID gameId);
 

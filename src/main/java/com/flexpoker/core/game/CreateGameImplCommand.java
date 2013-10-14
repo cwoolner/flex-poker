@@ -23,13 +23,15 @@ public class CreateGameImplCommand implements CreateGameCommand {
     
     private final GameRepository gameRepository;
     
-    private ApplicationEventPublisher eventPublisher;
+    private final ApplicationEventPublisher applicationEventPublisher;
     
     @Inject
     public CreateGameImplCommand(UserRepository userRepository,
-            GameRepository gameRepository) {
+            GameRepository gameRepository,
+            ApplicationEventPublisher applicationEventPublisher) {
         this.userRepository = userRepository;
         this.gameRepository = gameRepository;
+        this.applicationEventPublisher = applicationEventPublisher;
     }
     
     @Override
@@ -42,13 +44,7 @@ public class CreateGameImplCommand implements CreateGameCommand {
         game.setAllowRebuys(false);
         gameRepository.saveNew(game);
         
-        eventPublisher.publishEvent(new GameListUpdatedEvent(this));
-    }
-
-    @Override
-    public void setApplicationEventPublisher(
-            ApplicationEventPublisher applicationEventPublisher) {
-        this.eventPublisher = applicationEventPublisher;
+        applicationEventPublisher.publishEvent(new GameListUpdatedEvent(this));
     }
 
 }

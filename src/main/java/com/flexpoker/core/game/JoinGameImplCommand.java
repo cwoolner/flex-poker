@@ -44,7 +44,7 @@ public class JoinGameImplCommand implements JoinGameCommand {
     
     private final ScheduleMoveGameToInProgressCommand scheduleMoveGameToInProgressCommand;
     
-    private ApplicationEventPublisher eventPublisher;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
     @Inject
     public JoinGameImplCommand(GameRepository gameDao, UserRepository userDao,
@@ -52,7 +52,8 @@ public class JoinGameImplCommand implements JoinGameCommand {
             SimpMessageSendingOperations messageSendingOperations,
             SendGameChatMessageCommand sendGameChatMessageCommand,
             OpenGameForUserRepository openGameForUserRepository,
-            ScheduleMoveGameToInProgressCommand scheduleMoveGameToInProgressCommand) {
+            ScheduleMoveGameToInProgressCommand scheduleMoveGameToInProgressCommand,
+            ApplicationEventPublisher applicationEventPublisher) {
         this.gameDao = gameDao;
         this.userDao = userDao;
         this.changeGameStageCommand = changeGameStageCommand;
@@ -60,6 +61,7 @@ public class JoinGameImplCommand implements JoinGameCommand {
         this.sendGameChatMessageCommand = sendGameChatMessageCommand;
         this.openGameForUserRepository = openGameForUserRepository;
         this.scheduleMoveGameToInProgressCommand = scheduleMoveGameToInProgressCommand;
+        this.applicationEventPublisher = applicationEventPublisher;
     }
     
     @Override
@@ -97,7 +99,7 @@ public class JoinGameImplCommand implements JoinGameCommand {
                         openGameForUserRepository.fetchAllOpenGamesForUser(principal.getName()));
             }
             
-            eventPublisher.publishEvent(new GameListUpdatedEvent(this));
+            applicationEventPublisher.publishEvent(new GameListUpdatedEvent(this));
 
             String message = principal.getName() + " has joined the game";
             sendGameChatMessageCommand.execute(new GameChatMessage(message, null, true, gameId));
@@ -123,12 +125,6 @@ public class JoinGameImplCommand implements JoinGameCommand {
                 throw new FlexPokerException("You are already in this game.");
             }
         }
-    }
-
-    @Override
-    public void setApplicationEventPublisher(
-            ApplicationEventPublisher applicationEventPublisher) {
-        this.eventPublisher = applicationEventPublisher;
     }
 
 }
