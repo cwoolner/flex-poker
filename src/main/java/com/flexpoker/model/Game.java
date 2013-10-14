@@ -12,66 +12,64 @@ import org.apache.commons.collections.Predicate;
 
 public class Game {
 
-    private UUID id;
+    private final UUID id;
     
-    private String name;
+    private final String name;
 
-    private Date startTime;
+    private final Date startTime;
 
     private Date endTime;
 
     private User winningUser;
 
-    private User createdByUser;
+    private final User createdByUser;
 
-    private Date createdOn;
+    private final Date createdOn;
 
     private Date canceledOn;
 
-    private Integer totalPlayers;
+    private final int totalPlayers;
 
-    private Integer playersRemaining;
+    private int playersRemaining;
 
-    private Integer maxPlayersPerTable;
+    private final int maxPlayersPerTable;
 
-    private Boolean allowRebuys;
+    private final boolean allowRebuys;
 
     private GameStage gameStage;
 
     private Blinds currentBlinds;
 
-    private List<Table> tables;
+    private final List<Table> tables;
 
     private Set<UserGameStatus> userGameStatuses;
 
-    public Game() {
+    public Game(String name, Date startTime, User createdByUser, Date createdOn,
+            int totalPlayers, int maxPlayersPerTable, boolean allowRebuys) {
         currentBlinds = new Blinds(10, 20);
         tables = new ArrayList<>();
         userGameStatuses = new HashSet<>();
+        id = UUID.randomUUID();
+        gameStage = GameStage.REGISTERING;
+        this.name = name;
+        this.startTime = startTime;
+        this.createdByUser = createdByUser;
+        this.createdOn = createdOn;
+        this.totalPlayers = totalPlayers;
+        this.allowRebuys = allowRebuys;
+        this.maxPlayersPerTable = maxPlayersPerTable;
     }
 
     public UUID getId() {
         return id;
     }
 
-    public void setId(UUID id) {
-        this.id = id;
-    }
-
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public Date getStartTime() {
         return startTime;
-    }
-
-    public void setStartTime(Date startTime) {
-        this.startTime = startTime;
     }
 
     public Date getEndTime() {
@@ -94,16 +92,8 @@ public class Game {
         return createdByUser;
     }
 
-    public void setCreatedByUser(User createdByUser) {
-        this.createdByUser = createdByUser;
-    }
-
     public Date getCreatedOn() {
         return createdOn;
-    }
-
-    public void setCreatedOn(Date createdOn) {
-        this.createdOn = createdOn;
     }
 
     public Date getCanceledOn() {
@@ -118,10 +108,6 @@ public class Game {
         return totalPlayers;
     }
 
-    public void setTotalPlayers(Integer totalPlayers) {
-        this.totalPlayers = totalPlayers;
-    }
-
     public Integer getPlayersRemaining() {
         return playersRemaining;
     }
@@ -134,10 +120,6 @@ public class Game {
         return allowRebuys;
     }
 
-    public void setAllowRebuys(Boolean allowRebuys) {
-        this.allowRebuys = allowRebuys;
-    }
-
     public GameStage getGameStage() {
         return gameStage;
     }
@@ -148,10 +130,6 @@ public class Game {
 
     public Integer getMaxPlayersPerTable() {
         return maxPlayersPerTable;
-    }
-
-    public void setMaxPlayersPerTable(Integer maxPlayersPerTable) {
-        this.maxPlayersPerTable = maxPlayersPerTable;
     }
 
     public Blinds getCurrentBlinds() {

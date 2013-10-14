@@ -14,6 +14,7 @@ import org.springframework.stereotype.Controller;
 
 import com.flexpoker.bso.api.GameBso;
 import com.flexpoker.bso.api.UserBso;
+import com.flexpoker.dto.CreateGameDto;
 import com.flexpoker.model.Game;
 import com.flexpoker.model.OpenGameForUser;
 import com.flexpoker.web.model.AvailableTournamentListViewModel;
@@ -47,8 +48,8 @@ public class GameManagementController {
 
     @MessageMapping(value = "/app/creategame")
     public void createGame(CreateGameViewModel model, Principal principal) {
-        Game game = new CreateGameTranslator().translate(model);
-        gameBso.createGame(principal, game);
+        CreateGameDto createGameDto = new CreateGameTranslator().translate(model);
+        gameBso.createGame(principal, createGameDto);
     }
     
     @MessageMapping(value = "/app/joingame")

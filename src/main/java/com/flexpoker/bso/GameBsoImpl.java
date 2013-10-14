@@ -11,6 +11,7 @@ import com.flexpoker.bso.api.GameBso;
 import com.flexpoker.core.api.game.CreateGameCommand;
 import com.flexpoker.core.api.game.JoinGameCommand;
 import com.flexpoker.core.api.tablebalancer.AssignInitialTablesForNewGame;
+import com.flexpoker.dto.CreateGameDto;
 import com.flexpoker.model.Game;
 import com.flexpoker.repository.api.GameRepository;
 
@@ -43,8 +44,8 @@ public class GameBsoImpl implements GameBso {
     }
 
     @Override
-    public void createGame(Principal principal, Game game) {
-        createGameCommand.execute(principal, game);
+    public void createGame(Principal principal, CreateGameDto gameDto) {
+        createGameCommand.execute(principal, gameDto);
     }
 
     @Override

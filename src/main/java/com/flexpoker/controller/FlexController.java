@@ -1,7 +1,5 @@
 package com.flexpoker.controller;
 
-import java.security.Principal;
-
 import javax.inject.Inject;
 
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -54,12 +52,6 @@ public class FlexController {
 
     @Inject
     private PlayerActionsBso playerActionsBso;
-
-    public void createGame(Game game) {
-        Principal user = (Principal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        gameBso.createGame(user, game);
-        eventManager.sendGamesUpdatedEvent();
-    }
 
     public void verifyRegistrationForGame(Game game) {
         User user = extractCurrentUser();

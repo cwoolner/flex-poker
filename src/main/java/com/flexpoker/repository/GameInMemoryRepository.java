@@ -32,7 +32,6 @@ public class GameInMemoryRepository implements GameRepository {
 
     @Override
     public void saveNew(Game game) {
-        game.setId(UUID.randomUUID());
         gameMap.put(game.getId(), game);
     }
 

@@ -9,9 +9,9 @@ import org.springframework.context.ApplicationEventPublisher;
 
 import com.flexpoker.config.Command;
 import com.flexpoker.core.api.game.CreateGameCommand;
+import com.flexpoker.dto.CreateGameDto;
 import com.flexpoker.event.GameListUpdatedEvent;
 import com.flexpoker.model.Game;
-import com.flexpoker.model.GameStage;
 import com.flexpoker.model.User;
 import com.flexpoker.repository.api.GameRepository;
 import com.flexpoker.repository.api.UserRepository;
@@ -35,13 +35,11 @@ public class CreateGameImplCommand implements CreateGameCommand {
     }
     
     @Override
-    public void execute(Principal principal, Game game) {
+    public void execute(Principal principal, CreateGameDto gameDto) {
         User user = userRepository.findByUsername(principal.getName());
 
-        game.setCreatedByUser(user);
-        game.setCreatedOn(new Date());
-        game.setGameStage(GameStage.REGISTERING);
-        game.setAllowRebuys(false);
+        Game game = new Game(gameDto.getName(), new Date(), user, new Date(),
+                gameDto.getPlayers(), gameDto.getPlayersPerTable(), false);
         gameRepository.saveNew(game);
         
         applicationEventPublisher.publishEvent(new GameListUpdatedEvent(this));

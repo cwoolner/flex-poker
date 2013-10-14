@@ -1,16 +1,14 @@
 package com.flexpoker.web.translator;
 
-import com.flexpoker.model.Game;
+import com.flexpoker.dto.CreateGameDto;
 import com.flexpoker.web.model.CreateGameViewModel;
 
 public class CreateGameTranslator {
 
-    public Game translate(CreateGameViewModel viewModel) {
-        Game game = new Game();
-        game.setName(viewModel.getName());
-        game.setTotalPlayers(viewModel.getPlayers());
-        game.setMaxPlayersPerTable(viewModel.getPlayersPerTable());
-        return game;
+    public CreateGameDto translate(CreateGameViewModel viewModel) {
+        CreateGameDto gameDto = new CreateGameDto(viewModel.getName(),
+                viewModel.getPlayers(), viewModel.getPlayersPerTable());
+        return gameDto;
     }
 
 }

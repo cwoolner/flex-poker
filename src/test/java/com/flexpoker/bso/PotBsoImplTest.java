@@ -4,7 +4,6 @@ import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -18,6 +17,7 @@ import com.flexpoker.model.Table;
 import com.flexpoker.model.User;
 import com.flexpoker.model.UserGameStatus;
 import com.flexpoker.model.card.CardRank;
+import com.flexpoker.test.util.datageneration.GameGenerator;
 
 public class PotBsoImplTest {
 
@@ -30,8 +30,7 @@ public class PotBsoImplTest {
     
     @Test
     public void testCalculatePotsAfterRound() {
-        Game game = new Game();
-        game.setId(UUID.randomUUID());
+        Game game = GameGenerator.createGame(9, 9);
         Table table = new Table();
 
         testCalculatePotsAfterRound1(game, table);
@@ -42,8 +41,7 @@ public class PotBsoImplTest {
 
     @Test
     public void testCreateNewHandPot() {
-        Game game = new Game();
-        game.setId(UUID.randomUUID());
+        Game game = GameGenerator.createGame(9, 9);
         Table table1 = new Table();
         Table table2 = new Table();
         bso.createNewHandPot(game, table1);
@@ -57,8 +55,7 @@ public class PotBsoImplTest {
 
     @Test
     public void testFetchAllPots() {
-        Game game = new Game();
-        game.setId(UUID.randomUUID());
+        Game game = GameGenerator.createGame(9, 9);
         Table table = new Table();
         bso.createNewHandPot(game, table);
         assertEquals(0, bso.fetchAllPots(game, table).size());
@@ -66,8 +63,7 @@ public class PotBsoImplTest {
 
     @Test
     public void testRemoveSeatFromPots() {
-        Game game = new Game();
-        game.setId(UUID.randomUUID());
+        Game game = GameGenerator.createGame(9, 9);
         Table table = new Table();
 
         bso.createNewHandPot(game, table);
@@ -126,8 +122,7 @@ public class PotBsoImplTest {
 
     @Test
     public void testSetWinners() {
-        Game game = new Game();
-        game.setId(UUID.randomUUID());
+        Game game = GameGenerator.createGame(9, 9);
         Table table = new Table();
 
         User user1 = new User();
