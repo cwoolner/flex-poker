@@ -2,9 +2,6 @@ package com.flexpoker.model;
 
 import static org.junit.Assert.*;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.junit.Test;
 
 public class TableTest {
@@ -12,8 +9,6 @@ public class TableTest {
     @Test
     public void testValidateTable() {
         Table table = new Table();
-        List<Seat> seats = new ArrayList<Seat>();
-        table.setSeats(seats);
 
         try {
             table.validateTable();
@@ -22,7 +17,7 @@ public class TableTest {
 
         Seat seat1 = new Seat();
         seat1.setPosition(0);
-        seats.add(seat1);
+        table.addSeat(seat1);
 
         try {
             table.validateTable();
@@ -31,7 +26,7 @@ public class TableTest {
 
         Seat seat2 = new Seat();
         seat2.setPosition(1);
-        seats.add(seat2);
+        table.addSeat(seat1);
 
         try {
             table.validateTable();

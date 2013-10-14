@@ -1,5 +1,6 @@
 package com.flexpoker.model;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -9,26 +10,27 @@ import com.flexpoker.util.Constants;
 
 public class Table {
 
-    private UUID id;
+    private final UUID id;
 
-    private List<Seat> seats;
+    private final List<Seat> seats;
 
     private Hand currentHand;
     
+    public Table() {
+        id = UUID.randomUUID();
+        seats = new ArrayList<>();
+    }
+    
     public UUID getId() {
         return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
     }
 
     public List<Seat> getSeats() {
         return seats;
     }
 
-    public void setSeats(List<Seat> seats) {
-        this.seats = seats;
+    public void addSeat(Seat seat) {
+        seats.add(seat);
     }
 
     public void resetRaiseTo() {

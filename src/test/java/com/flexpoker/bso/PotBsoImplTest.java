@@ -33,7 +33,6 @@ public class PotBsoImplTest {
         Game game = new Game();
         game.setId(UUID.randomUUID());
         Table table = new Table();
-        table.setId(UUID.randomUUID());
 
         testCalculatePotsAfterRound1(game, table);
         testCalculatePotsAfterRound2(game, table);
@@ -46,9 +45,7 @@ public class PotBsoImplTest {
         Game game = new Game();
         game.setId(UUID.randomUUID());
         Table table1 = new Table();
-        table1.setId(UUID.randomUUID());
         Table table2 = new Table();
-        table2.setId(UUID.randomUUID());
         bso.createNewHandPot(game, table1);
         bso.createNewHandPot(game, table2);
 
@@ -63,7 +60,6 @@ public class PotBsoImplTest {
         Game game = new Game();
         game.setId(UUID.randomUUID());
         Table table = new Table();
-        table.setId(UUID.randomUUID());
         bso.createNewHandPot(game, table);
         assertEquals(0, bso.fetchAllPots(game, table).size());
     }
@@ -73,7 +69,6 @@ public class PotBsoImplTest {
         Game game = new Game();
         game.setId(UUID.randomUUID());
         Table table = new Table();
-        table.setId(UUID.randomUUID());
 
         bso.createNewHandPot(game, table);
 
@@ -94,11 +89,10 @@ public class PotBsoImplTest {
         seat4.setChipsInFront(30);
         seat4.setStillInHand(true);
 
-        table.setSeats(new ArrayList<Seat>());
-        table.getSeats().add(seat1);
-        table.getSeats().add(seat2);
-        table.getSeats().add(seat3);
-        table.getSeats().add(seat4);
+        table.addSeat(seat1);
+        table.addSeat(seat2);
+        table.addSeat(seat3);
+        table.addSeat(seat4);
 
         bso.calculatePotsAfterRound(game, table);
 
@@ -135,7 +129,6 @@ public class PotBsoImplTest {
         Game game = new Game();
         game.setId(UUID.randomUUID());
         Table table = new Table();
-        table.setId(UUID.randomUUID());
 
         User user1 = new User();
         user1.setId(1);
@@ -164,8 +157,7 @@ public class PotBsoImplTest {
         seat1.setChipsInFront(30);
         seat1.setStillInHand(true);
 
-        table.setSeats(new ArrayList<Seat>());
-        table.getSeats().add(seat1);
+        table.addSeat(seat1);
 
         bso.calculatePotsAfterRound(game, table);
 
@@ -187,9 +179,8 @@ public class PotBsoImplTest {
         seat2.setChipsInFront(30);
         seat2.setStillInHand(true);
 
-        table.setSeats(new ArrayList<Seat>());
-        table.getSeats().add(seat1);
-        table.getSeats().add(seat2);
+        table.addSeat(seat1);
+        table.addSeat(seat2);
 
         bso.calculatePotsAfterRound(game, table);
 
@@ -214,9 +205,8 @@ public class PotBsoImplTest {
         seat2.setStillInHand(true);
         seat2.setAllIn(true);
 
-        table.setSeats(new ArrayList<Seat>());
-        table.getSeats().add(seat1);
-        table.getSeats().add(seat2);
+        table.addSeat(seat1);
+        table.addSeat(seat2);
 
         bso.calculatePotsAfterRound(game, table);
 
@@ -248,11 +238,10 @@ public class PotBsoImplTest {
         seat4.setChipsInFront(30);
         seat4.setStillInHand(true);
 
-        table.setSeats(new ArrayList<Seat>());
-        table.getSeats().add(seat1);
-        table.getSeats().add(seat2);
-        table.getSeats().add(seat3);
-        table.getSeats().add(seat4);
+        table.addSeat(seat1);
+        table.addSeat(seat2);
+        table.addSeat(seat3);
+        table.addSeat(seat4);
 
         // simulate preflop
         bso.calculatePotsAfterRound(game, table);
@@ -360,9 +349,8 @@ public class PotBsoImplTest {
         seat2.setStillInHand(true);
         seat2.setUserGameStatus(userGameStatus2);
 
-        table.setSeats(new ArrayList<Seat>());
-        table.getSeats().add(seat1);
-        table.getSeats().add(seat2);
+        table.addSeat(seat1);
+        table.addSeat(seat2);
 
         bso.calculatePotsAfterRound(game, table);
 
@@ -412,10 +400,9 @@ public class PotBsoImplTest {
         seat3.setStillInHand(true);
         seat3.setUserGameStatus(userGameStatus3);
 
-        table.setSeats(new ArrayList<Seat>());
-        table.getSeats().add(seat1);
-        table.getSeats().add(seat2);
-        table.getSeats().add(seat3);
+        table.addSeat(seat1);
+        table.addSeat(seat2);
+        table.addSeat(seat3);
 
         bso.calculatePotsAfterRound(game, table);
         bso.removeSeatFromPots(game, table, seat1);

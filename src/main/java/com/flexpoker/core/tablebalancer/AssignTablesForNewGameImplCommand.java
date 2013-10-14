@@ -57,14 +57,12 @@ public class AssignTablesForNewGameImplCommand implements AssignInitialTablesFor
         for (int i = 0; i < numberOfTables; i++) {
             Table table = new Table();
 
-            List<Seat> seats = new ArrayList<Seat>();
             for (int j = 0; j < maxPlayersPerTable; j++) {
                 Seat seat = new Seat();
                 seat.setPosition(j);
-                seats.add(seat);
+                table.addSeat(seat);
             }
 
-            table.setSeats(seats);
             tables.add(table);
         }
         return tables;

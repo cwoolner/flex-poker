@@ -39,7 +39,6 @@ public class TestAreTablesBalancedImplQuery {
     public void testSimpleSingleTable() {
         game.setMaxPlayersPerTable(9);
         Table table1 = new Table();
-        table1.setId(UUID.randomUUID());
         DataUtilsForTests.fillTableWithUsers(table1, 3, 9);
         game.addTable(table1);
         assertTrue(command.execute(gameId));
@@ -49,9 +48,7 @@ public class TestAreTablesBalancedImplQuery {
     public void testImbalanceByTwoUnderMaxThreshold() {
         game.setMaxPlayersPerTable(9);
         Table table1 = new Table();
-        table1.setId(UUID.randomUUID());
         Table table2 = new Table();
-        table2.setId(UUID.randomUUID());
         DataUtilsForTests.fillTableWithUsers(table1, 3, 9);
         DataUtilsForTests.fillTableWithUsers(table2, 5, 9);
         game.addTable(table1);
@@ -64,9 +61,7 @@ public class TestAreTablesBalancedImplQuery {
     public void testBalancedByOneUnderMaxThreshold() {
         game.setMaxPlayersPerTable(9);
         Table table1 = new Table();
-        table1.setId(UUID.randomUUID());
         Table table2 = new Table();
-        table2.setId(UUID.randomUUID());
         DataUtilsForTests.fillTableWithUsers(table1, 7, 9);
         DataUtilsForTests.fillTableWithUsers(table2, 6, 9);
         game.addTable(table1);
@@ -78,11 +73,8 @@ public class TestAreTablesBalancedImplQuery {
     public void testShouldOnlyBeTwoTablesNotThree() {
         game.setMaxPlayersPerTable(9);
         Table table1 = new Table();
-        table1.setId(UUID.randomUUID());
         Table table2 = new Table();
-        table2.setId(UUID.randomUUID());
         Table table3 = new Table();
-        table3.setId(UUID.randomUUID());
         DataUtilsForTests.fillTableWithUsers(table1, 4, 9);
         DataUtilsForTests.fillTableWithUsers(table2, 5, 9);
         DataUtilsForTests.fillTableWithUsers(table3, 4, 9);
@@ -96,11 +88,8 @@ public class TestAreTablesBalancedImplQuery {
     public void testThreeTablesTwoOutOfBalance() {
         game.setMaxPlayersPerTable(9);
         Table table1 = new Table();
-        table1.setId(UUID.randomUUID());
         Table table2 = new Table();
-        table2.setId(UUID.randomUUID());
         Table table3 = new Table();
-        table3.setId(UUID.randomUUID());
         DataUtilsForTests.fillTableWithUsers(table1, 7, 9);
         DataUtilsForTests.fillTableWithUsers(table2, 9, 9);
         DataUtilsForTests.fillTableWithUsers(table3, 8, 9);
@@ -114,11 +103,8 @@ public class TestAreTablesBalancedImplQuery {
     public void testThreeTablesPerfectlyInBalance() {
         game.setMaxPlayersPerTable(9);
         Table table1 = new Table();
-        table1.setId(UUID.randomUUID());
         Table table2 = new Table();
-        table2.setId(UUID.randomUUID());
         Table table3 = new Table();
-        table3.setId(UUID.randomUUID());
         DataUtilsForTests.fillTableWithUsers(table1, 7, 9);
         DataUtilsForTests.fillTableWithUsers(table2, 7, 9);
         DataUtilsForTests.fillTableWithUsers(table3, 7, 9);
@@ -132,11 +118,8 @@ public class TestAreTablesBalancedImplQuery {
     public void testShouldBeExactlyTwoTablesNotThree() {
         game.setMaxPlayersPerTable(9);
         Table table1 = new Table();
-        table1.setId(UUID.randomUUID());
         Table table2 = new Table();
-        table2.setId(UUID.randomUUID());
         Table table3 = new Table();
-        table3.setId(UUID.randomUUID());
         DataUtilsForTests.fillTableWithUsers(table1, 6, 9);
         DataUtilsForTests.fillTableWithUsers(table2, 6, 9);
         DataUtilsForTests.fillTableWithUsers(table3, 6, 9);
@@ -150,11 +133,8 @@ public class TestAreTablesBalancedImplQuery {
     public void testShouldBeExactlyThreeTables() {
         game.setMaxPlayersPerTable(6);
         Table table1 = new Table();
-        table1.setId(UUID.randomUUID());
         Table table2 = new Table();
-        table2.setId(UUID.randomUUID());
         Table table3 = new Table();
-        table3.setId(UUID.randomUUID());
         DataUtilsForTests.fillTableWithUsers(table1, 6, 6);
         DataUtilsForTests.fillTableWithUsers(table2, 6, 6);
         DataUtilsForTests.fillTableWithUsers(table3, 6, 6);

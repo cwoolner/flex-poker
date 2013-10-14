@@ -163,7 +163,6 @@ public class Game {
     }
 
     public void addTable(Table table) {
-        table.setId(UUID.randomUUID());
         tables.add(table);
     }
 

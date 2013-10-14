@@ -1,8 +1,6 @@
 package com.flexpoker.util;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import com.flexpoker.model.Seat;
@@ -23,19 +21,16 @@ public class DataUtilsForTests {
     }
 
     public static void fillTableWithUsers(Table table, int numberOfUsers, int maxPlayersPerTable) {
-        List<Seat> seats = new ArrayList<Seat>();
         for (int i = 0; i < maxPlayersPerTable; i++) {
             Seat seat = new Seat();
             seat.setPosition(i);
-            seats.add(seat);
+            table.addSeat(seat);
         }
 
         for (int i = 0; i < numberOfUsers; i++) {
             UserGameStatus userGameStatus = new UserGameStatus();
-            seats.get(i).setUserGameStatus(userGameStatus);
+            table.getSeats().get(i).setUserGameStatus(userGameStatus);
         }
-
-        table.setSeats(seats);
     }
 
 
