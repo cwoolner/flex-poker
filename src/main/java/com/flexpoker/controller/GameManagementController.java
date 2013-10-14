@@ -34,24 +34,24 @@ public class GameManagementController {
         this.userBso = userBso;
     }
 
-    @SubscribeEvent(value = "/availabletournaments")
+    @SubscribeEvent(value = "/topic/availabletournaments")
     public List<AvailableTournamentListViewModel> displayAllGames() {
         List<Game> gameList = gameBso.fetchAllGames();
         return new GameListTranslator().translate(gameList);
     }
 
-    @SubscribeEvent(value = "/opengamesforuser")
+    @SubscribeEvent(value = "/app/opengamesforuser")
     public List<OpenGameForUser> displayOpenGames(Principal principal) {
         return userBso.fetchUsersOpenGames(principal);
     }
 
-    @MessageMapping(value = "/creategame")
+    @MessageMapping(value = "/app/creategame")
     public void createGame(CreateGameViewModel model, Principal principal) {
         Game game = new CreateGameTranslator().translate(model);
         gameBso.createGame(principal, game);
     }
     
-    @MessageMapping(value = "/joingame")
+    @MessageMapping(value = "/app/joingame")
     public void joinGame(String gameId, Principal principal) {
         UUID gameUUID = UUID.fromString(gameId);
         gameBso.joinGame(gameUUID, principal);

@@ -27,10 +27,7 @@ flexpokerModule.controller('TournamentRegisteringController', ['$rootScope', '$s
     }
 
     $scope.client.connect("", "", function() {
-        $scope.client.subscribe("/app/availabletournaments", function(message) {
-            $scope.games = $.parseJSON(message.body);
-        });
-        $scope.client.subscribe("/topic/availabletournaments-updates", function(message) {
+        $scope.client.subscribe("/topic/availabletournaments", function(message) {
             $scope.games = $.parseJSON(message.body);
         });
         $scope.client.subscribe('/topic/chat/global/user', function(message) {

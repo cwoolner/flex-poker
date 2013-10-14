@@ -28,6 +28,6 @@ public class MessagingConstants {
     
     public static final String OPEN_TABLE_FOR_USER = "/queue/opentable";
 
-    public static final String GAMES_UPDATED = "/topic/availabletournaments-updates";
+    public static final String GAMES_UPDATED = "/topic/availabletournaments";
 
 }

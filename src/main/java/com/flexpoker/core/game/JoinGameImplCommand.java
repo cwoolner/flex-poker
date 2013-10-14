@@ -1,12 +1,12 @@
 package com.flexpoker.core.game;
 
 import java.security.Principal;
-import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
 import javax.inject.Inject;
 
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 
 import com.flexpoker.config.Command;
@@ -14,6 +14,7 @@ import com.flexpoker.core.api.chat.SendGameChatMessageCommand;
 import com.flexpoker.core.api.game.ChangeGameStageCommand;
 import com.flexpoker.core.api.game.JoinGameCommand;
 import com.flexpoker.core.api.scheduling.ScheduleMoveGameToInProgressCommand;
+import com.flexpoker.event.GameListUpdatedEvent;
 import com.flexpoker.exception.FlexPokerException;
 import com.flexpoker.model.Game;
 import com.flexpoker.model.GameStage;
@@ -25,8 +26,6 @@ import com.flexpoker.repository.api.GameRepository;
 import com.flexpoker.repository.api.OpenGameForUserRepository;
 import com.flexpoker.repository.api.UserRepository;
 import com.flexpoker.util.MessagingConstants;
-import com.flexpoker.web.model.AvailableTournamentListViewModel;
-import com.flexpoker.web.translator.GameListTranslator;
 
 @Command
 public class JoinGameImplCommand implements JoinGameCommand {
@@ -44,6 +43,8 @@ public class JoinGameImplCommand implements JoinGameCommand {
     private final OpenGameForUserRepository openGameForUserRepository;
     
     private final ScheduleMoveGameToInProgressCommand scheduleMoveGameToInProgressCommand;
+    
+    private ApplicationEventPublisher eventPublisher;
 
     @Inject
     public JoinGameImplCommand(GameRepository gameDao, UserRepository userDao,
@@ -80,8 +81,6 @@ public class JoinGameImplCommand implements JoinGameCommand {
             
             if (game.getUserGameStatuses().size() == game.getTotalPlayers()) {
                 changeGameStageCommand.execute(gameId, GameStage.STARTING);
-                List<AvailableTournamentListViewModel> allGames = new GameListTranslator().translate(gameDao.findAll());
-                messagingTemplate.convertAndSend("/topic/availabletournaments-updates", allGames);
                 
                 for (UserGameStatus joinUserGameStatus : game.getUserGameStatuses()) {
                     String username = joinUserGameStatus.getUser().getUsername();
@@ -97,6 +96,8 @@ public class JoinGameImplCommand implements JoinGameCommand {
                         MessagingConstants.OPEN_GAMES_FOR_USER,
                         openGameForUserRepository.fetchAllOpenGamesForUser(principal.getName()));
             }
+            
+            eventPublisher.publishEvent(new GameListUpdatedEvent(this));
 
             String message = principal.getName() + " has joined the game";
             sendGameChatMessageCommand.execute(new GameChatMessage(message, null, true, gameId));
@@ -122,6 +123,12 @@ public class JoinGameImplCommand implements JoinGameCommand {
                 throw new FlexPokerException("You are already in this game.");
             }
         }
+    }
+
+    @Override
+    public void setApplicationEventPublisher(
+            ApplicationEventPublisher applicationEventPublisher) {
+        this.eventPublisher = applicationEventPublisher;
     }
 
 }
