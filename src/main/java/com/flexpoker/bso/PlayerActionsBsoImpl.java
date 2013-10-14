@@ -12,7 +12,6 @@ import com.flexpoker.bso.api.ActionOnTimerBso;
 import com.flexpoker.bso.api.PlayerActionsBso;
 import com.flexpoker.bso.api.PotBso;
 import com.flexpoker.bso.api.ValidationBso;
-import com.flexpoker.core.api.game.ChangeGameStageCommand;
 import com.flexpoker.core.api.seatstatus.SetSeatStatusForEndOfHandCommand;
 import com.flexpoker.core.api.seatstatus.SetSeatStatusForNewRoundCommand;
 import com.flexpoker.exception.FlexPokerException;
@@ -47,22 +46,18 @@ public class PlayerActionsBsoImpl implements PlayerActionsBso {
 
     private final ActionOnTimerBso actionOnTimerBso;
     
-    private final ChangeGameStageCommand changeGameStageCommand;
-    
     @Inject
     public PlayerActionsBsoImpl(
             PotBso potBso,
             SetSeatStatusForEndOfHandCommand setSeatStatusForEndOfHandCommand,
             SetSeatStatusForNewRoundCommand setSeatStatusForNewRoundCommand,
             ValidationBso validationBso,
-            ActionOnTimerBso actionOnTimerBso,
-            ChangeGameStageCommand changeGameStageCommand) {
+            ActionOnTimerBso actionOnTimerBso) {
         this.potBso = potBso;
         this.setSeatStatusForEndOfHandCommand = setSeatStatusForEndOfHandCommand;
         this.setSeatStatusForNewRoundCommand = setSeatStatusForNewRoundCommand;
         this.validationBso = validationBso;
         this.actionOnTimerBso = actionOnTimerBso;
-        this.changeGameStageCommand = changeGameStageCommand;
     }
 
     @Override
@@ -189,7 +184,7 @@ public class PlayerActionsBsoImpl implements PlayerActionsBso {
             //       hand in case the player does not have enough to call the
             //       blinds.
             if (numberOfPlayersLeft == 1) {
-                changeGameStageCommand.execute(game.getId(), GameStage.FINISHED);
+                game.setGameStage(GameStage.FINISHED);
             }
 
             return new HandState(realTimeHand.getHandDealerState(),

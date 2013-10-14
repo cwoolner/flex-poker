@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
-import java.util.UUID;
 
 import javax.inject.Inject;
 
@@ -16,26 +15,20 @@ import com.flexpoker.model.Game;
 import com.flexpoker.model.Seat;
 import com.flexpoker.model.Table;
 import com.flexpoker.model.UserGameStatus;
-import com.flexpoker.repository.api.GameRepository;
 
 @Command
 public class AssignTablesForNewGameImplCommand implements AssignInitialTablesForNewGame {
 
     private final ValidationBso validationBso;
 
-    private final GameRepository gameRepository;
-
     @Inject
     public AssignTablesForNewGameImplCommand(
-            ValidationBso validationBso,
-            GameRepository gameRepository) {
+            ValidationBso validationBso) {
         this.validationBso = validationBso;
-        this.gameRepository = gameRepository;
     }
     
     @Override
-    public void execute(UUID gameId) {
-        Game game = gameRepository.findById(gameId);
+    public void execute(Game game) {
         Set<UserGameStatus> userGameStatuses = game.getUserGameStatuses();
         int maxPlayersPerTable = game.getMaxPlayersPerTable();
         

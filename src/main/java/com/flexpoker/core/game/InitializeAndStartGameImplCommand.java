@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.UUID;
 
 import javax.inject.Inject;
 
@@ -26,6 +25,7 @@ import com.flexpoker.event.TableUpdatedEvent;
 import com.flexpoker.model.Blinds;
 import com.flexpoker.model.Game;
 import com.flexpoker.model.GameEventType;
+import com.flexpoker.model.GameStage;
 import com.flexpoker.model.Hand;
 import com.flexpoker.model.HandDealerState;
 import com.flexpoker.model.HandEvaluation;
@@ -40,7 +40,6 @@ import com.flexpoker.model.card.FlopCards;
 import com.flexpoker.model.card.PocketCards;
 import com.flexpoker.model.card.RiverCard;
 import com.flexpoker.model.card.TurnCard;
-import com.flexpoker.repository.api.GameRepository;
 import com.flexpoker.util.ActionOnSeatPredicate;
 import com.flexpoker.util.BigBlindSeatPredicate;
 import com.flexpoker.util.SmallBlindSeatPredicate;
@@ -51,8 +50,6 @@ public class InitializeAndStartGameImplCommand implements InitializeAndStartGame
     private final AssignInitialTablesForNewGame assignInitialTablesForNewGame;
     
     private final SetSeatStatusForNewGameCommand setSeatStatusForNewGameCommand;
-    
-    private final GameRepository gameRepository;
     
     private final CreateShuffledDeckCommand createShuffledDeckCommand;
 
@@ -66,14 +63,12 @@ public class InitializeAndStartGameImplCommand implements InitializeAndStartGame
     public InitializeAndStartGameImplCommand(
             AssignInitialTablesForNewGame assignInitialTablesForNewGame,
             SetSeatStatusForNewGameCommand setSeatStatusForNewGameCommand,
-            GameRepository gameRepository,
             CreateShuffledDeckCommand createShuffledDeckCommand,
             PotBso potBso,
             HandEvaluatorBso handEvaluatorBso,
             ApplicationEventPublisher applicationEventPublisher) {
         this.assignInitialTablesForNewGame = assignInitialTablesForNewGame;
         this.setSeatStatusForNewGameCommand = setSeatStatusForNewGameCommand;
-        this.gameRepository = gameRepository;
         this.createShuffledDeckCommand = createShuffledDeckCommand;
         this.potBso = potBso;
         this.handEvaluatorBso = handEvaluatorBso;
@@ -81,10 +76,10 @@ public class InitializeAndStartGameImplCommand implements InitializeAndStartGame
     }
     
     @Override
-    public void execute(final UUID gameId) {
-        assignInitialTablesForNewGame.execute(gameId);
-        
-        final Game game = gameRepository.findById(gameId);
+    public void execute(final Game game) {
+        game.setGameStage(GameStage.INPROGRESS);
+
+        assignInitialTablesForNewGame.execute(game);
 
         Set<UserGameStatus> userGameStatuses = game.getUserGameStatuses();
 
@@ -97,7 +92,7 @@ public class InitializeAndStartGameImplCommand implements InitializeAndStartGame
                 if (seat.getUserGameStatus() != null) {
                     applicationEventPublisher.publishEvent(new OpenTableForUserEvent(this,
                             seat.getUserGameStatus().getUser().getUsername(),
-                            gameId, table.getId()));
+                            game.getId(), table.getId()));
                 }
             }
         }
@@ -108,9 +103,8 @@ public class InitializeAndStartGameImplCommand implements InitializeAndStartGame
             public void run() {
                 for (Table table: game.getTables()) {
                     setSeatStatusForNewGameCommand.execute(table);
-                    Game game = gameRepository.findById(gameId);
                     resetTableStatus(game, table);
-                    applicationEventPublisher.publishEvent(new TableUpdatedEvent(this, gameId, table));
+                    applicationEventPublisher.publishEvent(new TableUpdatedEvent(this, game.getId(), table));
                 }
                 timer.cancel();
             }

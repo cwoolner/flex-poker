@@ -11,7 +11,6 @@ import org.springframework.messaging.simp.SimpMessageSendingOperations;
 
 import com.flexpoker.config.Command;
 import com.flexpoker.core.api.chat.SendGameChatMessageCommand;
-import com.flexpoker.core.api.game.ChangeGameStageCommand;
 import com.flexpoker.core.api.game.JoinGameCommand;
 import com.flexpoker.core.api.scheduling.ScheduleMoveGameToInProgressCommand;
 import com.flexpoker.event.GameListUpdatedEvent;
@@ -34,8 +33,6 @@ public class JoinGameImplCommand implements JoinGameCommand {
     
     private final UserRepository userDao;
     
-    private final ChangeGameStageCommand changeGameStageCommand;
-    
     private final SimpMessageSendingOperations messagingTemplate;
     
     private final SendGameChatMessageCommand sendGameChatMessageCommand;
@@ -48,7 +45,6 @@ public class JoinGameImplCommand implements JoinGameCommand {
 
     @Inject
     public JoinGameImplCommand(GameRepository gameDao, UserRepository userDao,
-            ChangeGameStageCommand changeGameStageCommand,
             SimpMessageSendingOperations messageSendingOperations,
             SendGameChatMessageCommand sendGameChatMessageCommand,
             OpenGameForUserRepository openGameForUserRepository,
@@ -56,7 +52,6 @@ public class JoinGameImplCommand implements JoinGameCommand {
             ApplicationEventPublisher applicationEventPublisher) {
         this.gameDao = gameDao;
         this.userDao = userDao;
-        this.changeGameStageCommand = changeGameStageCommand;
         this.messagingTemplate = messageSendingOperations;
         this.sendGameChatMessageCommand = sendGameChatMessageCommand;
         this.openGameForUserRepository = openGameForUserRepository;
@@ -82,7 +77,7 @@ public class JoinGameImplCommand implements JoinGameCommand {
             openGameForUserRepository.addOpenGameForUser(principal.getName(), openGameForUser);
             
             if (game.getUserGameStatuses().size() == game.getTotalPlayers()) {
-                changeGameStageCommand.execute(gameId, GameStage.STARTING);
+                game.setGameStage(GameStage.STARTING);
                 
                 for (UserGameStatus joinUserGameStatus : game.getUserGameStatuses()) {
                     String username = joinUserGameStatus.getUser().getUsername();
@@ -92,7 +87,7 @@ public class JoinGameImplCommand implements JoinGameCommand {
                 }
                 sendGameChatMessageCommand.execute(new GameChatMessage(
                         "Game will be starting shortly", null, true, gameId));
-                scheduleMoveGameToInProgressCommand.execute(gameId);
+                scheduleMoveGameToInProgressCommand.execute(game);
             } else {
                 messagingTemplate.convertAndSendToUser(principal.getName(),
                         MessagingConstants.OPEN_GAMES_FOR_USER,

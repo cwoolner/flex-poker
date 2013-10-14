@@ -1,9 +1,9 @@
 package com.flexpoker.core.api.tablebalancer;
 
-import java.util.UUID;
+import com.flexpoker.model.Game;
 
 public interface AreTablesBalancedQuery {
 
-    boolean execute(UUID gameId);
+    boolean execute(Game game);
 
 }
