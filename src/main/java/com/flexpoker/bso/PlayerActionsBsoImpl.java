@@ -1,7 +1,9 @@
 package com.flexpoker.bso;
 
+import java.security.Principal;
 import java.util.HashSet;
 import java.util.List;
+import java.util.UUID;
 
 import javax.inject.Inject;
 
@@ -12,24 +14,25 @@ import com.flexpoker.bso.api.ActionOnTimerBso;
 import com.flexpoker.bso.api.PlayerActionsBso;
 import com.flexpoker.bso.api.PotBso;
 import com.flexpoker.bso.api.ValidationBso;
+import com.flexpoker.core.api.handaction.CallHandActionCommand;
+import com.flexpoker.core.api.handaction.CheckHandActionCommand;
+import com.flexpoker.core.api.handaction.FoldHandActionCommand;
+import com.flexpoker.core.api.handaction.RaiseHandActionCommand;
 import com.flexpoker.core.api.seatstatus.SetSeatStatusForEndOfHandCommand;
 import com.flexpoker.core.api.seatstatus.SetSeatStatusForNewRoundCommand;
-import com.flexpoker.exception.FlexPokerException;
-import com.flexpoker.model.Blinds;
 import com.flexpoker.model.Game;
 import com.flexpoker.model.GameEventType;
-import com.flexpoker.model.GameStage;
 import com.flexpoker.model.Hand;
 import com.flexpoker.model.HandDealerState;
 import com.flexpoker.model.HandEvaluation;
 import com.flexpoker.model.HandRoundState;
-import com.flexpoker.model.HandState;
 import com.flexpoker.model.Pot;
 import com.flexpoker.model.Seat;
 import com.flexpoker.model.Table;
 import com.flexpoker.model.User;
-import com.flexpoker.model.UserGameStatus;
 import com.flexpoker.model.card.PocketCards;
+import com.flexpoker.repository.api.GameRepository;
+import com.flexpoker.repository.api.UserRepository;
 import com.flexpoker.util.ActionOnSeatPredicate;
 import com.flexpoker.util.ButtonSeatPredicate;
 
@@ -46,220 +49,66 @@ public class PlayerActionsBsoImpl implements PlayerActionsBso {
 
     private final ActionOnTimerBso actionOnTimerBso;
     
+    private final GameRepository gameRepository;
+    
+    private final UserRepository userRepository;
+    
+    private final CheckHandActionCommand checkHandActionCommand;
+    
+    private final CallHandActionCommand callHandActionCommand;
+    
+    private final FoldHandActionCommand foldHandActionCommand;
+    
+    private final RaiseHandActionCommand raiseHandActionCommand;
+    
     @Inject
     public PlayerActionsBsoImpl(
             PotBso potBso,
             SetSeatStatusForEndOfHandCommand setSeatStatusForEndOfHandCommand,
             SetSeatStatusForNewRoundCommand setSeatStatusForNewRoundCommand,
             ValidationBso validationBso,
-            ActionOnTimerBso actionOnTimerBso) {
+            ActionOnTimerBso actionOnTimerBso,
+            GameRepository gameRepository,
+            UserRepository userRepository,
+            CheckHandActionCommand checkHandActionCommand,
+            CallHandActionCommand callHandActionCommand,
+            FoldHandActionCommand foldHandActionCommand,
+            RaiseHandActionCommand raiseHandActionCommand) {
         this.potBso = potBso;
         this.setSeatStatusForEndOfHandCommand = setSeatStatusForEndOfHandCommand;
         this.setSeatStatusForNewRoundCommand = setSeatStatusForNewRoundCommand;
         this.validationBso = validationBso;
         this.actionOnTimerBso = actionOnTimerBso;
+        this.gameRepository = gameRepository;
+        this.userRepository = userRepository;
+        this.checkHandActionCommand = checkHandActionCommand;
+        this.callHandActionCommand = callHandActionCommand;
+        this.foldHandActionCommand = foldHandActionCommand;
+        this.raiseHandActionCommand = raiseHandActionCommand;
     }
 
     @Override
-    public HandState check(Game game, Table table, User user) {
-        synchronized (this) {
-            Hand realTimeHand = table.getCurrentHand();
-            table = game.getTable(table.getId());
-
-            if (!isUserAllowedToPerformAction(GameEventType.CHECK, user,
-                    realTimeHand, table)) {
-                throw new FlexPokerException("Not allowed to check.");
-            }
-
-            Seat actionOnSeat = (Seat) CollectionUtils.find(table.getSeats(),
-                    new ActionOnSeatPredicate());
-
-            resetAllSeatActions(actionOnSeat, realTimeHand);
-
-            actionOnSeat.setCallAmount(0);
-            actionOnSeat.setRaiseTo(0);
-
-            if (actionOnSeat.equals(realTimeHand.getLastToAct())) {
-                handleEndOfRound(game, table, realTimeHand,
-                        game.getCurrentBlinds().getBigBlind());
-            } else {
-                handleMiddleOfRound(game, table, realTimeHand, actionOnSeat);
-            }
-
-            return new HandState(realTimeHand.getHandDealerState(),
-                    realTimeHand.getHandRoundState());
-        }
+    public void check(UUID gameId, UUID tableId, Principal principal) {
+        User user = userRepository.findByUsername(principal.getName());
+        checkHandActionCommand.execute(gameId, tableId, user);
     }
 
     @Override
-    public HandState fold(Game game, Table table, User user) {
-        synchronized (this) {
-            Game realTimeGame = game;
-            Hand realTimeHand = table.getCurrentHand();
-            table = realTimeGame.getTable(table.getId());
-
-            if (!isUserAllowedToPerformAction(GameEventType.FOLD, user,
-                    realTimeHand, table)) {
-                throw new FlexPokerException("Not allowed to fold.");
-            }
-
-            Seat actionOnSeat = (Seat) CollectionUtils.find(table.getSeats(),
-                    new ActionOnSeatPredicate());
-
-            actionOnSeat.setStillInHand(false);
-            potBso.removeSeatFromPots(game, table, actionOnSeat);
-            actionOnTimerBso.removeSeat(table, actionOnSeat);
-
-            resetAllSeatActions(actionOnSeat, realTimeHand);
-
-            actionOnSeat.setCallAmount(0);
-            actionOnSeat.setRaiseTo(0);
-
-            int numberOfPlayersLeft = 0;
-            for (Seat seat : table.getSeats()) {
-                if (seat.isStillInHand()) {
-                    numberOfPlayersLeft++;
-                }
-            }
-
-            if (numberOfPlayersLeft == 1) {
-                realTimeHand.setHandDealerState(HandDealerState.COMPLETE);
-                handleEndOfRound(game, table, realTimeHand,
-                        realTimeGame.getCurrentBlinds().getBigBlind());
-            } else if (actionOnSeat.equals(realTimeHand.getLastToAct())) {
-                handleEndOfRound(game, table, realTimeHand,
-                        realTimeGame.getCurrentBlinds().getBigBlind());
-            } else {
-                handleMiddleOfRound(game, table, realTimeHand, actionOnSeat);
-            }
-
-            return new HandState(realTimeHand.getHandDealerState(),
-                    realTimeHand.getHandRoundState());
-        }
+    public void fold(UUID gameId, UUID tableId, Principal principal) {
+        User user = userRepository.findByUsername(principal.getName());
+        foldHandActionCommand.execute(gameId, tableId, user);
     }
 
     @Override
-    public HandState call(Game game, Table table, User user) {
-        synchronized (this) {
-            Hand realTimeHand = table.getCurrentHand();
-            table = game.getTable(table.getId());
-
-            Seat actionOnSeat = (Seat) CollectionUtils.find(table.getSeats(),
-                    new ActionOnSeatPredicate());
-
-            if (!isUserAllowedToPerformAction(GameEventType.CALL, user,
-                    realTimeHand, table)) {
-                throw new FlexPokerException("Not allowed to call.");
-            }
-
-            resetAllSeatActions(actionOnSeat, realTimeHand);
-
-            actionOnSeat.setChipsInFront(actionOnSeat.getChipsInFront()
-                    + actionOnSeat.getCallAmount());
-
-            UserGameStatus userGameStatus = actionOnSeat.getUserGameStatus();
-            userGameStatus.setChips(userGameStatus.getChips() - actionOnSeat.getCallAmount());
-            table.getCurrentHand().addToTotalPot(actionOnSeat.getCallAmount());
-
-            actionOnSeat.setCallAmount(0);
-            actionOnSeat.setRaiseTo(0);
-
-            if (actionOnSeat.equals(realTimeHand.getLastToAct())) {
-                handleEndOfRound(game, table, realTimeHand,
-                        game.getCurrentBlinds().getBigBlind());
-            } else {
-                handleMiddleOfRound(game, table, realTimeHand, actionOnSeat);
-            }
-
-            int numberOfPlayersLeft = 0;
-            for (Seat seat : table.getSeats()) {
-                if (seat.getUserGameStatus() != null
-                        && seat.getUserGameStatus().getChips() != 0) {
-                    numberOfPlayersLeft++;
-                }
-            }
-
-            // TODO: This should be a check with all of the tables in the game.
-            // TODO: This check should also be done at the beginning of the
-            //       hand in case the player does not have enough to call the
-            //       blinds.
-            if (numberOfPlayersLeft == 1) {
-                game.setGameStage(GameStage.FINISHED);
-            }
-
-            return new HandState(realTimeHand.getHandDealerState(),
-                    realTimeHand.getHandRoundState());
-        }
+    public void call(UUID gameId, UUID tableId, Principal principal) {
+        User user = userRepository.findByUsername(principal.getName());
+        callHandActionCommand.execute(gameId, tableId, user);
     }
 
     @Override
-    public HandState raise(Game game, Table table, User user, String raiseAmount) {
-        synchronized (this) {
-            Hand realTimeHand = table.getCurrentHand();
-            table = game.getTable(table.getId());
-
-            Blinds currentBlinds = game.getCurrentBlinds();
-            int bigBlind = currentBlinds.getBigBlind();
-
-            Seat actionOnSeat = (Seat) CollectionUtils.find(table.getSeats(),
-                    new ActionOnSeatPredicate());
-
-            if (!isUserAllowedToPerformAction(GameEventType.RAISE, user,
-                    realTimeHand, table)) {
-                throw new FlexPokerException("Not allowed to raise.");
-            }
-
-            validationBso.validateRaiseAmount(actionOnSeat.getRaiseTo(),
-                    actionOnSeat.getUserGameStatus().getChips(), raiseAmount);
-
-            int raiseAmountInt = Integer.parseInt(raiseAmount);
-            int raiseAboveCall = raiseAmountInt -
-                    (actionOnSeat.getChipsInFront() + actionOnSeat.getCallAmount());
-            int increaseOfChipsInFront = raiseAmountInt - actionOnSeat.getChipsInFront();
-
-            realTimeHand.setOriginatingBettor(actionOnSeat);
-            determineLastToAct(table, realTimeHand);
-            handleMiddleOfRound(game, table, realTimeHand, actionOnSeat);
-            actionOnSeat.setChipsInFront(raiseAmountInt);
-
-            UserGameStatus userGameStatus = actionOnSeat.getUserGameStatus();
-            userGameStatus.setChips(userGameStatus.getChips() - increaseOfChipsInFront);
-            table.getCurrentHand().addToTotalPot(increaseOfChipsInFront);
-
-            realTimeHand.addPossibleSeatAction(actionOnSeat, GameEventType.CALL);
-            realTimeHand.addPossibleSeatAction(actionOnSeat, GameEventType.RAISE);
-            realTimeHand.addPossibleSeatAction(actionOnSeat, GameEventType.FOLD);
-            realTimeHand.removePossibleSeatAction(actionOnSeat, GameEventType.CHECK);
-
-            for (Seat seat : table.getSeats()) {
-                if (seat.isStillInHand() && !actionOnSeat.equals(seat)) {
-                    int totalChips = seat.getUserGameStatus().getChips()
-                            + seat.getChipsInFront();
-                    realTimeHand.addPossibleSeatAction(seat, GameEventType.CALL);
-                    realTimeHand.addPossibleSeatAction(seat, GameEventType.FOLD);
-                    realTimeHand.removePossibleSeatAction(seat, GameEventType.CHECK);
-                    if (totalChips < raiseAmountInt) {
-                        seat.setCallAmount(totalChips);
-                        seat.setRaiseTo(0);
-                        realTimeHand.removePossibleSeatAction(seat, GameEventType.RAISE);
-                    } else {
-                        seat.setCallAmount(raiseAmountInt - seat.getChipsInFront());
-                        realTimeHand.addPossibleSeatAction(seat, GameEventType.RAISE);
-                        if (totalChips < raiseAmountInt + raiseAboveCall) {
-                            seat.setRaiseTo(totalChips);
-                        } else {
-                            seat.setRaiseTo(raiseAmountInt + raiseAboveCall);
-                        }
-                    }
-                }
-            }
-
-            actionOnSeat.setCallAmount(0);
-            actionOnSeat.setRaiseTo(bigBlind);
-
-            return new HandState(realTimeHand.getHandDealerState(),
-                    realTimeHand.getHandRoundState());
-        }
+    public void raise(UUID gameId, UUID tableId, int raiseToAmount, Principal principal) {
+        User user = userRepository.findByUsername(principal.getName());
+        raiseHandActionCommand.execute(gameId, tableId, raiseToAmount, user);
     }
 
     private void handleMiddleOfRound(Game game, Table table,
@@ -443,5 +292,5 @@ public class PlayerActionsBsoImpl implements PlayerActionsBso {
             }
         }
     }
-    
+
 }

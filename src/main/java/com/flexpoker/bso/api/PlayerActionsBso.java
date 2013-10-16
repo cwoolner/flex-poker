@@ -1,19 +1,16 @@
-
 package com.flexpoker.bso.api;
 
-import com.flexpoker.model.Game;
-import com.flexpoker.model.HandState;
-import com.flexpoker.model.Table;
-import com.flexpoker.model.User;
+import java.security.Principal;
+import java.util.UUID;
 
 public interface PlayerActionsBso {
 
-    HandState check(Game game, Table table, User user);
+    void check(UUID gameId, UUID tableId, Principal principal);
 
-    HandState fold(Game game, Table table, User user);
+    void fold(UUID gameId, UUID tableId, Principal principal);
 
-    HandState call(Game game, Table table, User user);
+    void call(UUID gameId, UUID tableId, Principal principal);
 
-    HandState raise(Game game, Table table, User user, String raiseAmount);
+    void raise(UUID gameId, UUID tableId, int raiseToAmount, Principal principal);
 
 }
