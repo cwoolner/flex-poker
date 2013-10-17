@@ -7,7 +7,10 @@ import java.util.UUID;
 import org.apache.commons.collections.CollectionUtils;
 
 import com.flexpoker.util.ActionOnSeatPredicate;
+import com.flexpoker.util.BigBlindSeatPredicate;
+import com.flexpoker.util.ButtonSeatPredicate;
 import com.flexpoker.util.Constants;
+import com.flexpoker.util.SmallBlindSeatPredicate;
 import com.flexpoker.util.StillInHandSeatPredicate;
 
 public class Table {
@@ -118,6 +121,18 @@ public class Table {
     
     public Seat getActionOnSeat() {
         return (Seat) CollectionUtils.find(seats, new ActionOnSeatPredicate());
+    }
+    
+    public Seat getButtonSeat() {
+        return (Seat) CollectionUtils.find(seats, new ButtonSeatPredicate());
+    }
+    
+    public Seat getSmallBlindSeat() {
+        return (Seat) CollectionUtils.find(seats, new SmallBlindSeatPredicate());
+    }
+    
+    public Seat getBigBlindSeat() {
+        return (Seat) CollectionUtils.find(seats, new BigBlindSeatPredicate());
     }
     
     public int getNumberOfPlayersStillInHand() {

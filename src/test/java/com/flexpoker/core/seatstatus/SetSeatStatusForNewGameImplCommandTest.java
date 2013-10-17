@@ -2,7 +2,6 @@ package com.flexpoker.core.seatstatus;
 
 import static org.junit.Assert.*;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -11,10 +10,7 @@ import org.mockito.MockitoAnnotations;
 import com.flexpoker.bso.api.ActionOnTimerBso;
 import com.flexpoker.model.Seat;
 import com.flexpoker.model.Table;
-import com.flexpoker.util.BigBlindSeatPredicate;
-import com.flexpoker.util.ButtonSeatPredicate;
 import com.flexpoker.util.DataUtilsForTests;
-import com.flexpoker.util.SmallBlindSeatPredicate;
 
 public class SetSeatStatusForNewGameImplCommandTest {
 
@@ -37,12 +33,9 @@ public class SetSeatStatusForNewGameImplCommandTest {
         assertTrue(table.getSeats().get(0).isStillInHand());
         assertTrue(table.getSeats().get(1).isStillInHand());
 
-        Seat buttonSeat = (Seat) CollectionUtils.find(table.getSeats(),
-                new ButtonSeatPredicate());
-        Seat smallBlindSeat = (Seat) CollectionUtils.find(table.getSeats(),
-                new SmallBlindSeatPredicate());
-        Seat bigBlindSeat = (Seat) CollectionUtils.find(table.getSeats(),
-                new BigBlindSeatPredicate());
+        Seat buttonSeat = table.getButtonSeat();
+        Seat smallBlindSeat = table.getSmallBlindSeat();
+        Seat bigBlindSeat = table.getBigBlindSeat();
         Seat actionOnSeat = table.getActionOnSeat();
 
         // since things are assigned randomly, need to do some if/else logic
@@ -66,12 +59,9 @@ public class SetSeatStatusForNewGameImplCommandTest {
         assertTrue(table.getSeats().get(1).isStillInHand());
         assertTrue(table.getSeats().get(2).isStillInHand());
 
-        buttonSeat = (Seat) CollectionUtils.find(table.getSeats(),
-                new ButtonSeatPredicate());
-        smallBlindSeat = (Seat) CollectionUtils.find(table.getSeats(),
-                new SmallBlindSeatPredicate());
-        bigBlindSeat = (Seat) CollectionUtils.find(table.getSeats(),
-                new BigBlindSeatPredicate());
+        buttonSeat = table.getButtonSeat();
+        smallBlindSeat = table.getSmallBlindSeat();
+        bigBlindSeat = table.getBigBlindSeat();
         actionOnSeat = table.getActionOnSeat();
 
         // since things are assigned randomly, need to do some if/else logic
@@ -102,12 +92,9 @@ public class SetSeatStatusForNewGameImplCommandTest {
         assertTrue(table.getSeats().get(4).isStillInHand());
         assertTrue(table.getSeats().get(5).isStillInHand());
 
-        buttonSeat = (Seat) CollectionUtils.find(table.getSeats(),
-                new ButtonSeatPredicate());
-        smallBlindSeat = (Seat) CollectionUtils.find(table.getSeats(),
-                new SmallBlindSeatPredicate());
-        bigBlindSeat = (Seat) CollectionUtils.find(table.getSeats(),
-                new BigBlindSeatPredicate());
+        buttonSeat = table.getButtonSeat();
+        smallBlindSeat = table.getSmallBlindSeat();
+        bigBlindSeat = table.getBigBlindSeat();
         actionOnSeat = table.getActionOnSeat();
 
         // since things are assigned randomly, need to do some if/else logic

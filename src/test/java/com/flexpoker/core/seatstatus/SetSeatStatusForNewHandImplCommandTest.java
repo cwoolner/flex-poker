@@ -5,7 +5,6 @@ import static org.junit.Assert.*;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -14,10 +13,7 @@ import org.mockito.MockitoAnnotations;
 import com.flexpoker.bso.api.ActionOnTimerBso;
 import com.flexpoker.model.Seat;
 import com.flexpoker.model.Table;
-import com.flexpoker.util.BigBlindSeatPredicate;
-import com.flexpoker.util.ButtonSeatPredicate;
 import com.flexpoker.util.DataUtilsForTests;
-import com.flexpoker.util.SmallBlindSeatPredicate;
 
 public class SetSeatStatusForNewHandImplCommandTest {
 
@@ -76,12 +72,9 @@ public class SetSeatStatusForNewHandImplCommandTest {
             }
         }
 
-        Seat buttonSeat = (Seat) CollectionUtils.find(table.getSeats(),
-                new ButtonSeatPredicate());
-        Seat smallBlindSeat = (Seat) CollectionUtils.find(table.getSeats(),
-                new SmallBlindSeatPredicate());
-        Seat bigBlindSeat = (Seat) CollectionUtils.find(table.getSeats(),
-                new BigBlindSeatPredicate());
+        Seat buttonSeat = table.getButtonSeat();
+        Seat smallBlindSeat = table.getSmallBlindSeat();
+        Seat bigBlindSeat = table.getBigBlindSeat();
         Seat actionOnSeat = table.getActionOnSeat();
 
         assertTrue(buttonSeat.equals(table.getSeats().get(buttonIndex)));

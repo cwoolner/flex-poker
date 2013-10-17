@@ -4,8 +4,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.collections.CollectionUtils;
-
 import com.flexpoker.bso.api.PotBso;
 import com.flexpoker.core.api.chat.SendTableChatMessageCommand;
 import com.flexpoker.core.api.seatstatus.SetSeatStatusForEndOfHandCommand;
@@ -21,7 +19,6 @@ import com.flexpoker.model.Seat;
 import com.flexpoker.model.Table;
 import com.flexpoker.model.card.PocketCards;
 import com.flexpoker.repository.api.GameRepository;
-import com.flexpoker.util.ButtonSeatPredicate;
 
 public abstract class BaseHandActionCommand {
 
@@ -143,8 +140,7 @@ public abstract class BaseHandActionCommand {
         int seatIndex;
 
         if (realTimeHand.getOriginatingBettor() == null) {
-            Seat buttonSeat = (Seat) CollectionUtils.find(table.getSeats(),
-                    new ButtonSeatPredicate());
+            Seat buttonSeat = table.getButtonSeat();
             seatIndex = seats.indexOf(buttonSeat);
         } else {
             seatIndex = seats.indexOf(realTimeHand.getOriginatingBettor());

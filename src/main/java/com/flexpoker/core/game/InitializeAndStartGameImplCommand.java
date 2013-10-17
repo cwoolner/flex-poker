@@ -9,7 +9,6 @@ import java.util.TimerTask;
 
 import javax.inject.Inject;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.springframework.context.ApplicationEventPublisher;
 
 import com.flexpoker.bso.api.HandEvaluatorBso;
@@ -40,8 +39,6 @@ import com.flexpoker.model.card.FlopCards;
 import com.flexpoker.model.card.PocketCards;
 import com.flexpoker.model.card.RiverCard;
 import com.flexpoker.model.card.TurnCard;
-import com.flexpoker.util.BigBlindSeatPredicate;
-import com.flexpoker.util.SmallBlindSeatPredicate;
 
 @Command
 public class InitializeAndStartGameImplCommand implements InitializeAndStartGameCommand {
@@ -126,10 +123,8 @@ public class InitializeAndStartGameImplCommand implements InitializeAndStartGame
         Hand realTimeHand = new Hand(table.getSeats(), deck);
         table.setCurrentHand(realTimeHand);
 
-        Seat smallBlindSeat = (Seat) CollectionUtils.find(table.getSeats(),
-                new SmallBlindSeatPredicate());
-        Seat bigBlindSeat = (Seat) CollectionUtils.find(table.getSeats(),
-                new BigBlindSeatPredicate());
+        Seat smallBlindSeat = table.getSmallBlindSeat();
+        Seat bigBlindSeat = table.getBigBlindSeat();
 
         for (Seat seat : table.getSeats()) {
             if (seat.getUserGameStatus() == null) {

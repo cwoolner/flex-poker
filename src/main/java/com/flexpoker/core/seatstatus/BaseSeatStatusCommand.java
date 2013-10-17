@@ -3,14 +3,9 @@ package com.flexpoker.core.seatstatus;
 import java.util.List;
 import java.util.Random;
 
-import org.apache.commons.collections.CollectionUtils;
-
 import com.flexpoker.bso.api.ActionOnTimerBso;
 import com.flexpoker.model.Seat;
 import com.flexpoker.model.Table;
-import com.flexpoker.util.BigBlindSeatPredicate;
-import com.flexpoker.util.ButtonSeatPredicate;
-import com.flexpoker.util.SmallBlindSeatPredicate;
 
 public abstract class BaseSeatStatusCommand {
     
@@ -24,8 +19,7 @@ public abstract class BaseSeatStatusCommand {
 
     protected void assignNewHandActionOn(Table table) {
         List<Seat> seats = table.getSeats();
-        Seat bigBlindSeat = (Seat) CollectionUtils.find(seats,
-                new BigBlindSeatPredicate());
+        Seat bigBlindSeat = table.getBigBlindSeat();
         Seat actionOnSeat = table.getActionOnSeat();
         int bigBlindIndex = seats.indexOf(bigBlindSeat);
 
@@ -57,10 +51,8 @@ public abstract class BaseSeatStatusCommand {
     protected void assignNewGameBigBlind(Table table) {
         List<Seat> seats = table.getSeats();
         int numberOfPlayers = determineNumberOfPlayers(table);
-        Seat buttonSeat = (Seat) CollectionUtils.find(seats,
-                new ButtonSeatPredicate());
-        Seat smallBlindSeat = (Seat) CollectionUtils.find(seats,
-                new SmallBlindSeatPredicate());
+        Seat buttonSeat = table.getButtonSeat();
+        Seat smallBlindSeat = table.getSmallBlindSeat();
 
         if (numberOfPlayers == 2) {
             int buttonIndex = seats.indexOf(buttonSeat);
@@ -100,8 +92,7 @@ public abstract class BaseSeatStatusCommand {
     protected void assignNewGameSmallBlind(Table table) {
         List<Seat> seats = table.getSeats();
         int numberOfPlayers = determineNumberOfPlayers(table);
-        Seat buttonSeat = (Seat) CollectionUtils.find(seats,
-                new ButtonSeatPredicate());
+        Seat buttonSeat = table.getButtonSeat();
 
         if (numberOfPlayers == 2) {
             buttonSeat.setSmallBlind(true);
@@ -139,8 +130,7 @@ public abstract class BaseSeatStatusCommand {
     protected void assignNewRoundActionOn(Table table) {
         List<Seat> seats = table.getSeats();
 
-        Seat buttonSeat = (Seat) CollectionUtils.find(seats,
-                new ButtonSeatPredicate());
+        Seat buttonSeat = table.getButtonSeat();
         Seat actionOnSeat = table.getActionOnSeat();
 
         int buttonIndex = seats.indexOf(buttonSeat);
@@ -182,8 +172,7 @@ public abstract class BaseSeatStatusCommand {
     }
 
     protected void assignNewHandBigBlind(Table table) {
-        Seat bigBlindSeat = (Seat) CollectionUtils.find(table.getSeats(),
-                new BigBlindSeatPredicate());
+        Seat bigBlindSeat = table.getBigBlindSeat();
         List<Seat> seats = table.getSeats();
         int bigBlindIndex = seats.indexOf(bigBlindSeat);
 
@@ -206,10 +195,8 @@ public abstract class BaseSeatStatusCommand {
 
     protected void assignNewHandSmallBlind(Table table) {
         List<Seat> seats = table.getSeats();
-        Seat smallBlindSeat = (Seat) CollectionUtils.find(seats,
-                new SmallBlindSeatPredicate());
-        Seat bigBlindSeat = (Seat) CollectionUtils.find(seats,
-                new BigBlindSeatPredicate());
+        Seat smallBlindSeat = table.getSmallBlindSeat();
+        Seat bigBlindSeat = table.getBigBlindSeat();
 
         // if only two people are left, switch to the heads-up rules.  just loop
         // through the table and find the first seat that is not the big blind.
@@ -223,8 +210,7 @@ public abstract class BaseSeatStatusCommand {
             }
         }
 
-        smallBlindSeat = (Seat) CollectionUtils.find(table.getSeats(),
-                new SmallBlindSeatPredicate());
+        smallBlindSeat = table.getSmallBlindSeat();
         int smallBlindIndex = seats.indexOf(smallBlindSeat);
 
         for (int i = smallBlindIndex + 1; i < seats.size(); i++) {
@@ -246,10 +232,8 @@ public abstract class BaseSeatStatusCommand {
     }
 
     protected void assignNewHandButton(Table table) {
-        Seat buttonSeat = (Seat) CollectionUtils.find(table.getSeats(),
-                new ButtonSeatPredicate());
-        Seat smallBlindSeat = (Seat) CollectionUtils.find(table.getSeats(),
-                new SmallBlindSeatPredicate());
+        Seat buttonSeat = table.getButtonSeat();
+        Seat smallBlindSeat = table.getSmallBlindSeat();
         if (determineNumberOfPlayers(table) == 2) {
             buttonSeat.setButton(false);
             smallBlindSeat.setButton(true);
@@ -257,8 +241,7 @@ public abstract class BaseSeatStatusCommand {
         }
 
         List<Seat> seats = table.getSeats();
-        buttonSeat = (Seat) CollectionUtils.find(seats,
-                new ButtonSeatPredicate());
+        buttonSeat = table.getButtonSeat();
         int buttonIndex = seats.indexOf(buttonSeat);
 
         for (int i = buttonIndex + 1; i < seats.size() ; i++) {
