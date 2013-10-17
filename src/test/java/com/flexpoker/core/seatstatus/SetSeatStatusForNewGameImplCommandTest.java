@@ -11,7 +11,6 @@ import org.mockito.MockitoAnnotations;
 import com.flexpoker.bso.api.ActionOnTimerBso;
 import com.flexpoker.model.Seat;
 import com.flexpoker.model.Table;
-import com.flexpoker.util.ActionOnSeatPredicate;
 import com.flexpoker.util.BigBlindSeatPredicate;
 import com.flexpoker.util.ButtonSeatPredicate;
 import com.flexpoker.util.DataUtilsForTests;
@@ -44,8 +43,7 @@ public class SetSeatStatusForNewGameImplCommandTest {
                 new SmallBlindSeatPredicate());
         Seat bigBlindSeat = (Seat) CollectionUtils.find(table.getSeats(),
                 new BigBlindSeatPredicate());
-        Seat actionOnSeat = (Seat) CollectionUtils.find(table.getSeats(),
-                new ActionOnSeatPredicate());
+        Seat actionOnSeat = table.getActionOnSeat();
 
         // since things are assigned randomly, need to do some if/else logic
         if (buttonSeat.equals(table.getSeats().get(0))) {
@@ -74,8 +72,7 @@ public class SetSeatStatusForNewGameImplCommandTest {
                 new SmallBlindSeatPredicate());
         bigBlindSeat = (Seat) CollectionUtils.find(table.getSeats(),
                 new BigBlindSeatPredicate());
-        actionOnSeat = (Seat) CollectionUtils.find(table.getSeats(),
-                new ActionOnSeatPredicate());
+        actionOnSeat = table.getActionOnSeat();
 
         // since things are assigned randomly, need to do some if/else logic
         if (buttonSeat.equals(table.getSeats().get(0))) {
@@ -111,8 +108,7 @@ public class SetSeatStatusForNewGameImplCommandTest {
                 new SmallBlindSeatPredicate());
         bigBlindSeat = (Seat) CollectionUtils.find(table.getSeats(),
                 new BigBlindSeatPredicate());
-        actionOnSeat = (Seat) CollectionUtils.find(table.getSeats(),
-                new ActionOnSeatPredicate());
+        actionOnSeat = table.getActionOnSeat();
 
         // since things are assigned randomly, need to do some if/else logic
         if (buttonSeat.equals(table.getSeats().get(0))) {

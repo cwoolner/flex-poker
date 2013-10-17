@@ -4,10 +4,12 @@ import java.util.UUID;
 
 import javax.inject.Inject;
 
-import org.apache.commons.collections.CollectionUtils;
-
+import com.flexpoker.bso.api.PotBso;
+import com.flexpoker.config.Command;
 import com.flexpoker.core.api.chat.SendTableChatMessageCommand;
 import com.flexpoker.core.api.handaction.CallHandActionCommand;
+import com.flexpoker.core.api.seatstatus.SetSeatStatusForEndOfHandCommand;
+import com.flexpoker.core.api.seatstatus.SetSeatStatusForNewRoundCommand;
 import com.flexpoker.exception.FlexPokerException;
 import com.flexpoker.model.Game;
 import com.flexpoker.model.GameEventType;
@@ -16,21 +18,25 @@ import com.flexpoker.model.Hand;
 import com.flexpoker.model.Seat;
 import com.flexpoker.model.Table;
 import com.flexpoker.model.User;
+import com.flexpoker.model.UserGameStatus;
 import com.flexpoker.model.chat.outgoing.TableChatMessage;
 import com.flexpoker.repository.api.GameRepository;
-import com.flexpoker.util.ActionOnSeatPredicate;
 
-public class CallHandActionImplCommand implements CallHandActionCommand {
+@Command
+public class CallHandActionImplCommand extends BaseHandActionCommand
+    implements CallHandActionCommand {
 
-    private final GameRepository gameRepository;
-    
-    private final SendTableChatMessageCommand sendTableChatMessageCommand;
-    
     @Inject
     public CallHandActionImplCommand(GameRepository gameRepository,
-            SendTableChatMessageCommand sendTableChatMessageCommand) {
+            SendTableChatMessageCommand sendTableChatMessageCommand,
+            PotBso potBso,
+            SetSeatStatusForEndOfHandCommand setSeatStatusForEndOfHandCommand,
+            SetSeatStatusForNewRoundCommand setSeatStatusForNewRoundCommand) {
         this.gameRepository = gameRepository;
         this.sendTableChatMessageCommand = sendTableChatMessageCommand;
+        this.potBso = potBso;
+        this.setSeatStatusForEndOfHandCommand = setSeatStatusForEndOfHandCommand;
+        this.setSeatStatusForNewRoundCommand = setSeatStatusForNewRoundCommand;
     }
 
     @Override
@@ -39,13 +45,15 @@ public class CallHandActionImplCommand implements CallHandActionCommand {
         Table table = game.getTable(tableId);
         Hand realTimeHand = table.getCurrentHand();
 
-        Seat actionOnSeat = (Seat) CollectionUtils.find(table.getSeats(), new ActionOnSeatPredicate());
-
-        if (!isUserAllowedToPerformAction(GameEventType.CALL, user, realTimeHand, table)) {
+        Seat actionOnSeat = table.getActionOnSeat();
+        
+        if (!actionOnSeat.getUserGameStatus().getUser().equals(user)
+                || realTimeHand.isUserAllowedToPerformAction(GameEventType.CALL, actionOnSeat))
+        {
             throw new FlexPokerException("Not allowed to call.");
         }
 
-        resetAllSeatActions(actionOnSeat, realTimeHand);
+        realTimeHand.resetPlayerActions(actionOnSeat);
 
         actionOnSeat.setChipsInFront(actionOnSeat.getChipsInFront() + actionOnSeat.getCallAmount());
 

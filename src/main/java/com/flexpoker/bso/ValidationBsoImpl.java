@@ -30,21 +30,4 @@ public class ValidationBsoImpl implements ValidationBso {
         }
     }
 
-    @Override
-    public void validateRaiseAmount(int minimumAmount, int maximumAmount,
-            String raiseAmount) {
-        int raiseAmountInt;
-        try {
-            raiseAmountInt = Integer.parseInt(raiseAmount);
-        } catch (NumberFormatException e) {
-            throw new IllegalArgumentException("Raise amount must be an integer.");
-        }
-
-        if (raiseAmountInt <= 0 || raiseAmountInt < minimumAmount
-                || raiseAmountInt > maximumAmount) {
-            throw new IllegalArgumentException("Raise amount must be between the "
-                    + "minimum and maximum values.");
-        }
-    }
-
 }

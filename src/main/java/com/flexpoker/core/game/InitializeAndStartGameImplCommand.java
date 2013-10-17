@@ -40,7 +40,6 @@ import com.flexpoker.model.card.FlopCards;
 import com.flexpoker.model.card.PocketCards;
 import com.flexpoker.model.card.RiverCard;
 import com.flexpoker.model.card.TurnCard;
-import com.flexpoker.util.ActionOnSeatPredicate;
 import com.flexpoker.util.BigBlindSeatPredicate;
 import com.flexpoker.util.SmallBlindSeatPredicate;
 
@@ -226,8 +225,7 @@ public class InitializeAndStartGameImplCommand implements InitializeAndStartGame
 
     private void determineNextToAct(Table table, Hand realTimeHand) {
         List<Seat> seats = table.getSeats();
-        Seat actionOnSeat = (Seat) CollectionUtils.find(seats,
-                new ActionOnSeatPredicate());
+        Seat actionOnSeat = table.getActionOnSeat();
 
         int actionOnIndex = seats.indexOf(actionOnSeat);
 

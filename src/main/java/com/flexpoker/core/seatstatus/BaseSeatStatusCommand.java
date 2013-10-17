@@ -8,7 +8,6 @@ import org.apache.commons.collections.CollectionUtils;
 import com.flexpoker.bso.api.ActionOnTimerBso;
 import com.flexpoker.model.Seat;
 import com.flexpoker.model.Table;
-import com.flexpoker.util.ActionOnSeatPredicate;
 import com.flexpoker.util.BigBlindSeatPredicate;
 import com.flexpoker.util.ButtonSeatPredicate;
 import com.flexpoker.util.SmallBlindSeatPredicate;
@@ -27,8 +26,7 @@ public abstract class BaseSeatStatusCommand {
         List<Seat> seats = table.getSeats();
         Seat bigBlindSeat = (Seat) CollectionUtils.find(seats,
                 new BigBlindSeatPredicate());
-        Seat actionOnSeat = (Seat) CollectionUtils.find(seats,
-                new ActionOnSeatPredicate());
+        Seat actionOnSeat = table.getActionOnSeat();
         int bigBlindIndex = seats.indexOf(bigBlindSeat);
 
         for (int i = bigBlindIndex + 1; i < seats.size(); i++) {
@@ -143,8 +141,7 @@ public abstract class BaseSeatStatusCommand {
 
         Seat buttonSeat = (Seat) CollectionUtils.find(seats,
                 new ButtonSeatPredicate());
-        Seat actionOnSeat = (Seat) CollectionUtils.find(seats,
-                new ActionOnSeatPredicate());
+        Seat actionOnSeat = table.getActionOnSeat();
 
         int buttonIndex = seats.indexOf(buttonSeat);
 

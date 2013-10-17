@@ -4,10 +4,12 @@ import java.util.UUID;
 
 import javax.inject.Inject;
 
-import org.apache.commons.collections.CollectionUtils;
-
+import com.flexpoker.bso.api.PotBso;
+import com.flexpoker.config.Command;
 import com.flexpoker.core.api.chat.SendTableChatMessageCommand;
 import com.flexpoker.core.api.handaction.RaiseHandActionCommand;
+import com.flexpoker.core.api.seatstatus.SetSeatStatusForEndOfHandCommand;
+import com.flexpoker.core.api.seatstatus.SetSeatStatusForNewRoundCommand;
 import com.flexpoker.exception.FlexPokerException;
 import com.flexpoker.model.Blinds;
 import com.flexpoker.model.Game;
@@ -19,19 +21,22 @@ import com.flexpoker.model.User;
 import com.flexpoker.model.UserGameStatus;
 import com.flexpoker.model.chat.outgoing.TableChatMessage;
 import com.flexpoker.repository.api.GameRepository;
-import com.flexpoker.util.ActionOnSeatPredicate;
 
-public class RaiseHandActionImplCommand implements RaiseHandActionCommand {
+@Command
+public class RaiseHandActionImplCommand extends BaseHandActionCommand
+    implements RaiseHandActionCommand {
 
-    private final GameRepository gameRepository;
-    
-    private final SendTableChatMessageCommand sendTableChatMessageCommand;
-    
     @Inject
     public RaiseHandActionImplCommand(GameRepository gameRepository,
-            SendTableChatMessageCommand sendTableChatMessageCommand) {
+            SendTableChatMessageCommand sendTableChatMessageCommand,
+            PotBso potBso,
+            SetSeatStatusForEndOfHandCommand setSeatStatusForEndOfHandCommand,
+            SetSeatStatusForNewRoundCommand setSeatStatusForNewRoundCommand) {
         this.gameRepository = gameRepository;
         this.sendTableChatMessageCommand = sendTableChatMessageCommand;
+        this.potBso = potBso;
+        this.setSeatStatusForEndOfHandCommand = setSeatStatusForEndOfHandCommand;
+        this.setSeatStatusForNewRoundCommand = setSeatStatusForNewRoundCommand;
     }
     
     @Override
@@ -43,15 +48,20 @@ public class RaiseHandActionImplCommand implements RaiseHandActionCommand {
         Blinds currentBlinds = game.getCurrentBlinds();
         int bigBlind = currentBlinds.getBigBlind();
 
-        Seat actionOnSeat = (Seat) CollectionUtils.find(table.getSeats(), new ActionOnSeatPredicate());
-
-        if (!isUserAllowedToPerformAction(GameEventType.RAISE, user, realTimeHand, table)) {
+        Seat actionOnSeat = table.getActionOnSeat();
+        
+        if (!actionOnSeat.getUserGameStatus().getUser().equals(user)
+                || realTimeHand.isUserAllowedToPerformAction(GameEventType.RAISE, actionOnSeat))
+        {
             throw new FlexPokerException("Not allowed to raise.");
         }
 
-        validationBso.validateRaiseAmount(actionOnSeat.getRaiseTo(),
-                actionOnSeat.getUserGameStatus().getChips(), raiseToAmount);
-
+        if (raiseToAmount < actionOnSeat.getRaiseTo()
+                || raiseToAmount > actionOnSeat.getUserGameStatus().getChips()) {
+            throw new IllegalArgumentException("Raise amount must be between the "
+                    + "minimum and maximum values.");
+        }
+        
         int raiseAboveCall = raiseToAmount - (actionOnSeat.getChipsInFront() + actionOnSeat.getCallAmount());
         int increaseOfChipsInFront = raiseToAmount - actionOnSeat.getChipsInFront();
 

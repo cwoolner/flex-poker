@@ -1,11 +1,10 @@
 package com.flexpoker.core.seatstatus;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -14,7 +13,6 @@ import org.mockito.MockitoAnnotations;
 import com.flexpoker.bso.api.ActionOnTimerBso;
 import com.flexpoker.model.Seat;
 import com.flexpoker.model.Table;
-import com.flexpoker.util.ActionOnSeatPredicate;
 import com.flexpoker.util.DataUtilsForTests;
 
 public class SetSeatStatusForNewRoundImplCommandTest {
@@ -85,8 +83,7 @@ public class SetSeatStatusForNewRoundImplCommandTest {
         }
 
         command.execute(table);
-        Seat actionOnSeat = (Seat) CollectionUtils.find(table.getSeats(),
-                new ActionOnSeatPredicate());
+        Seat actionOnSeat = table.getActionOnSeat();
         assertTrue(actionOnSeat.equals(table.getSeats().get(actionOnIndex)));
     }
 

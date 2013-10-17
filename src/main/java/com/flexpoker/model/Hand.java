@@ -8,19 +8,9 @@ import java.util.Set;
 
 import com.flexpoker.model.card.Deck;
 
-/**
- * Class to store some real-time information about the hand that is currently
- * being played on a specific table.
- *
- * TODO: This would be the proper place to add split pots, who is in which ones,
- *       and how many chips are in each.
- *
- * @author cwoolner
- */
 public class Hand {
 
-    private Map<Seat, Set<GameEventType>> possibleSeatActionsMap =
-            new HashMap<Seat, Set<GameEventType>>();
+    private Map<Seat, Set<GameEventType>> possibleSeatActionsMap;
 
     private Seat originatingBettor;
 
@@ -28,9 +18,9 @@ public class Hand {
 
     private Seat nextToAct;
 
-    private HandDealerState handDealerState = HandDealerState.NONE;
+    private HandDealerState handDealerState;
 
-    private HandRoundState handRoundState = HandRoundState.ROUND_COMPLETE;
+    private HandRoundState handRoundState;
 
     private List<HandEvaluation> handEvaluationList;
     
@@ -39,13 +29,16 @@ public class Hand {
     private Set<Pot> pots;
     
     private final Deck deck;
-    
+
     public Hand(List<Seat> seats, Deck deck) {
+        possibleSeatActionsMap = new HashMap<>();
         for (Seat seat : seats) {
             possibleSeatActionsMap.put(seat, new HashSet<GameEventType>());
         }
         
         this.deck = deck;
+        this.handDealerState = HandDealerState.NONE;
+        this.handRoundState = HandRoundState.ROUND_COMPLETE;
     }
 
     public void addPossibleSeatAction(Seat Seat, GameEventType action) {
@@ -126,6 +119,17 @@ public class Hand {
 
     public Deck getDeck() {
         return deck;
+    }
+    
+    public void resetPlayerActions(Seat seat) {
+        possibleSeatActionsMap.get(seat).remove(GameEventType.CHECK);
+        possibleSeatActionsMap.get(seat).remove(GameEventType.RAISE);
+        possibleSeatActionsMap.get(seat).remove(GameEventType.CALL);
+        possibleSeatActionsMap.get(seat).remove(GameEventType.FOLD);
+    }
+    
+    public void moveToNextDealerState() {
+        handDealerState = HandDealerState.values()[handDealerState.ordinal() + 1];
     }
 
 }

@@ -6,7 +6,9 @@ import java.util.UUID;
 
 import org.apache.commons.collections.CollectionUtils;
 
+import com.flexpoker.util.ActionOnSeatPredicate;
 import com.flexpoker.util.Constants;
+import com.flexpoker.util.StillInHandSeatPredicate;
 
 public class Table {
 
@@ -113,7 +115,15 @@ public class Table {
     public void setCurrentHand(Hand currentHand) {
         this.currentHand = currentHand;
     }
-
+    
+    public Seat getActionOnSeat() {
+        return (Seat) CollectionUtils.find(seats, new ActionOnSeatPredicate());
+    }
+    
+    public int getNumberOfPlayersStillInHand() {
+        return CollectionUtils.countMatches(seats, new StillInHandSeatPredicate());
+    }
+    
     @Override
     public int hashCode() {
         final int prime = 31;

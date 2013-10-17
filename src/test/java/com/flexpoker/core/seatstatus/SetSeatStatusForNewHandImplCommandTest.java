@@ -14,7 +14,6 @@ import org.mockito.MockitoAnnotations;
 import com.flexpoker.bso.api.ActionOnTimerBso;
 import com.flexpoker.model.Seat;
 import com.flexpoker.model.Table;
-import com.flexpoker.util.ActionOnSeatPredicate;
 import com.flexpoker.util.BigBlindSeatPredicate;
 import com.flexpoker.util.ButtonSeatPredicate;
 import com.flexpoker.util.DataUtilsForTests;
@@ -83,8 +82,7 @@ public class SetSeatStatusForNewHandImplCommandTest {
                 new SmallBlindSeatPredicate());
         Seat bigBlindSeat = (Seat) CollectionUtils.find(table.getSeats(),
                 new BigBlindSeatPredicate());
-        Seat actionOnSeat = (Seat) CollectionUtils.find(table.getSeats(),
-                new ActionOnSeatPredicate());
+        Seat actionOnSeat = table.getActionOnSeat();
 
         assertTrue(buttonSeat.equals(table.getSeats().get(buttonIndex)));
         assertTrue(smallBlindSeat.equals(table.getSeats().get(smallBlindIndex)));
