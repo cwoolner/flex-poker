@@ -1,47 +1,50 @@
 package com.flexpoker.model;
 
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 public class Pot {
 
-    private List<Seat> seats;
+    private final Set<Seat> seats;
 
     private int amount;
 
     private boolean open;
 
-    private List<Seat> winners;
-
-    public List<Seat> getSeats() {
-        return seats;
+    private final Set<Seat> winners;
+    
+    public Pot() {
+        winners = new HashSet<>();
+        seats = new HashSet<>();
+        open = true;
     }
 
-    public void setSeats(List<Seat> seats) {
-        this.seats = seats;
+    public Set<Seat> getSeats() {
+        return seats;
     }
 
     public int getAmount() {
         return amount;
     }
 
-    public void setAmount(int amount) {
-        this.amount = amount;
+    public void addChips(int chips) {
+        this.amount += chips;
     }
 
     public boolean isOpen() {
         return open;
     }
 
-    public void setOpen(boolean open) {
-        this.open = open;
+    public void closePot() {
+        open = false;
     }
 
-    public List<Seat> getWinners() {
+    public Set<Seat> getWinners() {
         return winners;
     }
-
-    public void setWinners(List<Seat> winners) {
-        this.winners = winners;
+    
+    public void addWinner(Seat seat) {
+        winners.add(seat);
     }
 
 }

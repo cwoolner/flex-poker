@@ -2,6 +2,7 @@ package com.flexpoker.core.handaction;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.collections.CollectionUtils;
 
@@ -111,14 +112,15 @@ public abstract class BaseHandActionCommand {
         potBso.setWinners(game, table, handEvaluationList);
 
         for (Pot pot : potBso.fetchAllPots(game, table)) {
-            List<Seat> winners = pot.getWinners();
+            Set<Seat> winners = pot.getWinners();
             int numberOfWinners = winners.size();
             int numberOfChips = pot.getAmount() / numberOfWinners;
             int bonusChips = pot.getAmount() % numberOfWinners;
             int numberOfPlayersInPot = pot.getSeats().size();
 
-            winners.get(0).getUserGameStatus().setChips(
-                    winners.get(0).getUserGameStatus().getChips() + bonusChips);
+            Seat seatToGiveBonusChips = ((Seat) winners.toArray()[0]);
+            seatToGiveBonusChips.getUserGameStatus().setChips(
+                    seatToGiveBonusChips.getUserGameStatus().getChips() + bonusChips);
 
             for (Seat winner : winners) {
                 winner.getUserGameStatus().setChips(

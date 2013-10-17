@@ -65,10 +65,10 @@ public class PotBsoImpl implements PotBso {
                 if (!pot.getSeats().contains(seat) && seat.isStillInHand()) {
                     pot.getSeats().add(seat);
                 }
-                pot.setAmount(pot.getAmount() + chipsPerLevel);
+                pot.addChips(chipsPerLevel);
                 seat.setChipsInFront(seat.getChipsInFront() - chipsPerLevel);
                 if (seat.isAllIn()) {
-                    pot.setOpen(false);
+                    pot.closePot();
                 }
             }
         }
@@ -101,13 +101,11 @@ public class PotBsoImpl implements PotBso {
         Collections.reverse(winningHands);
 
         for (Pot pot : fetchAllPots(game, table)) {
-            pot.setWinners(new ArrayList<Seat>());
             HandEvaluation topAssignedHand = null;
             for (HandEvaluation hand : winningHands) {
                 for (Seat seat : pot.getSeats()) {
                     if (seat.getUserGameStatus().getUser().equals(hand.getUser())
-                            && (topAssignedHand == null
-                                    || topAssignedHand.compareTo(hand) == 0)) {
+                            && (topAssignedHand == null || topAssignedHand.compareTo(hand) == 0)) {
                         topAssignedHand = hand;
                         pot.getWinners().add(seat);
                     }
@@ -120,8 +118,6 @@ public class PotBsoImpl implements PotBso {
         Pot pot = (Pot) CollectionUtils.find(pots, new OpenPotPredicate());
         if (pot == null) {
             pot = new Pot();
-            pot.setOpen(true);
-            pot.setSeats(new ArrayList<Seat>());
         }
         return pot;
     }
