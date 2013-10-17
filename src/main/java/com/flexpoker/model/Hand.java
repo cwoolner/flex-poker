@@ -3,8 +3,8 @@ package com.flexpoker.model;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import com.flexpoker.model.card.Deck;
@@ -40,6 +40,7 @@ public class Hand {
         this.deck = deck;
         this.handDealerState = HandDealerState.NONE;
         this.handRoundState = HandRoundState.ROUND_COMPLETE;
+        this.pots = new HashSet<Pot>();
     }
 
     public void addPossibleSeatAction(Seat Seat, GameEventType action) {
@@ -107,7 +108,7 @@ public class Hand {
     public Set<Pot> getPots() {
         return pots;
     }
-
+    
     public void setPots(Set<Pot> pots) {
         this.pots = pots;
     }
@@ -133,6 +134,12 @@ public class Hand {
     
     public void moveToNextDealerState() {
         handDealerState = HandDealerState.values()[handDealerState.ordinal() + 1];
+    }
+
+    public void removeSeatFromPots(Seat seat) {
+        for (Pot pot : pots) {
+            pot.removeSeat(seat);
+        }
     }
 
 }

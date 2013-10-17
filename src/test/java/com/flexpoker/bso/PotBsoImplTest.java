@@ -11,6 +11,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.flexpoker.model.Game;
+import com.flexpoker.model.Hand;
 import com.flexpoker.model.HandEvaluation;
 import com.flexpoker.model.HandRanking;
 import com.flexpoker.model.Pot;
@@ -19,6 +20,7 @@ import com.flexpoker.model.Table;
 import com.flexpoker.model.User;
 import com.flexpoker.model.UserGameStatus;
 import com.flexpoker.model.card.CardRank;
+import com.flexpoker.test.util.datageneration.DeckGenerator;
 import com.flexpoker.test.util.datageneration.GameGenerator;
 
 public class PotBsoImplTest {
@@ -39,87 +41,6 @@ public class PotBsoImplTest {
         testCalculatePotsAfterRound2(game, table);
         testCalculatePotsAfterRound3(game, table);
         testCalculatePotsAfterRound4(game, table);
-    }
-
-    @Test
-    public void testCreateNewHandPot() {
-        Game game = GameGenerator.createGame(9, 9);
-        Table table1 = new Table();
-        Table table2 = new Table();
-        bso.createNewHandPot(game, table1);
-        bso.createNewHandPot(game, table2);
-
-        List<Pot> pots = bso.fetchAllPots(game, table1);
-        assertTrue(pots.isEmpty());
-        pots = bso.fetchAllPots(game, table2);
-        assertTrue(pots.isEmpty());
-    }
-
-    @Test
-    public void testFetchAllPots() {
-        Game game = GameGenerator.createGame(9, 9);
-        Table table = new Table();
-        bso.createNewHandPot(game, table);
-        assertEquals(0, bso.fetchAllPots(game, table).size());
-    }
-
-    @Test
-    public void testRemoveSeatFromPots() {
-        Game game = GameGenerator.createGame(9, 9);
-        Table table = new Table();
-
-        bso.createNewHandPot(game, table);
-
-        Seat seat1 = new Seat();
-        seat1.setPosition(0);
-        seat1.setChipsInFront(30);
-        seat1.setStillInHand(true);
-        Seat seat2 = new Seat();
-        seat2.setPosition(1);
-        seat2.setChipsInFront(30);
-        seat2.setStillInHand(true);
-        Seat seat3 = new Seat();
-        seat3.setPosition(2);
-        seat3.setChipsInFront(30);
-        seat3.setStillInHand(true);
-        Seat seat4 = new Seat();
-        seat4.setPosition(3);
-        seat4.setChipsInFront(30);
-        seat4.setStillInHand(true);
-
-        table.addSeat(seat1);
-        table.addSeat(seat2);
-        table.addSeat(seat3);
-        table.addSeat(seat4);
-
-        bso.calculatePotsAfterRound(game, table);
-
-        List<Pot> pots = bso.fetchAllPots(game, table);
-        assertTrue(pots.get(0).getSeats().contains(seat1));
-        assertTrue(pots.get(0).getSeats().contains(seat2));
-        assertTrue(pots.get(0).getSeats().contains(seat3));
-        assertTrue(pots.get(0).getSeats().contains(seat4));
-
-        bso.removeSeatFromPots(game, table, seat1);
-        pots = bso.fetchAllPots(game, table);
-        assertFalse(pots.get(0).getSeats().contains(seat1));
-        assertTrue(pots.get(0).getSeats().contains(seat2));
-        assertTrue(pots.get(0).getSeats().contains(seat3));
-        assertTrue(pots.get(0).getSeats().contains(seat4));
-
-        bso.removeSeatFromPots(game, table, seat3);
-        pots = bso.fetchAllPots(game, table);
-        assertFalse(pots.get(0).getSeats().contains(seat1));
-        assertTrue(pots.get(0).getSeats().contains(seat2));
-        assertFalse(pots.get(0).getSeats().contains(seat3));
-        assertTrue(pots.get(0).getSeats().contains(seat4));
-
-        bso.removeSeatFromPots(game, table, seat4);
-        pots = bso.fetchAllPots(game, table);
-        assertFalse(pots.get(0).getSeats().contains(seat1));
-        assertTrue(pots.get(0).getSeats().contains(seat2));
-        assertFalse(pots.get(0).getSeats().contains(seat3));
-        assertFalse(pots.get(0).getSeats().contains(seat4));
     }
 
     @Test
@@ -147,26 +68,25 @@ public class PotBsoImplTest {
     }
 
     private void testCalculatePotsAfterRound1(Game game, Table table) {
-        bso.createNewHandPot(game, table);
-
         Seat seat1 = new Seat();
         seat1.setPosition(0);
         seat1.setChipsInFront(30);
         seat1.setStillInHand(true);
 
         table.addSeat(seat1);
+        
+        table.setCurrentHand(new Hand(new ArrayList<Seat>(),
+                DeckGenerator.createDeck()));
 
-        bso.calculatePotsAfterRound(game, table);
+        Set<Pot> pots = bso.calculatePotsAfterRound(table);
+        Pot pot = ((Pot) pots.toArray()[0]);
 
-        List<Pot> pots = bso.fetchAllPots(game, table);
         assertEquals(1, pots.size());
-        assertEquals(30, pots.get(0).getAmount());
-        assertTrue(pots.get(0).getSeats().contains(seat1));
+        assertEquals(30, pot.getAmount());
+        assertTrue(pot.getSeats().contains(seat1));
     }
 
     private void testCalculatePotsAfterRound2(Game game, Table table) {
-        bso.createNewHandPot(game, table);
-
         Seat seat1 = new Seat();
         seat1.setPosition(0);
         seat1.setChipsInFront(30);
@@ -176,22 +96,22 @@ public class PotBsoImplTest {
         seat2.setChipsInFront(30);
         seat2.setStillInHand(true);
 
+        table.getSeats().clear();
+        
         table.addSeat(seat1);
         table.addSeat(seat2);
+        
+        Set<Pot> pots = bso.calculatePotsAfterRound(table);
+        Pot pot = ((Pot) pots.toArray()[0]);
 
-        bso.calculatePotsAfterRound(game, table);
-
-        List<Pot> pots = bso.fetchAllPots(game, table);
         assertEquals(1, pots.size());
-        assertEquals(60, pots.get(0).getAmount());
-        assertTrue(pots.get(0).isOpen());
-        assertTrue(pots.get(0).getSeats().contains(seat1));
-        assertTrue(pots.get(0).getSeats().contains(seat2));
+        assertEquals(60, pot.getAmount());
+        assertTrue(pot.isOpen());
+        assertTrue(pot.getSeats().contains(seat1));
+        assertTrue(pot.getSeats().contains(seat2));
     }
 
     private void testCalculatePotsAfterRound3(Game game, Table table) {
-        bso.createNewHandPot(game, table);
-
         Seat seat1 = new Seat();
         seat1.setPosition(0);
         seat1.setChipsInFront(30);
@@ -202,22 +122,22 @@ public class PotBsoImplTest {
         seat2.setStillInHand(true);
         seat2.setAllIn(true);
 
+        table.getSeats().clear();
+        
         table.addSeat(seat1);
         table.addSeat(seat2);
 
-        bso.calculatePotsAfterRound(game, table);
+        Set<Pot> pots = bso.calculatePotsAfterRound(table);
+        Pot pot = ((Pot) pots.toArray()[0]);
 
-        List<Pot> pots = bso.fetchAllPots(game, table);
         assertEquals(1, pots.size());
-        assertEquals(60, pots.get(0).getAmount());
-        assertFalse(pots.get(0).isOpen());
-        assertTrue(pots.get(0).getSeats().contains(seat1));
-        assertTrue(pots.get(0).getSeats().contains(seat2));
+        assertEquals(60, pot.getAmount());
+        assertFalse(pot.isOpen());
+        assertTrue(pot.getSeats().contains(seat1));
+        assertTrue(pot.getSeats().contains(seat2));
     }
 
     private void testCalculatePotsAfterRound4(Game game, Table table) {
-        bso.createNewHandPot(game, table);
-
         Seat seat1 = new Seat();
         seat1.setPosition(0);
         seat1.setChipsInFront(30);
@@ -235,21 +155,25 @@ public class PotBsoImplTest {
         seat4.setChipsInFront(30);
         seat4.setStillInHand(true);
 
+        table.getSeats().clear();
+        
         table.addSeat(seat1);
         table.addSeat(seat2);
         table.addSeat(seat3);
         table.addSeat(seat4);
 
         // simulate preflop
-        bso.calculatePotsAfterRound(game, table);
-        List<Pot> pots = bso.fetchAllPots(game, table);
+        Set<Pot> pots = bso.calculatePotsAfterRound(table);
+        table.getCurrentHand().setPots(pots);
+        Pot pot = ((Pot) pots.toArray()[0]);
+
         assertEquals(1, pots.size());
-        assertEquals(120, pots.get(0).getAmount());
-        assertTrue(pots.get(0).isOpen());
-        assertTrue(pots.get(0).getSeats().contains(seat1));
-        assertTrue(pots.get(0).getSeats().contains(seat2));
-        assertTrue(pots.get(0).getSeats().contains(seat3));
-        assertTrue(pots.get(0).getSeats().contains(seat4));
+        assertEquals(120, pot.getAmount());
+        assertTrue(pot.isOpen());
+        assertTrue(pot.getSeats().contains(seat1));
+        assertTrue(pot.getSeats().contains(seat2));
+        assertTrue(pot.getSeats().contains(seat3));
+        assertTrue(pot.getSeats().contains(seat4));
 
         seat1.setChipsInFront(50);
         seat2.setChipsInFront(50);
@@ -257,15 +181,17 @@ public class PotBsoImplTest {
         seat4.setChipsInFront(50);
 
         // simulate preturn
-        bso.calculatePotsAfterRound(game, table);
-        pots = bso.fetchAllPots(game, table);
+        pots = bso.calculatePotsAfterRound(table);
+        table.getCurrentHand().setPots(pots);
+        pot = ((Pot) pots.toArray()[0]);
+        
         assertEquals(1, pots.size());
-        assertEquals(320, pots.get(0).getAmount());
-        assertTrue(pots.get(0).isOpen());
-        assertTrue(pots.get(0).getSeats().contains(seat1));
-        assertTrue(pots.get(0).getSeats().contains(seat2));
-        assertTrue(pots.get(0).getSeats().contains(seat3));
-        assertTrue(pots.get(0).getSeats().contains(seat4));
+        assertEquals(320, pot.getAmount());
+        assertTrue(pot.isOpen());
+        assertTrue(pot.getSeats().contains(seat1));
+        assertTrue(pot.getSeats().contains(seat2));
+        assertTrue(pot.getSeats().contains(seat3));
+        assertTrue(pot.getSeats().contains(seat4));
 
         seat1.setChipsInFront(20);
         seat1.setAllIn(true);
@@ -275,65 +201,113 @@ public class PotBsoImplTest {
         seat4.setChipsInFront(90);
 
         // simulate preriver
-        bso.calculatePotsAfterRound(game, table);
-        pots = bso.fetchAllPots(game, table);
+        pots = bso.calculatePotsAfterRound(table);
+        table.getCurrentHand().setPots(pots);
+        
+        Pot pot1 = null;
+        Pot pot2 = null;
+        Pot pot3 = null;
+        
+        for(Pot loopPot : pots) {
+            switch (loopPot.getAmount()) {
+            case 400:
+                pot1 = loopPot;
+                break;
+            case 60:
+                pot2 = loopPot;
+                break;
+            case 100:
+                pot3 = loopPot;
+                break;
+            }
+        }
+        
         assertEquals(3, pots.size());
-        assertEquals(400, pots.get(0).getAmount());
-        assertFalse(pots.get(0).isOpen());
-        assertTrue(pots.get(0).getSeats().contains(seat1));
-        assertTrue(pots.get(0).getSeats().contains(seat2));
-        assertTrue(pots.get(0).getSeats().contains(seat3));
-        assertTrue(pots.get(0).getSeats().contains(seat4));
-        assertEquals(60, pots.get(1).getAmount());
-        assertFalse(pots.get(1).isOpen());
-        assertFalse(pots.get(1).getSeats().contains(seat1));
-        assertTrue(pots.get(1).getSeats().contains(seat2));
-        assertTrue(pots.get(1).getSeats().contains(seat3));
-        assertTrue(pots.get(1).getSeats().contains(seat4));
-        assertEquals(100, pots.get(2).getAmount());
-        assertTrue(pots.get(2).isOpen());
-        assertFalse(pots.get(2).getSeats().contains(seat1));
-        assertFalse(pots.get(2).getSeats().contains(seat2));
-        assertTrue(pots.get(2).getSeats().contains(seat3));
-        assertTrue(pots.get(2).getSeats().contains(seat4));
+
+        assertEquals(400, pot1.getAmount());
+        assertFalse(pot1.isOpen());
+        assertTrue(pot1.getSeats().contains(seat1));
+        assertTrue(pot1.getSeats().contains(seat2));
+        assertTrue(pot1.getSeats().contains(seat3));
+        assertTrue(pot1.getSeats().contains(seat4));
+
+        assertEquals(60, pot2.getAmount());
+        assertFalse(pot2.isOpen());
+        assertFalse(pot2.getSeats().contains(seat1));
+        assertTrue(pot2.getSeats().contains(seat2));
+        assertTrue(pot2.getSeats().contains(seat3));
+        assertTrue(pot2.getSeats().contains(seat4));
+
+        assertEquals(100, pot3.getAmount());
+        assertTrue(pot3.isOpen());
+        assertFalse(pot3.getSeats().contains(seat1));
+        assertFalse(pot3.getSeats().contains(seat2));
+        assertTrue(pot3.getSeats().contains(seat3));
+        assertTrue(pot3.getSeats().contains(seat4));
 
         seat3.setChipsInFront(100);
         seat3.setAllIn(true);
-        seat4.setChipsInFront(400);
+        seat4.setChipsInFront(350);
 
         // simulate last round
-        bso.calculatePotsAfterRound(game, table);
-        pots = bso.fetchAllPots(game, table);
+        pots = bso.calculatePotsAfterRound(table);
+        table.getCurrentHand().setPots(pots);
+
+        pot1 = null;
+        pot2 = null;
+        pot3 = null;
+        Pot pot4 = null;
+        
+        for(Pot loopPot : pots) {
+            switch (loopPot.getAmount()) {
+            case 400:
+                pot1 = loopPot;
+                break;
+            case 60:
+                pot2 = loopPot;
+                break;
+            case 300:
+                pot3 = loopPot;
+                break;
+            case 250:
+                pot4 = loopPot;
+                break;
+            }
+        }
+        
         assertEquals(4, pots.size());
-        assertEquals(400, pots.get(0).getAmount());
-        assertFalse(pots.get(0).isOpen());
-        assertTrue(pots.get(0).getSeats().contains(seat1));
-        assertTrue(pots.get(0).getSeats().contains(seat2));
-        assertTrue(pots.get(0).getSeats().contains(seat3));
-        assertTrue(pots.get(0).getSeats().contains(seat4));
-        assertEquals(60, pots.get(1).getAmount());
-        assertFalse(pots.get(1).isOpen());
-        assertFalse(pots.get(1).getSeats().contains(seat1));
-        assertTrue(pots.get(1).getSeats().contains(seat2));
-        assertTrue(pots.get(1).getSeats().contains(seat3));
-        assertTrue(pots.get(1).getSeats().contains(seat4));
-        assertEquals(300, pots.get(2).getAmount());
-        assertFalse(pots.get(2).isOpen());
-        assertFalse(pots.get(2).getSeats().contains(seat1));
-        assertFalse(pots.get(2).getSeats().contains(seat2));
-        assertTrue(pots.get(2).getSeats().contains(seat3));
-        assertTrue(pots.get(2).getSeats().contains(seat4));
-        assertEquals(300, pots.get(3).getAmount());
-        assertTrue(pots.get(3).isOpen());
-        assertFalse(pots.get(3).getSeats().contains(seat1));
-        assertFalse(pots.get(3).getSeats().contains(seat2));
-        assertFalse(pots.get(3).getSeats().contains(seat3));
-        assertTrue(pots.get(3).getSeats().contains(seat4));
+        
+        assertEquals(400, pot1.getAmount());
+        assertFalse(pot1.isOpen());
+        assertTrue(pot1.getSeats().contains(seat1));
+        assertTrue(pot1.getSeats().contains(seat2));
+        assertTrue(pot1.getSeats().contains(seat3));
+        assertTrue(pot1.getSeats().contains(seat4));
+        
+        assertEquals(60, pot2.getAmount());
+        assertFalse(pot2.isOpen());
+        assertFalse(pot2.getSeats().contains(seat1));
+        assertTrue(pot2.getSeats().contains(seat2));
+        assertTrue(pot2.getSeats().contains(seat3));
+        assertTrue(pot2.getSeats().contains(seat4));
+        
+        assertEquals(300, pot3.getAmount());
+        assertFalse(pot3.isOpen());
+        assertFalse(pot3.getSeats().contains(seat1));
+        assertFalse(pot3.getSeats().contains(seat2));
+        assertTrue(pot3.getSeats().contains(seat3));
+        assertTrue(pot3.getSeats().contains(seat4));
+        
+        assertEquals(250, pot4.getAmount());
+        assertTrue(pot4.isOpen());
+        assertFalse(pot4.getSeats().contains(seat1));
+        assertFalse(pot4.getSeats().contains(seat2));
+        assertFalse(pot4.getSeats().contains(seat3));
+        assertTrue(pot4.getSeats().contains(seat4));
     }
 
     private void testSetWinners1(Game game, Table table, User user1, User user2,
             UserGameStatus userGameStatus1, UserGameStatus userGameStatus2) {
-        bso.createNewHandPot(game, table);
 
         Seat seat1 = new Seat();
         seat1.setPosition(0);
@@ -348,8 +322,6 @@ public class PotBsoImplTest {
 
         table.addSeat(seat1);
         table.addSeat(seat2);
-
-        bso.calculatePotsAfterRound(game, table);
 
         HandEvaluation handEvaluation1 = new HandEvaluation();
         handEvaluation1.setUser(user1);
@@ -381,7 +353,6 @@ public class PotBsoImplTest {
     private void testSetWinners2(Game game, Table table, User user1, User user2,
             User user3,  UserGameStatus userGameStatus1,
             UserGameStatus userGameStatus2, UserGameStatus userGameStatus3) {
-        bso.createNewHandPot(game, table);
 
         Seat seat1 = new Seat();
         seat1.setPosition(0);
@@ -402,9 +373,6 @@ public class PotBsoImplTest {
         table.addSeat(seat1);
         table.addSeat(seat2);
         table.addSeat(seat3);
-
-        bso.calculatePotsAfterRound(game, table);
-        bso.removeSeatFromPots(game, table, seat1);
 
         HandEvaluation handEvaluation1 = new HandEvaluation();
         handEvaluation1.setUser(user1);

@@ -24,6 +24,10 @@ public class Pot {
         return seats;
     }
 
+    public void removeSeat(Seat seat) {
+        seats.remove(seat);
+    }
+
     public int getAmount() {
         return amount;
     }

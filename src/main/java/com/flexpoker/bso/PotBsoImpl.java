@@ -2,17 +2,14 @@ package com.flexpoker.bso;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Service;
 
 import com.flexpoker.bso.api.PotBso;
-import com.flexpoker.model.Game;
 import com.flexpoker.model.HandEvaluation;
 import com.flexpoker.model.Pot;
 import com.flexpoker.model.Seat;
@@ -22,21 +19,13 @@ import com.flexpoker.util.OpenPotPredicate;
 @Service
 public class PotBsoImpl implements PotBso {
 
-    private Map<Game, Map<Table, List<Pot>>> gameToTableToPotsMap
-            = new HashMap<Game, Map<Table,List<Pot>>>();
-
     @Override
-    public void calculatePotsAfterRound(Game game, Table table) {
-        Set<Integer> chipsInFrontSet = new HashSet<Integer>();
+    public Set<Pot> calculatePotsAfterRound(Table table) {
+        Set<Integer> chipsInFrontSet = new HashSet<>();
         for (Seat seat : table.getSeats()) {
             if (seat.getChipsInFront() != 0) {
                 chipsInFrontSet.add(seat.getChipsInFront());
             }
-        }
-
-        if (chipsInFrontSet.isEmpty()) {
-            // nothing to do since there are no chips to add to pots
-            return;
         }
 
         List<Integer> chipsInFrontList = new ArrayList<Integer>(chipsInFrontSet);
@@ -49,7 +38,7 @@ public class PotBsoImpl implements PotBso {
                     chipsInFrontList.get(i + 1) - chipsInFrontList.get(i));
         }
 
-        List<Pot> pots = fetchAllPots(game, table);
+        Set<Pot> pots = new HashSet<>(table.getCurrentHand().getPots());
 
         for (Integer chipsPerLevel : maxContributionPerSeatPerPot) {
             Pot pot = fetchOpenPot(pots);
@@ -72,27 +61,8 @@ public class PotBsoImpl implements PotBso {
                 }
             }
         }
-    }
-
-    @Override
-    public void createNewHandPot(Game game, Table table) {
-        if (gameToTableToPotsMap.get(game) == null) {
-            gameToTableToPotsMap.put(game, new HashMap<Table, List<Pot>>());
-        }
-        gameToTableToPotsMap.get(game).put(table, new ArrayList<Pot>());
-    }
-
-    @Override
-    public List<Pot> fetchAllPots(Game game, Table table) {
-        return gameToTableToPotsMap.get(game).get(table);
-    }
-
-    @Override
-    public void removeSeatFromPots(Game game, Table table, Seat seat) {
-        List<Pot> pots = gameToTableToPotsMap.get(game).get(table);
-        for (Pot pot : pots) {
-            pot.getSeats().remove(seat);
-        }
+        
+        return pots;
     }
 
     @Override
@@ -111,7 +81,7 @@ public class PotBsoImpl implements PotBso {
         return winners;
     }
 
-    private Pot fetchOpenPot(List<Pot> pots) {
+    private Pot fetchOpenPot(Set<Pot> pots) {
         Pot pot = (Pot) CollectionUtils.find(pots, new OpenPotPredicate());
         if (pot == null) {
             pot = new Pot();

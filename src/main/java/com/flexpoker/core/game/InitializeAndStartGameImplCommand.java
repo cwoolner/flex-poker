@@ -1,7 +1,6 @@
 package com.flexpoker.core.game;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.Timer;
@@ -12,7 +11,6 @@ import javax.inject.Inject;
 import org.springframework.context.ApplicationEventPublisher;
 
 import com.flexpoker.bso.api.HandEvaluatorBso;
-import com.flexpoker.bso.api.PotBso;
 import com.flexpoker.config.Command;
 import com.flexpoker.core.api.deck.CreateShuffledDeckCommand;
 import com.flexpoker.core.api.game.InitializeAndStartGameCommand;
@@ -49,8 +47,6 @@ public class InitializeAndStartGameImplCommand implements InitializeAndStartGame
     
     private final CreateShuffledDeckCommand createShuffledDeckCommand;
 
-    private final PotBso potBso;
-    
     private final HandEvaluatorBso handEvaluatorBso;
     
     private final ApplicationEventPublisher applicationEventPublisher;
@@ -60,13 +56,11 @@ public class InitializeAndStartGameImplCommand implements InitializeAndStartGame
             AssignInitialTablesForNewGame assignInitialTablesForNewGame,
             SetSeatStatusForNewGameCommand setSeatStatusForNewGameCommand,
             CreateShuffledDeckCommand createShuffledDeckCommand,
-            PotBso potBso,
             HandEvaluatorBso handEvaluatorBso,
             ApplicationEventPublisher applicationEventPublisher) {
         this.assignInitialTablesForNewGame = assignInitialTablesForNewGame;
         this.setSeatStatusForNewGameCommand = setSeatStatusForNewGameCommand;
         this.createShuffledDeckCommand = createShuffledDeckCommand;
-        this.potBso = potBso;
         this.handEvaluatorBso = handEvaluatorBso;
         this.applicationEventPublisher = applicationEventPublisher;
     }
@@ -99,18 +93,12 @@ public class InitializeAndStartGameImplCommand implements InitializeAndStartGame
             public void run() {
                 for (Table table: game.getTables()) {
                     setSeatStatusForNewGameCommand.execute(table);
-                    resetTableStatus(game, table);
+                    createNewRealTimeHand(game, table);
                     applicationEventPublisher.publishEvent(new TableUpdatedEvent(this, game.getId(), table));
                 }
                 timer.cancel();
             }
         }, 5000);
-    }
-    
-    private void resetTableStatus(Game game, Table table) {
-        potBso.createNewHandPot(game, table);
-        createNewRealTimeHand(game, table);
-        table.getCurrentHand().setPots(new HashSet<>(potBso.fetchAllPots(game, table)));
     }
     
     private void createNewRealTimeHand(Game game, Table table) {

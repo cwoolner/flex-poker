@@ -1,6 +1,5 @@
 package com.flexpoker.core.handaction;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -48,8 +47,8 @@ public abstract class BaseHandActionCommand {
         realTimeHand.setOriginatingBettor(null);
         realTimeHand.setHandRoundState(HandRoundState.ROUND_COMPLETE);
         realTimeHand.moveToNextDealerState();
-        potBso.calculatePotsAfterRound(game, table);
-        table.getCurrentHand().setPots(new HashSet<>(potBso.fetchAllPots(game, table)));
+        Set<Pot> pots = potBso.calculatePotsAfterRound(table);
+        table.getCurrentHand().setPots(pots);
 
         if (realTimeHand.getHandDealerState() == HandDealerState.COMPLETE) {
             setSeatStatusForEndOfHandCommand.execute(table);

@@ -4,7 +4,6 @@ import java.util.UUID;
 
 import javax.inject.Inject;
 
-import com.flexpoker.bso.api.PotBso;
 import com.flexpoker.config.Command;
 import com.flexpoker.core.api.chat.SendTableChatMessageCommand;
 import com.flexpoker.core.api.handaction.FoldHandActionCommand;
@@ -28,12 +27,10 @@ public class FoldHandActionImplCommand extends BaseHandActionCommand
     @Inject
     public FoldHandActionImplCommand(GameRepository gameRepository,
             SendTableChatMessageCommand sendTableChatMessageCommand,
-            PotBso potBso,
             SetSeatStatusForEndOfHandCommand setSeatStatusForEndOfHandCommand,
             SetSeatStatusForNewRoundCommand setSeatStatusForNewRoundCommand) {
         this.gameRepository = gameRepository;
         this.sendTableChatMessageCommand = sendTableChatMessageCommand;
-        this.potBso = potBso;
         this.setSeatStatusForEndOfHandCommand = setSeatStatusForEndOfHandCommand;
         this.setSeatStatusForNewRoundCommand = setSeatStatusForNewRoundCommand;
     }
@@ -53,7 +50,7 @@ public class FoldHandActionImplCommand extends BaseHandActionCommand
         }
 
         actionOnSeat.setStillInHand(false);
-        // TODO: remove from all of the pots
+        realTimeHand.removeSeatFromPots(actionOnSeat);
         // TODO: remove from actionOn
 
         realTimeHand.resetPlayerActions(actionOnSeat);
