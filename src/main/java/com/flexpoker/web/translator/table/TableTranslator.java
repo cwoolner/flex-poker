@@ -30,12 +30,6 @@ public class TableTranslator {
             potViewModels.add(new PotTranslator().translate(pot));
         }
         
-        int totalPot = 0;
-        
-        for (Pot pot : table.getCurrentHand().getPots()) {
-            totalPot += pot.getAmount();
-        }
-        
         List<CardViewModel> visibleCommonCards = new ArrayList<>();
         
         if (table.getCurrentHand().getHandDealerState().ordinal()
@@ -58,6 +52,7 @@ public class TableTranslator {
             visibleCommonCards.add(new CardViewModel(riverCard.getCard().getId()));
         }
         
-        return new TableViewModel(seatViewModels, totalPot, potViewModels, visibleCommonCards);
+        return new TableViewModel(seatViewModels, table.getCurrentHand().getTotalPotAmount(),
+                potViewModels, visibleCommonCards);
     }
 }
