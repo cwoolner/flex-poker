@@ -1,5 +1,6 @@
 package com.flexpoker.model;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -43,8 +44,8 @@ public class Pot {
         return winners;
     }
     
-    public void addWinner(Seat seat) {
-        winners.add(seat);
+    public void addWinners(Collection<Seat> seats) {
+        winners.addAll(seats);
     }
 
 }

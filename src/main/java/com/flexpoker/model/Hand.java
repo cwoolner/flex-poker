@@ -1,5 +1,6 @@
 package com.flexpoker.model;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -98,6 +99,8 @@ public class Hand {
     }
 
     public void setHandEvaluationList(List<HandEvaluation> handEvaluationList) {
+        Collections.sort(handEvaluationList);
+        Collections.reverse(handEvaluationList);
         this.handEvaluationList = handEvaluationList;
     }
 

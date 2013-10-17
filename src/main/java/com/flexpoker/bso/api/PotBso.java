@@ -1,6 +1,7 @@
 package com.flexpoker.bso.api;
 
 import java.util.List;
+import java.util.Set;
 
 import com.flexpoker.model.Game;
 import com.flexpoker.model.HandEvaluation;
@@ -18,6 +19,7 @@ public interface PotBso {
 
     void calculatePotsAfterRound(Game game, Table table);
 
-    void setWinners(Game game, Table table, List<HandEvaluation> winningHands);
+    Set<Seat> determineWinners(Table table, Set<Seat> seats,
+            List<HandEvaluation> winningHands);
 
 }

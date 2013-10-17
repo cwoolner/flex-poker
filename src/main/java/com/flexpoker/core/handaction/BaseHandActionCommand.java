@@ -56,7 +56,7 @@ public abstract class BaseHandActionCommand {
 
         if (realTimeHand.getHandDealerState() == HandDealerState.COMPLETE) {
             setSeatStatusForEndOfHandCommand.execute(table);
-            determineWinners(game, table, realTimeHand.getHandEvaluationList());
+            determineWinners(table, realTimeHand.getHandEvaluationList());
         } else {
             setSeatStatusForNewRoundCommand.execute(table);
             determineNextToAct(table, realTimeHand);
@@ -108,19 +108,22 @@ public abstract class BaseHandActionCommand {
         }
     }
 
-    private void determineWinners(Game game, Table table, List<HandEvaluation> handEvaluationList) {
-        potBso.setWinners(game, table, handEvaluationList);
+    private void determineWinners(Table table, List<HandEvaluation> handEvaluationList) {
+        for (Pot pot : table.getCurrentHand().getPots()) {
+            Set<Seat> winners = potBso.determineWinners(table, pot.getSeats(),
+                    handEvaluationList);
+            pot.addWinners(winners);
 
-        for (Pot pot : potBso.fetchAllPots(game, table)) {
-            Set<Seat> winners = pot.getWinners();
             int numberOfWinners = winners.size();
             int numberOfChips = pot.getAmount() / numberOfWinners;
             int bonusChips = pot.getAmount() % numberOfWinners;
             int numberOfPlayersInPot = pot.getSeats().size();
 
-            Seat seatToGiveBonusChips = ((Seat) winners.toArray()[0]);
-            seatToGiveBonusChips.getUserGameStatus().setChips(
-                    seatToGiveBonusChips.getUserGameStatus().getChips() + bonusChips);
+            if (bonusChips > 0) {
+                Seat seatToGiveBonusChips = ((Seat) winners.toArray()[0]);
+                seatToGiveBonusChips.getUserGameStatus().setChips(
+                        seatToGiveBonusChips.getUserGameStatus().getChips() + bonusChips);
+            }
 
             for (Seat winner : winners) {
                 winner.getUserGameStatus().setChips(

@@ -3,7 +3,9 @@ package com.flexpoker.bso;
 import static org.junit.Assert.*;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -365,13 +367,15 @@ public class PotBsoImplTest {
         List<HandEvaluation> winningHands = new ArrayList<HandEvaluation>();
         winningHands.add(handEvaluation1);
         winningHands.add(handEvaluation2);
+        
+        Set<Seat> seats = new HashSet<>();
+        seats.add(seat1);
+        seats.add(seat2);
 
-        bso.setWinners(game, table, winningHands);
+        Set<Seat> winners = bso.determineWinners(table, seats, winningHands);
 
-        List<Pot> pots = bso.fetchAllPots(game, table);
-
-        assertEquals(1, pots.get(0).getWinners().size());
-        assertTrue(pots.get(0).getWinners().contains(seat1));
+        assertEquals(1, winners.size());
+        assertTrue(winners.contains(seat1));
     }
 
     private void testSetWinners2(Game game, Table table, User user1, User user2,
@@ -424,13 +428,15 @@ public class PotBsoImplTest {
         winningHands.add(handEvaluation2);
         winningHands.add(handEvaluation3);
 
-        bso.setWinners(game, table, winningHands);
+        Set<Seat> seats = new HashSet<>();
+        seats.add(seat2);
+        seats.add(seat3);
+        
+        Set<Seat> winners = bso.determineWinners(table, seats, winningHands);
 
-        List<Pot> pots = bso.fetchAllPots(game, table);
-
-        assertEquals(2, pots.get(0).getWinners().size());
-        assertTrue(pots.get(0).getWinners().contains(seat2));
-        assertTrue(pots.get(0).getWinners().contains(seat3));
+        assertEquals(2, winners.size());
+        assertTrue(winners.contains(seat2));
+        assertTrue(winners.contains(seat3));
     }
 
 }

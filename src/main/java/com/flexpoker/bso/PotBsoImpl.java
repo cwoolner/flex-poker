@@ -96,22 +96,19 @@ public class PotBsoImpl implements PotBso {
     }
 
     @Override
-    public void setWinners(Game game, Table table, List<HandEvaluation> winningHands) {
-        Collections.sort(winningHands);
-        Collections.reverse(winningHands);
-
-        for (Pot pot : fetchAllPots(game, table)) {
-            HandEvaluation topAssignedHand = null;
-            for (HandEvaluation hand : winningHands) {
-                for (Seat seat : pot.getSeats()) {
-                    if (seat.getUserGameStatus().getUser().equals(hand.getUser())
-                            && (topAssignedHand == null || topAssignedHand.compareTo(hand) == 0)) {
-                        topAssignedHand = hand;
-                        pot.getWinners().add(seat);
-                    }
+    public Set<Seat> determineWinners(Table table, Set<Seat> seats, List<HandEvaluation> winningHands) {
+        Set<Seat> winners = new HashSet<>();
+        HandEvaluation topAssignedHand = null;
+        for (HandEvaluation winningHand : winningHands) {
+            for (Seat seat : seats) {
+                if (seat.getUserGameStatus().getUser().equals(winningHand.getUser())
+                        && (topAssignedHand == null || topAssignedHand.compareTo(winningHand) == 0)) {
+                    topAssignedHand = winningHand;
+                    winners.add(seat);
                 }
             }
         }
+        return winners;
     }
 
     private Pot fetchOpenPot(List<Pot> pots) {
