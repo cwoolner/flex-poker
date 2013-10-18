@@ -6,9 +6,6 @@ import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
-import javax.inject.Inject;
-
-import com.flexpoker.bso.api.ValidationBso;
 import com.flexpoker.config.Command;
 import com.flexpoker.core.api.tablebalancer.AssignInitialTablesForNewGame;
 import com.flexpoker.model.Game;
@@ -19,20 +16,10 @@ import com.flexpoker.model.UserGameStatus;
 @Command
 public class AssignTablesForNewGameImplCommand implements AssignInitialTablesForNewGame {
 
-    private final ValidationBso validationBso;
-
-    @Inject
-    public AssignTablesForNewGameImplCommand(
-            ValidationBso validationBso) {
-        this.validationBso = validationBso;
-    }
-    
     @Override
     public void execute(Game game) {
         Set<UserGameStatus> userGameStatuses = game.getUserGameStatuses();
         int maxPlayersPerTable = game.getMaxPlayersPerTable();
-        
-        validationBso.validateTableAssignment(userGameStatuses, maxPlayersPerTable);
         
         int numberOfTables = calculateNumberOfTables(userGameStatuses, maxPlayersPerTable);
         List<Table> tables = populateSeats(maxPlayersPerTable, numberOfTables);

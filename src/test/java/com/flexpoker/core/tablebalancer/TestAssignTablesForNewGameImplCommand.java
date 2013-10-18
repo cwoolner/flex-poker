@@ -8,10 +8,7 @@ import java.util.Set;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 
-import com.flexpoker.bso.api.ValidationBso;
 import com.flexpoker.model.Game;
 import com.flexpoker.model.Seat;
 import com.flexpoker.model.Table;
@@ -21,16 +18,13 @@ import com.flexpoker.util.DataUtilsForTests;
 
 public class TestAssignTablesForNewGameImplCommand {
 
-    @Mock private ValidationBso mockValidationBso;
-    
     private AssignTablesForNewGameImplCommand command;
 
     private Game game;
     
     @Before
     public void setup() {
-        MockitoAnnotations.initMocks(this);
-        command = new AssignTablesForNewGameImplCommand(mockValidationBso);
+        command = new AssignTablesForNewGameImplCommand();
     }
     
     @Test
