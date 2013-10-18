@@ -14,8 +14,8 @@ public class RealTimeHandTest {
     @Test
     public void testRealTimeHand() {
         List<Seat> seats = new ArrayList<Seat>();
-        Seat seat1 = new Seat();
-        Seat seat2 = new Seat();
+        Seat seat1 = new Seat(0);
+        Seat seat2 = new Seat(1);
 
         seats.add(seat1);
         seats.add(seat2);

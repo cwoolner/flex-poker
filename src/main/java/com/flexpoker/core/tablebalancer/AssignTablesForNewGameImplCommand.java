@@ -38,8 +38,7 @@ public class AssignTablesForNewGameImplCommand implements AssignInitialTablesFor
             Table table = new Table();
 
             for (int j = 0; j < maxPlayersPerTable; j++) {
-                Seat seat = new Seat();
-                seat.setPosition(j);
+                Seat seat = new Seat(j);
                 table.addSeat(seat);
             }
 

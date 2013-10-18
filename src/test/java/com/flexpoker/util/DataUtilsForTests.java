@@ -22,8 +22,7 @@ public class DataUtilsForTests {
 
     public static void fillTableWithUsers(Table table, int numberOfUsers, int maxPlayersPerTable) {
         for (int i = 0; i < maxPlayersPerTable; i++) {
-            Seat seat = new Seat();
-            seat.setPosition(i);
+            Seat seat = new Seat(1);
             table.addSeat(seat);
         }
 

@@ -56,13 +56,11 @@ public class DeterminePotWinnersImplQueryTest {
     private void testSetWinners1(Game game, Table table, User user1, User user2,
             UserGameStatus userGameStatus1, UserGameStatus userGameStatus2) {
 
-        Seat seat1 = new Seat();
-        seat1.setPosition(0);
+        Seat seat1 = new Seat(0);
         seat1.setChipsInFront(30);
         seat1.setStillInHand(true);
         seat1.setUserGameStatus(userGameStatus1);
-        Seat seat2 = new Seat();
-        seat2.setPosition(1);
+        Seat seat2 = new Seat(1);
         seat2.setChipsInFront(30);
         seat2.setStillInHand(true);
         seat2.setUserGameStatus(userGameStatus2);
@@ -101,18 +99,15 @@ public class DeterminePotWinnersImplQueryTest {
             User user3,  UserGameStatus userGameStatus1,
             UserGameStatus userGameStatus2, UserGameStatus userGameStatus3) {
 
-        Seat seat1 = new Seat();
-        seat1.setPosition(0);
+        Seat seat1 = new Seat(0);
         seat1.setChipsInFront(30);
         seat1.setStillInHand(true);
         seat1.setUserGameStatus(userGameStatus1);
-        Seat seat2 = new Seat();
-        seat2.setPosition(1);
+        Seat seat2 = new Seat(1);
         seat2.setChipsInFront(30);
         seat2.setStillInHand(true);
         seat2.setUserGameStatus(userGameStatus2);
-        Seat seat3 = new Seat();
-        seat3.setPosition(2);
+        Seat seat3 = new Seat(2);
         seat3.setChipsInFront(30);
         seat3.setStillInHand(true);
         seat3.setUserGameStatus(userGameStatus3);

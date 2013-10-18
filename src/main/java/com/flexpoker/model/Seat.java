@@ -1,14 +1,12 @@
 package com.flexpoker.model;
 
-import org.apache.commons.lang.builder.ToStringBuilder;
-
 import com.flexpoker.model.card.PocketCards;
 
 public class Seat implements Comparable<Seat> {
 
     private UserGameStatus userGameStatus;
 
-    private Integer position;
+    private final int position;
 
     private boolean stillInHand;
 
@@ -31,6 +29,10 @@ public class Seat implements Comparable<Seat> {
     private boolean actionOn;
 
     private PocketCards showCards;
+    
+    public Seat(int position) {
+        this.position = position;
+    }
 
     public UserGameStatus getUserGameStatus() {
         return userGameStatus;
@@ -42,10 +44,6 @@ public class Seat implements Comparable<Seat> {
 
     public Integer getPosition() {
         return position;
-    }
-
-    public void setPosition(Integer position) {
-        this.position = position;
     }
 
     public boolean isStillInHand() {
@@ -138,14 +136,14 @@ public class Seat implements Comparable<Seat> {
 
     @Override
     public int compareTo(Seat seat) {
-        return position.compareTo(seat.getPosition());
+        return Integer.compare(position, seat.getPosition());
     }
 
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((position == null) ? 0 : position.hashCode());
+        result = prime * result + position;
         return result;
     }
 
@@ -158,23 +156,10 @@ public class Seat implements Comparable<Seat> {
         if (getClass() != obj.getClass())
             return false;
         Seat other = (Seat) obj;
-        if (position == null) {
-            if (other.position != null)
-                return false;
-        } else if (!position.equals(other.position))
+        if (position != other.position)
             return false;
         return true;
     }
 
-    @Override
-    public String toString() {
-        return new ToStringBuilder(this)
-                .append("allIn", allIn)
-                .append("position", position)
-                .append("stillInHand", stillInHand)
-                .append("userGameStatus", userGameStatus)
-                .append("playerJustLeft", playerJustLeft)
-                .toString();
-    }
-
+    
 }

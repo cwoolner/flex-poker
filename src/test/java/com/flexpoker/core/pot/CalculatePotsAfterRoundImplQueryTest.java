@@ -37,8 +37,7 @@ public class CalculatePotsAfterRoundImplQueryTest {
     }
 
     private void testCalculatePotsAfterRound1(Game game, Table table) {
-        Seat seat1 = new Seat();
-        seat1.setPosition(0);
+        Seat seat1 = new Seat(0);
         seat1.setChipsInFront(30);
         seat1.setStillInHand(true);
 
@@ -56,12 +55,10 @@ public class CalculatePotsAfterRoundImplQueryTest {
     }
 
     private void testCalculatePotsAfterRound2(Game game, Table table) {
-        Seat seat1 = new Seat();
-        seat1.setPosition(0);
+        Seat seat1 = new Seat(0);
         seat1.setChipsInFront(30);
         seat1.setStillInHand(true);
-        Seat seat2 = new Seat();
-        seat2.setPosition(1);
+        Seat seat2 = new Seat(1);
         seat2.setChipsInFront(30);
         seat2.setStillInHand(true);
 
@@ -81,12 +78,10 @@ public class CalculatePotsAfterRoundImplQueryTest {
     }
 
     private void testCalculatePotsAfterRound3(Game game, Table table) {
-        Seat seat1 = new Seat();
-        seat1.setPosition(0);
+        Seat seat1 = new Seat(0);
         seat1.setChipsInFront(30);
         seat1.setStillInHand(true);
-        Seat seat2 = new Seat();
-        seat2.setPosition(1);
+        Seat seat2 = new Seat(1);
         seat2.setChipsInFront(30);
         seat2.setStillInHand(true);
         seat2.setAllIn(true);
@@ -107,20 +102,16 @@ public class CalculatePotsAfterRoundImplQueryTest {
     }
 
     private void testCalculatePotsAfterRound4(Game game, Table table) {
-        Seat seat1 = new Seat();
-        seat1.setPosition(0);
+        Seat seat1 = new Seat(0);
         seat1.setChipsInFront(30);
         seat1.setStillInHand(true);
-        Seat seat2 = new Seat();
-        seat2.setPosition(1);
+        Seat seat2 = new Seat(1);
         seat2.setChipsInFront(30);
         seat2.setStillInHand(true);
-        Seat seat3 = new Seat();
-        seat3.setPosition(2);
+        Seat seat3 = new Seat(2);
         seat3.setChipsInFront(30);
         seat3.setStillInHand(true);
-        Seat seat4 = new Seat();
-        seat4.setPosition(3);
+        Seat seat4 = new Seat(3);
         seat4.setChipsInFront(30);
         seat4.setStillInHand(true);
 
