@@ -34,11 +34,6 @@ public class GameBsoImpl implements GameBso {
     }
 
     @Override
-    public Game fetchGame(Game game) {
-        return gameDao.findById(game.getId());
-    }
-
-    @Override
     public List<Game> fetchAllGames() {
         return gameDao.findAll();
     }

@@ -9,8 +9,6 @@ import com.flexpoker.model.Game;
 
 public interface GameBso {
 
-    Game fetchGame(Game game);
-
     List<Game> fetchAllGames();
 
     void createGame(Principal user, CreateGameDto createGameDto);
