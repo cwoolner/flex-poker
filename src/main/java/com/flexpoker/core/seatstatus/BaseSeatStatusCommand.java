@@ -50,7 +50,7 @@ public abstract class BaseSeatStatusCommand {
 
     protected void assignNewGameBigBlind(Table table) {
         List<Seat> seats = table.getSeats();
-        int numberOfPlayers = table.getNumberOfPlayersAtTable();
+        int numberOfPlayers = table.getNumberOfPlayers();
         Seat buttonSeat = table.getButtonSeat();
         Seat smallBlindSeat = table.getSmallBlindSeat();
 
@@ -91,7 +91,7 @@ public abstract class BaseSeatStatusCommand {
 
     protected void assignNewGameSmallBlind(Table table) {
         List<Seat> seats = table.getSeats();
-        int numberOfPlayers = table.getNumberOfPlayersAtTable();
+        int numberOfPlayers = table.getNumberOfPlayers();
         Seat buttonSeat = table.getButtonSeat();
 
         if (numberOfPlayers == 2) {
@@ -188,7 +188,7 @@ public abstract class BaseSeatStatusCommand {
 
         // if only two people are left, switch to the heads-up rules.  just loop
         // through the table and find the first seat that is not the big blind.
-        if (table.getNumberOfPlayersAtTable() == 2) {
+        if (table.getNumberOfPlayers() == 2) {
             for (Seat seat : seats) {
                 if (!bigBlindSeat.equals(seat) && seat.isStillInHand()) {
                     smallBlindSeat.setSmallBlind(false);
@@ -222,7 +222,7 @@ public abstract class BaseSeatStatusCommand {
     protected void assignNewHandButton(Table table) {
         Seat buttonSeat = table.getButtonSeat();
         Seat smallBlindSeat = table.getSmallBlindSeat();
-        if (table.getNumberOfPlayersAtTable() == 2) {
+        if (table.getNumberOfPlayers() == 2) {
             buttonSeat.setButton(false);
             smallBlindSeat.setButton(true);
             return;

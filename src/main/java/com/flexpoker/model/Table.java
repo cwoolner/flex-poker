@@ -76,18 +76,6 @@ public class Table {
         }
     }
     
-    public int getNumberOfPlayers() {
-        int numberOfUsers = 0;
-
-        for (Seat seat : seats) {
-            if (seat.getUserGameStatus() != null) {
-                numberOfUsers++;
-            }
-        }
-
-        return numberOfUsers;
-    }
-    
     public Hand getCurrentHand() {
         return currentHand;
     }
@@ -116,7 +104,7 @@ public class Table {
         return CollectionUtils.countMatches(seats, new StillInHandSeatPredicate());
     }
     
-    public int getNumberOfPlayersAtTable() {
+    public int getNumberOfPlayers() {
         return CollectionUtils.countMatches(seats, new HasUserGameStatusPredicate());
     }
     
