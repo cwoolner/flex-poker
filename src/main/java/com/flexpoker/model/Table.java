@@ -10,6 +10,7 @@ import com.flexpoker.util.ActionOnSeatPredicate;
 import com.flexpoker.util.BigBlindSeatPredicate;
 import com.flexpoker.util.ButtonSeatPredicate;
 import com.flexpoker.util.Constants;
+import com.flexpoker.util.HasUserGameStatusPredicate;
 import com.flexpoker.util.SmallBlindSeatPredicate;
 import com.flexpoker.util.StillInHandSeatPredicate;
 
@@ -137,6 +138,10 @@ public class Table {
     
     public int getNumberOfPlayersStillInHand() {
         return CollectionUtils.countMatches(seats, new StillInHandSeatPredicate());
+    }
+    
+    public int getNumberOfPlayersAtTable() {
+        return CollectionUtils.countMatches(seats, new HasUserGameStatusPredicate());
     }
     
     @Override
