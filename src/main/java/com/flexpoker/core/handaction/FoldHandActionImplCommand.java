@@ -68,11 +68,11 @@ public class FoldHandActionImplCommand extends BaseHandActionCommand
 
         if (numberOfPlayersLeft == 1) {
             realTimeHand.setHandDealerState(HandDealerState.COMPLETE);
-            handleEndOfRound(game, table, realTimeHand, game.getCurrentBlinds().getBigBlind());
+            handleEndOfRound(table, realTimeHand, game.getCurrentBlinds().getBigBlind());
         } else if (actionOnSeat.equals(realTimeHand.getLastToAct())) {
-            handleEndOfRound(game, table, realTimeHand, game.getCurrentBlinds().getBigBlind());
+            handleEndOfRound(table, realTimeHand, game.getCurrentBlinds().getBigBlind());
         } else {
-            handleMiddleOfRound(game, table, realTimeHand, actionOnSeat);
+            handleMiddleOfRound(table, realTimeHand, actionOnSeat);
         }
         
         String message = user.getUsername() + " folds";

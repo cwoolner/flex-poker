@@ -70,7 +70,7 @@ public class RaiseHandActionImplCommand extends BaseHandActionCommand
 
         realTimeHand.setOriginatingBettor(actionOnSeat);
         determineLastToAct(table, realTimeHand);
-        handleMiddleOfRound(game, table, realTimeHand, actionOnSeat);
+        handleMiddleOfRound(table, realTimeHand, actionOnSeat);
         actionOnSeat.setChipsInFront(raiseToAmount);
 
         UserGameStatus userGameStatus = actionOnSeat.getUserGameStatus();

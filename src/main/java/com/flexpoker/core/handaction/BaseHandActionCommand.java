@@ -8,7 +8,6 @@ import com.flexpoker.core.api.seatstatus.SetSeatStatusForEndOfHandCommand;
 import com.flexpoker.core.api.seatstatus.SetSeatStatusForNewRoundCommand;
 import com.flexpoker.core.pot.CalculatePotsAfterRoundImplQuery;
 import com.flexpoker.core.pot.DeterminePotWinnersImplQuery;
-import com.flexpoker.model.Game;
 import com.flexpoker.model.GameEventType;
 import com.flexpoker.model.Hand;
 import com.flexpoker.model.HandDealerState;
@@ -34,8 +33,7 @@ public abstract class BaseHandActionCommand {
     
     protected DeterminePotWinnersImplQuery determinePotWinnersImplQuery;
 
-    protected void handleMiddleOfRound(Game game, Table table,
-            Hand realTimeHand, Seat actionOnSeat) {
+    protected void handleMiddleOfRound(Table table, Hand realTimeHand, Seat actionOnSeat) {
         realTimeHand.setHandRoundState(HandRoundState.ROUND_IN_PROGRESS);
         actionOnSeat.setActionOn(false);
         // TODO: stop actionOn timer
@@ -45,8 +43,7 @@ public abstract class BaseHandActionCommand {
         determineNextToAct(table, realTimeHand);
     }
 
-    protected void handleEndOfRound(Game game, Table table,
-            Hand realTimeHand, int bigBlindAmount) {
+    protected void handleEndOfRound(Table table, Hand realTimeHand, int bigBlindAmount) {
         realTimeHand.setOriginatingBettor(null);
         realTimeHand.setHandRoundState(HandRoundState.ROUND_COMPLETE);
         realTimeHand.moveToNextDealerState();

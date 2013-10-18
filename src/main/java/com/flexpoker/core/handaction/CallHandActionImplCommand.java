@@ -68,9 +68,9 @@ public class CallHandActionImplCommand extends BaseHandActionCommand
         actionOnSeat.setRaiseTo(0);
 
         if (actionOnSeat.equals(realTimeHand.getLastToAct())) {
-            handleEndOfRound(game, table, realTimeHand, game.getCurrentBlinds().getBigBlind());
+            handleEndOfRound(table, realTimeHand, game.getCurrentBlinds().getBigBlind());
         } else {
-            handleMiddleOfRound(game, table, realTimeHand, actionOnSeat);
+            handleMiddleOfRound(table, realTimeHand, actionOnSeat);
         }
 
         int numberOfPlayersLeft = 0;
