@@ -9,7 +9,6 @@ import org.apache.commons.collections.CollectionUtils;
 import com.flexpoker.util.ActionOnSeatPredicate;
 import com.flexpoker.util.BigBlindSeatPredicate;
 import com.flexpoker.util.ButtonSeatPredicate;
-import com.flexpoker.util.Constants;
 import com.flexpoker.util.HasUserGameStatusPredicate;
 import com.flexpoker.util.SmallBlindSeatPredicate;
 import com.flexpoker.util.StillInHandSeatPredicate;
@@ -89,29 +88,6 @@ public class Table {
         return numberOfUsers;
     }
     
-    /**
-     * Verify that the table is in a valid state before performing operations
-     * on it.
-     */
-    public void validateTable() {
-        if (CollectionUtils.isEmpty(seats)) {
-            throw new IllegalArgumentException("seats cannot be empty.");
-        }
-        if (seats.size() > Constants.MAX_PLAYERS_PER_TABLE
-                || seats.size() < Constants.MIN_PLAYERS_PER_TABLE) {
-            throw new IllegalArgumentException("Number of seats must be "
-                    + "between: " + Constants.MIN_PLAYERS_PER_TABLE
-                    + " and " + Constants.MAX_PLAYERS_PER_TABLE);
-        }
-        int numberOfUsers = getNumberOfPlayers();
-        if (numberOfUsers > Constants.MAX_PLAYERS_PER_TABLE
-                || numberOfUsers < Constants.MIN_PLAYERS_PER_TABLE) {
-            throw new IllegalArgumentException("Number of users must be "
-                    + "between: " + Constants.MIN_PLAYERS_PER_TABLE
-                    + " and " + Constants.MAX_PLAYERS_PER_TABLE);
-        }
-    }
-
     public Hand getCurrentHand() {
         return currentHand;
     }

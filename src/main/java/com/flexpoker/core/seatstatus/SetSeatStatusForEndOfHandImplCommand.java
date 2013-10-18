@@ -18,7 +18,6 @@ public class SetSeatStatusForEndOfHandImplCommand extends BaseSeatStatusCommand
     
     @Override
     public void execute(Table table) {
-        table.validateTable();
         table.resetChipsInFront();
         table.resetCallAmounts();
         table.resetRaiseTo();

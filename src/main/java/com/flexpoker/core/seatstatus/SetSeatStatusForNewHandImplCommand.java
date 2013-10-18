@@ -18,7 +18,6 @@ public class SetSeatStatusForNewHandImplCommand extends BaseSeatStatusCommand
 
     @Override
     public void execute(Table table) {
-        table.validateTable();
         table.resetStillInHand();
         table.resetShowCards();
         assignNewHandBigBlind(table);

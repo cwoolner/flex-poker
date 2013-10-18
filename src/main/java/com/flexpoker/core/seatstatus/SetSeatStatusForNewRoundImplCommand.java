@@ -18,7 +18,6 @@ public class SetSeatStatusForNewRoundImplCommand extends BaseSeatStatusCommand
 
     @Override
     public void execute(Table table) {
-        table.validateTable();
         table.resetChipsInFront();
         assignNewRoundActionOn(table);
     }
