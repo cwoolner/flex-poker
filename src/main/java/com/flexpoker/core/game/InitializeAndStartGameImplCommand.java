@@ -92,7 +92,7 @@ public class InitializeAndStartGameImplCommand implements InitializeAndStartGame
             @Override
             public void run() {
                 for (Table table: game.getTables()) {
-                    setSeatStatusForNewGameCommand.execute(table);
+                    setSeatStatusForNewGameCommand.execute(game, table);
                     createNewRealTimeHand(game, table);
                     applicationEventPublisher.publishEvent(new TableUpdatedEvent(this, game.getId(), table));
                 }

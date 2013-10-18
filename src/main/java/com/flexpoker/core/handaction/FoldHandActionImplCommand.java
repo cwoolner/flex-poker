@@ -57,7 +57,6 @@ public class FoldHandActionImplCommand extends BaseHandActionCommand
 
         actionOnSeat.setStillInHand(false);
         realTimeHand.removeSeatFromPots(actionOnSeat);
-        // TODO: remove from actionOn
 
         realTimeHand.resetPlayerActions(actionOnSeat);
 
@@ -68,11 +67,11 @@ public class FoldHandActionImplCommand extends BaseHandActionCommand
 
         if (numberOfPlayersLeft == 1) {
             realTimeHand.setHandDealerState(HandDealerState.COMPLETE);
-            handleEndOfRound(table, realTimeHand, game.getCurrentBlinds().getBigBlind());
+            handleEndOfRound(game, table, realTimeHand, game.getCurrentBlinds().getBigBlind());
         } else if (actionOnSeat.equals(realTimeHand.getLastToAct())) {
-            handleEndOfRound(table, realTimeHand, game.getCurrentBlinds().getBigBlind());
+            handleEndOfRound(game, table, realTimeHand, game.getCurrentBlinds().getBigBlind());
         } else {
-            handleMiddleOfRound(table, realTimeHand, actionOnSeat);
+            handleMiddleOfRound(game, table, realTimeHand, actionOnSeat);
         }
         
         String message = user.getUsername() + " folds";

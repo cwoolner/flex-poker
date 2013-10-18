@@ -1,5 +1,7 @@
 package com.flexpoker.model;
 
+import java.util.Timer;
+
 import com.flexpoker.model.card.PocketCards;
 
 public class Seat implements Comparable<Seat> {
@@ -29,6 +31,8 @@ public class Seat implements Comparable<Seat> {
     private boolean actionOn;
 
     private PocketCards showCards;
+    
+    private Timer actionOnTimer;
     
     public Seat(int position) {
         this.position = position;
@@ -124,6 +128,9 @@ public class Seat implements Comparable<Seat> {
 
     public void setActionOn(boolean actionOn) {
         this.actionOn = actionOn;
+        if (!this.actionOn) {
+            resetActionOnTimer();
+        }
     }
 
     public PocketCards getShowCards() {
@@ -161,5 +168,14 @@ public class Seat implements Comparable<Seat> {
         return true;
     }
 
+    public void resetActionOnTimer() {
+        if (actionOnTimer != null) {
+            actionOnTimer.cancel();            
+        }
+    }
     
+    public void setActionOnTimer(Timer actionOnTimer) {
+        this.actionOnTimer = actionOnTimer;
+    }
+
 }

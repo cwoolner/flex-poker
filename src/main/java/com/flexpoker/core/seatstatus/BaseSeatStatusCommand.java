@@ -2,22 +2,18 @@ package com.flexpoker.core.seatstatus;
 
 import java.util.List;
 import java.util.Random;
+import java.util.Timer;
 
-import com.flexpoker.bso.api.ActionOnTimerBso;
+import com.flexpoker.core.api.actionon.CreateAndStartActionOnTimerCommand;
+import com.flexpoker.model.Game;
 import com.flexpoker.model.Seat;
 import com.flexpoker.model.Table;
 
 public abstract class BaseSeatStatusCommand {
     
-    protected ActionOnTimerBso actionOnTimerBso;
+    protected CreateAndStartActionOnTimerCommand createAndStartActionOnTimerCommand;
 
-    protected void resetActionOnTimer(Table table) {
-        for (Seat seat : table.getSeats()) {
-            actionOnTimerBso.removeSeat(table, seat);
-        }
-    }
-
-    protected void assignNewHandActionOn(Table table) {
+    protected void assignNewHandActionOn(Game game, Table table) {
         List<Seat> seats = table.getSeats();
         Seat bigBlindSeat = table.getBigBlindSeat();
         Seat actionOnSeat = table.getActionOnSeat();
@@ -27,10 +23,12 @@ public abstract class BaseSeatStatusCommand {
             if (seats.get(i).isStillInHand()) {
                 if (actionOnSeat != null) {
                     actionOnSeat.setActionOn(false);
-                    actionOnTimerBso.removeSeat(table, actionOnSeat);
                 }
-                seats.get(i).setActionOn(true);
-                actionOnTimerBso.addSeat(table, seats.get(i));
+                Seat newActionOnSeat = seats.get(i);
+                newActionOnSeat.setActionOn(true);
+                Timer actionOnTimer = createAndStartActionOnTimerCommand.execute(
+                        game, table, newActionOnSeat);
+                newActionOnSeat.setActionOnTimer(actionOnTimer);
                 return;
             }
         }
@@ -39,10 +37,12 @@ public abstract class BaseSeatStatusCommand {
             if (seats.get(i).isStillInHand()) {
                 if (actionOnSeat != null) {
                     actionOnSeat.setActionOn(false);
-                    actionOnTimerBso.removeSeat(table, actionOnSeat);
                 }
-                seats.get(i).setActionOn(true);
-                actionOnTimerBso.addSeat(table, seats.get(i));
+                Seat newActionOnSeat = seats.get(i);
+                newActionOnSeat.setActionOn(true);
+                Timer actionOnTimer = createAndStartActionOnTimerCommand.execute(
+                        game, table, newActionOnSeat);
+                newActionOnSeat.setActionOnTimer(actionOnTimer);
                 return;
             }
         }
@@ -127,7 +127,7 @@ public abstract class BaseSeatStatusCommand {
         }
     }
 
-    protected void assignNewRoundActionOn(Table table) {
+    protected void assignNewRoundActionOn(Game game, Table table) {
         List<Seat> seats = table.getSeats();
 
         Seat buttonSeat = table.getButtonSeat();
@@ -139,9 +139,11 @@ public abstract class BaseSeatStatusCommand {
             if (seats.get(i).isStillInHand()
                     && !seats.get(i).isAllIn()) {
                 actionOnSeat.setActionOn(false);
-                actionOnTimerBso.removeSeat(table, actionOnSeat);
-                seats.get(i).setActionOn(true);
-                actionOnTimerBso.addSeat(table, seats.get(i));
+                Seat newActionOnSeat = seats.get(i);
+                newActionOnSeat.setActionOn(true);
+                Timer actionOnTimer = createAndStartActionOnTimerCommand.execute(
+                        game, table, newActionOnSeat);
+                newActionOnSeat.setActionOnTimer(actionOnTimer);
                 return;
             }
         }
@@ -150,9 +152,11 @@ public abstract class BaseSeatStatusCommand {
             if (seats.get(i).isStillInHand()
                     && !seats.get(i).isAllIn()) {
                 actionOnSeat.setActionOn(false);
-                actionOnTimerBso.removeSeat(table, actionOnSeat);
-                seats.get(i).setActionOn(true);
-                actionOnTimerBso.addSeat(table, seats.get(i));
+                Seat newActionOnSeat = seats.get(i);
+                newActionOnSeat.setActionOn(true);
+                Timer actionOnTimer = createAndStartActionOnTimerCommand.execute(
+                        game, table, newActionOnSeat);
+                newActionOnSeat.setActionOnTimer(actionOnTimer);
                 return;
             }
         }

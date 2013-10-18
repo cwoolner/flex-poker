@@ -2,12 +2,15 @@ package com.flexpoker.core.handaction;
 
 import java.util.List;
 import java.util.Set;
+import java.util.Timer;
 
+import com.flexpoker.core.api.actionon.CreateAndStartActionOnTimerCommand;
 import com.flexpoker.core.api.chat.SendTableChatMessageCommand;
 import com.flexpoker.core.api.seatstatus.SetSeatStatusForEndOfHandCommand;
 import com.flexpoker.core.api.seatstatus.SetSeatStatusForNewRoundCommand;
 import com.flexpoker.core.pot.CalculatePotsAfterRoundImplQuery;
 import com.flexpoker.core.pot.DeterminePotWinnersImplQuery;
+import com.flexpoker.model.Game;
 import com.flexpoker.model.GameEventType;
 import com.flexpoker.model.Hand;
 import com.flexpoker.model.HandDealerState;
@@ -32,18 +35,24 @@ public abstract class BaseHandActionCommand {
     protected CalculatePotsAfterRoundImplQuery calculatePotsAfterRoundImplQuery;
     
     protected DeterminePotWinnersImplQuery determinePotWinnersImplQuery;
+    
+    protected CreateAndStartActionOnTimerCommand createAndStartActionOnTimerCommand;
 
-    protected void handleMiddleOfRound(Table table, Hand realTimeHand, Seat actionOnSeat) {
+    protected void handleMiddleOfRound(Game game, Table table, Hand realTimeHand, Seat actionOnSeat) {
         realTimeHand.setHandRoundState(HandRoundState.ROUND_IN_PROGRESS);
         actionOnSeat.setActionOn(false);
-        // TODO: stop actionOn timer
         Seat nextToActSeat = realTimeHand.getNextToAct();
         nextToActSeat.setActionOn(true);
-        // TODO: start actionOn timer
+        
+        Timer actionOnTimer = createAndStartActionOnTimerCommand.execute(
+                game, table, nextToActSeat);
+        nextToActSeat.setActionOnTimer(actionOnTimer);
+
         determineNextToAct(table, realTimeHand);
     }
 
-    protected void handleEndOfRound(Table table, Hand realTimeHand, int bigBlindAmount) {
+    protected void handleEndOfRound(Game game, Table table, Hand realTimeHand,
+            int bigBlindAmount) {
         realTimeHand.setOriginatingBettor(null);
         realTimeHand.setHandRoundState(HandRoundState.ROUND_COMPLETE);
         realTimeHand.moveToNextDealerState();
@@ -54,7 +63,7 @@ public abstract class BaseHandActionCommand {
             setSeatStatusForEndOfHandCommand.execute(table);
             determineWinners(table, realTimeHand.getHandEvaluationList());
         } else {
-            setSeatStatusForNewRoundCommand.execute(table);
+            setSeatStatusForNewRoundCommand.execute(game, table);
             determineNextToAct(table, realTimeHand);
             determineLastToAct(table, realTimeHand);
             resetRaiseAmountsAfterRound(table, bigBlindAmount);

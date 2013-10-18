@@ -60,9 +60,9 @@ public class CheckHandActionImplCommand extends BaseHandActionCommand
         actionOnSeat.setRaiseTo(0);
 
         if (actionOnSeat.equals(realTimeHand.getLastToAct())) {
-            handleEndOfRound(table, realTimeHand, game.getCurrentBlinds().getBigBlind());
+            handleEndOfRound(game, table, realTimeHand, game.getCurrentBlinds().getBigBlind());
         } else {
-            handleMiddleOfRound(table, realTimeHand, actionOnSeat);
+            handleMiddleOfRound(game, table, realTimeHand, actionOnSeat);
         }
 
         String message = user.getUsername() + " checks";

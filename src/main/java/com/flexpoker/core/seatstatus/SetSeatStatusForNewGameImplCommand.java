@@ -2,27 +2,28 @@ package com.flexpoker.core.seatstatus;
 
 import javax.inject.Inject;
 
-import com.flexpoker.bso.api.ActionOnTimerBso;
 import com.flexpoker.config.Command;
+import com.flexpoker.core.api.actionon.CreateAndStartActionOnTimerCommand;
 import com.flexpoker.core.api.seatstatus.SetSeatStatusForNewGameCommand;
+import com.flexpoker.model.Game;
 import com.flexpoker.model.Table;
 
 @Command
 public class SetSeatStatusForNewGameImplCommand extends BaseSeatStatusCommand
-    implements SetSeatStatusForNewGameCommand {
+        implements SetSeatStatusForNewGameCommand {
 
     @Inject
-    public SetSeatStatusForNewGameImplCommand(ActionOnTimerBso actionOnTimerBso) {
-        this.actionOnTimerBso = actionOnTimerBso;
+    public SetSeatStatusForNewGameImplCommand(CreateAndStartActionOnTimerCommand createAndStartActionOnTimerCommand) {
+        this.createAndStartActionOnTimerCommand = createAndStartActionOnTimerCommand;
     }
 
     @Override
-    public void execute(Table table) {
+    public void execute(Game game, Table table) {
         table.resetStillInHand();
         assignNewGameButton(table);
         assignNewGameSmallBlind(table);
         assignNewGameBigBlind(table);
-        assignNewHandActionOn(table);
+        assignNewHandActionOn(game, table);
     }
 
 }

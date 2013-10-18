@@ -10,21 +10,22 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import com.flexpoker.bso.api.ActionOnTimerBso;
+import com.flexpoker.core.api.actionon.CreateAndStartActionOnTimerCommand;
 import com.flexpoker.model.Seat;
 import com.flexpoker.model.Table;
+import com.flexpoker.test.util.datageneration.GameGenerator;
 import com.flexpoker.util.DataUtilsForTests;
 
 public class SetSeatStatusForNewHandImplCommandTest {
 
     private SetSeatStatusForNewHandImplCommand command;
     
-    @Mock ActionOnTimerBso actionOnTimerBso;
+    @Mock CreateAndStartActionOnTimerCommand createAndStartActionOnTimerCommand;
     
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        command = new SetSeatStatusForNewHandImplCommand(actionOnTimerBso);
+        command = new SetSeatStatusForNewHandImplCommand(createAndStartActionOnTimerCommand);
     }
     
     @Test
@@ -62,7 +63,7 @@ public class SetSeatStatusForNewHandImplCommandTest {
             table.getSeats().get(seat.intValue()).setPlayerJustLeft(true);
         }
 
-        command.execute(table);
+        command.execute(GameGenerator.createGame(9, 9), table);
 
         for (int i = 0; i < numberOfPlayers; i++) {
             if (seatsThatJustLeft.contains(i)) {

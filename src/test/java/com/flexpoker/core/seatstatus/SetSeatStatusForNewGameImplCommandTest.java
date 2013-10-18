@@ -7,28 +7,29 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import com.flexpoker.bso.api.ActionOnTimerBso;
+import com.flexpoker.core.api.actionon.CreateAndStartActionOnTimerCommand;
 import com.flexpoker.model.Seat;
 import com.flexpoker.model.Table;
+import com.flexpoker.test.util.datageneration.GameGenerator;
 import com.flexpoker.util.DataUtilsForTests;
 
 public class SetSeatStatusForNewGameImplCommandTest {
 
     private SetSeatStatusForNewGameImplCommand command;
     
-    @Mock private ActionOnTimerBso actionOnTimerBso;
+    @Mock private CreateAndStartActionOnTimerCommand createAndStartActionOnTimerCommand;
     
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        command = new SetSeatStatusForNewGameImplCommand(actionOnTimerBso);
+        command = new SetSeatStatusForNewGameImplCommand(createAndStartActionOnTimerCommand);
     }
     
     @Test
     public void testExecute() {
         Table table = new Table();
         DataUtilsForTests.fillTableWithUsers(table, 2, 9);
-        command.execute(table);
+        command.execute(GameGenerator.createGame(9, 9), table);
 
         assertTrue(table.getSeats().get(0).isStillInHand());
         assertTrue(table.getSeats().get(1).isStillInHand());
@@ -53,7 +54,7 @@ public class SetSeatStatusForNewGameImplCommandTest {
 
         table = new Table();
         DataUtilsForTests.fillTableWithUsers(table, 3, 9);
-        command.execute(table);
+        command.execute(GameGenerator.createGame(9, 9), table);
 
         assertTrue(table.getSeats().get(0).isStillInHand());
         assertTrue(table.getSeats().get(1).isStillInHand());
@@ -83,7 +84,7 @@ public class SetSeatStatusForNewGameImplCommandTest {
 
         table = new Table();
         DataUtilsForTests.fillTableWithUsers(table, 6, 9);
-        command.execute(table);
+        command.execute(GameGenerator.createGame(9, 9), table);
 
         assertTrue(table.getSeats().get(0).isStillInHand());
         assertTrue(table.getSeats().get(1).isStillInHand());
