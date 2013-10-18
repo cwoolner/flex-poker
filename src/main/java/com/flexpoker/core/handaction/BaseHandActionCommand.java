@@ -3,10 +3,11 @@ package com.flexpoker.core.handaction;
 import java.util.List;
 import java.util.Set;
 
-import com.flexpoker.bso.api.PotBso;
 import com.flexpoker.core.api.chat.SendTableChatMessageCommand;
 import com.flexpoker.core.api.seatstatus.SetSeatStatusForEndOfHandCommand;
 import com.flexpoker.core.api.seatstatus.SetSeatStatusForNewRoundCommand;
+import com.flexpoker.core.pot.CalculatePotsAfterRoundImplQuery;
+import com.flexpoker.core.pot.DeterminePotWinnersImplQuery;
 import com.flexpoker.model.Game;
 import com.flexpoker.model.GameEventType;
 import com.flexpoker.model.Hand;
@@ -25,12 +26,14 @@ public abstract class BaseHandActionCommand {
     
     protected SendTableChatMessageCommand sendTableChatMessageCommand;
 
-    protected PotBso potBso;
-    
     protected SetSeatStatusForEndOfHandCommand setSeatStatusForEndOfHandCommand;
     
     protected SetSeatStatusForNewRoundCommand setSeatStatusForNewRoundCommand;
     
+    protected CalculatePotsAfterRoundImplQuery calculatePotsAfterRoundImplQuery;
+    
+    protected DeterminePotWinnersImplQuery determinePotWinnersImplQuery;
+
     protected void handleMiddleOfRound(Game game, Table table,
             Hand realTimeHand, Seat actionOnSeat) {
         realTimeHand.setHandRoundState(HandRoundState.ROUND_IN_PROGRESS);
@@ -47,7 +50,7 @@ public abstract class BaseHandActionCommand {
         realTimeHand.setOriginatingBettor(null);
         realTimeHand.setHandRoundState(HandRoundState.ROUND_COMPLETE);
         realTimeHand.moveToNextDealerState();
-        Set<Pot> pots = potBso.calculatePotsAfterRound(table);
+        Set<Pot> pots = calculatePotsAfterRoundImplQuery.execute(table);
         table.getCurrentHand().setPots(pots);
 
         if (realTimeHand.getHandDealerState() == HandDealerState.COMPLETE) {
@@ -106,8 +109,8 @@ public abstract class BaseHandActionCommand {
 
     private void determineWinners(Table table, List<HandEvaluation> handEvaluationList) {
         for (Pot pot : table.getCurrentHand().getPots()) {
-            Set<Seat> winners = potBso.determineWinners(table, pot.getSeats(),
-                    handEvaluationList);
+            Set<Seat> winners = determinePotWinnersImplQuery.execute(table,
+                    pot.getSeats(), handEvaluationList);
             pot.addWinners(winners);
 
             int numberOfWinners = winners.size();

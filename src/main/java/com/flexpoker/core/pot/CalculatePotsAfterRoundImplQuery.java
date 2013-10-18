@@ -1,4 +1,4 @@
-package com.flexpoker.bso;
+package com.flexpoker.core.pot;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -7,20 +7,19 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.springframework.stereotype.Service;
 
-import com.flexpoker.bso.api.PotBso;
-import com.flexpoker.model.HandEvaluation;
+import com.flexpoker.config.Query;
+import com.flexpoker.core.api.pot.CalculatePotsAfterRoundQuery;
 import com.flexpoker.model.Pot;
 import com.flexpoker.model.Seat;
 import com.flexpoker.model.Table;
 import com.flexpoker.util.OpenPotPredicate;
 
-@Service
-public class PotBsoImpl implements PotBso {
+@Query
+public class CalculatePotsAfterRoundImplQuery implements CalculatePotsAfterRoundQuery {
 
     @Override
-    public Set<Pot> calculatePotsAfterRound(Table table) {
+    public Set<Pot> execute(Table table) {
         Set<Integer> chipsInFrontSet = new HashSet<>();
         for (Seat seat : table.getSeats()) {
             if (seat.getChipsInFront() != 0) {
@@ -64,23 +63,7 @@ public class PotBsoImpl implements PotBso {
         
         return pots;
     }
-
-    @Override
-    public Set<Seat> determineWinners(Table table, Set<Seat> seats, List<HandEvaluation> winningHands) {
-        Set<Seat> winners = new HashSet<>();
-        HandEvaluation topAssignedHand = null;
-        for (HandEvaluation winningHand : winningHands) {
-            for (Seat seat : seats) {
-                if (seat.getUserGameStatus().getUser().equals(winningHand.getUser())
-                        && (topAssignedHand == null || topAssignedHand.compareTo(winningHand) == 0)) {
-                    topAssignedHand = winningHand;
-                    winners.add(seat);
-                }
-            }
-        }
-        return winners;
-    }
-
+    
     private Pot fetchOpenPot(Set<Pot> pots) {
         Pot pot = (Pot) CollectionUtils.find(pots, new OpenPotPredicate());
         if (pot == null) {

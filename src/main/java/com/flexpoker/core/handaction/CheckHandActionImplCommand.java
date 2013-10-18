@@ -4,12 +4,13 @@ import java.util.UUID;
 
 import javax.inject.Inject;
 
-import com.flexpoker.bso.api.PotBso;
 import com.flexpoker.config.Command;
 import com.flexpoker.core.api.chat.SendTableChatMessageCommand;
 import com.flexpoker.core.api.handaction.CheckHandActionCommand;
 import com.flexpoker.core.api.seatstatus.SetSeatStatusForEndOfHandCommand;
 import com.flexpoker.core.api.seatstatus.SetSeatStatusForNewRoundCommand;
+import com.flexpoker.core.pot.CalculatePotsAfterRoundImplQuery;
+import com.flexpoker.core.pot.DeterminePotWinnersImplQuery;
 import com.flexpoker.exception.FlexPokerException;
 import com.flexpoker.model.Game;
 import com.flexpoker.model.GameEventType;
@@ -27,14 +28,16 @@ public class CheckHandActionImplCommand extends BaseHandActionCommand
     @Inject
     public CheckHandActionImplCommand(GameRepository gameRepository,
             SendTableChatMessageCommand sendTableChatMessageCommand,
-            PotBso potBso,
             SetSeatStatusForEndOfHandCommand setSeatStatusForEndOfHandCommand,
-            SetSeatStatusForNewRoundCommand setSeatStatusForNewRoundCommand) {
+            SetSeatStatusForNewRoundCommand setSeatStatusForNewRoundCommand,
+            CalculatePotsAfterRoundImplQuery calculatePotsAfterRoundImplQuery,    
+            DeterminePotWinnersImplQuery determinePotWinnersImplQuery) {
         this.gameRepository = gameRepository;
         this.sendTableChatMessageCommand = sendTableChatMessageCommand;
-        this.potBso = potBso;
         this.setSeatStatusForEndOfHandCommand = setSeatStatusForEndOfHandCommand;
         this.setSeatStatusForNewRoundCommand = setSeatStatusForNewRoundCommand;
+        this.calculatePotsAfterRoundImplQuery = calculatePotsAfterRoundImplQuery;
+        this.determinePotWinnersImplQuery = determinePotWinnersImplQuery;
     }
     
     @Override

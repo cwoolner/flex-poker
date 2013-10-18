@@ -1,18 +1,15 @@
-package com.flexpoker.bso.api;
+package com.flexpoker.core.api.pot;
 
 import java.util.List;
 import java.util.Set;
 
 import com.flexpoker.model.HandEvaluation;
-import com.flexpoker.model.Pot;
 import com.flexpoker.model.Seat;
 import com.flexpoker.model.Table;
 
-public interface PotBso {
+public interface DeterminePotWinnersQuery {
 
-    Set<Pot> calculatePotsAfterRound(Table table);
-
-    Set<Seat> determineWinners(Table table, Set<Seat> seats,
+    Set<Seat> execute(Table table, Set<Seat> seats,
             List<HandEvaluation> winningHands);
 
 }
