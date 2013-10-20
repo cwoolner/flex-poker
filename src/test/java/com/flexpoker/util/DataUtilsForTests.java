@@ -5,6 +5,7 @@ import java.util.Set;
 
 import com.flexpoker.model.Seat;
 import com.flexpoker.model.Table;
+import com.flexpoker.model.User;
 import com.flexpoker.model.UserGameStatus;
 
 
@@ -14,7 +15,7 @@ public class DataUtilsForTests {
         Set<UserGameStatus> userGameStatuses = new HashSet<UserGameStatus>();
 
         for (int i = 0; i < numberOfUserGameStatuses; i++) {
-            userGameStatuses.add(new UserGameStatus());
+            userGameStatuses.add(new UserGameStatus(new User(), 1500));
         }
 
         return userGameStatuses;
@@ -27,7 +28,7 @@ public class DataUtilsForTests {
         }
 
         for (int i = 0; i < numberOfUsers; i++) {
-            UserGameStatus userGameStatus = new UserGameStatus();
+            UserGameStatus userGameStatus = new UserGameStatus(new User(), 1500);
             table.getSeats().get(i).setUserGameStatus(userGameStatus);
         }
     }

@@ -77,7 +77,7 @@ public class RaiseHandActionImplCommand extends BaseHandActionCommand
         actionOnSeat.setChipsInFront(raiseToAmount);
 
         UserGameStatus userGameStatus = actionOnSeat.getUserGameStatus();
-        userGameStatus.setChips(userGameStatus.getChips() - increaseOfChipsInFront);
+        userGameStatus.removeChips(increaseOfChipsInFront);
         table.getCurrentHand().addToTotalPot(increaseOfChipsInFront);
 
         realTimeHand.addPossibleSeatAction(actionOnSeat, GameEventType.CALL);

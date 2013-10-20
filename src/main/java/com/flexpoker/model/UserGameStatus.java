@@ -10,29 +10,32 @@ import org.apache.commons.lang.builder.ToStringBuilder;
  *
  * Only the number of chips has fit that criteria so far since chips are taken
  * with the player when they are moved to a different table.
- *
- * @author cwoolner
  */
 public class UserGameStatus {
 
-    private User user;
+    private final User user;
 
-    private Integer chips;
+    private int chips;
+    
+    public UserGameStatus(User user, int chips) {
+        this.user = user;
+        this.chips = chips;
+    }
 
     public User getUser() {
         return user;
     }
 
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public Integer getChips() {
+    public int getChips() {
         return chips;
     }
 
-    public void setChips(Integer chips) {
-        this.chips = chips;
+    public void addChips(int chips) {
+        this.chips += chips;
+    }
+    
+    public void removeChips(int chips) {
+        this.chips -= chips;
     }
 
     @Override

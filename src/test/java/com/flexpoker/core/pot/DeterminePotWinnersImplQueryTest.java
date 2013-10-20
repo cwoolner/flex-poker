@@ -40,12 +40,9 @@ public class DeterminePotWinnersImplQueryTest {
         user2.setId(2);
         User user3 = new User();
         user3.setId(3);
-        UserGameStatus userGameStatus1 = new UserGameStatus();
-        userGameStatus1.setUser(user1);
-        UserGameStatus userGameStatus2 = new UserGameStatus();
-        userGameStatus2.setUser(user2);
-        UserGameStatus userGameStatus3 = new UserGameStatus();
-        userGameStatus3.setUser(user3);
+        UserGameStatus userGameStatus1 = new UserGameStatus(user1, 1500);
+        UserGameStatus userGameStatus2 = new UserGameStatus(user2, 1500);
+        UserGameStatus userGameStatus3 = new UserGameStatus(user3, 1500);
 
         testSetWinners1(game, table, user1, user2, userGameStatus1,
                 userGameStatus2);

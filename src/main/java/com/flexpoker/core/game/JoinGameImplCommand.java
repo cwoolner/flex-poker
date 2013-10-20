@@ -67,8 +67,7 @@ public class JoinGameImplCommand implements JoinGameCommand {
 
             checkIfUserCanJoinGame(game, user);
 
-            UserGameStatus userGameStatus = new UserGameStatus();
-            userGameStatus.setUser(user);
+            UserGameStatus userGameStatus = new UserGameStatus(user, 1500);
 
             game.addUserGameStatus(userGameStatus);
 

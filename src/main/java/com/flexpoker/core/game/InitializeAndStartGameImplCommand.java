@@ -2,7 +2,6 @@ package com.flexpoker.core.game;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -31,7 +30,6 @@ import com.flexpoker.model.HandRoundState;
 import com.flexpoker.model.Seat;
 import com.flexpoker.model.Table;
 import com.flexpoker.model.User;
-import com.flexpoker.model.UserGameStatus;
 import com.flexpoker.model.card.Deck;
 import com.flexpoker.model.card.FlopCards;
 import com.flexpoker.model.card.PocketCards;
@@ -71,12 +69,6 @@ public class InitializeAndStartGameImplCommand implements InitializeAndStartGame
 
         assignInitialTablesForNewGame.execute(game);
 
-        Set<UserGameStatus> userGameStatuses = game.getUserGameStatuses();
-
-        for (UserGameStatus userGameStatus : userGameStatuses) {
-            userGameStatus.setChips(1500);
-        }
-        
         for (Table table : game.getTables()) {
             for (Seat seat : table.getSeats()) {
                 if (seat.getUserGameStatus() != null) {
@@ -137,8 +129,7 @@ public class InitializeAndStartGameImplCommand implements InitializeAndStartGame
                 seat.setChipsInFront(chipsInFront);
             }
 
-            seat.getUserGameStatus().setChips(
-                    seat.getUserGameStatus().getChips() - seat.getChipsInFront());
+            seat.getUserGameStatus().removeChips(seat.getChipsInFront());
 
             if (callAmount > seat.getUserGameStatus().getChips()) {
                 seat.setCallAmount(seat.getUserGameStatus().getChips());

@@ -64,7 +64,7 @@ public class CallHandActionImplCommand extends BaseHandActionCommand
         actionOnSeat.setChipsInFront(actionOnSeat.getChipsInFront() + actionOnSeat.getCallAmount());
 
         UserGameStatus userGameStatus = actionOnSeat.getUserGameStatus();
-        userGameStatus.setChips(userGameStatus.getChips() - actionOnSeat.getCallAmount());
+        userGameStatus.removeChips(actionOnSeat.getCallAmount());
         table.getCurrentHand().addToTotalPot(actionOnSeat.getCallAmount());
 
         actionOnSeat.setCallAmount(0);

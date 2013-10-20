@@ -126,13 +126,11 @@ public abstract class BaseHandActionCommand {
 
             if (bonusChips > 0) {
                 Seat seatToGiveBonusChips = ((Seat) winners.toArray()[0]);
-                seatToGiveBonusChips.getUserGameStatus().setChips(
-                        seatToGiveBonusChips.getUserGameStatus().getChips() + bonusChips);
+                seatToGiveBonusChips.getUserGameStatus().addChips(bonusChips);
             }
 
             for (Seat winner : winners) {
-                winner.getUserGameStatus().setChips(
-                        winner.getUserGameStatus().getChips() + numberOfChips);
+                winner.getUserGameStatus().addChips(numberOfChips);
                 PocketCards pocketCards = table.getCurrentHand().getDeck()
                         .getPocketCards(winner.getPosition());
                 if (numberOfPlayersInPot > 1) {
