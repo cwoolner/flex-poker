@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
+
 import com.flexpoker.model.card.Deck;
 
 public class Hand {
@@ -142,6 +144,11 @@ public class Hand {
         for (Pot pot : pots) {
             pot.removeSeat(seat);
         }
+    }
+
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this);
     }
 
 }

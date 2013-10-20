@@ -1,5 +1,7 @@
 package com.flexpoker.model;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
+
 /**
  * This class acts as a thin wrapper for the User object when actually playing
  * in a game.  Since it represents the user's state within a game, only fields
@@ -31,6 +33,11 @@ public class UserGameStatus {
 
     public void setChips(Integer chips) {
         this.chips = chips;
+    }
+
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this);
     }
 
 }

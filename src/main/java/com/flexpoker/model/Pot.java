@@ -4,6 +4,8 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
+
 public class Pot {
 
     private final Set<Seat> seats;
@@ -50,6 +52,11 @@ public class Pot {
     
     public void addWinners(Collection<Seat> seats) {
         winners.addAll(seats);
+    }
+
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this);
     }
 
 }

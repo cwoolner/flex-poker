@@ -1,5 +1,7 @@
 package com.flexpoker.model;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
+
 public class User {
 
     private Integer id;
@@ -75,6 +77,11 @@ public class User {
         } else if (!id.equals(other.id))
             return false;
         return true;
+    }
+
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this);
     }
 
 }

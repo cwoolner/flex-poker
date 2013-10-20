@@ -2,6 +2,8 @@ package com.flexpoker.model;
 
 import java.util.Timer;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
+
 import com.flexpoker.model.card.PocketCards;
 
 public class Seat implements Comparable<Seat> {
@@ -176,6 +178,11 @@ public class Seat implements Comparable<Seat> {
     
     public void setActionOnTimer(Timer actionOnTimer) {
         this.actionOnTimer = actionOnTimer;
+    }
+
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this);
     }
 
 }
