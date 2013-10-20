@@ -5,6 +5,7 @@ import java.util.UUID;
 import javax.inject.Inject;
 
 import com.flexpoker.config.Command;
+import com.flexpoker.core.api.actionon.CreateAndStartActionOnTimerCommand;
 import com.flexpoker.core.api.chat.SendTableChatMessageCommand;
 import com.flexpoker.core.api.handaction.CheckHandActionCommand;
 import com.flexpoker.core.api.seatstatus.SetSeatStatusForEndOfHandCommand;
@@ -31,13 +32,15 @@ public class CheckHandActionImplCommand extends BaseHandActionCommand
             SetSeatStatusForEndOfHandCommand setSeatStatusForEndOfHandCommand,
             SetSeatStatusForNewRoundCommand setSeatStatusForNewRoundCommand,
             CalculatePotsAfterRoundImplQuery calculatePotsAfterRoundImplQuery,    
-            DeterminePotWinnersImplQuery determinePotWinnersImplQuery) {
+            DeterminePotWinnersImplQuery determinePotWinnersImplQuery,
+            CreateAndStartActionOnTimerCommand createAndStartActionOnTimerCommand) {
         this.gameRepository = gameRepository;
         this.sendTableChatMessageCommand = sendTableChatMessageCommand;
         this.setSeatStatusForEndOfHandCommand = setSeatStatusForEndOfHandCommand;
         this.setSeatStatusForNewRoundCommand = setSeatStatusForNewRoundCommand;
         this.calculatePotsAfterRoundImplQuery = calculatePotsAfterRoundImplQuery;
         this.determinePotWinnersImplQuery = determinePotWinnersImplQuery;
+        this.createAndStartActionOnTimerCommand = createAndStartActionOnTimerCommand;
     }
     
     @Override
