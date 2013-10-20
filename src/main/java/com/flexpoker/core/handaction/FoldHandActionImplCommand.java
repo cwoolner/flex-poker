@@ -50,7 +50,7 @@ public class FoldHandActionImplCommand extends BaseHandActionCommand
         Seat actionOnSeat = table.getActionOnSeat();
         
         if (!actionOnSeat.getUserGameStatus().getUser().equals(user)
-                || realTimeHand.isUserAllowedToPerformAction(GameEventType.FOLD, actionOnSeat))
+                || !realTimeHand.isUserAllowedToPerformAction(GameEventType.FOLD, actionOnSeat))
         {
             throw new FlexPokerException("Not allowed to fold.");
         }

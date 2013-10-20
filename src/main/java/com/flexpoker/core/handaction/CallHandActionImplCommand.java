@@ -51,7 +51,7 @@ public class CallHandActionImplCommand extends BaseHandActionCommand
         Seat actionOnSeat = table.getActionOnSeat();
         
         if (!actionOnSeat.getUserGameStatus().getUser().equals(user)
-                || realTimeHand.isUserAllowedToPerformAction(GameEventType.CALL, actionOnSeat))
+                || !realTimeHand.isUserAllowedToPerformAction(GameEventType.CALL, actionOnSeat))
         {
             throw new FlexPokerException("Not allowed to call.");
         }

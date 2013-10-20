@@ -49,7 +49,7 @@ public class CheckHandActionImplCommand extends BaseHandActionCommand
         Seat actionOnSeat = table.getActionOnSeat();
         
         if (!actionOnSeat.getUserGameStatus().getUser().equals(user)
-                || realTimeHand.isUserAllowedToPerformAction(GameEventType.CHECK, actionOnSeat))
+                || !realTimeHand.isUserAllowedToPerformAction(GameEventType.CHECK, actionOnSeat))
         {
             throw new FlexPokerException("Not allowed to check.");
         }
