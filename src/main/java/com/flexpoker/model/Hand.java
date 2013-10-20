@@ -133,7 +133,9 @@ public class Hand {
     }
     
     public void moveToNextDealerState() {
-        handDealerState = HandDealerState.values()[handDealerState.ordinal() + 1];
+        if (handDealerState != HandDealerState.COMPLETE) {
+            handDealerState = HandDealerState.values()[handDealerState.ordinal() + 1];    
+        }
     }
 
     public void removeSeatFromPots(Seat seat) {
