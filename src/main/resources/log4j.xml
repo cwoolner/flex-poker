@@ -9,7 +9,15 @@
 			<param name="ConversionPattern" value="%d{HH:mm:ss} [%t] %c{1} - %m%n" />
 		</layout>
 	</appender>
-	
+ 
+    <appender name="file" class="org.apache.log4j.FileAppender">
+        <param name="File" value="log.out" />
+        <param name="Append" value="true" />
+        <layout class="org.apache.log4j.PatternLayout">
+          <param name="ConversionPattern" value="%t %-5p %c{2} - %m%n"/>
+        </layout>           
+     </appender>
+ 	
 	<logger name="org.springframework.samples">
 		<level value="debug" />
 	</logger>
@@ -35,8 +43,9 @@
 	</logger>
 
 	<root>
-		<priority value="warn" />
+		<priority value="debug" />
 		<appender-ref ref="console" />
+        <appender-ref ref="file" />
 	</root>
 	
 </log4j:configuration>
