@@ -6,7 +6,9 @@ import java.util.Timer;
 
 import com.flexpoker.core.api.actionon.CreateAndStartActionOnTimerCommand;
 import com.flexpoker.core.api.chat.SendTableChatMessageCommand;
+import com.flexpoker.core.api.game.StartNewHandCommand;
 import com.flexpoker.core.api.seatstatus.SetSeatStatusForEndOfHandCommand;
+import com.flexpoker.core.api.seatstatus.SetSeatStatusForNewHandCommand;
 import com.flexpoker.core.api.seatstatus.SetSeatStatusForNewRoundCommand;
 import com.flexpoker.core.pot.CalculatePotsAfterRoundImplQuery;
 import com.flexpoker.core.pot.DeterminePotWinnersImplQuery;
@@ -32,11 +34,15 @@ public abstract class BaseHandActionCommand {
     
     protected SetSeatStatusForNewRoundCommand setSeatStatusForNewRoundCommand;
     
+    protected SetSeatStatusForNewHandCommand setSeatStatusForNewHandCommand;
+    
     protected CalculatePotsAfterRoundImplQuery calculatePotsAfterRoundImplQuery;
     
     protected DeterminePotWinnersImplQuery determinePotWinnersImplQuery;
     
     protected CreateAndStartActionOnTimerCommand createAndStartActionOnTimerCommand;
+    
+    protected StartNewHandCommand startNewHandCommand;
 
     protected void handleMiddleOfRound(Game game, Table table, Hand realTimeHand, Seat actionOnSeat) {
         realTimeHand.setHandRoundState(HandRoundState.ROUND_IN_PROGRESS);
@@ -62,6 +68,9 @@ public abstract class BaseHandActionCommand {
         if (realTimeHand.getHandDealerState() == HandDealerState.COMPLETE) {
             setSeatStatusForEndOfHandCommand.execute(table);
             determineWinners(table, realTimeHand.getHandEvaluationList());
+            // TODO: change this to check if a new hand is necessary or if a single person won
+            setSeatStatusForNewHandCommand.execute(game, table);
+            startNewHandCommand.execute(game, table);
         } else {
             setSeatStatusForNewRoundCommand.execute(game, table);
             determineNextToAct(table, realTimeHand);

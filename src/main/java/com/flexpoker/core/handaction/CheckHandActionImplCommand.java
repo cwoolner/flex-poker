@@ -7,8 +7,10 @@ import javax.inject.Inject;
 import com.flexpoker.config.Command;
 import com.flexpoker.core.api.actionon.CreateAndStartActionOnTimerCommand;
 import com.flexpoker.core.api.chat.SendTableChatMessageCommand;
+import com.flexpoker.core.api.game.StartNewHandCommand;
 import com.flexpoker.core.api.handaction.CheckHandActionCommand;
 import com.flexpoker.core.api.seatstatus.SetSeatStatusForEndOfHandCommand;
+import com.flexpoker.core.api.seatstatus.SetSeatStatusForNewHandCommand;
 import com.flexpoker.core.api.seatstatus.SetSeatStatusForNewRoundCommand;
 import com.flexpoker.core.pot.CalculatePotsAfterRoundImplQuery;
 import com.flexpoker.core.pot.DeterminePotWinnersImplQuery;
@@ -31,16 +33,20 @@ public class CheckHandActionImplCommand extends BaseHandActionCommand
             SendTableChatMessageCommand sendTableChatMessageCommand,
             SetSeatStatusForEndOfHandCommand setSeatStatusForEndOfHandCommand,
             SetSeatStatusForNewRoundCommand setSeatStatusForNewRoundCommand,
+            SetSeatStatusForNewHandCommand setSeatStatusForNewHandCommand,
             CalculatePotsAfterRoundImplQuery calculatePotsAfterRoundImplQuery,    
             DeterminePotWinnersImplQuery determinePotWinnersImplQuery,
-            CreateAndStartActionOnTimerCommand createAndStartActionOnTimerCommand) {
+            CreateAndStartActionOnTimerCommand createAndStartActionOnTimerCommand,
+            StartNewHandCommand startNewHandCommand) {
         this.gameRepository = gameRepository;
         this.sendTableChatMessageCommand = sendTableChatMessageCommand;
         this.setSeatStatusForEndOfHandCommand = setSeatStatusForEndOfHandCommand;
         this.setSeatStatusForNewRoundCommand = setSeatStatusForNewRoundCommand;
+        this.setSeatStatusForNewHandCommand = setSeatStatusForNewHandCommand;
         this.calculatePotsAfterRoundImplQuery = calculatePotsAfterRoundImplQuery;
         this.determinePotWinnersImplQuery = determinePotWinnersImplQuery;
         this.createAndStartActionOnTimerCommand = createAndStartActionOnTimerCommand;
+        this.startNewHandCommand = startNewHandCommand;
     }
     
     @Override
