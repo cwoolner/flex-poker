@@ -125,7 +125,6 @@ public class StartNewHandImplCommand implements StartNewHandCommand {
         List<HandEvaluation> handEvaluations = determineHandEvaluations(game, table);
         realTimeHand.setHandEvaluationList(handEvaluations);
 
-        
         applicationEventPublisher.publishEvent(new TableUpdatedEvent(this, game.getId(), table));
     }
 

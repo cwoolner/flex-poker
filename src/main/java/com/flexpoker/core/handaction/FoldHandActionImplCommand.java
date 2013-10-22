@@ -4,6 +4,8 @@ import java.util.UUID;
 
 import javax.inject.Inject;
 
+import org.springframework.context.ApplicationEventPublisher;
+
 import com.flexpoker.config.Command;
 import com.flexpoker.core.api.actionon.CreateAndStartActionOnTimerCommand;
 import com.flexpoker.core.api.chat.SendTableChatMessageCommand;
@@ -38,7 +40,8 @@ public class FoldHandActionImplCommand extends BaseHandActionCommand
             CalculatePotsAfterRoundImplQuery calculatePotsAfterRoundImplQuery,    
             DeterminePotWinnersImplQuery determinePotWinnersImplQuery,
             CreateAndStartActionOnTimerCommand createAndStartActionOnTimerCommand,
-            StartNewHandCommand startNewHandCommand) {
+            StartNewHandCommand startNewHandCommand,
+            ApplicationEventPublisher applicationEventPublisher) {
         this.gameRepository = gameRepository;
         this.sendTableChatMessageCommand = sendTableChatMessageCommand;
         this.setSeatStatusForEndOfHandCommand = setSeatStatusForEndOfHandCommand;
@@ -48,6 +51,7 @@ public class FoldHandActionImplCommand extends BaseHandActionCommand
         this.determinePotWinnersImplQuery = determinePotWinnersImplQuery;
         this.createAndStartActionOnTimerCommand = createAndStartActionOnTimerCommand;
         this.startNewHandCommand = startNewHandCommand;
+        this.applicationEventPublisher = applicationEventPublisher;
     }
     
     @Override

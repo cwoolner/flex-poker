@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.Timer;
 
+import org.springframework.context.ApplicationEventPublisher;
+
 import com.flexpoker.core.api.actionon.CreateAndStartActionOnTimerCommand;
 import com.flexpoker.core.api.chat.SendTableChatMessageCommand;
 import com.flexpoker.core.api.game.StartNewHandCommand;
@@ -12,6 +14,7 @@ import com.flexpoker.core.api.seatstatus.SetSeatStatusForNewHandCommand;
 import com.flexpoker.core.api.seatstatus.SetSeatStatusForNewRoundCommand;
 import com.flexpoker.core.pot.CalculatePotsAfterRoundImplQuery;
 import com.flexpoker.core.pot.DeterminePotWinnersImplQuery;
+import com.flexpoker.event.TableUpdatedEvent;
 import com.flexpoker.model.Game;
 import com.flexpoker.model.GameEventType;
 import com.flexpoker.model.Hand;
@@ -43,6 +46,8 @@ public abstract class BaseHandActionCommand {
     protected CreateAndStartActionOnTimerCommand createAndStartActionOnTimerCommand;
     
     protected StartNewHandCommand startNewHandCommand;
+    
+    protected ApplicationEventPublisher applicationEventPublisher;
 
     protected void handleMiddleOfRound(Game game, Table table, Hand realTimeHand, Seat actionOnSeat) {
         realTimeHand.setHandRoundState(HandRoundState.ROUND_IN_PROGRESS);
@@ -55,6 +60,7 @@ public abstract class BaseHandActionCommand {
         nextToActSeat.setActionOnTimer(actionOnTimer);
 
         determineNextToAct(table, realTimeHand);
+        applicationEventPublisher.publishEvent(new TableUpdatedEvent(this, game.getId(), table));
     }
 
     protected void handleEndOfRound(Game game, Table table, Hand realTimeHand,
@@ -77,6 +83,7 @@ public abstract class BaseHandActionCommand {
             determineLastToAct(table, realTimeHand);
             resetRaiseAmountsAfterRound(table, bigBlindAmount);
             resetPossibleSeatActionsAfterRound(table, realTimeHand);
+            applicationEventPublisher.publishEvent(new TableUpdatedEvent(this, game.getId(), table));
         }
     }
 
