@@ -6,9 +6,9 @@ import java.util.Timer;
 
 import org.springframework.context.ApplicationEventPublisher;
 
-import com.flexpoker.core.api.actionon.CreateAndStartActionOnTimerCommand;
 import com.flexpoker.core.api.chat.SendTableChatMessageCommand;
 import com.flexpoker.core.api.game.StartNewHandCommand;
+import com.flexpoker.core.api.scheduling.ScheduleAndReturnActionOnTimerCommand;
 import com.flexpoker.core.api.seatstatus.SetSeatStatusForEndOfHandCommand;
 import com.flexpoker.core.api.seatstatus.SetSeatStatusForNewHandCommand;
 import com.flexpoker.core.api.seatstatus.SetSeatStatusForNewRoundCommand;
@@ -43,7 +43,7 @@ public abstract class BaseHandActionCommand {
     
     protected DeterminePotWinnersImplQuery determinePotWinnersImplQuery;
     
-    protected CreateAndStartActionOnTimerCommand createAndStartActionOnTimerCommand;
+    protected ScheduleAndReturnActionOnTimerCommand scheduleAndReturnActionOnTimerCommand;
     
     protected StartNewHandCommand startNewHandCommand;
     
@@ -55,7 +55,7 @@ public abstract class BaseHandActionCommand {
         Seat nextToActSeat = realTimeHand.getNextToAct();
         nextToActSeat.setActionOn(true);
         
-        Timer actionOnTimer = createAndStartActionOnTimerCommand.execute(
+        Timer actionOnTimer = scheduleAndReturnActionOnTimerCommand.execute(
                 game, table, nextToActSeat);
         nextToActSeat.setActionOnTimer(actionOnTimer);
 

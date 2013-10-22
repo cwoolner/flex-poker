@@ -7,10 +7,10 @@ import javax.inject.Inject;
 import org.springframework.context.ApplicationEventPublisher;
 
 import com.flexpoker.config.Command;
-import com.flexpoker.core.api.actionon.CreateAndStartActionOnTimerCommand;
 import com.flexpoker.core.api.chat.SendTableChatMessageCommand;
 import com.flexpoker.core.api.game.StartNewHandCommand;
 import com.flexpoker.core.api.handaction.CallHandActionCommand;
+import com.flexpoker.core.api.scheduling.ScheduleAndReturnActionOnTimerCommand;
 import com.flexpoker.core.api.seatstatus.SetSeatStatusForEndOfHandCommand;
 import com.flexpoker.core.api.seatstatus.SetSeatStatusForNewHandCommand;
 import com.flexpoker.core.api.seatstatus.SetSeatStatusForNewRoundCommand;
@@ -40,7 +40,7 @@ public class CallHandActionImplCommand extends BaseHandActionCommand
             SetSeatStatusForNewHandCommand setSeatStatusForNewHandCommand,
             CalculatePotsAfterRoundImplQuery calculatePotsAfterRoundImplQuery,    
             DeterminePotWinnersImplQuery determinePotWinnersImplQuery,
-            CreateAndStartActionOnTimerCommand createAndStartActionOnTimerCommand,
+            ScheduleAndReturnActionOnTimerCommand scheduleAndReturnActionOnTimerCommand,
             StartNewHandCommand startNewHandCommand,
             ApplicationEventPublisher applicationEventPublisher) {
         this.gameRepository = gameRepository;
@@ -49,7 +49,7 @@ public class CallHandActionImplCommand extends BaseHandActionCommand
         this.setSeatStatusForNewRoundCommand = setSeatStatusForNewRoundCommand;
         this.calculatePotsAfterRoundImplQuery = calculatePotsAfterRoundImplQuery;
         this.determinePotWinnersImplQuery = determinePotWinnersImplQuery;
-        this.createAndStartActionOnTimerCommand = createAndStartActionOnTimerCommand;
+        this.scheduleAndReturnActionOnTimerCommand = scheduleAndReturnActionOnTimerCommand;
         this.startNewHandCommand = startNewHandCommand;
         this.applicationEventPublisher = applicationEventPublisher;
     }

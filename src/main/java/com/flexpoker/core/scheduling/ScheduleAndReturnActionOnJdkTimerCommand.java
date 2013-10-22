@@ -1,4 +1,4 @@
-package com.flexpoker.core.actionon;
+package com.flexpoker.core.scheduling;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -8,17 +8,17 @@ import javax.inject.Inject;
 import org.springframework.context.annotation.Lazy;
 
 import com.flexpoker.config.Command;
-import com.flexpoker.core.api.actionon.CreateAndStartActionOnTimerCommand;
 import com.flexpoker.core.api.handaction.CallHandActionCommand;
 import com.flexpoker.core.api.handaction.FoldHandActionCommand;
+import com.flexpoker.core.api.scheduling.ScheduleAndReturnActionOnTimerCommand;
 import com.flexpoker.core.timertask.ActionOnTimerTask;
 import com.flexpoker.model.Game;
 import com.flexpoker.model.Seat;
 import com.flexpoker.model.Table;
 
 @Command
-public class CreateAndStartActionOnTimerImplCommand implements
-        CreateAndStartActionOnTimerCommand {
+public class ScheduleAndReturnActionOnJdkTimerCommand implements
+        ScheduleAndReturnActionOnTimerCommand {
 
     private final CallHandActionCommand callHandActionCommand;
 
@@ -26,7 +26,7 @@ public class CreateAndStartActionOnTimerImplCommand implements
 
     @Inject
     @Lazy
-    public CreateAndStartActionOnTimerImplCommand(
+    public ScheduleAndReturnActionOnJdkTimerCommand(
             CallHandActionCommand callHandActionCommand,
             FoldHandActionCommand foldHandActionCommand) {
         this.callHandActionCommand = callHandActionCommand;

@@ -4,14 +4,14 @@ import java.util.List;
 import java.util.Random;
 import java.util.Timer;
 
-import com.flexpoker.core.api.actionon.CreateAndStartActionOnTimerCommand;
+import com.flexpoker.core.api.scheduling.ScheduleAndReturnActionOnTimerCommand;
 import com.flexpoker.model.Game;
 import com.flexpoker.model.Seat;
 import com.flexpoker.model.Table;
 
 public abstract class BaseSeatStatusCommand {
     
-    protected CreateAndStartActionOnTimerCommand createAndStartActionOnTimerCommand;
+    protected ScheduleAndReturnActionOnTimerCommand createAndStartActionOnTimerCommand;
 
     protected void assignNewHandActionOn(Game game, Table table) {
         List<Seat> seats = table.getSeats();

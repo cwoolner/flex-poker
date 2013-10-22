@@ -7,7 +7,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import com.flexpoker.core.api.actionon.CreateAndStartActionOnTimerCommand;
+import com.flexpoker.core.api.scheduling.ScheduleAndReturnActionOnTimerCommand;
 import com.flexpoker.model.Seat;
 import com.flexpoker.model.Table;
 import com.flexpoker.test.util.datageneration.GameGenerator;
@@ -17,7 +17,7 @@ public class SetSeatStatusForNewGameImplCommandTest {
 
     private SetSeatStatusForNewGameImplCommand command;
     
-    @Mock private CreateAndStartActionOnTimerCommand createAndStartActionOnTimerCommand;
+    @Mock private ScheduleAndReturnActionOnTimerCommand createAndStartActionOnTimerCommand;
     
     @Before
     public void setup() {

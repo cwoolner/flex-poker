@@ -3,7 +3,7 @@ package com.flexpoker.core.seatstatus;
 import javax.inject.Inject;
 
 import com.flexpoker.config.Command;
-import com.flexpoker.core.api.actionon.CreateAndStartActionOnTimerCommand;
+import com.flexpoker.core.api.scheduling.ScheduleAndReturnActionOnTimerCommand;
 import com.flexpoker.core.api.seatstatus.SetSeatStatusForNewHandCommand;
 import com.flexpoker.model.Game;
 import com.flexpoker.model.Table;
@@ -13,7 +13,7 @@ public class SetSeatStatusForNewHandImplCommand extends BaseSeatStatusCommand
     implements SetSeatStatusForNewHandCommand {
 
     @Inject
-    public SetSeatStatusForNewHandImplCommand(CreateAndStartActionOnTimerCommand createAndStartActionOnTimerCommand) {
+    public SetSeatStatusForNewHandImplCommand(ScheduleAndReturnActionOnTimerCommand createAndStartActionOnTimerCommand) {
         this.createAndStartActionOnTimerCommand = createAndStartActionOnTimerCommand;
     }
 
