@@ -1,50 +1,36 @@
 package com.flexpoker.core.game;
 
-import java.util.Timer;
-import java.util.TimerTask;
-
 import javax.inject.Inject;
 
 import org.springframework.context.ApplicationEventPublisher;
 
 import com.flexpoker.config.Command;
-import com.flexpoker.core.api.chat.SendTableChatMessageCommand;
 import com.flexpoker.core.api.game.InitializeAndStartGameCommand;
-import com.flexpoker.core.api.game.StartNewHandCommand;
-import com.flexpoker.core.api.seatstatus.SetSeatStatusForNewGameCommand;
+import com.flexpoker.core.api.scheduling.ScheduleStartNewGameCommand;
 import com.flexpoker.core.api.tablebalancer.AssignInitialTablesForNewGame;
 import com.flexpoker.event.OpenTableForUserEvent;
 import com.flexpoker.model.Game;
 import com.flexpoker.model.GameStage;
 import com.flexpoker.model.Seat;
 import com.flexpoker.model.Table;
-import com.flexpoker.model.chat.outgoing.TableChatMessage;
 
 @Command
 public class InitializeAndStartGameImplCommand implements InitializeAndStartGameCommand {
 
     private final AssignInitialTablesForNewGame assignInitialTablesForNewGame;
     
-    private final SetSeatStatusForNewGameCommand setSeatStatusForNewGameCommand;
-    
     private final ApplicationEventPublisher applicationEventPublisher;
     
-    private final StartNewHandCommand startNewHandCommand;
-    
-    private final SendTableChatMessageCommand sendTableChatMessageCommand;
+    private final ScheduleStartNewGameCommand scheduleStartNewGameCommand;
     
     @Inject
     public InitializeAndStartGameImplCommand(
             AssignInitialTablesForNewGame assignInitialTablesForNewGame,
-            SetSeatStatusForNewGameCommand setSeatStatusForNewGameCommand,
             ApplicationEventPublisher applicationEventPublisher,
-            StartNewHandCommand startNewHandCommand,
-            SendTableChatMessageCommand sendTableChatMessageCommand) {
+            ScheduleStartNewGameCommand scheduleStartNewGameCommand) {
         this.assignInitialTablesForNewGame = assignInitialTablesForNewGame;
-        this.setSeatStatusForNewGameCommand = setSeatStatusForNewGameCommand;
         this.applicationEventPublisher = applicationEventPublisher;
-        this.startNewHandCommand = startNewHandCommand;
-        this.sendTableChatMessageCommand = sendTableChatMessageCommand;
+        this.scheduleStartNewGameCommand = scheduleStartNewGameCommand;
     }
     
     @Override
@@ -62,20 +48,8 @@ public class InitializeAndStartGameImplCommand implements InitializeAndStartGame
                 }
             }
         }
-
-        final Timer timer = new Timer();
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                for (Table table: game.getTables()) {
-                    sendTableChatMessageCommand.execute(new TableChatMessage(
-                            "Game is starting", null, true, game.getId(), table.getId()));
-                    setSeatStatusForNewGameCommand.execute(game, table);
-                    startNewHandCommand.execute(game, table);
-                }
-                timer.cancel();
-            }
-        }, 5000);
+        
+        scheduleStartNewGameCommand.execute(game);
     }
     
 
