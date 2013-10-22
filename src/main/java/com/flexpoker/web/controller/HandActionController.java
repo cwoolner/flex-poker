@@ -1,4 +1,4 @@
-package com.flexpoker.controller;
+package com.flexpoker.web.controller;
 
 import java.security.Principal;
 import java.util.UUID;

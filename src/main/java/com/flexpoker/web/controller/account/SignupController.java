@@ -1,4 +1,4 @@
-package com.flexpoker.controller.account;
+package com.flexpoker.web.controller.account;
 
 import javax.inject.Inject;
 

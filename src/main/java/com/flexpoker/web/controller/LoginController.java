@@ -1,4 +1,4 @@
-package com.flexpoker.controller;
+package com.flexpoker.web.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
