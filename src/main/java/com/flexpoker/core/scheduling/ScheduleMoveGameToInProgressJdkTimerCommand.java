@@ -9,8 +9,8 @@ import com.flexpoker.config.Command;
 import com.flexpoker.core.api.chat.SendGameChatMessageCommand;
 import com.flexpoker.core.api.game.InitializeAndStartGameCommand;
 import com.flexpoker.core.api.scheduling.ScheduleMoveGameToInProgressCommand;
+import com.flexpoker.core.timertask.MoveGameToInProgressTimerTask;
 import com.flexpoker.model.Game;
-import com.flexpoker.model.chat.outgoing.GameChatMessage;
 
 @Command
 public class ScheduleMoveGameToInProgressJdkTimerCommand implements ScheduleMoveGameToInProgressCommand {
@@ -30,17 +30,9 @@ public class ScheduleMoveGameToInProgressJdkTimerCommand implements ScheduleMove
     @Override
     public void execute(final Game game) {
         final Timer timer = new Timer();
-        timer.schedule(new TimerTask() {
-            
-            @Override
-            public void run() {
-                initializeAndStartGameCommand.execute(game);
-                sendGameChatMessageCommand.execute(new GameChatMessage(
-                        "Game is starting", null, true, game.getId()));
-                timer.cancel();
-            }
-
-        }, 5000);
+        final TimerTask timerTask = new MoveGameToInProgressTimerTask(
+                sendGameChatMessageCommand, initializeAndStartGameCommand, game);
+        timer.schedule(timerTask, 5000);
     }
 
 }
