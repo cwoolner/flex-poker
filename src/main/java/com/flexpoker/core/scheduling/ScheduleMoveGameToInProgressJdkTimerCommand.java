@@ -15,15 +15,12 @@ import com.flexpoker.model.Game;
 @Command
 public class ScheduleMoveGameToInProgressJdkTimerCommand implements ScheduleMoveGameToInProgressCommand {
 
-    private final SendGameChatMessageCommand sendGameChatMessageCommand;
-    
     private final InitializeAndStartGameCommand initializeAndStartGameCommand;
     
     @Inject
     public ScheduleMoveGameToInProgressJdkTimerCommand(
             SendGameChatMessageCommand sendGameChatMessageCommand,
             InitializeAndStartGameCommand initializeAndStartGameCommand) {
-        this.sendGameChatMessageCommand = sendGameChatMessageCommand;
         this.initializeAndStartGameCommand = initializeAndStartGameCommand;
     }
     
@@ -31,7 +28,7 @@ public class ScheduleMoveGameToInProgressJdkTimerCommand implements ScheduleMove
     public void execute(final Game game) {
         final Timer timer = new Timer();
         final TimerTask timerTask = new MoveGameToInProgressTimerTask(
-                sendGameChatMessageCommand, initializeAndStartGameCommand, game);
+                initializeAndStartGameCommand, game);
         timer.schedule(timerTask, 5000);
     }
 

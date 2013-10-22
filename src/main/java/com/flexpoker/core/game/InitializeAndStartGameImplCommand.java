@@ -8,6 +8,7 @@ import javax.inject.Inject;
 import org.springframework.context.ApplicationEventPublisher;
 
 import com.flexpoker.config.Command;
+import com.flexpoker.core.api.chat.SendTableChatMessageCommand;
 import com.flexpoker.core.api.game.InitializeAndStartGameCommand;
 import com.flexpoker.core.api.game.StartNewHandCommand;
 import com.flexpoker.core.api.seatstatus.SetSeatStatusForNewGameCommand;
@@ -17,6 +18,7 @@ import com.flexpoker.model.Game;
 import com.flexpoker.model.GameStage;
 import com.flexpoker.model.Seat;
 import com.flexpoker.model.Table;
+import com.flexpoker.model.chat.outgoing.TableChatMessage;
 
 @Command
 public class InitializeAndStartGameImplCommand implements InitializeAndStartGameCommand {
@@ -29,16 +31,20 @@ public class InitializeAndStartGameImplCommand implements InitializeAndStartGame
     
     private final StartNewHandCommand startNewHandCommand;
     
+    private final SendTableChatMessageCommand sendTableChatMessageCommand;
+    
     @Inject
     public InitializeAndStartGameImplCommand(
             AssignInitialTablesForNewGame assignInitialTablesForNewGame,
             SetSeatStatusForNewGameCommand setSeatStatusForNewGameCommand,
             ApplicationEventPublisher applicationEventPublisher,
-            StartNewHandCommand startNewHandCommand) {
+            StartNewHandCommand startNewHandCommand,
+            SendTableChatMessageCommand sendTableChatMessageCommand) {
         this.assignInitialTablesForNewGame = assignInitialTablesForNewGame;
         this.setSeatStatusForNewGameCommand = setSeatStatusForNewGameCommand;
         this.applicationEventPublisher = applicationEventPublisher;
         this.startNewHandCommand = startNewHandCommand;
+        this.sendTableChatMessageCommand = sendTableChatMessageCommand;
     }
     
     @Override
@@ -62,6 +68,8 @@ public class InitializeAndStartGameImplCommand implements InitializeAndStartGame
             @Override
             public void run() {
                 for (Table table: game.getTables()) {
+                    sendTableChatMessageCommand.execute(new TableChatMessage(
+                            "Game is starting", null, true, game.getId(), table.getId()));
                     setSeatStatusForNewGameCommand.execute(game, table);
                     startNewHandCommand.execute(game, table);
                 }
