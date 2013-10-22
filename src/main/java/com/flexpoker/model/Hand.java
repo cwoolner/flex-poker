@@ -13,7 +13,7 @@ import com.flexpoker.model.card.Deck;
 
 public class Hand {
 
-    private Map<Seat, Set<GameEventType>> possibleSeatActionsMap;
+    private Map<Seat, Set<PlayerAction>> possibleSeatActionsMap;
 
     private Seat originatingBettor;
 
@@ -36,7 +36,7 @@ public class Hand {
     public Hand(List<Seat> seats, Deck deck) {
         possibleSeatActionsMap = new HashMap<>();
         for (Seat seat : seats) {
-            possibleSeatActionsMap.put(seat, new HashSet<GameEventType>());
+            possibleSeatActionsMap.put(seat, new HashSet<PlayerAction>());
         }
         
         this.deck = deck;
@@ -45,11 +45,11 @@ public class Hand {
         this.pots = new HashSet<Pot>();
     }
 
-    public void addPossibleSeatAction(Seat Seat, GameEventType action) {
+    public void addPossibleSeatAction(Seat Seat, PlayerAction action) {
         possibleSeatActionsMap.get(Seat).add(action);
     }
 
-    public void removePossibleSeatAction(Seat Seat, GameEventType action) {
+    public void removePossibleSeatAction(Seat Seat, PlayerAction action) {
         possibleSeatActionsMap.get(Seat).remove(action);
     }
 
@@ -61,7 +61,7 @@ public class Hand {
         this.originatingBettor = originatingBettor;
     }
 
-    public boolean isUserAllowedToPerformAction(GameEventType action, Seat seat) {
+    public boolean isUserAllowedToPerformAction(PlayerAction action, Seat seat) {
         return possibleSeatActionsMap.get(seat).contains(action);
     }
 
@@ -128,10 +128,10 @@ public class Hand {
     }
     
     public void resetPlayerActions(Seat seat) {
-        possibleSeatActionsMap.get(seat).remove(GameEventType.CHECK);
-        possibleSeatActionsMap.get(seat).remove(GameEventType.RAISE);
-        possibleSeatActionsMap.get(seat).remove(GameEventType.CALL);
-        possibleSeatActionsMap.get(seat).remove(GameEventType.FOLD);
+        possibleSeatActionsMap.get(seat).remove(PlayerAction.CHECK);
+        possibleSeatActionsMap.get(seat).remove(PlayerAction.RAISE);
+        possibleSeatActionsMap.get(seat).remove(PlayerAction.CALL);
+        possibleSeatActionsMap.get(seat).remove(PlayerAction.FOLD);
     }
     
     public void moveToNextDealerState() {

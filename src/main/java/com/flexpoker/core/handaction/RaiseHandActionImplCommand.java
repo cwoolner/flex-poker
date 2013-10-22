@@ -19,8 +19,8 @@ import com.flexpoker.core.pot.DeterminePotWinnersImplQuery;
 import com.flexpoker.exception.FlexPokerException;
 import com.flexpoker.model.Blinds;
 import com.flexpoker.model.Game;
-import com.flexpoker.model.GameEventType;
 import com.flexpoker.model.Hand;
+import com.flexpoker.model.PlayerAction;
 import com.flexpoker.model.Seat;
 import com.flexpoker.model.Table;
 import com.flexpoker.model.User;
@@ -67,7 +67,7 @@ public class RaiseHandActionImplCommand extends BaseHandActionCommand
         Seat actionOnSeat = table.getActionOnSeat();
         
         if (!actionOnSeat.getUserGameStatus().getUser().equals(user)
-                || !realTimeHand.isUserAllowedToPerformAction(GameEventType.RAISE, actionOnSeat))
+                || !realTimeHand.isUserAllowedToPerformAction(PlayerAction.RAISE, actionOnSeat))
         {
             throw new FlexPokerException("Not allowed to raise.");
         }
@@ -90,24 +90,24 @@ public class RaiseHandActionImplCommand extends BaseHandActionCommand
         userGameStatus.removeChips(increaseOfChipsInFront);
         table.getCurrentHand().addToTotalPot(increaseOfChipsInFront);
 
-        realTimeHand.addPossibleSeatAction(actionOnSeat, GameEventType.CALL);
-        realTimeHand.addPossibleSeatAction(actionOnSeat, GameEventType.RAISE);
-        realTimeHand.addPossibleSeatAction(actionOnSeat, GameEventType.FOLD);
-        realTimeHand.removePossibleSeatAction(actionOnSeat, GameEventType.CHECK);
+        realTimeHand.addPossibleSeatAction(actionOnSeat, PlayerAction.CALL);
+        realTimeHand.addPossibleSeatAction(actionOnSeat, PlayerAction.RAISE);
+        realTimeHand.addPossibleSeatAction(actionOnSeat, PlayerAction.FOLD);
+        realTimeHand.removePossibleSeatAction(actionOnSeat, PlayerAction.CHECK);
 
         for (Seat seat : table.getSeats()) {
             if (seat.isStillInHand() && !actionOnSeat.equals(seat)) {
                 int totalChips = seat.getUserGameStatus().getChips() + seat.getChipsInFront();
-                realTimeHand.addPossibleSeatAction(seat, GameEventType.CALL);
-                realTimeHand.addPossibleSeatAction(seat, GameEventType.FOLD);
-                realTimeHand.removePossibleSeatAction(seat, GameEventType.CHECK);
+                realTimeHand.addPossibleSeatAction(seat, PlayerAction.CALL);
+                realTimeHand.addPossibleSeatAction(seat, PlayerAction.FOLD);
+                realTimeHand.removePossibleSeatAction(seat, PlayerAction.CHECK);
                 if (totalChips < raiseToAmount) {
                     seat.setCallAmount(totalChips);
                     seat.setRaiseTo(0);
-                    realTimeHand.removePossibleSeatAction(seat, GameEventType.RAISE);
+                    realTimeHand.removePossibleSeatAction(seat, PlayerAction.RAISE);
                 } else {
                     seat.setCallAmount(raiseToAmount - seat.getChipsInFront());
-                    realTimeHand.addPossibleSeatAction(seat, GameEventType.RAISE);
+                    realTimeHand.addPossibleSeatAction(seat, PlayerAction.RAISE);
                     if (totalChips < raiseToAmount + raiseAboveCall) {
                         seat.setRaiseTo(totalChips);
                     } else {

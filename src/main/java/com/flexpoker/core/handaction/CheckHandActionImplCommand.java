@@ -18,8 +18,8 @@ import com.flexpoker.core.pot.CalculatePotsAfterRoundImplQuery;
 import com.flexpoker.core.pot.DeterminePotWinnersImplQuery;
 import com.flexpoker.exception.FlexPokerException;
 import com.flexpoker.model.Game;
-import com.flexpoker.model.GameEventType;
 import com.flexpoker.model.Hand;
+import com.flexpoker.model.PlayerAction;
 import com.flexpoker.model.Seat;
 import com.flexpoker.model.Table;
 import com.flexpoker.model.User;
@@ -62,7 +62,7 @@ public class CheckHandActionImplCommand extends BaseHandActionCommand
         Seat actionOnSeat = table.getActionOnSeat();
         
         if (!actionOnSeat.getUserGameStatus().getUser().equals(user)
-                || !realTimeHand.isUserAllowedToPerformAction(GameEventType.CHECK, actionOnSeat))
+                || !realTimeHand.isUserAllowedToPerformAction(PlayerAction.CHECK, actionOnSeat))
         {
             throw new FlexPokerException("Not allowed to check.");
         }

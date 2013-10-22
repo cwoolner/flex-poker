@@ -15,12 +15,12 @@ import com.flexpoker.event.SendUserPocketCardsEvent;
 import com.flexpoker.event.TableUpdatedEvent;
 import com.flexpoker.model.Blinds;
 import com.flexpoker.model.Game;
-import com.flexpoker.model.GameEventType;
 import com.flexpoker.model.Hand;
 import com.flexpoker.model.HandDealerState;
 import com.flexpoker.model.HandEvaluation;
 import com.flexpoker.model.HandRanking;
 import com.flexpoker.model.HandRoundState;
+import com.flexpoker.model.PlayerAction;
 import com.flexpoker.model.Seat;
 import com.flexpoker.model.Table;
 import com.flexpoker.model.User;
@@ -105,14 +105,14 @@ public class StartNewHandImplCommand implements StartNewHandCommand {
             table.getCurrentHand().addToTotalPot(seat.getChipsInFront());
 
             if (seat.getRaiseTo() > 0) {
-                realTimeHand.addPossibleSeatAction(seat, GameEventType.RAISE);
+                realTimeHand.addPossibleSeatAction(seat, PlayerAction.RAISE);
             }
 
             if (seat.getCallAmount() > 0) {
-                realTimeHand.addPossibleSeatAction(seat, GameEventType.CALL);
-                realTimeHand.addPossibleSeatAction(seat, GameEventType.FOLD);
+                realTimeHand.addPossibleSeatAction(seat, PlayerAction.CALL);
+                realTimeHand.addPossibleSeatAction(seat, PlayerAction.FOLD);
             } else {
-                realTimeHand.addPossibleSeatAction(seat, GameEventType.CHECK);
+                realTimeHand.addPossibleSeatAction(seat, PlayerAction.CHECK);
             }
         }
 

@@ -16,11 +16,11 @@ import com.flexpoker.core.pot.CalculatePotsAfterRoundImplQuery;
 import com.flexpoker.core.pot.DeterminePotWinnersImplQuery;
 import com.flexpoker.event.TableUpdatedEvent;
 import com.flexpoker.model.Game;
-import com.flexpoker.model.GameEventType;
 import com.flexpoker.model.Hand;
 import com.flexpoker.model.HandDealerState;
 import com.flexpoker.model.HandEvaluation;
 import com.flexpoker.model.HandRoundState;
+import com.flexpoker.model.PlayerAction;
 import com.flexpoker.model.Pot;
 import com.flexpoker.model.Seat;
 import com.flexpoker.model.Table;
@@ -101,10 +101,10 @@ public abstract class BaseHandActionCommand {
     private void resetPossibleSeatActionsAfterRound(Table table,
             Hand realTimeHand) {
         for (Seat seat : table.getSeats()) {
-            realTimeHand.addPossibleSeatAction(seat, GameEventType.CHECK);
-            realTimeHand.addPossibleSeatAction(seat, GameEventType.RAISE);
-            realTimeHand.removePossibleSeatAction(seat, GameEventType.CALL);
-            realTimeHand.removePossibleSeatAction(seat, GameEventType.FOLD);
+            realTimeHand.addPossibleSeatAction(seat, PlayerAction.CHECK);
+            realTimeHand.addPossibleSeatAction(seat, PlayerAction.RAISE);
+            realTimeHand.removePossibleSeatAction(seat, PlayerAction.CALL);
+            realTimeHand.removePossibleSeatAction(seat, PlayerAction.FOLD);
         }
     }
 
