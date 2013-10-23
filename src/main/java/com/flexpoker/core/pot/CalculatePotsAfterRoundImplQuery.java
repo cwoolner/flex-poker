@@ -27,6 +27,11 @@ public class CalculatePotsAfterRoundImplQuery implements CalculatePotsAfterRound
             }
         }
 
+        if (chipsInFrontSet.isEmpty()) {
+            // nothing to do since there are no chips to add to pots
+            return new HashSet<>(table.getCurrentHand().getPots());
+        }
+
         List<Integer> chipsInFrontList = new ArrayList<Integer>(chipsInFrontSet);
         Collections.sort(chipsInFrontList);
 
