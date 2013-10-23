@@ -13,6 +13,7 @@ var rootUrl = "<c:url value='/' />";
 <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/ng-grid/2.0.7/ng-grid.min.js"></script>
 <script type="text/javascript" src="//cdn.sockjs.org/sockjs-0.3.4.min.js"></script>
 <script type="text/javascript" src="//codeorigin.jquery.com/ui/1.10.3/jquery-ui.min.js"></script>
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/lodash.js/2.2.1/lodash.min.js"></script>
 <script type="text/javascript" src="<c:url value='/resources/scripts/3rdparty/stomp.js' />"></script>
 <script type="text/javascript" src="<c:url value='/resources/scripts/3rdparty/angular-stomp.js' />"></script>
 
