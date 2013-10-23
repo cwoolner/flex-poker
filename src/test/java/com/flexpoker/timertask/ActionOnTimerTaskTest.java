@@ -1,13 +1,15 @@
 package com.flexpoker.timertask;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import com.flexpoker.core.api.handaction.CallHandActionCommand;
+import com.flexpoker.core.api.handaction.CheckHandActionCommand;
 import com.flexpoker.core.api.handaction.FoldHandActionCommand;
 import com.flexpoker.core.timertask.ActionOnTimerTask;
 import com.flexpoker.model.Game;
@@ -22,7 +24,7 @@ public class ActionOnTimerTaskTest {
 
     private ActionOnTimerTask actionOnTimerTask;
     
-    @Mock private CallHandActionCommand callHandActionCommand;
+    @Mock private CheckHandActionCommand checkHandActionCommand;
     
     @Mock private FoldHandActionCommand foldHandActionCommand;
     
@@ -42,7 +44,7 @@ public class ActionOnTimerTaskTest {
         user = UserGenerator.createUser("test");
         seat = new Seat(0);
         seat.setUserGameStatus(new UserGameStatus(user, 1500));
-        actionOnTimerTask = new ActionOnTimerTask(callHandActionCommand,
+        actionOnTimerTask = new ActionOnTimerTask(checkHandActionCommand,
                 foldHandActionCommand, game, table, seat);
     }
     
@@ -50,7 +52,7 @@ public class ActionOnTimerTaskTest {
     public void testFolding() {
         seat.setCallAmount(10);
         actionOnTimerTask.run();
-        verify(callHandActionCommand, never()).execute(game.getId(), table.getId(), user);
+        verify(checkHandActionCommand, never()).execute(game.getId(), table.getId(), user);
         verify(foldHandActionCommand, times(1)).execute(game.getId(), table.getId(), user);
     }
     
@@ -58,7 +60,7 @@ public class ActionOnTimerTaskTest {
     public void testChecking() {
         seat.setCallAmount(0);
         actionOnTimerTask.run();
-        verify(callHandActionCommand, times(1)).execute(game.getId(), table.getId(), user);
+        verify(checkHandActionCommand, times(1)).execute(game.getId(), table.getId(), user);
         verify(foldHandActionCommand, never()).execute(game.getId(), table.getId(), user);
     }
 }

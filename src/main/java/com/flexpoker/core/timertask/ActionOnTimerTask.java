@@ -2,7 +2,7 @@ package com.flexpoker.core.timertask;
 
 import java.util.TimerTask;
 
-import com.flexpoker.core.api.handaction.CallHandActionCommand;
+import com.flexpoker.core.api.handaction.CheckHandActionCommand;
 import com.flexpoker.core.api.handaction.FoldHandActionCommand;
 import com.flexpoker.model.Game;
 import com.flexpoker.model.Seat;
@@ -10,7 +10,7 @@ import com.flexpoker.model.Table;
 
 public class ActionOnTimerTask extends TimerTask {
 
-    private final CallHandActionCommand callHandActionCommand;
+    private final CheckHandActionCommand checkHandActionCommand;
     
     private final FoldHandActionCommand foldHandActionCommand;
     
@@ -20,11 +20,11 @@ public class ActionOnTimerTask extends TimerTask {
     
     private final Seat seat;
     
-    public ActionOnTimerTask(CallHandActionCommand callHandActionCommand,
+    public ActionOnTimerTask(CheckHandActionCommand checkHandActionCommand,
             FoldHandActionCommand foldHandActionCommand,
             Game game, Table table, Seat seat)
     {
-        this.callHandActionCommand = callHandActionCommand;
+        this.checkHandActionCommand = checkHandActionCommand;
         this.foldHandActionCommand = foldHandActionCommand;
         this.game = game;
         this.table = table;
@@ -34,7 +34,7 @@ public class ActionOnTimerTask extends TimerTask {
     @Override
     public void run() {
         if (seat.getCallAmount() == 0) {
-            callHandActionCommand.execute(game.getId(), table.getId(),
+            checkHandActionCommand.execute(game.getId(), table.getId(),
                     seat.getUserGameStatus().getUser());
         } else {
             foldHandActionCommand.execute(game.getId(), table.getId(),
