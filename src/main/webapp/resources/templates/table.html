@@ -18,6 +18,21 @@
       <img class="my-cards" ng-src="{{myLeftCardUrl}}" />
       <img class="my-cards" ng-src="{{myRightCardUrl}}" />
   </div>
+  
+  <div ng-show="pokerActions">
+    <div ng-show="pokerActions.actionOn">
+        <button ng-click="check()" ng-show="pokerActions.check">Check</button>
+        <button ng-click="call()" ng-show="pokerActions.call">Call</button>
+        <button ng-click="raise()" ng-show="pokerActions.raise">Raise</button>
+        <button ng-click="fold()" ng-show="pokerActions.fold">Fold</button>
+    </div>
+    <div ng-show="!pokerActions.actionOn">
+        <label ng-show="pokerActions.check"><input type="checkbox" />Check</label>
+        <label ng-show="pokerActions.call"><input type="checkbox" />Call</label>
+        <label ng-show="pokerActions.raise"><input type="checkbox" />Raise</label>
+        <label ng-show="pokerActions.fold"><input type="checkbox" />Fold</label>
+    </div>
+  </div>
 
   <div chat></div>
 </div>

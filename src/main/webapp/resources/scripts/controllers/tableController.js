@@ -32,7 +32,22 @@ flexpokerModule.controller('TableController', ['$scope', '$rootScope', '$routePa
 
         $scope.client.subscribe('/topic/game/' + $scope.gameId
                 + '/table/' + $scope.tableId, function(message) {
-            $scope.table = $.parseJSON(message.body);
+            var table = $.parseJSON(message.body);
+            $scope.table = table;
+            
+            var mySeat = _.find(table.seats, {name: $scope.username});
+            
+            if (mySeat) {
+                var pokerActions = {
+                    actionOn: mySeat.actionOn,
+                    check: mySeat.callAmount === 0,
+                    fold: mySeat.callAmount !== 0,
+                    call: mySeat.callAmount !== 0,
+                    raise: mySeat.raiseTo !== 0
+                };
+                $scope.pokerActions = pokerActions;
+            }
+            
             $scope.commonCards = [];
             $scope.table.visibleCommonCards.forEach(function(commonCard) {
                 $scope.commonCards.push(cardData[commonCard.id]);
@@ -60,6 +75,38 @@ flexpokerModule.controller('TableController', ['$scope', '$rootScope', '$routePa
 
         $scope.client.send('/app/sendchatmessage', {}, JSON.stringify(tableMessage)); 
         $scope.chatMessage = '';
+    };
+    
+    $scope.check = function() {
+        var checkMessage = {
+            gameId: $scope.gameId,
+            tableId: $scope.tableId
+        };
+        $scope.client.send('/app/check', {}, JSON.stringify(checkMessage));
+    };
+
+    $scope.call = function() {
+        var callMessage = {
+            gameId: $scope.gameId,
+            tableId: $scope.tableId
+        };
+        $scope.client.send('/app/call', {}, JSON.stringify(callMessage));
+    };
+
+    $scope.raise = function() {
+        var raiseMessage = {
+            gameId: $scope.gameId,
+            tableId: $scope.tableId
+        };
+        $scope.client.send('/app/raise', {}, JSON.stringify(raiseMessage));
+    };
+
+    $scope.fold = function() {
+        var foldMessage = {
+            gameId: $scope.gameId,
+            tableId: $scope.tableId
+        };
+        $scope.client.send('/app/fold', {}, JSON.stringify(foldMessage));
     };
 
 }]);
