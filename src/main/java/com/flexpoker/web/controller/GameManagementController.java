@@ -9,7 +9,7 @@ import javax.inject.Inject;
 import org.springframework.messaging.handler.annotation.MessageExceptionHandler;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.annotation.SendToUser;
-import org.springframework.messaging.simp.annotation.SubscribeEvent;
+import org.springframework.messaging.simp.annotation.SubscribeMapping;
 import org.springframework.stereotype.Controller;
 
 import com.flexpoker.bso.api.GameBso;
@@ -35,13 +35,13 @@ public class GameManagementController {
         this.userBso = userBso;
     }
 
-    @SubscribeEvent(value = "/topic/availabletournaments")
+    @SubscribeMapping(value = "/topic/availabletournaments")
     public List<AvailableTournamentListViewModel> displayAllGames() {
         List<Game> gameList = gameBso.fetchAllGames();
         return new GameListTranslator().translate(gameList);
     }
 
-    @SubscribeEvent(value = "/app/opengamesforuser")
+    @SubscribeMapping(value = "/app/opengamesforuser")
     public List<OpenGameForUser> displayOpenGames(Principal principal) {
         return userBso.fetchUsersOpenGames(principal);
     }

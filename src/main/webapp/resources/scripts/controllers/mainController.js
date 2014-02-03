@@ -12,18 +12,17 @@ flexpokerModule.controller('MainController', ['$rootScope', '$scope', 'ngstomp',
     }
 
     $scope.client.connect("", "", function(frame) {
-        var queueSuffix = frame.headers['queue-suffix'];
 
-        $scope.client.subscribe('/queue/errors' + queueSuffix, function(message) {
+        $scope.client.subscribe('/user/queue/errors', function(message) {
             alert("Error " + message.body);
             $rootScope.tryingToJoinGameId = null;
         });
         
-        $scope.client.subscribe('/topic/chat/personal/user' + queueSuffix, function(message) {
+        $scope.client.subscribe('/user/topic/chat/personal/user', function(message) {
             alert('personal' + message.body);
         });
 
-        $scope.client.subscribe('/topic/chat/personal/system' + queueSuffix, function(message) {
+        $scope.client.subscribe('/user/topic/chat/personal/system', function(message) {
             alert('personal' + message.body);
         });
 
@@ -31,7 +30,7 @@ flexpokerModule.controller('MainController', ['$rootScope', '$scope', 'ngstomp',
             $scope.gameTabs = $.parseJSON(message.body);
         });
         
-        $scope.client.subscribe('/queue/opengamesforuser' + queueSuffix, function(message) {
+        $scope.client.subscribe('/user/queue/opengamesforuser', function(message) {
             $scope.gameTabs = $.parseJSON(message.body);
             if ($rootScope.tryingToJoinGameId != null) {
                 $location.path('/game/' + $rootScope.tryingToJoinGameId)
@@ -39,16 +38,16 @@ flexpokerModule.controller('MainController', ['$rootScope', '$scope', 'ngstomp',
             }
         });
         
-        $scope.client.subscribe('/queue/opentable' + queueSuffix, function(message) {
+        $scope.client.subscribe('/user/queue/opentable', function(message) {
             var openTable = $.parseJSON(message.body);
             $location.path('/game/' + openTable.gameId + '/table/' + openTable.tableId);
         });
 
-        $scope.client.subscribe('/queue/personaltablestatus' + queueSuffix, function(message) {
+        $scope.client.subscribe('/user/queue/personaltablestatus', function(message) {
             alert($.parseJSON(message.body));
         });
 
-        $scope.client.subscribe('/queue/pocketcards' + queueSuffix, function(message) {
+        $scope.client.subscribe('/user/queue/pocketcards', function(message) {
             var pocketCards = $.parseJSON(message.body);
             $rootScope.$broadcast('pocketCardsReceived' + pocketCards.tableId,
                     {cardId1: pocketCards.cardId1, cardId2: pocketCards.cardId2});
