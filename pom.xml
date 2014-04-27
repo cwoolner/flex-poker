@@ -10,8 +10,8 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <org.springframework-version>4.0.1.RELEASE</org.springframework-version>
-        <org.springframework.security-version>3.2.0.RELEASE</org.springframework.security-version>
+        <org.springframework-version>4.0.3.RELEASE</org.springframework-version>
+        <org.springframework.security-version>3.2.3.RELEASE</org.springframework.security-version>
         <org.aspectj-version>1.7.0</org.aspectj-version>        
         <org.slf4j-version>1.7.5</org.slf4j-version>
     </properties>
