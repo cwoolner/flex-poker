@@ -6,14 +6,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.collections.CollectionUtils;
-
 import com.flexpoker.config.Query;
 import com.flexpoker.core.api.pot.CalculatePotsAfterRoundQuery;
 import com.flexpoker.model.Pot;
 import com.flexpoker.model.Seat;
 import com.flexpoker.model.Table;
-import com.flexpoker.util.OpenPotPredicate;
 
 @Query
 public class CalculatePotsAfterRoundImplQuery implements CalculatePotsAfterRoundQuery {
@@ -70,7 +67,7 @@ public class CalculatePotsAfterRoundImplQuery implements CalculatePotsAfterRound
     }
     
     private Pot fetchOpenPot(Set<Pot> pots) {
-        Pot pot = (Pot) CollectionUtils.find(pots, new OpenPotPredicate());
+        Pot pot = pots.stream().filter(x -> x.isOpen()).findAny().orElse(null);
         if (pot == null) {
             pot = new Pot();
         }

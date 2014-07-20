@@ -4,15 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
-
-import com.flexpoker.util.ActionOnSeatPredicate;
-import com.flexpoker.util.BigBlindSeatPredicate;
-import com.flexpoker.util.ButtonSeatPredicate;
-import com.flexpoker.util.HasUserGameStatusPredicate;
-import com.flexpoker.util.SmallBlindSeatPredicate;
-import com.flexpoker.util.StillInHandSeatPredicate;
 
 public class Table {
 
@@ -86,27 +78,28 @@ public class Table {
     }
     
     public Seat getActionOnSeat() {
-        return (Seat) CollectionUtils.find(seats, new ActionOnSeatPredicate());
+        return seats.stream().filter(x -> x.isActionOn()).findAny().orElse(null);
     }
-    
+
     public Seat getButtonSeat() {
-        return (Seat) CollectionUtils.find(seats, new ButtonSeatPredicate());
+        return seats.stream().filter(x -> x.isButton()).findAny().orElse(null);
     }
-    
+
     public Seat getSmallBlindSeat() {
-        return (Seat) CollectionUtils.find(seats, new SmallBlindSeatPredicate());
+        return seats.stream().filter(x -> x.isSmallBlind()).findAny().orElse(null);
     }
-    
+
     public Seat getBigBlindSeat() {
-        return (Seat) CollectionUtils.find(seats, new BigBlindSeatPredicate());
+        return seats.stream().filter(x -> x.isBigBlind()).findAny().orElse(null);
     }
-    
+
     public int getNumberOfPlayersStillInHand() {
-        return CollectionUtils.countMatches(seats, new StillInHandSeatPredicate());
+        return (int) seats.stream().filter(x -> x.isStillInHand()).count();
     }
-    
+
     public int getNumberOfPlayers() {
-        return CollectionUtils.countMatches(seats, new HasUserGameStatusPredicate());
+        return (int) seats.stream().filter(x -> x.getUserGameStatus() != null)
+                .count();
     }
     
     @Override
