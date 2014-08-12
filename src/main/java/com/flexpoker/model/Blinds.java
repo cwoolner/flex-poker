@@ -2,11 +2,11 @@ package com.flexpoker.model;
 
 public class Blinds {
 
-    private int smallBlind;
+    private final int smallBlind;
 
-    private int bigBlind;
+    private final int bigBlind;
 
-    public Blinds(int smallBlind, int bigBlind) {
+    public Blinds(final int smallBlind, final int bigBlind) {
         if (smallBlind > Integer.MAX_VALUE / 2) {
             throw new IllegalArgumentException("Small blind can't be that large.");
         }
