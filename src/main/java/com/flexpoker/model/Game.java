@@ -9,6 +9,9 @@ import java.util.UUID;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Predicate;
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang.builder.ToStringBuilder;
 
 public class Game {
 
@@ -174,27 +177,28 @@ public class Game {
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((id == null) ? 0 : id.hashCode());
-        return result;
+        return new HashCodeBuilder().append(id).toHashCode();
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (obj == null) {
+            return false;
+        }
+        if (obj == this) {
             return true;
-        if (obj == null)
+        }
+        if (obj.getClass() != getClass()) {
             return false;
-        if (getClass() != obj.getClass())
-            return false;
-        Game other = (Game) obj;
-        if (id == null) {
-            if (other.id != null)
-                return false;
-        } else if (!id.equals(other.id))
-            return false;
-        return true;
+        }
+        Game rhs = (Game) obj;
+        return new EqualsBuilder().appendSuper(super.equals(obj))
+                .append(id, rhs.id).isEquals();
+    }
+
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this);
     }
 
 }
