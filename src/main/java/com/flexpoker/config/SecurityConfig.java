@@ -11,28 +11,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.inMemoryAuthentication()
-                .withUser("player1").password("player1").roles("USER").and()
-                .withUser("player2").password("player2").roles("USER").and()
-                .withUser("player3").password("player3").roles("USER").and()
-                .withUser("player4").password("player4").roles("USER");
+        auth.inMemoryAuthentication().withUser("player1").password("player1")
+                .roles("USER").and().withUser("player2").password("player2")
+                .roles("USER").and().withUser("player3").password("player3")
+                .roles("USER").and().withUser("player4").password("player4")
+                .roles("USER");
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http
-        .csrf().disable()
-        .authorizeRequests()
-            .antMatchers("/admin/**").hasRole("ADMIN")
-            .antMatchers("/signup**").anonymous()
-            .anyRequest().hasRole("USER")
-            .and()
-        .formLogin()
-            .loginPage("/login")
-            .defaultSuccessUrl("/", true)
-            .permitAll()
-            .and()
-        .rememberMe();
+        http.csrf().disable().authorizeRequests().antMatchers("/admin/**")
+                .hasRole("ADMIN").antMatchers("/sign-up**").anonymous().anyRequest()
+                .hasRole("USER").and().formLogin().loginPage("/login")
+                .defaultSuccessUrl("/", true).permitAll().and().rememberMe();
     }
 
     @Override

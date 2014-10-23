@@ -8,7 +8,7 @@
 </head>
 <body>
 
-<p>Email sent to <c:out value="${email}" />
+<p>Success!</p>
 
 </body>
 </html>
