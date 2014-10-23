@@ -3,7 +3,7 @@ package com.flexpoker.signup.command.aggregate;
 import java.util.List;
 import java.util.UUID;
 
-import org.springframework.security.authentication.encoding.ShaPasswordEncoder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import com.flexpoker.exception.FlexPokerException;
 import com.flexpoker.framework.domain.AggregateRoot;
@@ -65,8 +65,7 @@ public class SignUpUser extends AggregateRoot<SignUpEvent> {
             throw new IllegalStateException("confirmed should be false");
         }
 
-        String encryptedPassword = new ShaPasswordEncoder()
-                .encodePassword(password, null);
+        String encryptedPassword = new BCryptPasswordEncoder().encode(password);
         UUID signUpCode = UUID.randomUUID();
         NewUserSignedUpEvent newUserSignedUpEvent = new NewUserSignedUpEvent(aggregateId,
                 ++aggregateVersion, signUpCode, emailAddress, username, encryptedPassword);
