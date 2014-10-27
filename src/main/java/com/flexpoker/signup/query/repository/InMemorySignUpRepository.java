@@ -9,7 +9,7 @@ import java.util.UUID;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Repository;
 
-@Profile("dev")
+@Profile("default")
 @Repository
 public class InMemorySignUpRepository implements SignUpRepository {
 
