@@ -36,4 +36,8 @@ public class NewUserSignedUpEvent extends BaseEvent<SignUpEventType> implements
         return signUpCode;
     }
 
+    public String getEncryptedPassword() {
+        return encryptedPassword;
+    }
+
 }

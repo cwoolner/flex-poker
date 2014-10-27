@@ -99,7 +99,8 @@ public class SignUpUserTest {
         List<SignUpEvent> events = new ArrayList<>();
         events.add(new NewUserSignedUpEvent(VALID_AGGREGATE_ID, 1, VALID_SIGN_UP_CODE,
                 VALID_EMAIL_ADDRESS, VALID_USERNAME, VALID_ENCRYPTED_PASSWORD));
-        events.add(new SignedUpUserConfirmedEvent(VALID_AGGREGATE_ID, 2, VALID_USERNAME));
+        events.add(new SignedUpUserConfirmedEvent(VALID_AGGREGATE_ID, 2, VALID_USERNAME,
+                VALID_ENCRYPTED_PASSWORD));
         SignUpUser signUpUser = signUpUserFactory.createFrom(events);
         signUpUser.confirmSignedUpUser(VALID_USERNAME, VALID_SIGN_UP_CODE);
     }

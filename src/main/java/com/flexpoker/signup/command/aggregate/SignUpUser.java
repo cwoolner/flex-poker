@@ -23,6 +23,8 @@ public class SignUpUser extends AggregateRoot<SignUpEvent> {
 
     private boolean confirmed;
 
+    private String encryptedPassword;
+
     protected SignUpUser(final UUID aggregateId) {
         this.aggregateId = aggregateId;
     }
@@ -48,6 +50,7 @@ public class SignUpUser extends AggregateRoot<SignUpEvent> {
     private void applyEvent(NewUserSignedUpEvent event) {
         username = event.getUsername();
         signUpCode = event.getSignUpCode();
+        encryptedPassword = event.getEncryptedPassword();
         addAppliedEvent(event);
     }
 
@@ -89,7 +92,7 @@ public class SignUpUser extends AggregateRoot<SignUpEvent> {
         }
 
         SignedUpUserConfirmedEvent signedUpUserConfirmedEvent = new SignedUpUserConfirmedEvent(
-                aggregateId, ++aggregateVersion, username);
+                aggregateId, ++aggregateVersion, username, encryptedPassword);
         addNewEvent(signedUpUserConfirmedEvent);
         applyEvent(signedUpUserConfirmedEvent);
     }

@@ -13,13 +13,21 @@ public class SignedUpUserConfirmedEvent extends BaseEvent<SignUpEventType> imple
 
     private final String username;
 
-    public SignedUpUserConfirmedEvent(UUID aggregateId, int version, String username) {
+    private final String encryptedPassword;
+
+    public SignedUpUserConfirmedEvent(UUID aggregateId, int version, String username,
+            String encryptedPassword) {
         super(aggregateId, version, TYPE);
         this.username = username;
+        this.encryptedPassword = encryptedPassword;
     }
 
     public String getUsername() {
         return username;
+    }
+
+    public String getEncryptedPassword() {
+        return encryptedPassword;
     }
 
 }

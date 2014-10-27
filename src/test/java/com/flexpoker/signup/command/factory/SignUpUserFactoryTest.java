@@ -34,7 +34,7 @@ public class SignUpUserFactoryTest {
     public void testCreateFrom() {
         List<SignUpEvent> events = new ArrayList<>();
         events.add(new NewUserSignedUpEvent(null, 1, null, null, null, null));
-        events.add(new SignedUpUserConfirmedEvent(null, 2, null));
+        events.add(new SignedUpUserConfirmedEvent(null, 2, null, null));
         SignUpUser signUpUser = sut.createFrom(events);
         assertNotNull(signUpUser);
         assertTrue(signUpUser.fetchNewEvents().isEmpty());
