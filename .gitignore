@@ -4,3 +4,5 @@ target/
 .settings/
 log.out
 .idea/
+dump.rdb
+
