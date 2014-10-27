@@ -29,14 +29,14 @@ public class CalculatePotsAfterRoundImplQuery implements CalculatePotsAfterRound
             return new HashSet<>(table.getCurrentHand().getPots());
         }
 
-        List<Integer> chipsInFrontList = new ArrayList<Integer>(chipsInFrontSet);
+        List<Integer> chipsInFrontList = new ArrayList<>(chipsInFrontSet);
         Collections.sort(chipsInFrontList);
 
-        List<Integer> maxContributionPerSeatPerPot = new ArrayList<Integer>();
+        List<Integer> maxContributionPerSeatPerPot = new ArrayList<>();
         maxContributionPerSeatPerPot.add(chipsInFrontList.get(0));
         for (int i = 0; i < chipsInFrontList.size() - 1; i++) {
-            maxContributionPerSeatPerPot.add(
-                    chipsInFrontList.get(i + 1) - chipsInFrontList.get(i));
+            maxContributionPerSeatPerPot.add(chipsInFrontList.get(i + 1)
+                    - chipsInFrontList.get(i));
         }
 
         Set<Pot> pots = new HashSet<>(table.getCurrentHand().getPots());
@@ -62,10 +62,10 @@ public class CalculatePotsAfterRoundImplQuery implements CalculatePotsAfterRound
                 }
             }
         }
-        
+
         return pots;
     }
-    
+
     private Pot fetchOpenPot(Set<Pot> pots) {
         Pot pot = pots.stream().filter(x -> x.isOpen()).findAny().orElse(null);
         if (pot == null) {

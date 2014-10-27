@@ -20,7 +20,7 @@ public class AssignTablesForNewGameImplCommand implements AssignInitialTablesFor
     public void execute(Game game) {
         Set<UserGameStatus> userGameStatuses = game.getUserGameStatuses();
         int maxPlayersPerTable = game.getMaxPlayersPerTable();
-        
+
         int numberOfTables = calculateNumberOfTables(userGameStatuses, maxPlayersPerTable);
         List<Table> tables = populateSeats(maxPlayersPerTable, numberOfTables);
         List<UserGameStatus> randomOrderedUserGameStatusList = randomizeUserGameStatuses(userGameStatuses);
@@ -32,7 +32,7 @@ public class AssignTablesForNewGameImplCommand implements AssignInitialTablesFor
     }
 
     private List<Table> populateSeats(int maxPlayersPerTable, int numberOfTables) {
-        List<Table> tables = new ArrayList<Table>();
+        List<Table> tables = new ArrayList<>();
 
         for (int i = 0; i < numberOfTables; i++) {
             Table table = new Table();
@@ -47,7 +47,8 @@ public class AssignTablesForNewGameImplCommand implements AssignInitialTablesFor
         return tables;
     }
 
-    private int calculateNumberOfTables(Set<UserGameStatus> userGameStatuses, int maxPlayersPerTable) {
+    private int calculateNumberOfTables(Set<UserGameStatus> userGameStatuses,
+            int maxPlayersPerTable) {
         int numberOfTables = userGameStatuses.size() / maxPlayersPerTable;
 
         // if the number of people doesn't fit perfectly, then an additional
@@ -58,9 +59,9 @@ public class AssignTablesForNewGameImplCommand implements AssignInitialTablesFor
         return numberOfTables;
     }
 
-    private void distributeUserGameStatusesToTables(List<UserGameStatus> userGameStatuses,
-            List<Table> tables) {
-        for (int i = 0; i < userGameStatuses.size(); ) {
+    private void distributeUserGameStatusesToTables(
+            List<UserGameStatus> userGameStatuses, List<Table> tables) {
+        for (int i = 0; i < userGameStatuses.size();) {
             for (Table table : tables) {
                 if (i < userGameStatuses.size()) {
                     addUserGameStatusToAnyEmptySeat(table, userGameStatuses.get(i));
@@ -70,14 +71,15 @@ public class AssignTablesForNewGameImplCommand implements AssignInitialTablesFor
         }
     }
 
-    private List<UserGameStatus> randomizeUserGameStatuses(Set<UserGameStatus> userGameStatuses) {
-        List<UserGameStatus> userGameStatusList =
-                new ArrayList<UserGameStatus>(userGameStatuses);
+    private List<UserGameStatus> randomizeUserGameStatuses(
+            Set<UserGameStatus> userGameStatuses) {
+        List<UserGameStatus> userGameStatusList = new ArrayList<>(userGameStatuses);
         Collections.shuffle(userGameStatusList, new Random());
         return userGameStatusList;
     }
 
-    private void addUserGameStatusToAnyEmptySeat(Table table, UserGameStatus userGameStatus) {
+    private void addUserGameStatusToAnyEmptySeat(Table table,
+            UserGameStatus userGameStatus) {
         synchronized (table) {
             for (Seat seat : table.getSeats()) {
                 if (seat.getUserGameStatus() == null) {
@@ -89,5 +91,5 @@ public class AssignTablesForNewGameImplCommand implements AssignInitialTablesFor
             throw new IllegalArgumentException("No empty seats were found.");
         }
     }
-    
+
 }

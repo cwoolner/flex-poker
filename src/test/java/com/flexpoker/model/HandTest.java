@@ -1,6 +1,7 @@
 package com.flexpoker.model;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,10 +16,10 @@ public class HandTest {
     public void testMoveToNextDealerState() {
         Hand hand = new Hand(new ArrayList<Seat>(), DeckGenerator.createDeck());
         assertEquals(HandDealerState.NONE, hand.getHandDealerState());
-        
+
         hand.moveToNextDealerState();
         assertEquals(HandDealerState.POCKET_CARDS_DEALT, hand.getHandDealerState());
-        
+
         hand.moveToNextDealerState();
         assertEquals(HandDealerState.FLOP_DEALT, hand.getHandDealerState());
 
@@ -27,17 +28,17 @@ public class HandTest {
 
         hand.moveToNextDealerState();
         assertEquals(HandDealerState.RIVER_DEALT, hand.getHandDealerState());
-        
+
         hand.moveToNextDealerState();
         assertEquals(HandDealerState.COMPLETE, hand.getHandDealerState());
-        
+
         hand.moveToNextDealerState();
         assertEquals(HandDealerState.COMPLETE, hand.getHandDealerState());
     }
 
     @Test
     public void testEmptyUserActions() {
-        List<Seat> seats = new ArrayList<Seat>();
+        List<Seat> seats = new ArrayList<>();
         Seat seat1 = new Seat(0);
         Seat seat2 = new Seat(1);
 

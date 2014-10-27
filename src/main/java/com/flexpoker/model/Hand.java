@@ -26,11 +26,11 @@ public class Hand {
     private HandRoundState handRoundState;
 
     private List<HandEvaluation> handEvaluationList;
-    
+
     private int totalPotAmount;
-    
+
     private Set<Pot> pots;
-    
+
     private final Deck deck;
 
     public Hand(List<Seat> seats, Deck deck) {
@@ -38,11 +38,11 @@ public class Hand {
         for (Seat seat : seats) {
             possibleSeatActionsMap.put(seat, new HashSet<PlayerAction>());
         }
-        
+
         this.deck = deck;
         this.handDealerState = HandDealerState.NONE;
         this.handRoundState = HandRoundState.ROUND_COMPLETE;
-        this.pots = new HashSet<Pot>();
+        this.pots = new HashSet<>();
     }
 
     public void addPossibleSeatAction(Seat Seat, PlayerAction action) {
@@ -110,7 +110,7 @@ public class Hand {
     public Set<Pot> getPots() {
         return pots;
     }
-    
+
     public void setPots(Set<Pot> pots) {
         this.pots = pots;
     }
@@ -126,17 +126,17 @@ public class Hand {
     public Deck getDeck() {
         return deck;
     }
-    
+
     public void resetPlayerActions(Seat seat) {
         possibleSeatActionsMap.get(seat).remove(PlayerAction.CHECK);
         possibleSeatActionsMap.get(seat).remove(PlayerAction.RAISE);
         possibleSeatActionsMap.get(seat).remove(PlayerAction.CALL);
         possibleSeatActionsMap.get(seat).remove(PlayerAction.FOLD);
     }
-    
+
     public void moveToNextDealerState() {
         if (handDealerState != HandDealerState.COMPLETE) {
-            handDealerState = HandDealerState.values()[handDealerState.ordinal() + 1];    
+            handDealerState = HandDealerState.values()[handDealerState.ordinal() + 1];
         }
     }
 

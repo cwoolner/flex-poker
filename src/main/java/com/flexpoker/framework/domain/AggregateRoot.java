@@ -21,7 +21,7 @@ public abstract class AggregateRoot<T extends Event<? extends EventType>> {
     }
 
     public List<T> fetchNewEvents() {
-        return new ArrayList<T>(newEvents);
+        return new ArrayList<>(newEvents);
     }
 
     public abstract void applyAllEvents(List<T> events);

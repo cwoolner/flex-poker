@@ -6,7 +6,7 @@ public class TableMovement {
 
     private Table toTable;
 
-    private UserGameStatus userGameStatus;;
+    private UserGameStatus userGameStatus;
 
     public Table getFromTable() {
         return fromTable;

@@ -1,6 +1,7 @@
 package com.flexpoker.core.pot;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -28,7 +29,7 @@ public class DeterminePotWinnersImplQueryTest {
     public void setup() {
         query = new DeterminePotWinnersImplQuery();
     }
-    
+
     @Test
     public void testSetWinners() {
         Game game = GameGenerator.createGame(9, 9);
@@ -44,12 +45,11 @@ public class DeterminePotWinnersImplQueryTest {
         UserGameStatus userGameStatus2 = new UserGameStatus(user2, 1500);
         UserGameStatus userGameStatus3 = new UserGameStatus(user3, 1500);
 
-        testSetWinners1(game, table, user1, user2, userGameStatus1,
-                userGameStatus2);
+        testSetWinners1(game, table, user1, user2, userGameStatus1, userGameStatus2);
         testSetWinners2(game, table, user1, user2, user3, userGameStatus1,
                 userGameStatus2, userGameStatus3);
     }
-    
+
     private void testSetWinners1(Game game, Table table, User user1, User user2,
             UserGameStatus userGameStatus1, UserGameStatus userGameStatus2) {
 
@@ -78,10 +78,10 @@ public class DeterminePotWinnersImplQueryTest {
         handEvaluation2.setHandRanking(HandRanking.STRAIGHT);
         handEvaluation2.setPrimaryCardRank(CardRank.KING);
 
-        List<HandEvaluation> winningHands = new ArrayList<HandEvaluation>();
+        List<HandEvaluation> winningHands = new ArrayList<>();
         winningHands.add(handEvaluation1);
         winningHands.add(handEvaluation2);
-        
+
         Set<Seat> seats = new HashSet<>();
         seats.add(seat1);
         seats.add(seat2);
@@ -93,8 +93,8 @@ public class DeterminePotWinnersImplQueryTest {
     }
 
     private void testSetWinners2(Game game, Table table, User user1, User user2,
-            User user3,  UserGameStatus userGameStatus1,
-            UserGameStatus userGameStatus2, UserGameStatus userGameStatus3) {
+            User user3, UserGameStatus userGameStatus1, UserGameStatus userGameStatus2,
+            UserGameStatus userGameStatus3) {
 
         Seat seat1 = new Seat(0);
         seat1.setChipsInFront(30);
@@ -130,7 +130,7 @@ public class DeterminePotWinnersImplQueryTest {
         handEvaluation3.setHandRanking(HandRanking.STRAIGHT);
         handEvaluation3.setPrimaryCardRank(CardRank.KING);
 
-        List<HandEvaluation> winningHands = new ArrayList<HandEvaluation>();
+        List<HandEvaluation> winningHands = new ArrayList<>();
         winningHands.add(handEvaluation1);
         winningHands.add(handEvaluation2);
         winningHands.add(handEvaluation3);
@@ -138,7 +138,7 @@ public class DeterminePotWinnersImplQueryTest {
         Set<Seat> seats = new HashSet<>();
         seats.add(seat2);
         seats.add(seat3);
-        
+
         Set<Seat> winners = query.execute(table, seats, winningHands);
 
         assertEquals(2, winners.size());

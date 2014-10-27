@@ -1,6 +1,8 @@
 package com.flexpoker.core.pot;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Set;
@@ -24,7 +26,7 @@ public class CalculatePotsAfterRoundImplQueryTest {
     public void setup() {
         query = new CalculatePotsAfterRoundImplQuery();
     }
-    
+
     @Test
     public void testCalculatePotsAfterRound() {
         Game game = GameGenerator.createGame(9, 9);
@@ -42,9 +44,8 @@ public class CalculatePotsAfterRoundImplQueryTest {
         seat1.setStillInHand(true);
 
         table.addSeat(seat1);
-        
-        table.setCurrentHand(new Hand(new ArrayList<Seat>(),
-                DeckGenerator.createDeck()));
+
+        table.setCurrentHand(new Hand(new ArrayList<Seat>(), DeckGenerator.createDeck()));
 
         Set<Pot> pots = query.execute(table);
         Pot pot = ((Pot) pots.toArray()[0]);
@@ -63,10 +64,10 @@ public class CalculatePotsAfterRoundImplQueryTest {
         seat2.setStillInHand(true);
 
         table.getSeats().clear();
-        
+
         table.addSeat(seat1);
         table.addSeat(seat2);
-        
+
         Set<Pot> pots = query.execute(table);
         Pot pot = ((Pot) pots.toArray()[0]);
 
@@ -87,7 +88,7 @@ public class CalculatePotsAfterRoundImplQueryTest {
         seat2.setAllIn(true);
 
         table.getSeats().clear();
-        
+
         table.addSeat(seat1);
         table.addSeat(seat2);
 
@@ -116,7 +117,7 @@ public class CalculatePotsAfterRoundImplQueryTest {
         seat4.setStillInHand(true);
 
         table.getSeats().clear();
-        
+
         table.addSeat(seat1);
         table.addSeat(seat2);
         table.addSeat(seat3);
@@ -144,7 +145,7 @@ public class CalculatePotsAfterRoundImplQueryTest {
         pots = query.execute(table);
         table.getCurrentHand().setPots(pots);
         pot = ((Pot) pots.toArray()[0]);
-        
+
         assertEquals(1, pots.size());
         assertEquals(320, pot.getAmount());
         assertTrue(pot.isOpen());
@@ -163,47 +164,37 @@ public class CalculatePotsAfterRoundImplQueryTest {
         // simulate preriver
         pots = query.execute(table);
         table.getCurrentHand().setPots(pots);
-        
-        Pot pot1 = null;
-        Pot pot2 = null;
-        Pot pot3 = null;
-        
-        for(Pot loopPot : pots) {
+
+        for (Pot loopPot : pots) {
             switch (loopPot.getAmount()) {
             case 400:
-                pot1 = loopPot;
+                assertEquals(400, loopPot.getAmount());
+                assertFalse(loopPot.isOpen());
+                assertTrue(loopPot.getSeats().contains(seat1));
+                assertTrue(loopPot.getSeats().contains(seat2));
+                assertTrue(loopPot.getSeats().contains(seat3));
+                assertTrue(loopPot.getSeats().contains(seat4));
                 break;
             case 60:
-                pot2 = loopPot;
+                assertEquals(60, loopPot.getAmount());
+                assertFalse(loopPot.isOpen());
+                assertFalse(loopPot.getSeats().contains(seat1));
+                assertTrue(loopPot.getSeats().contains(seat2));
+                assertTrue(loopPot.getSeats().contains(seat3));
+                assertTrue(loopPot.getSeats().contains(seat4));
                 break;
             case 100:
-                pot3 = loopPot;
+                assertEquals(100, loopPot.getAmount());
+                assertTrue(loopPot.isOpen());
+                assertFalse(loopPot.getSeats().contains(seat1));
+                assertFalse(loopPot.getSeats().contains(seat2));
+                assertTrue(loopPot.getSeats().contains(seat3));
+                assertTrue(loopPot.getSeats().contains(seat4));
                 break;
             }
         }
-        
+
         assertEquals(3, pots.size());
-
-        assertEquals(400, pot1.getAmount());
-        assertFalse(pot1.isOpen());
-        assertTrue(pot1.getSeats().contains(seat1));
-        assertTrue(pot1.getSeats().contains(seat2));
-        assertTrue(pot1.getSeats().contains(seat3));
-        assertTrue(pot1.getSeats().contains(seat4));
-
-        assertEquals(60, pot2.getAmount());
-        assertFalse(pot2.isOpen());
-        assertFalse(pot2.getSeats().contains(seat1));
-        assertTrue(pot2.getSeats().contains(seat2));
-        assertTrue(pot2.getSeats().contains(seat3));
-        assertTrue(pot2.getSeats().contains(seat4));
-
-        assertEquals(100, pot3.getAmount());
-        assertTrue(pot3.isOpen());
-        assertFalse(pot3.getSeats().contains(seat1));
-        assertFalse(pot3.getSeats().contains(seat2));
-        assertTrue(pot3.getSeats().contains(seat3));
-        assertTrue(pot3.getSeats().contains(seat4));
 
         seat3.setChipsInFront(100);
         seat3.setAllIn(true);
@@ -213,57 +204,44 @@ public class CalculatePotsAfterRoundImplQueryTest {
         pots = query.execute(table);
         table.getCurrentHand().setPots(pots);
 
-        pot1 = null;
-        pot2 = null;
-        pot3 = null;
-        Pot pot4 = null;
-        
-        for(Pot loopPot : pots) {
+        for (Pot loopPot : pots) {
             switch (loopPot.getAmount()) {
             case 400:
-                pot1 = loopPot;
+                assertEquals(400, loopPot.getAmount());
+                assertFalse(loopPot.isOpen());
+                assertTrue(loopPot.getSeats().contains(seat1));
+                assertTrue(loopPot.getSeats().contains(seat2));
+                assertTrue(loopPot.getSeats().contains(seat3));
+                assertTrue(loopPot.getSeats().contains(seat4));
                 break;
             case 60:
-                pot2 = loopPot;
+                assertEquals(60, loopPot.getAmount());
+                assertFalse(loopPot.isOpen());
+                assertFalse(loopPot.getSeats().contains(seat1));
+                assertTrue(loopPot.getSeats().contains(seat2));
+                assertTrue(loopPot.getSeats().contains(seat3));
+                assertTrue(loopPot.getSeats().contains(seat4));
                 break;
             case 300:
-                pot3 = loopPot;
+                assertEquals(300, loopPot.getAmount());
+                assertFalse(loopPot.isOpen());
+                assertFalse(loopPot.getSeats().contains(seat1));
+                assertFalse(loopPot.getSeats().contains(seat2));
+                assertTrue(loopPot.getSeats().contains(seat3));
+                assertTrue(loopPot.getSeats().contains(seat4));
                 break;
             case 250:
-                pot4 = loopPot;
+                assertEquals(250, loopPot.getAmount());
+                assertTrue(loopPot.isOpen());
+                assertFalse(loopPot.getSeats().contains(seat1));
+                assertFalse(loopPot.getSeats().contains(seat2));
+                assertFalse(loopPot.getSeats().contains(seat3));
+                assertTrue(loopPot.getSeats().contains(seat4));
                 break;
             }
         }
-        
+
         assertEquals(4, pots.size());
-        
-        assertEquals(400, pot1.getAmount());
-        assertFalse(pot1.isOpen());
-        assertTrue(pot1.getSeats().contains(seat1));
-        assertTrue(pot1.getSeats().contains(seat2));
-        assertTrue(pot1.getSeats().contains(seat3));
-        assertTrue(pot1.getSeats().contains(seat4));
-        
-        assertEquals(60, pot2.getAmount());
-        assertFalse(pot2.isOpen());
-        assertFalse(pot2.getSeats().contains(seat1));
-        assertTrue(pot2.getSeats().contains(seat2));
-        assertTrue(pot2.getSeats().contains(seat3));
-        assertTrue(pot2.getSeats().contains(seat4));
-        
-        assertEquals(300, pot3.getAmount());
-        assertFalse(pot3.isOpen());
-        assertFalse(pot3.getSeats().contains(seat1));
-        assertFalse(pot3.getSeats().contains(seat2));
-        assertTrue(pot3.getSeats().contains(seat3));
-        assertTrue(pot3.getSeats().contains(seat4));
-        
-        assertEquals(250, pot4.getAmount());
-        assertTrue(pot4.isOpen());
-        assertFalse(pot4.getSeats().contains(seat1));
-        assertFalse(pot4.getSeats().contains(seat2));
-        assertFalse(pot4.getSeats().contains(seat3));
-        assertTrue(pot4.getSeats().contains(seat4));
     }
 
 }

@@ -1,6 +1,6 @@
 package com.flexpoker.core.seatstatus;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 import java.util.List;
@@ -19,43 +19,71 @@ import com.flexpoker.util.DataUtilsForTests;
 public class SetSeatStatusForNewRoundImplCommandTest {
 
     private SetSeatStatusForNewRoundImplCommand command;
-    
-    @Mock ScheduleAndReturnActionOnTimerCommand createAndStartActionOnTimerCommand;
-    
+
+    @Mock
+    ScheduleAndReturnActionOnTimerCommand createAndStartActionOnTimerCommand;
+
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        command = new SetSeatStatusForNewRoundImplCommand(createAndStartActionOnTimerCommand);
+        command = new SetSeatStatusForNewRoundImplCommand(
+                createAndStartActionOnTimerCommand);
     }
-    
+
+    @SuppressWarnings("boxing")
     @Test
     public void testExecute() {
-        setStatusForNewRoundHelper(2, Arrays.asList(new Integer[]{}), Arrays.asList(new Integer[]{}), 1);
-        setStatusForNewRoundHelper(3, Arrays.asList(new Integer[]{0}), Arrays.asList(new Integer[]{}), 1);
-        setStatusForNewRoundHelper(3, Arrays.asList(new Integer[]{1}), Arrays.asList(new Integer[]{}), 2);
-        setStatusForNewRoundHelper(3, Arrays.asList(new Integer[]{2}), Arrays.asList(new Integer[]{}), 1);
-        setStatusForNewRoundHelper(4, Arrays.asList(new Integer[]{0}), Arrays.asList(new Integer[]{}), 1);
-        setStatusForNewRoundHelper(4, Arrays.asList(new Integer[]{1}), Arrays.asList(new Integer[]{}), 2);
-        setStatusForNewRoundHelper(4, Arrays.asList(new Integer[]{2}), Arrays.asList(new Integer[]{}), 1);
-        setStatusForNewRoundHelper(4, Arrays.asList(new Integer[]{3}), Arrays.asList(new Integer[]{}), 1);
-        setStatusForNewRoundHelper(4, Arrays.asList(new Integer[]{0, 1}), Arrays.asList(new Integer[]{}), 2);
-        setStatusForNewRoundHelper(4, Arrays.asList(new Integer[]{1, 2}), Arrays.asList(new Integer[]{}), 3);
-        setStatusForNewRoundHelper(4, Arrays.asList(new Integer[]{2, 3}), Arrays.asList(new Integer[]{}), 1);
-        setStatusForNewRoundHelper(4, Arrays.asList(new Integer[]{0, 3}), Arrays.asList(new Integer[]{}), 1);
-        setStatusForNewRoundHelper(5, Arrays.asList(new Integer[]{}), Arrays.asList(new Integer[]{}), 1);
-        setStatusForNewRoundHelper(5, Arrays.asList(new Integer[]{2}), Arrays.asList(new Integer[]{}), 1);
-        setStatusForNewRoundHelper(5, Arrays.asList(new Integer[]{2, 3}), Arrays.asList(new Integer[]{}), 1);
-        setStatusForNewRoundHelper(5, Arrays.asList(new Integer[]{0, 1, 2}), Arrays.asList(new Integer[]{}), 3);
-        setStatusForNewRoundHelper(5, Arrays.asList(new Integer[]{0, 1, 4}), Arrays.asList(new Integer[]{}), 2);
+        setStatusForNewRoundHelper(2, Arrays.asList(new Integer[] {}),
+                Arrays.asList(new Integer[] {}), 1);
+        setStatusForNewRoundHelper(3, Arrays.asList(new Integer[] { 0 }),
+                Arrays.asList(new Integer[] {}), 1);
+        setStatusForNewRoundHelper(3, Arrays.asList(new Integer[] { 1 }),
+                Arrays.asList(new Integer[] {}), 2);
+        setStatusForNewRoundHelper(3, Arrays.asList(new Integer[] { 2 }),
+                Arrays.asList(new Integer[] {}), 1);
+        setStatusForNewRoundHelper(4, Arrays.asList(new Integer[] { 0 }),
+                Arrays.asList(new Integer[] {}), 1);
+        setStatusForNewRoundHelper(4, Arrays.asList(new Integer[] { 1 }),
+                Arrays.asList(new Integer[] {}), 2);
+        setStatusForNewRoundHelper(4, Arrays.asList(new Integer[] { 2 }),
+                Arrays.asList(new Integer[] {}), 1);
+        setStatusForNewRoundHelper(4, Arrays.asList(new Integer[] { 3 }),
+                Arrays.asList(new Integer[] {}), 1);
+        setStatusForNewRoundHelper(4, Arrays.asList(new Integer[] { 0, 1 }),
+                Arrays.asList(new Integer[] {}), 2);
+        setStatusForNewRoundHelper(4, Arrays.asList(new Integer[] { 1, 2 }),
+                Arrays.asList(new Integer[] {}), 3);
+        setStatusForNewRoundHelper(4, Arrays.asList(new Integer[] { 2, 3 }),
+                Arrays.asList(new Integer[] {}), 1);
+        setStatusForNewRoundHelper(4, Arrays.asList(new Integer[] { 0, 3 }),
+                Arrays.asList(new Integer[] {}), 1);
+        setStatusForNewRoundHelper(5, Arrays.asList(new Integer[] {}),
+                Arrays.asList(new Integer[] {}), 1);
+        setStatusForNewRoundHelper(5, Arrays.asList(new Integer[] { 2 }),
+                Arrays.asList(new Integer[] {}), 1);
+        setStatusForNewRoundHelper(5, Arrays.asList(new Integer[] { 2, 3 }),
+                Arrays.asList(new Integer[] {}), 1);
+        setStatusForNewRoundHelper(5, Arrays.asList(new Integer[] { 0, 1, 2 }),
+                Arrays.asList(new Integer[] {}), 3);
+        setStatusForNewRoundHelper(5, Arrays.asList(new Integer[] { 0, 1, 4 }),
+                Arrays.asList(new Integer[] {}), 2);
 
-        // add some users that have dropped out during the hand, but not necessarily left the table
-        setStatusForNewRoundHelper(4, Arrays.asList(new Integer[]{0}), Arrays.asList(new Integer[]{1}), 2);
-        setStatusForNewRoundHelper(4, Arrays.asList(new Integer[]{1}), Arrays.asList(new Integer[]{2}), 3);
-        setStatusForNewRoundHelper(4, Arrays.asList(new Integer[]{2}), Arrays.asList(new Integer[]{0}), 1);
-        setStatusForNewRoundHelper(4, Arrays.asList(new Integer[]{3}), Arrays.asList(new Integer[]{1}), 2);
-        setStatusForNewRoundHelper(5, Arrays.asList(new Integer[]{}), Arrays.asList(new Integer[]{0, 1, 2}), 3);
-        setStatusForNewRoundHelper(5, Arrays.asList(new Integer[]{2}), Arrays.asList(new Integer[]{0, 1}), 3);
-        setStatusForNewRoundHelper(5, Arrays.asList(new Integer[]{2, 3}), Arrays.asList(new Integer[]{1}), 4);
+        // add some users that have dropped out during the hand, but not
+        // necessarily left the table
+        setStatusForNewRoundHelper(4, Arrays.asList(new Integer[] { 0 }),
+                Arrays.asList(new Integer[] { 1 }), 2);
+        setStatusForNewRoundHelper(4, Arrays.asList(new Integer[] { 1 }),
+                Arrays.asList(new Integer[] { 2 }), 3);
+        setStatusForNewRoundHelper(4, Arrays.asList(new Integer[] { 2 }),
+                Arrays.asList(new Integer[] { 0 }), 1);
+        setStatusForNewRoundHelper(4, Arrays.asList(new Integer[] { 3 }),
+                Arrays.asList(new Integer[] { 1 }), 2);
+        setStatusForNewRoundHelper(5, Arrays.asList(new Integer[] {}),
+                Arrays.asList(new Integer[] { 0, 1, 2 }), 3);
+        setStatusForNewRoundHelper(5, Arrays.asList(new Integer[] { 2 }),
+                Arrays.asList(new Integer[] { 0, 1 }), 3);
+        setStatusForNewRoundHelper(5, Arrays.asList(new Integer[] { 2, 3 }),
+                Arrays.asList(new Integer[] { 1 }), 4);
     }
 
     private void setStatusForNewRoundHelper(int numberOfPlayers,

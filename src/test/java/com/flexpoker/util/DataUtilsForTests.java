@@ -8,11 +8,10 @@ import com.flexpoker.model.Table;
 import com.flexpoker.model.User;
 import com.flexpoker.model.UserGameStatus;
 
-
 public class DataUtilsForTests {
 
     public static Set<UserGameStatus> createUserGameStatusSet(int numberOfUserGameStatuses) {
-        Set<UserGameStatus> userGameStatuses = new HashSet<UserGameStatus>();
+        Set<UserGameStatus> userGameStatuses = new HashSet<>();
 
         for (int i = 0; i < numberOfUserGameStatuses; i++) {
             userGameStatuses.add(new UserGameStatus(new User(), 1500));
@@ -21,7 +20,8 @@ public class DataUtilsForTests {
         return userGameStatuses;
     }
 
-    public static void fillTableWithUsers(Table table, int numberOfUsers, int maxPlayersPerTable) {
+    public static void fillTableWithUsers(Table table, int numberOfUsers,
+            int maxPlayersPerTable) {
         for (int i = 0; i < maxPlayersPerTable; i++) {
             Seat seat = new Seat(1);
             table.addSeat(seat);
@@ -33,6 +33,4 @@ public class DataUtilsForTests {
         }
     }
 
-
-    
 }
