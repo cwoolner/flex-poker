@@ -2,10 +2,11 @@ package com.flexpoker.login.query.repository;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+
+import javax.inject.Inject;
 
 import org.springframework.context.annotation.Profile;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -13,25 +14,33 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Repository;
 
-@Profile("dev")
+@Profile("prod")
 @Repository
-public class InMemoryLoginRepository implements LoginRepository {
+public class RedisLoginRepository implements LoginRepository {
 
-    private final Map<String, UserDetails> loginUserMap;
+    private static final String LOGIN_NAMESPACE = "login:";
 
-    public InMemoryLoginRepository() {
-        loginUserMap = new HashMap<>();
+    private final StringRedisTemplate redisTemplate;
+
+    @Inject
+    public RedisLoginRepository(StringRedisTemplate redisTemplate) {
+        this.redisTemplate = redisTemplate;
         addDefaultUsers();
     }
 
     @Override
     public UserDetails loadUserByUsername(String username)
             throws UsernameNotFoundException {
-        return loginUserMap.get(username);
-    }
 
-    @Override
-    public void saveLogin(String username, String encryptedPassword) {
+        String encryptedPassword = redisTemplate.opsForValue().get(
+                LOGIN_NAMESPACE + username);
+
+        if (encryptedPassword == null) {
+            return null;
+        }
+
+        // TODO: change these to not use default positive values, getting all of
+        // the data from Redis instead
         UserDetails userDetails = new UserDetails() {
 
             private static final long serialVersionUID = 1L;
@@ -72,7 +81,12 @@ public class InMemoryLoginRepository implements LoginRepository {
             }
         };
 
-        loginUserMap.put(username, userDetails);
+        return userDetails;
+    }
+
+    @Override
+    public void saveLogin(String username, String encryptedPassword) {
+        redisTemplate.opsForValue().set(LOGIN_NAMESPACE + username, encryptedPassword);
     }
 
     private void addDefaultUsers() {
