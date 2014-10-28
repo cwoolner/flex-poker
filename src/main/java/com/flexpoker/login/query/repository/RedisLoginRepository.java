@@ -2,6 +2,7 @@ package com.flexpoker.login.query.repository;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.UUID;
 
 import javax.inject.Inject;
 
@@ -18,7 +19,11 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class RedisLoginRepository implements LoginRepository {
 
-    private static final String LOGIN_NAMESPACE = "login:";
+    private static final String LOGIN_PASSWORD_NAMESPACE = "login-password:";
+
+    private static final String LOGIN_ID_NAMESPACE = "login-id:";
+
+    private static final String AGGREGATE_ID_USERNAME_NAMESPACE = "aggregateid-username:";
 
     private final StringRedisTemplate redisTemplate;
 
@@ -33,7 +38,7 @@ public class RedisLoginRepository implements LoginRepository {
             throws UsernameNotFoundException {
 
         String encryptedPassword = redisTemplate.opsForValue().get(
-                LOGIN_NAMESPACE + username);
+                LOGIN_PASSWORD_NAMESPACE + username);
 
         if (encryptedPassword == null) {
             return null;
@@ -85,15 +90,42 @@ public class RedisLoginRepository implements LoginRepository {
     }
 
     @Override
-    public void saveLogin(String username, String encryptedPassword) {
-        redisTemplate.opsForValue().set(LOGIN_NAMESPACE + username, encryptedPassword);
+    public void saveUsernameAndPassword(String username, String encryptedPassword) {
+        redisTemplate.opsForValue().set(LOGIN_PASSWORD_NAMESPACE + username,
+                encryptedPassword);
+    }
+
+    @Override
+    public UUID fetchAggregateIdByUsername(String username) {
+        String stringAggregateId = redisTemplate.opsForValue().get(
+                LOGIN_ID_NAMESPACE + username);
+        return UUID.fromString(stringAggregateId);
+    }
+
+    @Override
+    public void saveAggregateIdAndUsername(UUID aggregateId, String username) {
+        redisTemplate.opsForValue().set(LOGIN_ID_NAMESPACE + username,
+                aggregateId.toString());
+        redisTemplate.opsForValue().set(AGGREGATE_ID_USERNAME_NAMESPACE + aggregateId,
+                username);
+    }
+
+    @Override
+    public String fetchUsernameByAggregateId(UUID aggregateId) {
+        return redisTemplate.opsForValue().get(
+                AGGREGATE_ID_USERNAME_NAMESPACE + aggregateId);
     }
 
     private void addDefaultUsers() {
-        saveLogin("player1", new BCryptPasswordEncoder().encode("player1"));
-        saveLogin("player2", new BCryptPasswordEncoder().encode("player2"));
-        saveLogin("player3", new BCryptPasswordEncoder().encode("player3"));
-        saveLogin("player4", new BCryptPasswordEncoder().encode("player4"));
+        saveUsernameAndPassword("player1", new BCryptPasswordEncoder().encode("player1"));
+        saveUsernameAndPassword("player2", new BCryptPasswordEncoder().encode("player2"));
+        saveUsernameAndPassword("player3", new BCryptPasswordEncoder().encode("player3"));
+        saveUsernameAndPassword("player4", new BCryptPasswordEncoder().encode("player4"));
+
+        saveAggregateIdAndUsername(UUID.randomUUID(), "player1");
+        saveAggregateIdAndUsername(UUID.randomUUID(), "player2");
+        saveAggregateIdAndUsername(UUID.randomUUID(), "player3");
+        saveAggregateIdAndUsername(UUID.randomUUID(), "player4");
     }
 
 }

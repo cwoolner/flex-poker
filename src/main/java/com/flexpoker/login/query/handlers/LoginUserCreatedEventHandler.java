@@ -22,7 +22,10 @@ public class LoginUserCreatedEventHandler implements EventHandler<LoginUserCreat
     @Async
     @Override
     public void handle(LoginUserCreatedEvent event) {
-        loginRepository.saveLogin(event.getUsername(), event.getEncryptedPassword());
+        loginRepository.saveUsernameAndPassword(event.getUsername(),
+                event.getEncryptedPassword());
+        loginRepository.saveAggregateIdAndUsername(event.getAggregateId(),
+                event.getUsername());
     }
 
 }

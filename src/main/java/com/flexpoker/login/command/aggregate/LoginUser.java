@@ -19,7 +19,7 @@ public class LoginUser extends AggregateRoot<LoginEvent> {
 
     private boolean enabled;
 
-    public LoginUser(UUID aggregateId, String username, String encryptedPassword) {
+    protected LoginUser(UUID aggregateId, String username, String encryptedPassword) {
         this.aggregateId = aggregateId;
         this.username = username;
         this.encryptedPassword = encryptedPassword;
@@ -42,6 +42,7 @@ public class LoginUser extends AggregateRoot<LoginEvent> {
 
     private void applyEvent(LoginUserCreatedEvent event) {
         enabled = true;
+        addAppliedEvent(event);
     }
 
     public void enableNewUser() {
