@@ -15,6 +15,7 @@ flexpokerModule.controller('TournamentRegisteringController', ['$rootScope', '$s
                   + '</div>'
               + '</div>',
             columnDefs: [ {field: 'name', displayName: 'Name'},
+                          {field: 'stage', displayName: 'Stage'},
                           {field: 'numberOfRegisteredPlayers', displayName: 'Registered Players'},
                           {field: 'maxNumberOfPlayers', displayName: 'Total Players'},
                           {field: 'maxPlayersPerTable', displayName: 'Players Per Table'},

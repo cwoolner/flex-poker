@@ -1,7 +1,5 @@
 package com.flexpoker.web.model;
 
-import org.apache.commons.lang.builder.ToStringBuilder;
-
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -9,15 +7,14 @@ public class CreateGameViewModel {
 
     private final String name;
 
-    private final Integer players;
+    private final int players;
 
-    private final Integer playersPerTable;
+    private final int playersPerTable;
 
     @JsonCreator
-    public CreateGameViewModel(
-            @JsonProperty(value = "name") String name,
-            @JsonProperty(value = "players") Integer players,
-            @JsonProperty(value = "playersPerTable") Integer playersPerTable) {
+    public CreateGameViewModel(@JsonProperty(value = "name") String name,
+            @JsonProperty(value = "players") int players,
+            @JsonProperty(value = "playersPerTable") int playersPerTable) {
         this.name = name;
         this.players = players;
         this.playersPerTable = playersPerTable;
@@ -27,17 +24,12 @@ public class CreateGameViewModel {
         return name;
     }
 
-    public Integer getPlayers() {
+    public int getPlayers() {
         return players;
     }
 
-    public Integer getPlayersPerTable() {
+    public int getPlayersPerTable() {
         return playersPerTable;
-    }
-    
-    @Override
-    public String toString() {
-        return ToStringBuilder.reflectionToString(this);
     }
 
 }
