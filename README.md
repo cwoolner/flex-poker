@@ -56,14 +56,14 @@ Back-end libraries/frameworks
 * Spring 4 - MVC/WebSocket/etc.
 * Spring Data Redis
 * Spring Security 3.2
-* Redis - only required for sign-up functionality
+* Redis - only required if using the "prod" Spring profile
 * A couple of basic pages (non-Angular) use basic JSP/JSTL
 
 Running the app
 ===============
 
 * From the top-level directory: `mvn clean jetty:run`
-* Hit (http://localhost:8080/flexpoker)
+* Hit (http://localhost:8080/)
 
 Dev environment setup
 =====================
