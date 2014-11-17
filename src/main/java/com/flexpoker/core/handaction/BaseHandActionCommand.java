@@ -14,7 +14,6 @@ import com.flexpoker.core.api.seatstatus.SetSeatStatusForNewHandCommand;
 import com.flexpoker.core.api.seatstatus.SetSeatStatusForNewRoundCommand;
 import com.flexpoker.core.pot.CalculatePotsAfterRoundImplQuery;
 import com.flexpoker.core.pot.DeterminePotWinnersImplQuery;
-import com.flexpoker.event.TableUpdatedEvent;
 import com.flexpoker.model.Game;
 import com.flexpoker.model.Hand;
 import com.flexpoker.model.HandDealerState;
@@ -30,37 +29,41 @@ import com.flexpoker.repository.api.GameRepository;
 public abstract class BaseHandActionCommand {
 
     protected GameRepository gameRepository;
-    
+
     protected SendTableChatMessageCommand sendTableChatMessageCommand;
 
     protected SetSeatStatusForEndOfHandCommand setSeatStatusForEndOfHandCommand;
-    
+
     protected SetSeatStatusForNewRoundCommand setSeatStatusForNewRoundCommand;
-    
+
     protected SetSeatStatusForNewHandCommand setSeatStatusForNewHandCommand;
-    
+
     protected CalculatePotsAfterRoundImplQuery calculatePotsAfterRoundImplQuery;
-    
+
     protected DeterminePotWinnersImplQuery determinePotWinnersImplQuery;
-    
+
     protected ScheduleAndReturnActionOnTimerCommand scheduleAndReturnActionOnTimerCommand;
-    
+
     protected StartNewHandCommand startNewHandCommand;
-    
+
     protected ApplicationEventPublisher applicationEventPublisher;
 
-    protected void handleMiddleOfRound(Game game, Table table, Hand realTimeHand, Seat actionOnSeat) {
+    protected void handleMiddleOfRound(Game game, Table table, Hand realTimeHand,
+            Seat actionOnSeat) {
         realTimeHand.setHandRoundState(HandRoundState.ROUND_IN_PROGRESS);
         actionOnSeat.setActionOn(false);
         Seat nextToActSeat = realTimeHand.getNextToAct();
         nextToActSeat.setActionOn(true);
-        
-        Timer actionOnTimer = scheduleAndReturnActionOnTimerCommand.execute(
-                game, table, nextToActSeat);
+
+        Timer actionOnTimer = scheduleAndReturnActionOnTimerCommand.execute(game, table,
+                nextToActSeat);
         nextToActSeat.setActionOnTimer(actionOnTimer);
 
         determineNextToAct(table, realTimeHand);
-        applicationEventPublisher.publishEvent(new TableUpdatedEvent(this, game.getId(), table));
+
+        // TODO: update table
+        // applicationEventPublisher.publishEvent(new TableUpdatedEvent(this,
+        // game.getId(), table));
     }
 
     protected void handleEndOfRound(Game game, Table table, Hand realTimeHand,
@@ -74,7 +77,8 @@ public abstract class BaseHandActionCommand {
         if (realTimeHand.getHandDealerState() == HandDealerState.COMPLETE) {
             setSeatStatusForEndOfHandCommand.execute(table);
             determineWinners(table, realTimeHand.getHandEvaluationList());
-            // TODO: change this to check if a new hand is necessary or if a single person won
+            // TODO: change this to check if a new hand is necessary or if a
+            // single person won
             setSeatStatusForNewHandCommand.execute(game, table);
             startNewHandCommand.execute(game, table);
         } else {
@@ -83,7 +87,10 @@ public abstract class BaseHandActionCommand {
             determineLastToAct(table, realTimeHand);
             resetRaiseAmountsAfterRound(table, bigBlindAmount);
             resetPossibleSeatActionsAfterRound(table, realTimeHand);
-            applicationEventPublisher.publishEvent(new TableUpdatedEvent(this, game.getId(), table));
+            // TODO: update table
+            // applicationEventPublisher.publishEvent(new
+            // TableUpdatedEvent(this, game
+            // .getId(), table));
         }
     }
 
@@ -98,8 +105,7 @@ public abstract class BaseHandActionCommand {
         }
     }
 
-    private void resetPossibleSeatActionsAfterRound(Table table,
-            Hand realTimeHand) {
+    private void resetPossibleSeatActionsAfterRound(Table table, Hand realTimeHand) {
         for (Seat seat : table.getSeats()) {
             realTimeHand.addPossibleSeatAction(seat, PlayerAction.CHECK);
             realTimeHand.addPossibleSeatAction(seat, PlayerAction.RAISE);

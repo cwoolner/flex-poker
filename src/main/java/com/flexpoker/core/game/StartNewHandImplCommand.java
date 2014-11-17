@@ -11,8 +11,6 @@ import com.flexpoker.bso.api.HandEvaluatorBso;
 import com.flexpoker.config.Command;
 import com.flexpoker.core.api.deck.CreateShuffledDeckCommand;
 import com.flexpoker.core.api.game.StartNewHandCommand;
-import com.flexpoker.event.SendUserPocketCardsEvent;
-import com.flexpoker.event.TableUpdatedEvent;
 import com.flexpoker.model.Blinds;
 import com.flexpoker.model.Game;
 import com.flexpoker.model.Hand;
@@ -36,9 +34,9 @@ public class StartNewHandImplCommand implements StartNewHandCommand {
     private final CreateShuffledDeckCommand createShuffledDeckCommand;
 
     private final HandEvaluatorBso handEvaluatorBso;
-    
+
     private final ApplicationEventPublisher applicationEventPublisher;
-    
+
     @Inject
     public StartNewHandImplCommand(CreateShuffledDeckCommand createShuffledDeckCommand,
             HandEvaluatorBso handEvaluatorBso,
@@ -47,7 +45,7 @@ public class StartNewHandImplCommand implements StartNewHandCommand {
         this.handEvaluatorBso = handEvaluatorBso;
         this.applicationEventPublisher = applicationEventPublisher;
     }
-    
+
     @Override
     public void execute(Game game, Table table) {
         Blinds currentBlinds = game.getCurrentBlinds();
@@ -93,8 +91,7 @@ public class StartNewHandImplCommand implements StartNewHandCommand {
                 seat.setCallAmount(callAmount);
             }
 
-            int totalChips = seat.getUserGameStatus().getChips()
-                    + seat.getChipsInFront();
+            int totalChips = seat.getUserGameStatus().getChips() + seat.getChipsInFront();
 
             if (raiseToAmount > totalChips) {
                 seat.setRaiseTo(totalChips);
@@ -125,7 +122,9 @@ public class StartNewHandImplCommand implements StartNewHandCommand {
         List<HandEvaluation> handEvaluations = determineHandEvaluations(game, table);
         realTimeHand.setHandEvaluationList(handEvaluations);
 
-        applicationEventPublisher.publishEvent(new TableUpdatedEvent(this, game.getId(), table));
+        // TODO: update table
+        // applicationEventPublisher.publishEvent(new TableUpdatedEvent(this,
+        // game.getId(), table));
     }
 
     private List<HandEvaluation> determineHandEvaluations(Game game, Table table) {
@@ -133,7 +132,8 @@ public class StartNewHandImplCommand implements StartNewHandCommand {
         TurnCard turnCard = table.getCurrentHand().getDeck().getTurnCard();
         RiverCard riverCard = table.getCurrentHand().getDeck().getRiverCard();
 
-        List<HandRanking> possibleHands = handEvaluatorBso.determinePossibleHands(flopCards, turnCard, riverCard);
+        List<HandRanking> possibleHands = handEvaluatorBso.determinePossibleHands(
+                flopCards, turnCard, riverCard);
 
         List<HandEvaluation> handEvaluations = new ArrayList<>();
 
@@ -143,12 +143,13 @@ public class StartNewHandImplCommand implements StartNewHandCommand {
                 User user = seat.getUserGameStatus().getUser();
                 PocketCards pocketCards = table.getCurrentHand().getDeck()
                         .getPocketCards(seat.getPosition());
-                HandEvaluation handEvaluation = handEvaluatorBso
-                        .determineHandEvaluation(flopCards, turnCard, riverCard,
-                                user, pocketCards, possibleHands);
+                HandEvaluation handEvaluation = handEvaluatorBso.determineHandEvaluation(
+                        flopCards, turnCard, riverCard, user, pocketCards, possibleHands);
                 handEvaluations.add(handEvaluation);
-                applicationEventPublisher.publishEvent(new SendUserPocketCardsEvent(this,
-                        user.getUsername(), pocketCards, table.getId()));
+                // TODO: send pocket cards
+                // applicationEventPublisher.publishEvent(new
+                // SendUserPocketCardsEvent(this,
+                // user.getUsername(), pocketCards, table.getId()));
             }
         }
 

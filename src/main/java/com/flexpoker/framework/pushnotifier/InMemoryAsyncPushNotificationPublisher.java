@@ -7,6 +7,9 @@ import org.springframework.stereotype.Component;
 
 import com.flexpoker.pushnotifications.GameListUpdatedPushNotification;
 import com.flexpoker.pushnotifications.OpenGamesForPlayerUpdatedPushNotification;
+import com.flexpoker.pushnotifications.OpenTableForUserPushNotification;
+import com.flexpoker.pushnotifications.SendUserPocketCardsPushNotification;
+import com.flexpoker.pushnotifications.TableUpdatedPushNotification;
 
 @Component
 public class InMemoryAsyncPushNotificationPublisher implements PushNotificationPublisher {
@@ -15,12 +18,24 @@ public class InMemoryAsyncPushNotificationPublisher implements PushNotificationP
 
     private final PushNotificationHandler<OpenGamesForPlayerUpdatedPushNotification> openGamesForPlayerUpdatedPushNotificationHandler;
 
+    private final PushNotificationHandler<OpenTableForUserPushNotification> openTableForUserPushNotificationHandler;
+
+    private final PushNotificationHandler<SendUserPocketCardsPushNotification> sendUserPocketCardsPushNotificationHandler;
+
+    private final PushNotificationHandler<TableUpdatedPushNotification> tableUpdatedPushNotificationHandler;
+
     @Inject
     public InMemoryAsyncPushNotificationPublisher(
             PushNotificationHandler<GameListUpdatedPushNotification> gameListUpdatedPushNotificationHandler,
-            PushNotificationHandler<OpenGamesForPlayerUpdatedPushNotification> openGamesForPlayerUpdatedPushNotificationHandler) {
+            PushNotificationHandler<OpenGamesForPlayerUpdatedPushNotification> openGamesForPlayerUpdatedPushNotificationHandler,
+            PushNotificationHandler<OpenTableForUserPushNotification> openTableForUserPushNotificationHandler,
+            PushNotificationHandler<SendUserPocketCardsPushNotification> sendUserPocketCardsPushNotificationHandler,
+            PushNotificationHandler<TableUpdatedPushNotification> tableUpdatedPushNotificationHandler) {
         this.gameListUpdatedPushNotificationHandler = gameListUpdatedPushNotificationHandler;
         this.openGamesForPlayerUpdatedPushNotificationHandler = openGamesForPlayerUpdatedPushNotificationHandler;
+        this.openTableForUserPushNotificationHandler = openTableForUserPushNotificationHandler;
+        this.sendUserPocketCardsPushNotificationHandler = sendUserPocketCardsPushNotificationHandler;
+        this.tableUpdatedPushNotificationHandler = tableUpdatedPushNotificationHandler;
     }
 
     @Async
@@ -34,6 +49,19 @@ public class InMemoryAsyncPushNotificationPublisher implements PushNotificationP
         case OpenGamesForPlayerUpdated:
             openGamesForPlayerUpdatedPushNotificationHandler
                     .handle((OpenGamesForPlayerUpdatedPushNotification) pushNotification);
+            break;
+        case OpenTableForUser:
+            openTableForUserPushNotificationHandler
+                    .handle((OpenTableForUserPushNotification) pushNotification);
+            break;
+        case SendUserPocketCards:
+            sendUserPocketCardsPushNotificationHandler
+                    .handle((SendUserPocketCardsPushNotification) pushNotification);
+            break;
+        case TableUpdated:
+            tableUpdatedPushNotificationHandler
+                    .handle((TableUpdatedPushNotification) pushNotification);
+            break;
         default:
             throw new IllegalArgumentException(
                     "Push Notification Type cannot be handled: "
