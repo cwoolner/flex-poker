@@ -15,14 +15,21 @@ public class GameTablesCreatedAndPlayersAssociatedEvent extends BaseEvent<GameEv
 
     private final Map<UUID, Set<UUID>> tableIdToPlayerIdsMap;
 
+    private final int numberOfPlayersPerTable;
+
     public GameTablesCreatedAndPlayersAssociatedEvent(UUID aggregateId, int version,
-            Map<UUID, Set<UUID>> tableIdToPlayerIdsMap) {
+            Map<UUID, Set<UUID>> tableIdToPlayerIdsMap, int numberOfPlayersPerTable) {
         super(aggregateId, version, TYPE);
         this.tableIdToPlayerIdsMap = tableIdToPlayerIdsMap;
+        this.numberOfPlayersPerTable = numberOfPlayersPerTable;
     }
 
     public Map<UUID, Set<UUID>> getTableIdToPlayerIdsMap() {
         return tableIdToPlayerIdsMap;
+    }
+
+    public int getNumberOfPlayersPerTable() {
+        return numberOfPlayersPerTable;
     }
 
 }

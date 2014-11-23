@@ -67,6 +67,8 @@ public class InMemoryAsyncGameEventPublisher implements EventPublisher<GameEvent
                     .handle((GameTablesCreatedAndPlayersAssociatedEvent) event);
             break;
         case GameStarted:
+            final EventHandler<GameStartedEvent> gameStartedEventHandler = this.gameStartedEventHandler;
+            final ProcessManager<GameStartedEvent> startFirstHandProcessManager = this.startFirstHandProcessManager;
             final Timer timer = new Timer();
             final TimerTask timerTask = new TimerTask() {
                 @Override

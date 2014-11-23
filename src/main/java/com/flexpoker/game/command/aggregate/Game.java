@@ -162,7 +162,8 @@ public class Game extends AggregateRoot<GameEvent> {
         createTableToPlayerMap();
 
         GameTablesCreatedAndPlayersAssociatedEvent event = new GameTablesCreatedAndPlayersAssociatedEvent(
-                aggregateId, ++aggregateVersion, tableIdToPlayerIdsMap);
+                aggregateId, ++aggregateVersion, tableIdToPlayerIdsMap,
+                numberOfPlayersPerTable);
         addNewEvent(event);
         applyEvent(event);
     }
@@ -204,7 +205,8 @@ public class Game extends AggregateRoot<GameEvent> {
     }
 
     private void createGameStartedEvent() {
-        GameStartedEvent event = new GameStartedEvent(aggregateId, ++aggregateVersion);
+        GameStartedEvent event = new GameStartedEvent(aggregateId, ++aggregateVersion,
+                tableIdToPlayerIdsMap.keySet());
         addNewEvent(event);
         applyEvent(event);
     }

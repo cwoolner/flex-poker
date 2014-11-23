@@ -1,5 +1,6 @@
 package com.flexpoker.game.command.events;
 
+import java.util.Set;
 import java.util.UUID;
 
 import com.flexpoker.framework.event.BaseEvent;
@@ -10,8 +11,15 @@ public class GameStartedEvent extends BaseEvent<GameEventType> implements GameEv
 
     private static final GameEventType TYPE = GameEventType.GameStarted;
 
-    public GameStartedEvent(UUID aggregateId, int version) {
+    private final Set<UUID> tableIds;
+
+    public GameStartedEvent(UUID aggregateId, int version, Set<UUID> tableIds) {
         super(aggregateId, version, TYPE);
+        this.tableIds = tableIds;
+    }
+
+    public Set<UUID> getTableIds() {
+        return tableIds;
     }
 
 }
