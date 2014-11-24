@@ -68,7 +68,7 @@ public class Table extends AggregateRoot<TableEvent> {
         }
 
         TableCreatedEvent tableCreatedEvent = new TableCreatedEvent(aggregateId,
-                ++aggregateVersion, gameId, seatMap.size(), seatToPlayerMap);
+                ++aggregateVersion, gameId, seatMap.size(), seatToPlayerMap, 1500);
         addNewEvent(tableCreatedEvent);
         applyEvent(tableCreatedEvent);
     }

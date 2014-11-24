@@ -2,10 +2,13 @@ package com.flexpoker.web.model.table;
 
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class TableViewModel {
+
+    private final UUID tableId;
 
     @JsonProperty
     private List<SeatViewModel> seats;
@@ -19,12 +22,17 @@ public class TableViewModel {
     @JsonProperty
     private List<CardViewModel> visibleCommonCards;
 
-    public TableViewModel(List<SeatViewModel> seats, int totalPot,
+    public TableViewModel(UUID tableId, List<SeatViewModel> seats, int totalPot,
             Set<PotViewModel> pots, List<CardViewModel> visibleCommonCards) {
+        this.tableId = tableId;
         this.seats = seats;
         this.totalPot = totalPot;
         this.pots = pots;
         this.visibleCommonCards = visibleCommonCards;
+    }
+
+    public UUID getId() {
+        return tableId;
     }
 
 }

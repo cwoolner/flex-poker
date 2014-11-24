@@ -24,35 +24,35 @@ public class TableTranslator {
         for (Seat seat : table.getSeats()) {
             seatViewModels.add(new SeatTranslator().translate(seat));
         }
-        
+
         Set<PotViewModel> potViewModels = new HashSet<>();
         for (Pot pot : table.getCurrentHand().getPots()) {
             potViewModels.add(new PotTranslator().translate(pot));
         }
-        
+
         List<CardViewModel> visibleCommonCards = new ArrayList<>();
-        
-        if (table.getCurrentHand().getHandDealerState().ordinal()
-                >= HandDealerState.FLOP_DEALT.ordinal()) {
+
+        if (table.getCurrentHand().getHandDealerState().ordinal() >= HandDealerState.FLOP_DEALT
+                .ordinal()) {
             FlopCards flopCards = table.getCurrentHand().getDeck().getFlopCards();
             visibleCommonCards.add(new CardViewModel(flopCards.getCard1().getId()));
             visibleCommonCards.add(new CardViewModel(flopCards.getCard2().getId()));
             visibleCommonCards.add(new CardViewModel(flopCards.getCard3().getId()));
         }
-        
-        if (table.getCurrentHand().getHandDealerState().ordinal()
-                >= HandDealerState.TURN_DEALT.ordinal()) {
+
+        if (table.getCurrentHand().getHandDealerState().ordinal() >= HandDealerState.TURN_DEALT
+                .ordinal()) {
             TurnCard turnCard = table.getCurrentHand().getDeck().getTurnCard();
             visibleCommonCards.add(new CardViewModel(turnCard.getCard().getId()));
         }
-        
-        if (table.getCurrentHand().getHandDealerState().ordinal()
-                >= HandDealerState.RIVER_DEALT.ordinal()) {
+
+        if (table.getCurrentHand().getHandDealerState().ordinal() >= HandDealerState.RIVER_DEALT
+                .ordinal()) {
             RiverCard riverCard = table.getCurrentHand().getDeck().getRiverCard();
             visibleCommonCards.add(new CardViewModel(riverCard.getCard().getId()));
         }
-        
-        return new TableViewModel(seatViewModels, table.getCurrentHand().getTotalPotAmount(),
-                potViewModels, visibleCommonCards);
+
+        return new TableViewModel(table.getId(), seatViewModels, table.getCurrentHand()
+                .getTotalPotAmount(), potViewModels, visibleCommonCards);
     }
 }

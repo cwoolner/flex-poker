@@ -17,14 +17,19 @@ public class TableCreatedEvent extends BaseEvent<TableEventType> implements Tabl
 
     private final Map<Integer, UUID> seatPositionToPlayerMap;
 
+    private final int startingNumberOfChips;
+
     public TableCreatedEvent(UUID aggregateId, int version, UUID gameId,
-            int numberOfPlayersPerTable, Map<Integer, UUID> seatPositionToPlayerMap) {
+            int numberOfPlayersPerTable, Map<Integer, UUID> seatPositionToPlayerMap,
+            int startingNumberOfChips) {
         super(aggregateId, version, TYPE);
         this.gameId = gameId;
         this.numberOfPlayersPerTable = numberOfPlayersPerTable;
         this.seatPositionToPlayerMap = seatPositionToPlayerMap;
+        this.startingNumberOfChips = startingNumberOfChips;
     }
 
+    @Override
     public UUID getGameId() {
         return gameId;
     }
@@ -35,6 +40,10 @@ public class TableCreatedEvent extends BaseEvent<TableEventType> implements Tabl
 
     public Map<Integer, UUID> getSeatPositionToPlayerMap() {
         return seatPositionToPlayerMap;
+    }
+
+    public int getStartingNumberOfChips() {
+        return startingNumberOfChips;
     }
 
 }
