@@ -4,6 +4,6 @@ import com.flexpoker.framework.event.EventType;
 
 public enum TableEventType implements EventType {
 
-    TableCreated
+    TableCreated, CardsShuffled, HandDealtEvent
 
 }
