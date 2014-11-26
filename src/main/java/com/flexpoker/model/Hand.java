@@ -9,7 +9,7 @@ import java.util.Set;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 
-import com.flexpoker.model.card.Deck;
+import com.flexpoker.model.card.CardsUsedInHand;
 
 public class Hand {
 
@@ -31,9 +31,9 @@ public class Hand {
 
     private Set<Pot> pots;
 
-    private final Deck deck;
+    private final CardsUsedInHand deck;
 
-    public Hand(List<Seat> seats, Deck deck) {
+    public Hand(List<Seat> seats, CardsUsedInHand deck) {
         possibleSeatActionsMap = new HashMap<>();
         for (Seat seat : seats) {
             possibleSeatActionsMap.put(seat, new HashSet<PlayerAction>());
@@ -123,7 +123,7 @@ public class Hand {
         return totalPotAmount;
     }
 
-    public Deck getDeck() {
+    public CardsUsedInHand getDeck() {
         return deck;
     }
 

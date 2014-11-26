@@ -5,11 +5,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import org.springframework.context.ApplicationEventPublisher;
-
 import com.flexpoker.bso.api.HandEvaluatorBso;
 import com.flexpoker.config.Command;
-import com.flexpoker.core.api.deck.CreateShuffledDeckCommand;
 import com.flexpoker.core.api.game.StartNewHandCommand;
 import com.flexpoker.model.Blinds;
 import com.flexpoker.model.Game;
@@ -22,28 +19,19 @@ import com.flexpoker.model.PlayerAction;
 import com.flexpoker.model.Seat;
 import com.flexpoker.model.Table;
 import com.flexpoker.model.User;
-import com.flexpoker.model.card.Deck;
+import com.flexpoker.model.card.CardsUsedInHand;
 import com.flexpoker.model.card.FlopCards;
-import com.flexpoker.model.card.PocketCards;
 import com.flexpoker.model.card.RiverCard;
 import com.flexpoker.model.card.TurnCard;
 
 @Command
 public class StartNewHandImplCommand implements StartNewHandCommand {
 
-    private final CreateShuffledDeckCommand createShuffledDeckCommand;
-
     private final HandEvaluatorBso handEvaluatorBso;
 
-    private final ApplicationEventPublisher applicationEventPublisher;
-
     @Inject
-    public StartNewHandImplCommand(CreateShuffledDeckCommand createShuffledDeckCommand,
-            HandEvaluatorBso handEvaluatorBso,
-            ApplicationEventPublisher applicationEventPublisher) {
-        this.createShuffledDeckCommand = createShuffledDeckCommand;
+    public StartNewHandImplCommand(HandEvaluatorBso handEvaluatorBso) {
         this.handEvaluatorBso = handEvaluatorBso;
-        this.applicationEventPublisher = applicationEventPublisher;
     }
 
     @Override
@@ -52,7 +40,8 @@ public class StartNewHandImplCommand implements StartNewHandCommand {
         int smallBlind = currentBlinds.getSmallBlind();
         int bigBlind = currentBlinds.getBigBlind();
 
-        Deck deck = createShuffledDeckCommand.execute(table.getNumberOfPlayers());
+        // TODO: changed the way the shuffle works
+        CardsUsedInHand deck = null; // createShuffledDeckCommand.createCardsUsedInHand(table.getNumberOfPlayers());
 
         Hand realTimeHand = new Hand(table.getSeats(), deck);
         table.setCurrentHand(realTimeHand);
@@ -141,11 +130,16 @@ public class StartNewHandImplCommand implements StartNewHandCommand {
             if (seat.getUserGameStatus() != null
                     && seat.getUserGameStatus().getUser() != null) {
                 User user = seat.getUserGameStatus().getUser();
-                PocketCards pocketCards = table.getCurrentHand().getDeck()
-                        .getPocketCards(seat.getPosition());
-                HandEvaluation handEvaluation = handEvaluatorBso.determineHandEvaluation(
-                        flopCards, turnCard, riverCard, user, pocketCards, possibleHands);
-                handEvaluations.add(handEvaluation);
+
+                // TODO: got rid of getPocketCards()
+                // PocketCards pocketCards = table.getCurrentHand().getDeck()
+                // .getPocketCards(seat.getPosition());
+                // HandEvaluation handEvaluation =
+                // handEvaluatorBso.determineHandEvaluation(
+                // flopCards, turnCard, riverCard, user, pocketCards,
+                // possibleHands);
+                // handEvaluations.add(handEvaluation);
+
                 // TODO: send pocket cards
                 // applicationEventPublisher.publishEvent(new
                 // SendUserPocketCardsEvent(this,

@@ -23,7 +23,6 @@ import com.flexpoker.model.PlayerAction;
 import com.flexpoker.model.Pot;
 import com.flexpoker.model.Seat;
 import com.flexpoker.model.Table;
-import com.flexpoker.model.card.PocketCards;
 import com.flexpoker.repository.api.GameRepository;
 
 public abstract class BaseHandActionCommand {
@@ -153,11 +152,13 @@ public abstract class BaseHandActionCommand {
 
             for (Seat winner : winners) {
                 winner.getUserGameStatus().addChips(numberOfChips);
-                PocketCards pocketCards = table.getCurrentHand().getDeck()
-                        .getPocketCards(winner.getPosition());
-                if (numberOfPlayersInPot > 1) {
-                    winner.setShowCards(pocketCards);
-                }
+
+                // TODO: got rid of getPocketCards()
+                // PocketCards pocketCards = table.getCurrentHand().getDeck()
+                // .getPocketCards(winner.getPosition());
+                // if (numberOfPlayersInPot > 1) {
+                // winner.setShowCards(pocketCards);
+                // }
             }
         }
     }

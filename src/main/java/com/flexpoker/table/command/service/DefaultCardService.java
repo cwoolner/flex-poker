@@ -1,4 +1,4 @@
-package com.flexpoker.core.deck;
+package com.flexpoker.table.command.service;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -7,46 +7,48 @@ import java.util.List;
 import java.util.Random;
 
 import com.flexpoker.config.Command;
-import com.flexpoker.core.api.deck.CreateShuffledDeckCommand;
 import com.flexpoker.model.card.Card;
 import com.flexpoker.model.card.CardRank;
 import com.flexpoker.model.card.CardSuit;
-import com.flexpoker.model.card.Deck;
+import com.flexpoker.model.card.CardsUsedInHand;
 import com.flexpoker.model.card.FlopCards;
 import com.flexpoker.model.card.PocketCards;
 import com.flexpoker.model.card.RiverCard;
 import com.flexpoker.model.card.TurnCard;
 
 @Command
-public class CreateShuffledDeckImplCommand implements CreateShuffledDeckCommand {
+public class DefaultCardService implements CardService {
 
     @Override
-    public Deck execute(int numberOfPlayers) {
+    public List<Card> createShuffledDeck() {
         List<Card> deckOfCards = createDeckOfCards();
         Collections.shuffle(deckOfCards, new Random());
-        
+        return deckOfCards;
+    }
+
+    @Override
+    public CardsUsedInHand createCardsUsedInHand(List<Card> fullDeckOfCards,
+            int numberOfPlayers) {
         int flopCardsIndex = (numberOfPlayers * 2) + 1;
-        FlopCards flopCards = new FlopCards(
-                deckOfCards.get(flopCardsIndex),
-                deckOfCards.get(flopCardsIndex + 1),
-                deckOfCards.get(flopCardsIndex + 2));
-        TurnCard turnCard = new TurnCard(deckOfCards.get(flopCardsIndex + 4));
-        RiverCard riverCard = new RiverCard(deckOfCards.get(flopCardsIndex + 6));
+        FlopCards flopCards = new FlopCards(fullDeckOfCards.get(flopCardsIndex),
+                fullDeckOfCards.get(flopCardsIndex + 1),
+                fullDeckOfCards.get(flopCardsIndex + 2));
+        TurnCard turnCard = new TurnCard(fullDeckOfCards.get(flopCardsIndex + 4));
+        RiverCard riverCard = new RiverCard(fullDeckOfCards.get(flopCardsIndex + 6));
 
         List<PocketCards> pocketCards = new ArrayList<>();
 
         for (int i = 0; i < numberOfPlayers; i++) {
-            Card pocketCard1 = deckOfCards.get(i);
-            Card pocketCard2 = deckOfCards.get(i + numberOfPlayers);
+            Card pocketCard1 = fullDeckOfCards.get(i);
+            Card pocketCard2 = fullDeckOfCards.get(i + numberOfPlayers);
             pocketCards.add(new PocketCards(pocketCard1, pocketCard2));
         }
 
-        return new Deck(flopCards, turnCard, riverCard, pocketCards);
+        return new CardsUsedInHand(flopCards, turnCard, riverCard, pocketCards);
     }
-    
+
     private List<Card> createDeckOfCards() {
-        return Arrays.asList(new Card[]{
-                new Card(0, CardRank.TWO, CardSuit.HEARTS),
+        return Arrays.asList(new Card[] { new Card(0, CardRank.TWO, CardSuit.HEARTS),
                 new Card(1, CardRank.THREE, CardSuit.HEARTS),
                 new Card(2, CardRank.FOUR, CardSuit.HEARTS),
                 new Card(3, CardRank.FIVE, CardSuit.HEARTS),
@@ -97,8 +99,7 @@ public class CreateShuffledDeckImplCommand implements CreateShuffledDeckCommand 
                 new Card(48, CardRank.JACK, CardSuit.CLUBS),
                 new Card(49, CardRank.QUEEN, CardSuit.CLUBS),
                 new Card(50, CardRank.KING, CardSuit.CLUBS),
-                new Card(51, CardRank.ACE, CardSuit.CLUBS)
-        });
+                new Card(51, CardRank.ACE, CardSuit.CLUBS) });
     }
 
 }
