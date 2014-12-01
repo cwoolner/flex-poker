@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -35,12 +36,10 @@ public class DeterminePotWinnersImplQueryTest {
         Game game = GameGenerator.createGame(9, 9);
         Table table = new Table();
 
-        User user1 = new User();
-        user1.setId(1);
-        User user2 = new User();
-        user2.setId(2);
-        User user3 = new User();
-        user3.setId(3);
+        User user1 = new User(UUID.randomUUID(), "test1");
+        User user2 = new User(UUID.randomUUID(), "test2");
+        User user3 = new User(UUID.randomUUID(), "test3");
+
         UserGameStatus userGameStatus1 = new UserGameStatus(user1, 1500);
         UserGameStatus userGameStatus2 = new UserGameStatus(user2, 1500);
         UserGameStatus userGameStatus3 = new UserGameStatus(user3, 1500);
