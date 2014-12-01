@@ -4,6 +4,6 @@ import com.flexpoker.framework.command.CommandType;
 
 public enum TableCommandType implements CommandType {
 
-    CreateTable, StartNewHandForNewGame
+    CreateTable, StartNewHandForNewGame, Check, Call, Raise, Fold
 
 }
