@@ -14,13 +14,16 @@ import com.flexpoker.model.Table;
 public class DeterminePotWinnersImplQuery implements DeterminePotWinnersQuery {
 
     @Override
-    public Set<Seat> execute(Table table, Set<Seat> seats, List<HandEvaluation> winningHands) {
+    public Set<Seat> execute(Table table, Set<Seat> seats,
+            List<HandEvaluation> winningHands) {
         Set<Seat> winners = new HashSet<>();
         HandEvaluation topAssignedHand = null;
         for (HandEvaluation winningHand : winningHands) {
             for (Seat seat : seats) {
-                if (seat.getUserGameStatus().getUser().equals(winningHand.getUser())
-                        && (topAssignedHand == null || topAssignedHand.compareTo(winningHand) == 0)) {
+                if (seat.getUserGameStatus().getUser().getId()
+                        .equals(winningHand.getPlayerId())
+                        && (topAssignedHand == null || topAssignedHand
+                                .compareTo(winningHand) == 0)) {
                     topAssignedHand = winningHand;
                     winners.add(seat);
                 }

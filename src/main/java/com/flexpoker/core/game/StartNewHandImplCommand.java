@@ -5,7 +5,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import com.flexpoker.bso.api.HandEvaluatorBso;
 import com.flexpoker.config.Command;
 import com.flexpoker.core.api.game.StartNewHandCommand;
 import com.flexpoker.model.Blinds;
@@ -23,14 +22,15 @@ import com.flexpoker.model.card.CardsUsedInHand;
 import com.flexpoker.model.card.FlopCards;
 import com.flexpoker.model.card.RiverCard;
 import com.flexpoker.model.card.TurnCard;
+import com.flexpoker.table.command.service.HandEvaluatorService;
 
 @Command
 public class StartNewHandImplCommand implements StartNewHandCommand {
 
-    private final HandEvaluatorBso handEvaluatorBso;
+    private final HandEvaluatorService handEvaluatorBso;
 
     @Inject
-    public StartNewHandImplCommand(HandEvaluatorBso handEvaluatorBso) {
+    public StartNewHandImplCommand(HandEvaluatorService handEvaluatorBso) {
         this.handEvaluatorBso = handEvaluatorBso;
     }
 

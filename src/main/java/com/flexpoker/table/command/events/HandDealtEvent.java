@@ -1,9 +1,17 @@
 package com.flexpoker.table.command.events;
 
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 import com.flexpoker.framework.event.BaseEvent;
+import com.flexpoker.model.Blinds;
+import com.flexpoker.model.HandDealerState;
+import com.flexpoker.model.HandEvaluation;
+import com.flexpoker.model.HandRoundState;
+import com.flexpoker.model.PlayerAction;
+import com.flexpoker.model.Pot;
 import com.flexpoker.model.card.FlopCards;
 import com.flexpoker.model.card.PocketCards;
 import com.flexpoker.model.card.RiverCard;
@@ -16,6 +24,8 @@ public class HandDealtEvent extends BaseEvent<TableEventType> implements TableEv
     private static final TableEventType TYPE = TableEventType.HandDealtEvent;
 
     private final UUID gameId;
+
+    private final UUID handId;
 
     private final FlopCards flopCards;
 
@@ -31,14 +41,46 @@ public class HandDealtEvent extends BaseEvent<TableEventType> implements TableEv
 
     private final int actionOnPosition;
 
-    private final Map<Integer, PocketCards> positionToPocketCardsMap;
+    private final Map<Integer, UUID> seatMap;
 
-    public HandDealtEvent(UUID aggregateId, int version, UUID gameId,
+    private final Map<UUID, PocketCards> playerToPocketCardsMap;
+
+    private final Map<UUID, Set<PlayerAction>> possibleSeatActionsMap;
+
+    private final Set<UUID> playersStillInHand;
+
+    private final List<HandEvaluation> handEvaluations;
+
+    private final Set<Pot> pots;
+
+    private final HandDealerState handDealerState;
+
+    private final HandRoundState handRoundState;
+
+    private final Map<UUID, Integer> chipsInBack;
+
+    private final Map<UUID, Integer> chipsInFrontMap;
+
+    private final Map<UUID, Integer> callAmountsMap;
+
+    private final Map<UUID, Integer> raiseToAmountsMap;
+
+    private final Blinds blinds;
+
+    public HandDealtEvent(UUID aggregateId, int version, UUID gameId, UUID handId,
             FlopCards flopCards, TurnCard turnCard, RiverCard riverCard,
             int buttonOnPosition, int smallBlindPosition, int bigBlindPosition,
-            int actionOnPosition, Map<Integer, PocketCards> positionToPocketCardsMap) {
+            int actionOnPosition, Map<Integer, UUID> seatMap,
+            Map<UUID, PocketCards> playerToPocketCardsMap,
+            Map<UUID, Set<PlayerAction>> possibleSeatActionsMap,
+            Set<UUID> playersStillInHand, List<HandEvaluation> handEvaluations,
+            Set<Pot> pots, HandDealerState handDealerState,
+            HandRoundState handRoundState, Map<UUID, Integer> chipsInBack,
+            Map<UUID, Integer> chipsInFrontMap, Map<UUID, Integer> callAmountsMap,
+            Map<UUID, Integer> raiseToAmountsMap, Blinds blinds) {
         super(aggregateId, version, TYPE);
         this.gameId = gameId;
+        this.handId = handId;
         this.flopCards = flopCards;
         this.turnCard = turnCard;
         this.riverCard = riverCard;
@@ -46,12 +88,28 @@ public class HandDealtEvent extends BaseEvent<TableEventType> implements TableEv
         this.smallBlindPosition = smallBlindPosition;
         this.bigBlindPosition = bigBlindPosition;
         this.actionOnPosition = actionOnPosition;
-        this.positionToPocketCardsMap = positionToPocketCardsMap;
+        this.seatMap = seatMap;
+        this.playerToPocketCardsMap = playerToPocketCardsMap;
+        this.possibleSeatActionsMap = possibleSeatActionsMap;
+        this.playersStillInHand = playersStillInHand;
+        this.handEvaluations = handEvaluations;
+        this.pots = pots;
+        this.handDealerState = handDealerState;
+        this.handRoundState = handRoundState;
+        this.chipsInBack = chipsInBack;
+        this.chipsInFrontMap = chipsInFrontMap;
+        this.callAmountsMap = callAmountsMap;
+        this.raiseToAmountsMap = raiseToAmountsMap;
+        this.blinds = blinds;
     }
 
     @Override
     public UUID getGameId() {
         return gameId;
+    }
+
+    public UUID getHandId() {
+        return handId;
     }
 
     public FlopCards getFlopCards() {
@@ -82,8 +140,56 @@ public class HandDealtEvent extends BaseEvent<TableEventType> implements TableEv
         return actionOnPosition;
     }
 
-    public Map<Integer, PocketCards> getPositionToPocketCardsMap() {
-        return positionToPocketCardsMap;
+    public Map<Integer, UUID> getSeatMap() {
+        return seatMap;
+    }
+
+    public Map<UUID, PocketCards> getPlayerToPocketCardsMap() {
+        return playerToPocketCardsMap;
+    }
+
+    public Map<UUID, Set<PlayerAction>> getPossibleSeatActionsMap() {
+        return possibleSeatActionsMap;
+    }
+
+    public Set<UUID> getPlayersStillInHand() {
+        return playersStillInHand;
+    }
+
+    public List<HandEvaluation> getHandEvaluations() {
+        return handEvaluations;
+    }
+
+    public Set<Pot> getPots() {
+        return pots;
+    }
+
+    public HandDealerState getHandDealerState() {
+        return handDealerState;
+    }
+
+    public HandRoundState getHandRoundState() {
+        return handRoundState;
+    }
+
+    public Map<UUID, Integer> getChipsInBack() {
+        return chipsInBack;
+    }
+
+    public Map<UUID, Integer> getChipsInFrontMap() {
+        return chipsInFrontMap;
+    }
+
+    public Map<UUID, Integer> getCallAmountsMap() {
+        return callAmountsMap;
+    }
+
+    public Map<UUID, Integer> getRaiseToAmountsMap() {
+        return raiseToAmountsMap;
+    }
+
+    public Blinds getBlinds() {
+        return blinds;
     }
 
 }

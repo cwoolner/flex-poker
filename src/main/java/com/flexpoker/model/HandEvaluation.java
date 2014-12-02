@@ -1,10 +1,12 @@
 package com.flexpoker.model;
 
+import java.util.UUID;
+
 import com.flexpoker.model.card.CardRank;
 
 public class HandEvaluation implements Comparable<HandEvaluation> {
 
-    private User user;
+    private UUID playerId;
 
     private HandRanking handRanking;
 
@@ -20,12 +22,12 @@ public class HandEvaluation implements Comparable<HandEvaluation> {
 
     private CardRank fourthKicker;
 
-    public User getUser() {
-        return user;
+    public UUID getPlayerId() {
+        return playerId;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setPlayerId(UUID playerId) {
+        this.playerId = playerId;
     }
 
     public HandRanking getHandRanking() {
@@ -91,27 +93,27 @@ public class HandEvaluation implements Comparable<HandEvaluation> {
         }
 
         switch (handRanking) {
-            case HIGH_CARD:
-                return highCardCompareTo(otherHandEvaluation);
-            case ONE_PAIR:
-                return onePairCompareTo(otherHandEvaluation);
-            case TWO_PAIR:
-                return twoPairCompareTo(otherHandEvaluation);
-            case THREE_OF_A_KIND:
-                return threeOfAKindCompareTo(otherHandEvaluation);
-            case STRAIGHT:
-                return straightCompareTo(otherHandEvaluation);
-            case FLUSH:
-                return flushCompareTo(otherHandEvaluation);
-            case FULL_HOUSE:
-                return fullHouseCompareTo(otherHandEvaluation);
-            case FOUR_OF_A_KIND:
-                return fourOfAKindCompareTo(otherHandEvaluation);
-            case STRAIGHT_FLUSH:
-                return straightFlushCompareTo(otherHandEvaluation);
-            default:
-                throw new IllegalArgumentException("The given HandEvaluation "
-                        + "could not be correctly compared.");
+        case HIGH_CARD:
+            return highCardCompareTo(otherHandEvaluation);
+        case ONE_PAIR:
+            return onePairCompareTo(otherHandEvaluation);
+        case TWO_PAIR:
+            return twoPairCompareTo(otherHandEvaluation);
+        case THREE_OF_A_KIND:
+            return threeOfAKindCompareTo(otherHandEvaluation);
+        case STRAIGHT:
+            return straightCompareTo(otherHandEvaluation);
+        case FLUSH:
+            return flushCompareTo(otherHandEvaluation);
+        case FULL_HOUSE:
+            return fullHouseCompareTo(otherHandEvaluation);
+        case FOUR_OF_A_KIND:
+            return fourOfAKindCompareTo(otherHandEvaluation);
+        case STRAIGHT_FLUSH:
+            return straightFlushCompareTo(otherHandEvaluation);
+        default:
+            throw new IllegalArgumentException("The given HandEvaluation "
+                    + "could not be correctly compared.");
         }
     }
 

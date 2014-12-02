@@ -35,4 +35,40 @@ public class TableViewModel {
         return tableId;
     }
 
+    public List<SeatViewModel> getSeats() {
+        return seats;
+    }
+
+    public void setSeats(List<SeatViewModel> seats) {
+        this.seats = seats;
+    }
+
+    public int getTotalPot() {
+        return totalPot;
+    }
+
+    public void setTotalPot(int totalPot) {
+        this.totalPot = totalPot;
+    }
+
+    public Set<PotViewModel> getPots() {
+        return pots;
+    }
+
+    public void setPots(Set<PotViewModel> pots) {
+        this.pots = pots;
+    }
+
+    public List<CardViewModel> getVisibleCommonCards() {
+        return visibleCommonCards;
+    }
+
+    public void setVisibleCommonCards(List<CardViewModel> visibleCommonCards) {
+        this.visibleCommonCards = visibleCommonCards;
+    }
+
+    public UUID getTableId() {
+        return tableId;
+    }
+
 }

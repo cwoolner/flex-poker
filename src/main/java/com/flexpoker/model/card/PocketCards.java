@@ -1,5 +1,8 @@
 package com.flexpoker.model.card;
 
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
+
 public class PocketCards {
 
     private final Card card1;
@@ -17,6 +20,27 @@ public class PocketCards {
 
     public Card getCard2() {
         return card2;
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder().append(card1).append(card2).toHashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (obj == this) {
+            return true;
+        }
+        if (obj.getClass() != getClass()) {
+            return false;
+        }
+        PocketCards rhs = (PocketCards) obj;
+        return new EqualsBuilder().appendSuper(super.equals(obj))
+                .append(card1, rhs.card1).append(card2, rhs.card2).isEquals();
     }
 
 }

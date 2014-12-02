@@ -3,6 +3,7 @@ package com.flexpoker.table.command.commands;
 import java.util.UUID;
 
 import com.flexpoker.framework.command.BaseCommand;
+import com.flexpoker.model.Blinds;
 import com.flexpoker.table.command.framework.TableCommand;
 import com.flexpoker.table.command.framework.TableCommandType;
 
@@ -15,10 +16,13 @@ public class StartNewHandForNewGameCommand extends BaseCommand<TableCommandType>
 
     private final UUID gameId;
 
-    public StartNewHandForNewGameCommand(UUID tableId, UUID gameId) {
+    private final Blinds blinds;
+
+    public StartNewHandForNewGameCommand(UUID tableId, UUID gameId, Blinds blinds) {
         super(TYPE);
         this.tableId = tableId;
         this.gameId = gameId;
+        this.blinds = blinds;
     }
 
     public UUID getTableId() {
@@ -27,6 +31,10 @@ public class StartNewHandForNewGameCommand extends BaseCommand<TableCommandType>
 
     public UUID getGameId() {
         return gameId;
+    }
+
+    public Blinds getBlinds() {
+        return blinds;
     }
 
 }

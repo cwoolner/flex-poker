@@ -5,7 +5,9 @@ import java.util.UUID;
 
 import javax.inject.Inject;
 
+import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.simp.annotation.SubscribeMapping;
 import org.springframework.stereotype.Controller;
 
 import com.flexpoker.framework.command.CommandPublisher;
@@ -15,21 +17,32 @@ import com.flexpoker.table.command.commands.CheckCommand;
 import com.flexpoker.table.command.commands.FoldCommand;
 import com.flexpoker.table.command.commands.RaiseCommand;
 import com.flexpoker.table.command.framework.TableCommandType;
+import com.flexpoker.table.query.repository.TableRepository;
+import com.flexpoker.web.model.table.TableViewModel;
 import com.flexpoker.web.model.table.handaction.BaseHandActionViewModel;
 import com.flexpoker.web.model.table.handaction.RaiseHandActionViewModel;
 
 @Controller
-public class HandActionController {
+public class TableController {
 
     private final CommandPublisher<TableCommandType> commandPublisher;
 
     private final LoginRepository loginRepository;
 
+    private final TableRepository tableRepository;
+
     @Inject
-    public HandActionController(CommandPublisher<TableCommandType> commandPublisher,
-            LoginRepository loginRepository) {
+    public TableController(CommandPublisher<TableCommandType> commandPublisher,
+            LoginRepository loginRepository, TableRepository tableRepository) {
         this.commandPublisher = commandPublisher;
         this.loginRepository = loginRepository;
+        this.tableRepository = tableRepository;
+    }
+
+    @SubscribeMapping(value = "/topic/game/{gameId}/table/{tableId}")
+    public TableViewModel fetchTable(@DestinationVariable UUID gameId,
+            @DestinationVariable UUID tableId) {
+        return tableRepository.fetchById(tableId);
     }
 
     @MessageMapping(value = "/app/check")

@@ -2,19 +2,30 @@ package com.flexpoker.table.command.aggregate;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import com.flexpoker.exception.FlexPokerException;
 import com.flexpoker.framework.domain.AggregateRoot;
+import com.flexpoker.model.Blinds;
+import com.flexpoker.model.HandDealerState;
+import com.flexpoker.model.HandEvaluation;
+import com.flexpoker.model.HandRoundState;
+import com.flexpoker.model.PlayerAction;
 import com.flexpoker.model.card.Card;
 import com.flexpoker.model.card.CardsUsedInHand;
 import com.flexpoker.model.card.PocketCards;
 import com.flexpoker.table.command.events.CardsShuffledEvent;
 import com.flexpoker.table.command.events.HandDealtEvent;
+import com.flexpoker.table.command.events.PlayerCalledEvent;
+import com.flexpoker.table.command.events.PlayerCheckedEvent;
+import com.flexpoker.table.command.events.PlayerFoldedEvent;
+import com.flexpoker.table.command.events.PlayerRaisedEvent;
 import com.flexpoker.table.command.events.TableCreatedEvent;
 import com.flexpoker.table.command.framework.TableEvent;
 
@@ -28,10 +39,15 @@ public class Table extends AggregateRoot<TableEvent> {
 
     private final Map<Integer, UUID> seatMap;
 
+    private final Map<UUID, Integer> chipsInBack;
+
+    private Hand currentHand;
+
     protected Table(UUID aggregateId, UUID gameId, Map<Integer, UUID> seatMap) {
         this.aggregateId = aggregateId;
         this.gameId = gameId;
         this.seatMap = seatMap;
+        this.chipsInBack = new HashMap<>();
     }
 
     @Override
@@ -47,6 +63,18 @@ public class Table extends AggregateRoot<TableEvent> {
             case HandDealtEvent:
                 applyEvent((HandDealtEvent) event);
                 break;
+            case PlayerCalled:
+                applyEvent((PlayerCalledEvent) event);
+                break;
+            case PlayerChecked:
+                applyEvent((PlayerCheckedEvent) event);
+                break;
+            case PlayerFolded:
+                applyEvent((PlayerFoldedEvent) event);
+                break;
+            case PlayerRaised:
+                applyEvent((PlayerRaisedEvent) event);
+                break;
             default:
                 throw new IllegalArgumentException("Event Type cannot be handled: "
                         + event.getType());
@@ -56,10 +84,45 @@ public class Table extends AggregateRoot<TableEvent> {
 
     private void applyEvent(TableCreatedEvent event) {
         seatMap.putAll(event.getSeatPositionToPlayerMap());
+        event.getSeatPositionToPlayerMap()
+                .values()
+                .stream()
+                .filter(x -> x != null)
+                .forEach(
+                        x -> chipsInBack.put(x,
+                                Integer.valueOf(event.getStartingNumberOfChips())));
     }
 
     private void applyEvent(HandDealtEvent event) {
-        // TODO: nothing to do for now
+        currentHand = new Hand(event.getHandId(), seatMap, event.getFlopCards(),
+                event.getTurnCard(), event.getRiverCard(), event.getButtonOnPosition(),
+                event.getSmallBlindPosition(), event.getBigBlindPosition(),
+                event.getActionOnPosition(), event.getPlayerToPocketCardsMap(),
+                event.getPossibleSeatActionsMap(), event.getPlayersStillInHand(),
+                event.getHandEvaluations(), event.getPots(), event.getHandDealerState(),
+                event.getHandRoundState(), event.getChipsInBack(),
+                event.getChipsInFrontMap(), event.getCallAmountsMap(),
+                event.getRaiseToAmountsMap(), event.getBlinds());
+    }
+
+    private void applyEvent(PlayerRaisedEvent event) {
+        // TODO Auto-generated method stub
+
+    }
+
+    private void applyEvent(PlayerFoldedEvent event) {
+        // TODO Auto-generated method stub
+
+    }
+
+    private void applyEvent(PlayerCheckedEvent event) {
+        // TODO Auto-generated method stub
+
+    }
+
+    private void applyEvent(PlayerCalledEvent event) {
+        // TODO Auto-generated method stub
+
     }
 
     public void createNewTable(Set<UUID> playerIds) {
@@ -75,11 +138,16 @@ public class Table extends AggregateRoot<TableEvent> {
             throw new FlexPokerException("player list can't be larger than seatMap");
         }
 
+        if (currentHand != null) {
+            throw new FlexPokerException(
+                    "can't create a table that already has a hand played");
+        }
+
         Map<Integer, UUID> seatToPlayerMap = new HashMap<>();
         // TODO: randomize the seat placement
         List<UUID> playerIdsList = new ArrayList<>(playerIds);
         for (int i = 0; i < playerIds.size(); i++) {
-            seatToPlayerMap.put(i, playerIdsList.get(i));
+            seatToPlayerMap.put(Integer.valueOf(i), playerIdsList.get(i));
         }
 
         TableCreatedEvent tableCreatedEvent = new TableCreatedEvent(aggregateId,
@@ -88,12 +156,9 @@ public class Table extends AggregateRoot<TableEvent> {
         applyEvent(tableCreatedEvent);
     }
 
-    public void startNewHandForNewGame(List<Card> shuffledDeckOfCards,
-            CardsUsedInHand cardsUsedInHand) {
-
-        // TODO: this stuff
-        // setSeatStatusForNewGameCommand.execute(game, table);
-        // startNewHandCommand.execute(game, table);
+    public void startNewHandForNewGame(Blinds blinds, List<Card> shuffledDeckOfCards,
+            CardsUsedInHand cardsUsedInHand,
+            Map<PocketCards, HandEvaluation> handEvaluations) {
 
         CardsShuffledEvent cardsShuffledEvent = new CardsShuffledEvent(aggregateId,
                 ++aggregateVersion, gameId, shuffledDeckOfCards);
@@ -106,19 +171,31 @@ public class Table extends AggregateRoot<TableEvent> {
         int actionOnPosition = assignActionOnForNewGame(bigBlindPosition);
 
         int nextToReceivePocketCards = findNextFilledSeat(buttonOnPosition);
-        Map<Integer, PocketCards> positionToPocketCardsMap = new HashMap<>();
+        Map<UUID, PocketCards> playerToPocketCardsMap = new HashMap<>();
 
         for (PocketCards pocketCards : cardsUsedInHand.getPocketCards()) {
-            positionToPocketCardsMap.put(Integer.valueOf(nextToReceivePocketCards),
-                    pocketCards);
+            UUID playerIdAtPosition = seatMap.get(Integer
+                    .valueOf(nextToReceivePocketCards));
+            playerToPocketCardsMap.put(playerIdAtPosition, pocketCards);
             nextToReceivePocketCards = findNextFilledSeat(nextToReceivePocketCards);
+            handEvaluations.get(pocketCards).setPlayerId(playerIdAtPosition);
         }
 
-        HandDealtEvent handDealtEvent = new HandDealtEvent(aggregateId,
-                ++aggregateVersion, gameId, cardsUsedInHand.getFlopCards(),
+        Set<UUID> playersStillInHand = seatMap.values().stream().filter(x -> x != null)
+                .collect(Collectors.toSet());
+        Map<UUID, Set<PlayerAction>> possibleSeatActionsMap = new HashMap<>();
+        playersStillInHand.forEach(x -> possibleSeatActionsMap.put(x,
+                new HashSet<PlayerAction>()));
+
+        Hand hand = new Hand(UUID.randomUUID(), seatMap, cardsUsedInHand.getFlopCards(),
                 cardsUsedInHand.getTurnCard(), cardsUsedInHand.getRiverCard(),
                 buttonOnPosition, smallBlindPosition, bigBlindPosition, actionOnPosition,
-                positionToPocketCardsMap);
+                playerToPocketCardsMap, possibleSeatActionsMap, playersStillInHand,
+                new ArrayList<>(handEvaluations.values()), new HashSet<>(),
+                HandDealerState.NONE, HandRoundState.ROUND_COMPLETE, chipsInBack,
+                new HashMap<>(), new HashMap<>(), new HashMap<>(), blinds);
+        HandDealtEvent handDealtEvent = hand.dealHand(aggregateId, ++aggregateVersion,
+                gameId);
         addNewEvent(handDealtEvent);
         applyEvent(handDealtEvent);
     }
@@ -164,6 +241,26 @@ public class Table extends AggregateRoot<TableEvent> {
 
     public int getNumberOfPlayersAtTable() {
         return (int) seatMap.values().stream().filter(x -> x != null).count();
+    }
+
+    public void check(UUID playerId) {
+        // TODO Auto-generated method stub
+
+    }
+
+    public void call(UUID playerId) {
+        // TODO Auto-generated method stub
+
+    }
+
+    public void fold(UUID playerId) {
+        // TODO Auto-generated method stub
+
+    }
+
+    public void raise(UUID playerId, int raiseToAmount) {
+        // TODO Auto-generated method stub
+
     }
 
 }

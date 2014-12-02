@@ -16,7 +16,6 @@ import com.flexpoker.framework.pushnotifier.PushNotification;
 import com.flexpoker.framework.pushnotifier.PushNotificationPublisher;
 import com.flexpoker.login.query.repository.LoginRepository;
 import com.flexpoker.pushnotifications.OpenTableForUserPushNotification;
-import com.flexpoker.pushnotifications.TableUpdatedPushNotification;
 import com.flexpoker.table.command.events.TableCreatedEvent;
 import com.flexpoker.table.query.repository.TableRepository;
 import com.flexpoker.web.model.table.SeatViewModel;
@@ -72,12 +71,5 @@ public class TableCreatedEventHandler implements EventHandler<TableCreatedEvent>
             pushNotificationPublisher.publish(pushNotification);
         };
         event.getSeatPositionToPlayerMap().values().forEach(openTableConsumer);
-
-        Consumer<UUID> updateTableConsumer = (UUID playerId) -> {
-            PushNotification pushNotification = new TableUpdatedPushNotification(
-                    event.getGameId(), event.getAggregateId());
-            pushNotificationPublisher.publish(pushNotification);
-        };
-        event.getSeatPositionToPlayerMap().values().forEach(updateTableConsumer);
     }
 }

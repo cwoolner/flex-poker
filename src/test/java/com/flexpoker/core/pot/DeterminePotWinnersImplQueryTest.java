@@ -12,7 +12,6 @@ import java.util.UUID;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.flexpoker.model.Game;
 import com.flexpoker.model.HandEvaluation;
 import com.flexpoker.model.HandRanking;
 import com.flexpoker.model.Seat;
@@ -20,7 +19,6 @@ import com.flexpoker.model.Table;
 import com.flexpoker.model.User;
 import com.flexpoker.model.UserGameStatus;
 import com.flexpoker.model.card.CardRank;
-import com.flexpoker.test.util.datageneration.GameGenerator;
 
 public class DeterminePotWinnersImplQueryTest {
 
@@ -33,7 +31,6 @@ public class DeterminePotWinnersImplQueryTest {
 
     @Test
     public void testSetWinners() {
-        Game game = GameGenerator.createGame(9, 9);
         Table table = new Table();
 
         User user1 = new User(UUID.randomUUID(), "test1");
@@ -44,12 +41,12 @@ public class DeterminePotWinnersImplQueryTest {
         UserGameStatus userGameStatus2 = new UserGameStatus(user2, 1500);
         UserGameStatus userGameStatus3 = new UserGameStatus(user3, 1500);
 
-        testSetWinners1(game, table, user1, user2, userGameStatus1, userGameStatus2);
-        testSetWinners2(game, table, user1, user2, user3, userGameStatus1,
-                userGameStatus2, userGameStatus3);
+        testSetWinners1(table, user1, user2, userGameStatus1, userGameStatus2);
+        testSetWinners2(table, user1, user2, user3, userGameStatus1, userGameStatus2,
+                userGameStatus3);
     }
 
-    private void testSetWinners1(Game game, Table table, User user1, User user2,
+    private void testSetWinners1(Table table, User user1, User user2,
             UserGameStatus userGameStatus1, UserGameStatus userGameStatus2) {
 
         Seat seat1 = new Seat(0);
@@ -65,7 +62,7 @@ public class DeterminePotWinnersImplQueryTest {
         table.addSeat(seat2);
 
         HandEvaluation handEvaluation1 = new HandEvaluation();
-        handEvaluation1.setUser(user1);
+        handEvaluation1.setPlayerId(user1.getId());
         handEvaluation1.setHandRanking(HandRanking.FLUSH);
         handEvaluation1.setPrimaryCardRank(CardRank.EIGHT);
         handEvaluation1.setFirstKicker(CardRank.SEVEN);
@@ -73,7 +70,7 @@ public class DeterminePotWinnersImplQueryTest {
         handEvaluation1.setThirdKicker(CardRank.THREE);
         handEvaluation1.setFourthKicker(CardRank.TWO);
         HandEvaluation handEvaluation2 = new HandEvaluation();
-        handEvaluation2.setUser(user2);
+        handEvaluation2.setPlayerId(user2.getId());
         handEvaluation2.setHandRanking(HandRanking.STRAIGHT);
         handEvaluation2.setPrimaryCardRank(CardRank.KING);
 
@@ -91,8 +88,8 @@ public class DeterminePotWinnersImplQueryTest {
         assertTrue(winners.contains(seat1));
     }
 
-    private void testSetWinners2(Game game, Table table, User user1, User user2,
-            User user3, UserGameStatus userGameStatus1, UserGameStatus userGameStatus2,
+    private void testSetWinners2(Table table, User user1, User user2, User user3,
+            UserGameStatus userGameStatus1, UserGameStatus userGameStatus2,
             UserGameStatus userGameStatus3) {
 
         Seat seat1 = new Seat(0);
@@ -113,7 +110,7 @@ public class DeterminePotWinnersImplQueryTest {
         table.addSeat(seat3);
 
         HandEvaluation handEvaluation1 = new HandEvaluation();
-        handEvaluation1.setUser(user1);
+        handEvaluation1.setPlayerId(user1.getId());
         handEvaluation1.setHandRanking(HandRanking.FLUSH);
         handEvaluation1.setPrimaryCardRank(CardRank.EIGHT);
         handEvaluation1.setFirstKicker(CardRank.SEVEN);
@@ -121,11 +118,11 @@ public class DeterminePotWinnersImplQueryTest {
         handEvaluation1.setThirdKicker(CardRank.THREE);
         handEvaluation1.setFourthKicker(CardRank.TWO);
         HandEvaluation handEvaluation2 = new HandEvaluation();
-        handEvaluation2.setUser(user2);
+        handEvaluation2.setPlayerId(user2.getId());
         handEvaluation2.setHandRanking(HandRanking.STRAIGHT);
         handEvaluation2.setPrimaryCardRank(CardRank.KING);
         HandEvaluation handEvaluation3 = new HandEvaluation();
-        handEvaluation3.setUser(user3);
+        handEvaluation3.setPlayerId(user3.getId());
         handEvaluation3.setHandRanking(HandRanking.STRAIGHT);
         handEvaluation3.setPrimaryCardRank(CardRank.KING);
 

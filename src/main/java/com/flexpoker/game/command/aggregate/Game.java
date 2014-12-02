@@ -18,6 +18,7 @@ import com.flexpoker.game.command.events.GameMovedToStartingStageEvent;
 import com.flexpoker.game.command.events.GameStartedEvent;
 import com.flexpoker.game.command.events.GameTablesCreatedAndPlayersAssociatedEvent;
 import com.flexpoker.game.command.framework.GameEvent;
+import com.flexpoker.model.Blinds;
 import com.flexpoker.model.GameStage;
 
 public class Game extends AggregateRoot<GameEvent> {
@@ -35,6 +36,8 @@ public class Game extends AggregateRoot<GameEvent> {
     private int numberOfPlayersPerTable;
 
     private final Map<UUID, Set<UUID>> tableIdToPlayerIdsMap;
+
+    private Blinds currentBlinds;
 
     protected Game(UUID aggregateId) {
         this.aggregateId = aggregateId;
@@ -95,6 +98,7 @@ public class Game extends AggregateRoot<GameEvent> {
     }
 
     private void applyEvent(GameStartedEvent event) {
+        currentBlinds = event.getBlinds();
         gameStage = GameStage.INPROGRESS;
         addAppliedEvent(event);
     }
@@ -122,6 +126,10 @@ public class Game extends AggregateRoot<GameEvent> {
             createGameTablesCreatedAndPlayersAssociatedEvent();
             createGameStartedEvent();
         }
+    }
+
+    public void increaseBlinds() {
+        // TODO: implement
     }
 
     private void createJoinGameEvent(UUID playerId) {
@@ -206,7 +214,7 @@ public class Game extends AggregateRoot<GameEvent> {
 
     private void createGameStartedEvent() {
         GameStartedEvent event = new GameStartedEvent(aggregateId, ++aggregateVersion,
-                tableIdToPlayerIdsMap.keySet());
+                tableIdToPlayerIdsMap.keySet(), new Blinds(10, 20));
         addNewEvent(event);
         applyEvent(event);
     }

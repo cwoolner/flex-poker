@@ -1,4 +1,4 @@
-package com.flexpoker.bso;
+package com.flexpoker.table.command.service;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -8,14 +8,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Consumer;
 
 import org.springframework.stereotype.Service;
 
-import com.flexpoker.bso.api.HandEvaluatorBso;
 import com.flexpoker.dto.CommonCards;
 import com.flexpoker.model.HandEvaluation;
 import com.flexpoker.model.HandRanking;
-import com.flexpoker.model.User;
 import com.flexpoker.model.card.Card;
 import com.flexpoker.model.card.CardRank;
 import com.flexpoker.model.card.CardSuit;
@@ -25,7 +24,7 @@ import com.flexpoker.model.card.RiverCard;
 import com.flexpoker.model.card.TurnCard;
 
 @Service
-public class HandEvaluatorBsoImpl implements HandEvaluatorBso {
+public class DefaultHandEvaluatorService implements HandEvaluatorService {
 
     @Override
     public List<HandRanking> determinePossibleHands(FlopCards flopCards,
@@ -49,22 +48,26 @@ public class HandEvaluatorBsoImpl implements HandEvaluatorBso {
     }
 
     @Override
-    public HandEvaluation determineHandEvaluation(FlopCards flopCards, TurnCard turnCard,
-            RiverCard riverCard, User user, PocketCards pocketCards,
+    public Map<PocketCards, HandEvaluation> determineHandEvaluation(FlopCards flopCards,
+            TurnCard turnCard, RiverCard riverCard, List<PocketCards> pocketCardsList,
             List<HandRanking> possibleHandRankings) {
 
         CommonCards commonCards = new CommonCards(flopCards, turnCard, riverCard);
+        Map<PocketCards, HandEvaluation> handEvaluations = new HashMap<>();
 
-        HandEvaluation handEvaluation = new HandEvaluation();
-        handEvaluation.setUser(user);
+        Consumer<PocketCards> evaluatePocketCardsConsumer = (PocketCards pocketCards) -> {
+            HandEvaluation handEvaluation = new HandEvaluation();
 
-        List<Card> cardList = new ArrayList<>(commonCards.getCards());
-        cardList.add(pocketCards.getCard1());
-        cardList.add(pocketCards.getCard2());
+            List<Card> cardList = new ArrayList<>(commonCards.getCards());
+            cardList.add(pocketCards.getCard1());
+            cardList.add(pocketCards.getCard2());
 
-        fillInHandEvaluation(handEvaluation, cardList, possibleHandRankings);
+            fillInHandEvaluation(handEvaluation, cardList, possibleHandRankings);
+            handEvaluations.put(pocketCards, handEvaluation);
+        };
 
-        return handEvaluation;
+        pocketCardsList.forEach(evaluatePocketCardsConsumer);
+        return handEvaluations;
     }
 
     /**

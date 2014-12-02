@@ -30,7 +30,7 @@ public class StartFirstHandProcessManager implements ProcessManager<GameStartedE
     public void handle(GameStartedEvent event) {
         Consumer<UUID> startFirstHandConsumer = (UUID tableId) -> {
             StartNewHandForNewGameCommand startNewHandForNewGameCommand = new StartNewHandForNewGameCommand(
-                    tableId, event.getAggregateId());
+                    tableId, event.getAggregateId(), event.getBlinds());
             tableCommandPublisher.publish(startNewHandForNewGameCommand);
         };
         event.getTableIds().forEach(startFirstHandConsumer);
