@@ -6,6 +6,8 @@ public enum TableEventType implements EventType {
 
     TableCreated, CardsShuffled, HandDealtEvent, //
 
-    PlayerChecked, PlayerRaised, PlayerCalled, PlayerFolded
+    PlayerChecked, PlayerRaised, PlayerCalled, PlayerFolded, //
+
+    FlopCardsDealt, TurnCardDealt, RiverCardDealt
 
 }

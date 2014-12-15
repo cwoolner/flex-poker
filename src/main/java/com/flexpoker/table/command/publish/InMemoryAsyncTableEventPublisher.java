@@ -7,12 +7,15 @@ import org.springframework.stereotype.Component;
 import com.flexpoker.framework.event.Event;
 import com.flexpoker.framework.event.EventHandler;
 import com.flexpoker.framework.event.EventPublisher;
+import com.flexpoker.table.command.events.FlopCardsDealtEvent;
 import com.flexpoker.table.command.events.HandDealtEvent;
 import com.flexpoker.table.command.events.PlayerCalledEvent;
 import com.flexpoker.table.command.events.PlayerCheckedEvent;
 import com.flexpoker.table.command.events.PlayerFoldedEvent;
 import com.flexpoker.table.command.events.PlayerRaisedEvent;
+import com.flexpoker.table.command.events.RiverCardDealtEvent;
 import com.flexpoker.table.command.events.TableCreatedEvent;
+import com.flexpoker.table.command.events.TurnCardDealtEvent;
 import com.flexpoker.table.command.framework.TableEventType;
 
 @Component
@@ -30,6 +33,12 @@ public class InMemoryAsyncTableEventPublisher implements EventPublisher<TableEve
 
     private final EventHandler<PlayerRaisedEvent> playerRaisedEventHandler;
 
+    private final EventHandler<FlopCardsDealtEvent> flopCardsDealtEventHandler;
+
+    private final EventHandler<TurnCardDealtEvent> turnCardDealtEventHandler;
+
+    private final EventHandler<RiverCardDealtEvent> riverCardDealtEventHandler;
+
     @Inject
     public InMemoryAsyncTableEventPublisher(
             EventHandler<TableCreatedEvent> tableCreatedEventHandler,
@@ -37,13 +46,19 @@ public class InMemoryAsyncTableEventPublisher implements EventPublisher<TableEve
             EventHandler<PlayerCalledEvent> playerCalledEventHandler,
             EventHandler<PlayerCheckedEvent> playerCheckedEventHandler,
             EventHandler<PlayerFoldedEvent> playerFoldedEventHandler,
-            EventHandler<PlayerRaisedEvent> playerRaisedEventHandler) {
+            EventHandler<PlayerRaisedEvent> playerRaisedEventHandler,
+            EventHandler<FlopCardsDealtEvent> flopCardsDealtEventHandler,
+            EventHandler<TurnCardDealtEvent> turnCardDealtEventHandler,
+            EventHandler<RiverCardDealtEvent> riverCardDealtEventHandler) {
         this.tableCreatedEventHandler = tableCreatedEventHandler;
         this.handDealtEventHandler = handDealtEventHandler;
         this.playerCalledEventHandler = playerCalledEventHandler;
         this.playerCheckedEventHandler = playerCheckedEventHandler;
         this.playerFoldedEventHandler = playerFoldedEventHandler;
         this.playerRaisedEventHandler = playerRaisedEventHandler;
+        this.flopCardsDealtEventHandler = flopCardsDealtEventHandler;
+        this.turnCardDealtEventHandler = turnCardDealtEventHandler;
+        this.riverCardDealtEventHandler = riverCardDealtEventHandler;
     }
 
     @Override
@@ -68,6 +83,15 @@ public class InMemoryAsyncTableEventPublisher implements EventPublisher<TableEve
             break;
         case PlayerRaised:
             playerRaisedEventHandler.handle((PlayerRaisedEvent) event);
+            break;
+        case FlopCardsDealt:
+            flopCardsDealtEventHandler.handle((FlopCardsDealtEvent) event);
+            break;
+        case TurnCardDealt:
+            turnCardDealtEventHandler.handle((TurnCardDealtEvent) event);
+            break;
+        case RiverCardDealt:
+            riverCardDealtEventHandler.handle((RiverCardDealtEvent) event);
             break;
         default:
             throw new IllegalArgumentException("Event Type cannot be handled: "

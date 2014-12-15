@@ -19,6 +19,7 @@ import com.flexpoker.login.query.repository.LoginRepository;
 import com.flexpoker.pushnotifications.SendUserPocketCardsPushNotification;
 import com.flexpoker.pushnotifications.TableUpdatedPushNotification;
 import com.flexpoker.table.command.events.HandDealtEvent;
+import com.flexpoker.table.query.repository.CardsUsedInHandRepository;
 import com.flexpoker.table.query.repository.TableRepository;
 import com.flexpoker.web.model.table.SeatViewModel;
 import com.flexpoker.web.model.table.TableViewModel;
@@ -30,22 +31,35 @@ public class HandDealtEventHandler implements EventHandler<HandDealtEvent> {
 
     private final TableRepository tableRepository;
 
+    private final CardsUsedInHandRepository cardsUsedInHandRepository;
+
     private final PushNotificationPublisher pushNotificationPublisher;
 
     @Inject
     public HandDealtEventHandler(LoginRepository loginRepository,
             TableRepository tableRepository,
+            CardsUsedInHandRepository cardsUsedInHandRepository,
             PushNotificationPublisher pushNotificationPublisher) {
         this.loginRepository = loginRepository;
         this.tableRepository = tableRepository;
+        this.cardsUsedInHandRepository = cardsUsedInHandRepository;
         this.pushNotificationPublisher = pushNotificationPublisher;
     }
 
     @Async
     @Override
     public void handle(HandDealtEvent event) {
+        handleCardsUsedInHandStorage(event);
         handleUpdatingTable(event);
         handlePushNotifications(event);
+    }
+
+    private void handleCardsUsedInHandStorage(HandDealtEvent event) {
+        cardsUsedInHandRepository.saveFlopCards(event.getHandId(), event.getFlopCards());
+        cardsUsedInHandRepository.saveTurnCard(event.getHandId(), event.getTurnCard());
+        cardsUsedInHandRepository.saveRiverCard(event.getHandId(), event.getRiverCard());
+        cardsUsedInHandRepository.savePocketCards(event.getHandId(),
+                event.getPlayerToPocketCardsMap());
     }
 
     private void handleUpdatingTable(HandDealtEvent event) {
