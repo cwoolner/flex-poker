@@ -94,35 +94,33 @@ public class Table extends AggregateRoot<TableEvent> {
     }
 
     private void applyEvent(HandDealtEvent event) {
-        currentHand = new Hand(event.getHandId(), seatMap, event.getFlopCards(),
-                event.getTurnCard(), event.getRiverCard(), event.getButtonOnPosition(),
+        currentHand = new Hand(event.getGameId(), event.getAggregateId(),
+                event.getHandId(), seatMap, event.getFlopCards(), event.getTurnCard(),
+                event.getRiverCard(), event.getButtonOnPosition(),
                 event.getSmallBlindPosition(), event.getBigBlindPosition(),
                 event.getActionOnPosition(), event.getPlayerToPocketCardsMap(),
                 event.getPossibleSeatActionsMap(), event.getPlayersStillInHand(),
                 event.getHandEvaluations(), event.getPots(), event.getHandDealerState(),
                 event.getHandRoundState(), event.getChipsInBack(),
                 event.getChipsInFrontMap(), event.getCallAmountsMap(),
-                event.getRaiseToAmountsMap(), event.getBlinds());
+                event.getRaiseToAmountsMap(), event.getBlinds(),
+                event.getPlayersToShowCardsMap());
     }
 
     private void applyEvent(PlayerRaisedEvent event) {
-        // TODO Auto-generated method stub
-
+        currentHand.applyEvent(event);
     }
 
     private void applyEvent(PlayerFoldedEvent event) {
-        // TODO Auto-generated method stub
-
+        currentHand.applyEvent(event);
     }
 
     private void applyEvent(PlayerCheckedEvent event) {
-        // TODO Auto-generated method stub
-
+        currentHand.applyEvent(event);
     }
 
     private void applyEvent(PlayerCalledEvent event) {
-        // TODO Auto-generated method stub
-
+        currentHand.applyEvent(event);
     }
 
     public void createNewTable(Set<UUID> playerIds) {
@@ -187,15 +185,15 @@ public class Table extends AggregateRoot<TableEvent> {
         playersStillInHand.forEach(x -> possibleSeatActionsMap.put(x,
                 new HashSet<PlayerAction>()));
 
-        Hand hand = new Hand(UUID.randomUUID(), seatMap, cardsUsedInHand.getFlopCards(),
-                cardsUsedInHand.getTurnCard(), cardsUsedInHand.getRiverCard(),
-                buttonOnPosition, smallBlindPosition, bigBlindPosition, actionOnPosition,
-                playerToPocketCardsMap, possibleSeatActionsMap, playersStillInHand,
-                new ArrayList<>(handEvaluations.values()), new HashSet<>(),
-                HandDealerState.NONE, HandRoundState.ROUND_COMPLETE, chipsInBack,
-                new HashMap<>(), new HashMap<>(), new HashMap<>(), blinds);
-        HandDealtEvent handDealtEvent = hand.dealHand(aggregateId, ++aggregateVersion,
-                gameId);
+        Hand hand = new Hand(gameId, aggregateId, UUID.randomUUID(), seatMap,
+                cardsUsedInHand.getFlopCards(), cardsUsedInHand.getTurnCard(),
+                cardsUsedInHand.getRiverCard(), buttonOnPosition, smallBlindPosition,
+                bigBlindPosition, actionOnPosition, playerToPocketCardsMap,
+                possibleSeatActionsMap, playersStillInHand, new ArrayList<>(
+                        handEvaluations.values()), new HashSet<>(), HandDealerState.NONE,
+                HandRoundState.ROUND_COMPLETE, chipsInBack, new HashMap<>(),
+                new HashMap<>(), new HashMap<>(), blinds, new HashSet<>());
+        HandDealtEvent handDealtEvent = hand.dealHand(++aggregateVersion);
         addNewEvent(handDealtEvent);
         applyEvent(handDealtEvent);
     }
@@ -244,23 +242,45 @@ public class Table extends AggregateRoot<TableEvent> {
     }
 
     public void check(UUID playerId) {
-        // TODO Auto-generated method stub
+        checkHandIsBeingPlayed();
 
+        PlayerCheckedEvent playerCheckedEvent = currentHand.check(playerId,
+                ++aggregateVersion);
+        addNewEvent(playerCheckedEvent);
+        applyEvent(playerCheckedEvent);
     }
 
     public void call(UUID playerId) {
-        // TODO Auto-generated method stub
+        checkHandIsBeingPlayed();
 
+        PlayerCalledEvent playerCalledEvent = currentHand.call(playerId,
+                ++aggregateVersion);
+        addNewEvent(playerCalledEvent);
+        applyEvent(playerCalledEvent);
     }
 
     public void fold(UUID playerId) {
-        // TODO Auto-generated method stub
+        checkHandIsBeingPlayed();
 
+        PlayerFoldedEvent playerFoldedEvent = currentHand.fold(playerId,
+                ++aggregateVersion);
+        addNewEvent(playerFoldedEvent);
+        applyEvent(playerFoldedEvent);
     }
 
     public void raise(UUID playerId, int raiseToAmount) {
-        // TODO Auto-generated method stub
+        checkHandIsBeingPlayed();
 
+        PlayerRaisedEvent playerRaisedEvent = currentHand.raise(playerId,
+                ++aggregateVersion, raiseToAmount);
+        addNewEvent(playerRaisedEvent);
+        applyEvent(playerRaisedEvent);
+    }
+
+    private void checkHandIsBeingPlayed() {
+        if (currentHand == null) {
+            throw new FlexPokerException("no hand in progress");
+        }
     }
 
 }

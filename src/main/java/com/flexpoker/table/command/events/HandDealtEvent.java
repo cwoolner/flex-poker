@@ -67,6 +67,8 @@ public class HandDealtEvent extends BaseEvent<TableEventType> implements TableEv
 
     private final Blinds blinds;
 
+    private final Set<UUID> playersToShowCardsMap;
+
     public HandDealtEvent(UUID aggregateId, int version, UUID gameId, UUID handId,
             FlopCards flopCards, TurnCard turnCard, RiverCard riverCard,
             int buttonOnPosition, int smallBlindPosition, int bigBlindPosition,
@@ -77,7 +79,8 @@ public class HandDealtEvent extends BaseEvent<TableEventType> implements TableEv
             Set<Pot> pots, HandDealerState handDealerState,
             HandRoundState handRoundState, Map<UUID, Integer> chipsInBack,
             Map<UUID, Integer> chipsInFrontMap, Map<UUID, Integer> callAmountsMap,
-            Map<UUID, Integer> raiseToAmountsMap, Blinds blinds) {
+            Map<UUID, Integer> raiseToAmountsMap, Blinds blinds,
+            Set<UUID> playersToShowCardsMap) {
         super(aggregateId, version, TYPE);
         this.gameId = gameId;
         this.handId = handId;
@@ -101,6 +104,7 @@ public class HandDealtEvent extends BaseEvent<TableEventType> implements TableEv
         this.callAmountsMap = callAmountsMap;
         this.raiseToAmountsMap = raiseToAmountsMap;
         this.blinds = blinds;
+        this.playersToShowCardsMap = playersToShowCardsMap;
     }
 
     @Override
@@ -190,6 +194,10 @@ public class HandDealtEvent extends BaseEvent<TableEventType> implements TableEv
 
     public Blinds getBlinds() {
         return blinds;
+    }
+
+    public Set<UUID> getPlayersToShowCardsMap() {
+        return playersToShowCardsMap;
     }
 
 }

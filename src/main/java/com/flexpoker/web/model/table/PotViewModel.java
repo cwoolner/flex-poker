@@ -7,22 +7,38 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class PotViewModel {
 
     @JsonProperty
-    private Set<String> seats;
+    private final Set<String> seats;
 
     @JsonProperty
-    private int amount;
+    private final int amount;
 
     @JsonProperty
-    private boolean open;
+    private final boolean open;
 
     @JsonProperty
-    private Set<String> winners;
-    
+    private final Set<String> winners;
+
     public PotViewModel(Set<String> seats, int amount, boolean open, Set<String> winners) {
         this.seats = seats;
         this.amount = amount;
         this.open = open;
         this.winners = winners;
+    }
+
+    public Set<String> getSeats() {
+        return seats;
+    }
+
+    public int getAmount() {
+        return amount;
+    }
+
+    public boolean isOpen() {
+        return open;
+    }
+
+    public Set<String> getWinners() {
+        return winners;
     }
 
 }

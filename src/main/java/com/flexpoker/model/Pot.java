@@ -3,31 +3,32 @@ package com.flexpoker.model;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 
 public class Pot {
 
-    private final Set<Seat> seats;
+    private final Set<UUID> playersInvolved;
+
+    private final Set<UUID> winners;
 
     private int amount;
 
     private boolean open;
 
-    private final Set<Seat> winners;
-    
     public Pot() {
+        playersInvolved = new HashSet<>();
         winners = new HashSet<>();
-        seats = new HashSet<>();
         open = true;
     }
 
-    public Set<Seat> getSeats() {
-        return seats;
+    public Set<UUID> getSeats() {
+        return playersInvolved;
     }
 
-    public void removeSeat(Seat seat) {
-        seats.remove(seat);
+    public void removeSeat(UUID player) {
+        playersInvolved.remove(player);
     }
 
     public int getAmount() {
@@ -46,11 +47,11 @@ public class Pot {
         open = false;
     }
 
-    public Set<Seat> getWinners() {
+    public Set<UUID> getWinners() {
         return winners;
     }
-    
-    public void addWinners(Collection<Seat> seats) {
+
+    public void addWinners(Collection<UUID> seats) {
         winners.addAll(seats);
     }
 

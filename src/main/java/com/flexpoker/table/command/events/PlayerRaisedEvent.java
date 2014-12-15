@@ -12,12 +12,19 @@ public class PlayerRaisedEvent extends BaseEvent<TableEventType> implements Tabl
 
     private final UUID gameId;
 
+    private final UUID handId;
+
     private final UUID playerId;
 
-    public PlayerRaisedEvent(UUID aggregateId, int version, UUID gameId, UUID playerId) {
+    private final int raiseToAmount;
+
+    public PlayerRaisedEvent(UUID aggregateId, int version, UUID gameId, UUID handId,
+            UUID playerId, int raiseToAmount) {
         super(aggregateId, version, TYPE);
         this.gameId = gameId;
+        this.handId = handId;
         this.playerId = playerId;
+        this.raiseToAmount = raiseToAmount;
     }
 
     @Override
@@ -25,8 +32,16 @@ public class PlayerRaisedEvent extends BaseEvent<TableEventType> implements Tabl
         return gameId;
     }
 
+    public UUID getHandId() {
+        return handId;
+    }
+
     public UUID getPlayerId() {
         return playerId;
+    }
+
+    public int getRaiseToAmount() {
+        return raiseToAmount;
     }
 
 }

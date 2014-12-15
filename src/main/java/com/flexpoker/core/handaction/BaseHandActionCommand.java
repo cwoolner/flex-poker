@@ -1,5 +1,6 @@
 package com.flexpoker.core.handaction;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.Timer;
@@ -136,9 +137,12 @@ public abstract class BaseHandActionCommand {
 
     private void determineWinners(Table table, List<HandEvaluation> handEvaluationList) {
         for (Pot pot : table.getCurrentHand().getPots()) {
-            Set<Seat> winners = determinePotWinnersImplQuery.execute(table,
-                    pot.getSeats(), handEvaluationList);
-            pot.addWinners(winners);
+            // TODO: commented-out because pot changed to UUID
+            // Set<Seat> winners = determinePotWinnersImplQuery.execute(table,
+            // pot.getSeats(), handEvaluationList);
+            // pot.addWinners(winners);
+
+            Set<Seat> winners = new HashSet<>();
 
             int numberOfWinners = winners.size();
             int numberOfChips = pot.getAmount() / numberOfWinners;

@@ -53,7 +53,8 @@ public class CalculatePotsAfterRoundImplQuery implements CalculatePotsAfterRound
                 }
 
                 if (!pot.getSeats().contains(seat) && seat.isStillInHand()) {
-                    pot.getSeats().add(seat);
+                    // TODO: commented-out since pot changed to use UUID
+                    // pot.getSeats().add(seat);
                 }
                 pot.addChips(chipsPerLevel);
                 seat.setChipsInFront(seat.getChipsInFront() - chipsPerLevel);

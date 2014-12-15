@@ -12,17 +12,25 @@ public class PlayerCheckedEvent extends BaseEvent<TableEventType> implements Tab
 
     private final UUID gameId;
 
+    private final UUID handId;
+
     private final UUID playerId;
 
-    public PlayerCheckedEvent(UUID aggregateId, int version, UUID gameId, UUID playerId) {
+    public PlayerCheckedEvent(UUID aggregateId, int version, UUID gameId, UUID handId,
+            UUID playerId) {
         super(aggregateId, version, TYPE);
         this.gameId = gameId;
+        this.handId = handId;
         this.playerId = playerId;
     }
 
     @Override
     public UUID getGameId() {
         return gameId;
+    }
+
+    public UUID getHandId() {
+        return handId;
     }
 
     public UUID getPlayerId() {

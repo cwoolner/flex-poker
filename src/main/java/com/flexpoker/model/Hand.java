@@ -142,7 +142,7 @@ public class Hand {
 
     public void removeSeatFromPots(Seat seat) {
         for (Pot pot : pots) {
-            pot.removeSeat(seat);
+            // pot.removeSeat(seat);
         }
     }
 

@@ -67,8 +67,4 @@ public class TableViewModel {
         this.visibleCommonCards = visibleCommonCards;
     }
 
-    public UUID getTableId() {
-        return tableId;
-    }
-
 }
