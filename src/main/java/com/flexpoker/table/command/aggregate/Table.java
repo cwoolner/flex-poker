@@ -75,6 +75,12 @@ public class Table extends AggregateRoot<TableEvent> {
             case PlayerRaised:
                 applyEvent((PlayerRaisedEvent) event);
                 break;
+            case FlopCardsDealt:
+                break;
+            case TurnCardDealt:
+                break;
+            case RiverCardDealt:
+                break;
             default:
                 throw new IllegalArgumentException("Event Type cannot be handled: "
                         + event.getType());
@@ -244,37 +250,34 @@ public class Table extends AggregateRoot<TableEvent> {
     public void check(UUID playerId) {
         checkHandIsBeingPlayed();
 
-        PlayerCheckedEvent playerCheckedEvent = currentHand.check(playerId,
-                ++aggregateVersion);
-        addNewEvent(playerCheckedEvent);
-        applyEvent(playerCheckedEvent);
+        List<TableEvent> checkEvents = currentHand.check(playerId, ++aggregateVersion);
+        checkEvents.forEach(x -> addNewEvent(x));
+        applyAllEvents(checkEvents);
     }
 
     public void call(UUID playerId) {
         checkHandIsBeingPlayed();
 
-        PlayerCalledEvent playerCalledEvent = currentHand.call(playerId,
-                ++aggregateVersion);
-        addNewEvent(playerCalledEvent);
-        applyEvent(playerCalledEvent);
+        List<TableEvent> callEvents = currentHand.call(playerId, ++aggregateVersion);
+        callEvents.forEach(x -> addNewEvent(x));
+        applyAllEvents(callEvents);
     }
 
     public void fold(UUID playerId) {
         checkHandIsBeingPlayed();
 
-        PlayerFoldedEvent playerFoldedEvent = currentHand.fold(playerId,
-                ++aggregateVersion);
-        addNewEvent(playerFoldedEvent);
-        applyEvent(playerFoldedEvent);
+        List<TableEvent> foldEvents = currentHand.fold(playerId, ++aggregateVersion);
+        foldEvents.forEach(x -> addNewEvent(x));
+        applyAllEvents(foldEvents);
     }
 
     public void raise(UUID playerId, int raiseToAmount) {
         checkHandIsBeingPlayed();
 
-        PlayerRaisedEvent playerRaisedEvent = currentHand.raise(playerId,
-                ++aggregateVersion, raiseToAmount);
-        addNewEvent(playerRaisedEvent);
-        applyEvent(playerRaisedEvent);
+        List<TableEvent> raiseEvents = currentHand.raise(playerId, ++aggregateVersion,
+                raiseToAmount);
+        raiseEvents.forEach(x -> addNewEvent(x));
+        applyAllEvents(raiseEvents);
     }
 
     private void checkHandIsBeingPlayed() {

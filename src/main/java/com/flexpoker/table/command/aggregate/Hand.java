@@ -1,5 +1,6 @@
 package com.flexpoker.table.command.aggregate;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -23,6 +24,7 @@ import com.flexpoker.table.command.events.PlayerCalledEvent;
 import com.flexpoker.table.command.events.PlayerCheckedEvent;
 import com.flexpoker.table.command.events.PlayerFoldedEvent;
 import com.flexpoker.table.command.events.PlayerRaisedEvent;
+import com.flexpoker.table.command.framework.TableEvent;
 
 public class Hand {
 
@@ -193,41 +195,41 @@ public class Hand {
         return handDealtEvent;
     }
 
-    public PlayerCheckedEvent check(UUID playerId, int aggregateVersion) {
+    public List<TableEvent> check(UUID playerId, int aggregateVersion) {
         checkActionOnPlayer(playerId);
         checkPerformAction(playerId, PlayerAction.CHECK);
 
         PlayerCheckedEvent playerCheckedEvent = new PlayerCheckedEvent(tableId,
                 aggregateVersion, gameId, entityId, playerId);
-        return playerCheckedEvent;
+        return Arrays.asList(new TableEvent[] { playerCheckedEvent });
     }
 
-    public PlayerCalledEvent call(UUID playerId, int aggregateVersion) {
+    public List<TableEvent> call(UUID playerId, int aggregateVersion) {
         checkActionOnPlayer(playerId);
         checkPerformAction(playerId, PlayerAction.CALL);
 
         PlayerCalledEvent playerCalledEvent = new PlayerCalledEvent(tableId,
                 aggregateVersion, gameId, entityId, playerId);
-        return playerCalledEvent;
+        return Arrays.asList(new TableEvent[] { playerCalledEvent });
     }
 
-    public PlayerFoldedEvent fold(UUID playerId, int aggregateVersion) {
+    public List<TableEvent> fold(UUID playerId, int aggregateVersion) {
         checkActionOnPlayer(playerId);
         checkPerformAction(playerId, PlayerAction.FOLD);
 
         PlayerFoldedEvent playerFoldedEvent = new PlayerFoldedEvent(tableId,
                 aggregateVersion, gameId, entityId, playerId);
-        return playerFoldedEvent;
+        return Arrays.asList(new TableEvent[] { playerFoldedEvent });
     }
 
-    public PlayerRaisedEvent raise(UUID playerId, int aggregateVersion, int raiseToAmount) {
+    public List<TableEvent> raise(UUID playerId, int aggregateVersion, int raiseToAmount) {
         checkActionOnPlayer(playerId);
         checkPerformAction(playerId, PlayerAction.RAISE);
         checkRaiseAmountValue(playerId, raiseToAmount);
 
         PlayerRaisedEvent playerRaisedEvent = new PlayerRaisedEvent(tableId,
                 aggregateVersion, gameId, entityId, playerId, raiseToAmount);
-        return playerRaisedEvent;
+        return Arrays.asList(new TableEvent[] { playerRaisedEvent });
     }
 
     private void checkRaiseAmountValue(UUID playerId, int raiseToAmount) {
