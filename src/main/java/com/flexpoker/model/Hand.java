@@ -23,8 +23,6 @@ public class Hand {
 
     private HandDealerState handDealerState;
 
-    private HandRoundState handRoundState;
-
     private List<HandEvaluation> handEvaluationList;
 
     private int totalPotAmount;
@@ -41,7 +39,6 @@ public class Hand {
 
         this.deck = deck;
         this.handDealerState = HandDealerState.NONE;
-        this.handRoundState = HandRoundState.ROUND_COMPLETE;
         this.pots = new HashSet<>();
     }
 
@@ -87,14 +84,6 @@ public class Hand {
 
     public void setHandDealerState(HandDealerState handDealerState) {
         this.handDealerState = handDealerState;
-    }
-
-    public HandRoundState getHandRoundState() {
-        return handRoundState;
-    }
-
-    public void setHandRoundState(HandRoundState handRoundState) {
-        this.handRoundState = handRoundState;
     }
 
     public List<HandEvaluation> getHandEvaluationList() {

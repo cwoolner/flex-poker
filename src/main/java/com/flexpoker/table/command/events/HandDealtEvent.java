@@ -9,7 +9,6 @@ import com.flexpoker.framework.event.BaseEvent;
 import com.flexpoker.model.Blinds;
 import com.flexpoker.model.HandDealerState;
 import com.flexpoker.model.HandEvaluation;
-import com.flexpoker.model.HandRoundState;
 import com.flexpoker.model.PlayerAction;
 import com.flexpoker.model.Pot;
 import com.flexpoker.model.card.FlopCards;
@@ -57,8 +56,6 @@ public class HandDealtEvent extends BaseEvent<TableEventType> implements TableEv
 
     private final HandDealerState handDealerState;
 
-    private final HandRoundState handRoundState;
-
     private final Map<UUID, Integer> chipsInBack;
 
     private final Map<UUID, Integer> chipsInFrontMap;
@@ -79,10 +76,9 @@ public class HandDealtEvent extends BaseEvent<TableEventType> implements TableEv
             Map<UUID, Set<PlayerAction>> possibleSeatActionsMap,
             Set<UUID> playersStillInHand, List<HandEvaluation> handEvaluations,
             Set<Pot> pots, HandDealerState handDealerState,
-            HandRoundState handRoundState, Map<UUID, Integer> chipsInBack,
-            Map<UUID, Integer> chipsInFrontMap, Map<UUID, Integer> callAmountsMap,
-            Map<UUID, Integer> raiseToAmountsMap, Blinds blinds,
-            Set<UUID> playersToShowCardsMap) {
+            Map<UUID, Integer> chipsInBack, Map<UUID, Integer> chipsInFrontMap,
+            Map<UUID, Integer> callAmountsMap, Map<UUID, Integer> raiseToAmountsMap,
+            Blinds blinds, Set<UUID> playersToShowCardsMap) {
         super(aggregateId, version, TYPE);
         this.gameId = gameId;
         this.handId = handId;
@@ -101,7 +97,6 @@ public class HandDealtEvent extends BaseEvent<TableEventType> implements TableEv
         this.handEvaluations = handEvaluations;
         this.pots = pots;
         this.handDealerState = handDealerState;
-        this.handRoundState = handRoundState;
         this.chipsInBack = chipsInBack;
         this.chipsInFrontMap = chipsInFrontMap;
         this.callAmountsMap = callAmountsMap;
@@ -177,10 +172,6 @@ public class HandDealtEvent extends BaseEvent<TableEventType> implements TableEv
 
     public HandDealerState getHandDealerState() {
         return handDealerState;
-    }
-
-    public HandRoundState getHandRoundState() {
-        return handRoundState;
     }
 
     public Map<UUID, Integer> getChipsInBack() {

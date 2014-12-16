@@ -13,7 +13,6 @@ import com.flexpoker.model.Hand;
 import com.flexpoker.model.HandDealerState;
 import com.flexpoker.model.HandEvaluation;
 import com.flexpoker.model.HandRanking;
-import com.flexpoker.model.HandRoundState;
 import com.flexpoker.model.PlayerAction;
 import com.flexpoker.model.Seat;
 import com.flexpoker.model.Table;
@@ -106,7 +105,6 @@ public class StartNewHandImplCommand implements StartNewHandCommand {
         realTimeHand.setLastToAct(bigBlindSeat);
 
         realTimeHand.setHandDealerState(HandDealerState.POCKET_CARDS_DEALT);
-        realTimeHand.setHandRoundState(HandRoundState.ROUND_IN_PROGRESS);
 
         List<HandEvaluation> handEvaluations = determineHandEvaluations(game, table);
         realTimeHand.setHandEvaluationList(handEvaluations);

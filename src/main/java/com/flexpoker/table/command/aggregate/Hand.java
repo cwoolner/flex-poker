@@ -12,7 +12,6 @@ import com.flexpoker.exception.FlexPokerException;
 import com.flexpoker.model.Blinds;
 import com.flexpoker.model.HandDealerState;
 import com.flexpoker.model.HandEvaluation;
-import com.flexpoker.model.HandRoundState;
 import com.flexpoker.model.PlayerAction;
 import com.flexpoker.model.Pot;
 import com.flexpoker.model.card.FlopCards;
@@ -64,9 +63,6 @@ public class Hand {
 
     private HandDealerState handDealerState;
 
-    // TODO: remove this completely
-    private HandRoundState handRoundState;
-
     private final List<HandEvaluation> handEvaluationList;
 
     private final Set<Pot> pots;
@@ -95,10 +91,9 @@ public class Hand {
             Map<UUID, Set<PlayerAction>> possibleSeatActionsMap,
             Set<UUID> playersStillInHand, List<HandEvaluation> handEvaluationList,
             Set<Pot> pots, HandDealerState handDealerState,
-            HandRoundState handRoundState, Map<UUID, Integer> chipsInBack,
-            Map<UUID, Integer> chipsInFrontMap, Map<UUID, Integer> callAmountsMap,
-            Map<UUID, Integer> raiseToAmountsMap, Blinds blinds,
-            Set<UUID> playersToShowCardsMap) {
+            Map<UUID, Integer> chipsInBack, Map<UUID, Integer> chipsInFrontMap,
+            Map<UUID, Integer> callAmountsMap, Map<UUID, Integer> raiseToAmountsMap,
+            Blinds blinds, Set<UUID> playersToShowCardsMap) {
         this.gameId = gameId;
         this.tableId = tableId;
         this.entityId = entityId;
@@ -117,7 +112,6 @@ public class Hand {
         this.playersStillInHand = playersStillInHand;
         this.pots = pots;
         this.handDealerState = handDealerState;
-        this.handRoundState = handRoundState;
         this.chipsInBackMap = chipsInBack;
         this.chipsInFrontMap = chipsInFrontMap;
         this.callAmountsMap = callAmountsMap;
@@ -186,7 +180,6 @@ public class Hand {
 
         lastToActPlayerId = seatMap.get(Integer.valueOf(bigBlindPosition));
         handDealerState = HandDealerState.POCKET_CARDS_DEALT;
-        handRoundState = HandRoundState.ROUND_IN_PROGRESS;
 
         // TODO: set action on timer
 
@@ -195,8 +188,8 @@ public class Hand {
                 smallBlindPosition, bigBlindPosition, actionOnPosition,
                 lastToActPlayerId, seatMap, playerToPocketCardsMap,
                 possibleSeatActionsMap, playersStillInHand, handEvaluationList, pots,
-                handDealerState, handRoundState, chipsInBackMap, chipsInFrontMap,
-                callAmountsMap, raiseToAmountsMap, blinds, playersToShowCardsMap);
+                handDealerState, chipsInBackMap, chipsInFrontMap, callAmountsMap,
+                raiseToAmountsMap, blinds, playersToShowCardsMap);
         return handDealtEvent;
     }
 
@@ -383,7 +376,6 @@ public class Hand {
 
     private void handleEndOfRound() {
         originatingBettorPlayerId = null;
-        handRoundState = HandRoundState.ROUND_COMPLETE;
         moveToNextDealerState();
 
         // TODO: pot stuff

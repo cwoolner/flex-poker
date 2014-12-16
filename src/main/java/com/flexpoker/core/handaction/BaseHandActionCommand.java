@@ -19,7 +19,6 @@ import com.flexpoker.model.Game;
 import com.flexpoker.model.Hand;
 import com.flexpoker.model.HandDealerState;
 import com.flexpoker.model.HandEvaluation;
-import com.flexpoker.model.HandRoundState;
 import com.flexpoker.model.PlayerAction;
 import com.flexpoker.model.Pot;
 import com.flexpoker.model.Seat;
@@ -50,7 +49,6 @@ public abstract class BaseHandActionCommand {
 
     protected void handleMiddleOfRound(Game game, Table table, Hand realTimeHand,
             Seat actionOnSeat) {
-        realTimeHand.setHandRoundState(HandRoundState.ROUND_IN_PROGRESS);
         actionOnSeat.setActionOn(false);
         Seat nextToActSeat = realTimeHand.getNextToAct();
         nextToActSeat.setActionOn(true);
@@ -69,7 +67,6 @@ public abstract class BaseHandActionCommand {
     protected void handleEndOfRound(Game game, Table table, Hand realTimeHand,
             int bigBlindAmount) {
         realTimeHand.setOriginatingBettor(null);
-        realTimeHand.setHandRoundState(HandRoundState.ROUND_COMPLETE);
         realTimeHand.moveToNextDealerState();
         Set<Pot> pots = calculatePotsAfterRoundImplQuery.execute(table);
         table.getCurrentHand().setPots(pots);

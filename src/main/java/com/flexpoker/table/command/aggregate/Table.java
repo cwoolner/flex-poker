@@ -15,7 +15,6 @@ import com.flexpoker.framework.domain.AggregateRoot;
 import com.flexpoker.model.Blinds;
 import com.flexpoker.model.HandDealerState;
 import com.flexpoker.model.HandEvaluation;
-import com.flexpoker.model.HandRoundState;
 import com.flexpoker.model.PlayerAction;
 import com.flexpoker.model.card.Card;
 import com.flexpoker.model.card.CardsUsedInHand;
@@ -115,10 +114,10 @@ public class Table extends AggregateRoot<TableEvent> {
                 event.getActionOnPosition(), event.getLastToActPlayerId(),
                 event.getPlayerToPocketCardsMap(), event.getPossibleSeatActionsMap(),
                 event.getPlayersStillInHand(), event.getHandEvaluations(),
-                event.getPots(), event.getHandDealerState(), event.getHandRoundState(),
-                event.getChipsInBack(), event.getChipsInFrontMap(),
-                event.getCallAmountsMap(), event.getRaiseToAmountsMap(),
-                event.getBlinds(), event.getPlayersToShowCardsMap());
+                event.getPots(), event.getHandDealerState(), event.getChipsInBack(),
+                event.getChipsInFrontMap(), event.getCallAmountsMap(),
+                event.getRaiseToAmountsMap(), event.getBlinds(),
+                event.getPlayersToShowCardsMap());
     }
 
     private void applyEvent(PlayerRaisedEvent event) {
@@ -213,8 +212,8 @@ public class Table extends AggregateRoot<TableEvent> {
                 bigBlindPosition, actionOnPosition, null, playerToPocketCardsMap,
                 possibleSeatActionsMap, playersStillInHand, new ArrayList<>(
                         handEvaluations.values()), new HashSet<>(), HandDealerState.NONE,
-                HandRoundState.ROUND_COMPLETE, chipsInBack, new HashMap<>(),
-                new HashMap<>(), new HashMap<>(), blinds, new HashSet<>());
+                chipsInBack, new HashMap<>(), new HashMap<>(), new HashMap<>(), blinds,
+                new HashSet<>());
         HandDealtEvent handDealtEvent = hand.dealHand(++aggregateVersion);
         addNewEvent(handDealtEvent);
         applyEvent(handDealtEvent);
