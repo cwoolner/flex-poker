@@ -1,6 +1,6 @@
 package com.flexpoker.table.command.aggregate;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -19,7 +19,9 @@ import com.flexpoker.model.card.FlopCards;
 import com.flexpoker.model.card.PocketCards;
 import com.flexpoker.model.card.RiverCard;
 import com.flexpoker.model.card.TurnCard;
+import com.flexpoker.table.command.events.ActionOnChangedEvent;
 import com.flexpoker.table.command.events.HandDealtEvent;
+import com.flexpoker.table.command.events.LastToActChangedEvent;
 import com.flexpoker.table.command.events.PlayerCalledEvent;
 import com.flexpoker.table.command.events.PlayerCheckedEvent;
 import com.flexpoker.table.command.events.PlayerFoldedEvent;
@@ -62,6 +64,7 @@ public class Hand {
 
     private HandDealerState handDealerState;
 
+    // TODO: remove this completely
     private HandRoundState handRoundState;
 
     private final List<HandEvaluation> handEvaluationList;
@@ -87,7 +90,8 @@ public class Hand {
     public Hand(UUID gameId, UUID tableId, UUID entityId, Map<Integer, UUID> seatMap,
             FlopCards flopCards, TurnCard turnCard, RiverCard riverCard,
             int buttonOnPosition, int smallBlindPosition, int bigBlindPosition,
-            int actionOnPosition, Map<UUID, PocketCards> playerToPocketCardsMap,
+            int actionOnPosition, UUID lastToActPlayerId,
+            Map<UUID, PocketCards> playerToPocketCardsMap,
             Map<UUID, Set<PlayerAction>> possibleSeatActionsMap,
             Set<UUID> playersStillInHand, List<HandEvaluation> handEvaluationList,
             Set<Pot> pots, HandDealerState handDealerState,
@@ -106,6 +110,7 @@ public class Hand {
         this.smallBlindPosition = smallBlindPosition;
         this.bigBlindPosition = bigBlindPosition;
         this.actionOnPosition = actionOnPosition;
+        this.lastToActPlayerId = lastToActPlayerId;
         this.playerToPocketCardsMap = playerToPocketCardsMap;
         this.handEvaluationList = handEvaluationList;
         this.possibleSeatActionsMap = possibleSeatActionsMap;
@@ -187,49 +192,84 @@ public class Hand {
 
         HandDealtEvent handDealtEvent = new HandDealtEvent(tableId, aggregateVersion,
                 gameId, entityId, flopCards, turnCard, riverCard, buttonOnPosition,
-                smallBlindPosition, bigBlindPosition, actionOnPosition, seatMap,
-                playerToPocketCardsMap, possibleSeatActionsMap, playersStillInHand,
-                handEvaluationList, pots, handDealerState, handRoundState,
-                chipsInBackMap, chipsInFrontMap, callAmountsMap, raiseToAmountsMap,
-                blinds, playersToShowCardsMap);
+                smallBlindPosition, bigBlindPosition, actionOnPosition,
+                lastToActPlayerId, seatMap, playerToPocketCardsMap,
+                possibleSeatActionsMap, playersStillInHand, handEvaluationList, pots,
+                handDealerState, handRoundState, chipsInBackMap, chipsInFrontMap,
+                callAmountsMap, raiseToAmountsMap, blinds, playersToShowCardsMap);
         return handDealtEvent;
     }
 
-    public List<TableEvent> check(UUID playerId, int aggregateVersion) {
+    public PlayerCheckedEvent check(UUID playerId, int aggregateVersion) {
         checkActionOnPlayer(playerId);
         checkPerformAction(playerId, PlayerAction.CHECK);
 
         PlayerCheckedEvent playerCheckedEvent = new PlayerCheckedEvent(tableId,
                 aggregateVersion, gameId, entityId, playerId);
-        return Arrays.asList(new TableEvent[] { playerCheckedEvent });
+        return playerCheckedEvent;
     }
 
-    public List<TableEvent> call(UUID playerId, int aggregateVersion) {
+    public PlayerCalledEvent call(UUID playerId, int aggregateVersion) {
         checkActionOnPlayer(playerId);
         checkPerformAction(playerId, PlayerAction.CALL);
 
         PlayerCalledEvent playerCalledEvent = new PlayerCalledEvent(tableId,
                 aggregateVersion, gameId, entityId, playerId);
-        return Arrays.asList(new TableEvent[] { playerCalledEvent });
+        return playerCalledEvent;
     }
 
-    public List<TableEvent> fold(UUID playerId, int aggregateVersion) {
+    public PlayerFoldedEvent fold(UUID playerId, int aggregateVersion) {
         checkActionOnPlayer(playerId);
         checkPerformAction(playerId, PlayerAction.FOLD);
 
         PlayerFoldedEvent playerFoldedEvent = new PlayerFoldedEvent(tableId,
                 aggregateVersion, gameId, entityId, playerId);
-        return Arrays.asList(new TableEvent[] { playerFoldedEvent });
+        return playerFoldedEvent;
     }
 
-    public List<TableEvent> raise(UUID playerId, int aggregateVersion, int raiseToAmount) {
+    public PlayerRaisedEvent raise(UUID playerId, int aggregateVersion, int raiseToAmount) {
         checkActionOnPlayer(playerId);
         checkPerformAction(playerId, PlayerAction.RAISE);
         checkRaiseAmountValue(playerId, raiseToAmount);
 
         PlayerRaisedEvent playerRaisedEvent = new PlayerRaisedEvent(tableId,
                 aggregateVersion, gameId, entityId, playerId, raiseToAmount);
-        return Arrays.asList(new TableEvent[] { playerRaisedEvent });
+        return playerRaisedEvent;
+    }
+
+    public List<TableEvent> changeActionOn(int aggregateVersion) {
+        List<TableEvent> eventsCreated = new ArrayList<>();
+
+        UUID actionOnPlayerId = seatMap.get(Integer.valueOf(actionOnPosition));
+
+        if (actionOnPlayerId.equals(lastToActPlayerId)) {
+            UUID nextPlayerToAct = findActionOnPlayerIdForNewRound();
+            UUID newRoundLastPlayerToAct = seatMap.get(Integer
+                    .valueOf(determineLastToAct()));
+
+            ActionOnChangedEvent actionOnChangedEvent = new ActionOnChangedEvent(tableId,
+                    aggregateVersion, gameId, entityId, nextPlayerToAct);
+            LastToActChangedEvent lastToActChangedEvent = new LastToActChangedEvent(
+                    tableId, ++aggregateVersion, gameId, entityId,
+                    newRoundLastPlayerToAct);
+            eventsCreated.add(actionOnChangedEvent);
+            eventsCreated.add(lastToActChangedEvent);
+        } else {
+            UUID nextPlayerToAct = findNextToAct();
+            ActionOnChangedEvent actionOnChangedEvent = new ActionOnChangedEvent(tableId,
+                    aggregateVersion, gameId, entityId, nextPlayerToAct);
+            eventsCreated.add(actionOnChangedEvent);
+        }
+
+        // TODO: add the timer
+        // TODO: maybe have a process manager look for the actionOnChangedEvent
+        // and set the timer there?
+        // Timer actionOnTimer =
+        // scheduleAndReturnActionOnTimerCommand.execute(game, table,
+        // nextToActSeat);
+        // nextToActSeat.setActionOnTimer(actionOnTimer);
+
+        return eventsCreated;
     }
 
     private void checkRaiseAmountValue(UUID playerId, int raiseToAmount) {
@@ -264,8 +304,6 @@ public class Hand {
 
         if (playerId.equals(lastToActPlayerId)) {
             handleEndOfRound();
-        } else {
-            handleMiddleOfRound(playerId);
         }
     }
 
@@ -285,17 +323,7 @@ public class Hand {
 
         if (playerId.equals(lastToActPlayerId)) {
             handleEndOfRound();
-        } else {
-            handleMiddleOfRound(playerId);
         }
-
-        // int numberOfPlayersLeft = 0;
-        // for (Seat seat : table.getSeats()) {
-        // if (seat.getUserGameStatus() != null
-        // && seat.getUserGameStatus().getChips() != 0) {
-        // numberOfPlayersLeft++;
-        // }
-        // }
 
         // TODO: This should be a check with all of the tables in the game.
         // TODO: This check should also be done at the beginning of the
@@ -321,14 +349,14 @@ public class Hand {
             handleEndOfRound();
         } else if (playerId.equals(lastToActPlayerId)) {
             handleEndOfRound();
-        } else {
-            handleMiddleOfRound(playerId);
         }
     }
 
     void applyEvent(PlayerRaisedEvent event) {
         UUID playerId = event.getPlayerId();
 
+        // TODO: this isn't correct. Need to pull the logic out of
+        // RaiseHandActionImplCommand
         playersStillInHand.remove(playerId);
         pots.forEach(x -> x.removeSeat(playerId));
         possibleSeatActionsMap.get(playerId).clear();
@@ -340,20 +368,17 @@ public class Hand {
             handleEndOfRound();
         } else if (playerId.equals(lastToActPlayerId)) {
             handleEndOfRound();
-        } else {
-            handleMiddleOfRound(playerId);
         }
     }
 
-    private void handleMiddleOfRound(UUID playerId) {
-        handRoundState = HandRoundState.ROUND_IN_PROGRESS;
-        actionOnPosition = findNextToAct();
+    void applyEvent(ActionOnChangedEvent event) {
+        actionOnPosition = seatMap.entrySet().stream()
+                .filter(x -> x.getValue().equals(event.getPlayerId())).findAny().get()
+                .getKey().intValue();
+    }
 
-        // TODO: add the timer
-        // Timer actionOnTimer =
-        // scheduleAndReturnActionOnTimerCommand.execute(game, table,
-        // nextToActSeat);
-        // nextToActSeat.setActionOnTimer(actionOnTimer);
+    void applyEvent(LastToActChangedEvent event) {
+        lastToActPlayerId = event.getPlayerId();
     }
 
     private void handleEndOfRound() {
@@ -388,27 +413,19 @@ public class Hand {
             // startNewHandCommand.execute(game, table);
         } else {
             resetChipsInFront();
-            determineActionOnForNewRound();
-            lastToActPlayerId = seatMap.get(Integer.valueOf(determineLastToAct()));
             resetRaiseAmountsAfterRound();
             resetPossibleSeatActionsAfterRound();
         }
     }
 
-    private void determineActionOnForNewRound() {
+    private UUID findActionOnPlayerIdForNewRound() {
         int buttonIndex = buttonOnPosition;
 
         for (int i = buttonIndex + 1; i < seatMap.size(); i++) {
             UUID playerAtTable = seatMap.get(Integer.valueOf(i));
             if (playerAtTable != null && playersStillInHand.contains(playerAtTable)
                     && chipsInBackMap.get(playerAtTable) != 0) {
-                actionOnPosition = i;
-
-                // TODO: timer
-                // Timer actionOnTimer =
-                // createAndStartActionOnTimerCommand.execute(
-                // game, table, newActionOnSeat);
-                // newActionOnSeat.setActionOnTimer(actionOnTimer);
+                return playerAtTable;
             }
         }
 
@@ -416,13 +433,7 @@ public class Hand {
             UUID playerAtTable = seatMap.get(Integer.valueOf(i));
             if (playerAtTable != null && playersStillInHand.contains(playerAtTable)
                     && chipsInBackMap.get(playerAtTable) != 0) {
-                actionOnPosition = i;
-
-                // TODO: timer
-                // Timer actionOnTimer =
-                // createAndStartActionOnTimerCommand.execute(
-                // game, table, newActionOnSeat);
-                // newActionOnSeat.setActionOnTimer(actionOnTimer);
+                return playerAtTable;
             }
         }
 
@@ -463,18 +474,18 @@ public class Hand {
         });
     }
 
-    private int findNextToAct() {
+    private UUID findNextToAct() {
         for (int i = actionOnPosition + 1; i < seatMap.size(); i++) {
             UUID playerAtTable = seatMap.get(Integer.valueOf(i));
             if (playerAtTable != null && playersStillInHand.contains(playerAtTable)) {
-                return i;
+                return playerAtTable;
             }
         }
 
         for (int i = 0; i < actionOnPosition; i++) {
             UUID playerAtTable = seatMap.get(Integer.valueOf(i));
             if (playerAtTable != null && playersStillInHand.contains(playerAtTable)) {
-                return i;
+                return playerAtTable;
             }
         }
 

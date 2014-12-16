@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 import com.flexpoker.framework.event.Event;
 import com.flexpoker.framework.event.EventHandler;
 import com.flexpoker.framework.event.EventPublisher;
+import com.flexpoker.table.command.events.ActionOnChangedEvent;
 import com.flexpoker.table.command.events.FlopCardsDealtEvent;
 import com.flexpoker.table.command.events.HandDealtEvent;
 import com.flexpoker.table.command.events.PlayerCalledEvent;
@@ -39,6 +40,8 @@ public class InMemoryAsyncTableEventPublisher implements EventPublisher<TableEve
 
     private final EventHandler<RiverCardDealtEvent> riverCardDealtEventHandler;
 
+    private final EventHandler<ActionOnChangedEvent> actionOnChangedEventHandler;
+
     @Inject
     public InMemoryAsyncTableEventPublisher(
             EventHandler<TableCreatedEvent> tableCreatedEventHandler,
@@ -49,7 +52,8 @@ public class InMemoryAsyncTableEventPublisher implements EventPublisher<TableEve
             EventHandler<PlayerRaisedEvent> playerRaisedEventHandler,
             EventHandler<FlopCardsDealtEvent> flopCardsDealtEventHandler,
             EventHandler<TurnCardDealtEvent> turnCardDealtEventHandler,
-            EventHandler<RiverCardDealtEvent> riverCardDealtEventHandler) {
+            EventHandler<RiverCardDealtEvent> riverCardDealtEventHandler,
+            EventHandler<ActionOnChangedEvent> actionOnChangedEventHandler) {
         this.tableCreatedEventHandler = tableCreatedEventHandler;
         this.handDealtEventHandler = handDealtEventHandler;
         this.playerCalledEventHandler = playerCalledEventHandler;
@@ -59,6 +63,7 @@ public class InMemoryAsyncTableEventPublisher implements EventPublisher<TableEve
         this.flopCardsDealtEventHandler = flopCardsDealtEventHandler;
         this.turnCardDealtEventHandler = turnCardDealtEventHandler;
         this.riverCardDealtEventHandler = riverCardDealtEventHandler;
+        this.actionOnChangedEventHandler = actionOnChangedEventHandler;
     }
 
     @Override
@@ -92,6 +97,11 @@ public class InMemoryAsyncTableEventPublisher implements EventPublisher<TableEve
             break;
         case RiverCardDealt:
             riverCardDealtEventHandler.handle((RiverCardDealtEvent) event);
+            break;
+        case ActionOnChanged:
+            actionOnChangedEventHandler.handle((ActionOnChangedEvent) event);
+            break;
+        case LastToActChanged:
             break;
         default:
             throw new IllegalArgumentException("Event Type cannot be handled: "

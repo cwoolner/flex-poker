@@ -8,6 +8,8 @@ public enum TableEventType implements EventType {
 
     PlayerChecked, PlayerRaised, PlayerCalled, PlayerFolded, //
 
-    FlopCardsDealt, TurnCardDealt, RiverCardDealt
+    FlopCardsDealt, TurnCardDealt, RiverCardDealt, //
+
+    ActionOnChanged, LastToActChanged
 
 }

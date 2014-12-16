@@ -20,8 +20,10 @@ import com.flexpoker.model.PlayerAction;
 import com.flexpoker.model.card.Card;
 import com.flexpoker.model.card.CardsUsedInHand;
 import com.flexpoker.model.card.PocketCards;
+import com.flexpoker.table.command.events.ActionOnChangedEvent;
 import com.flexpoker.table.command.events.CardsShuffledEvent;
 import com.flexpoker.table.command.events.HandDealtEvent;
+import com.flexpoker.table.command.events.LastToActChangedEvent;
 import com.flexpoker.table.command.events.PlayerCalledEvent;
 import com.flexpoker.table.command.events.PlayerCheckedEvent;
 import com.flexpoker.table.command.events.PlayerFoldedEvent;
@@ -81,6 +83,12 @@ public class Table extends AggregateRoot<TableEvent> {
                 break;
             case RiverCardDealt:
                 break;
+            case ActionOnChanged:
+                applyEvent((ActionOnChangedEvent) event);
+                break;
+            case LastToActChanged:
+                applyEvent((LastToActChangedEvent) event);
+                break;
             default:
                 throw new IllegalArgumentException("Event Type cannot be handled: "
                         + event.getType());
@@ -104,13 +112,13 @@ public class Table extends AggregateRoot<TableEvent> {
                 event.getHandId(), seatMap, event.getFlopCards(), event.getTurnCard(),
                 event.getRiverCard(), event.getButtonOnPosition(),
                 event.getSmallBlindPosition(), event.getBigBlindPosition(),
-                event.getActionOnPosition(), event.getPlayerToPocketCardsMap(),
-                event.getPossibleSeatActionsMap(), event.getPlayersStillInHand(),
-                event.getHandEvaluations(), event.getPots(), event.getHandDealerState(),
-                event.getHandRoundState(), event.getChipsInBack(),
-                event.getChipsInFrontMap(), event.getCallAmountsMap(),
-                event.getRaiseToAmountsMap(), event.getBlinds(),
-                event.getPlayersToShowCardsMap());
+                event.getActionOnPosition(), event.getLastToActPlayerId(),
+                event.getPlayerToPocketCardsMap(), event.getPossibleSeatActionsMap(),
+                event.getPlayersStillInHand(), event.getHandEvaluations(),
+                event.getPots(), event.getHandDealerState(), event.getHandRoundState(),
+                event.getChipsInBack(), event.getChipsInFrontMap(),
+                event.getCallAmountsMap(), event.getRaiseToAmountsMap(),
+                event.getBlinds(), event.getPlayersToShowCardsMap());
     }
 
     private void applyEvent(PlayerRaisedEvent event) {
@@ -126,6 +134,14 @@ public class Table extends AggregateRoot<TableEvent> {
     }
 
     private void applyEvent(PlayerCalledEvent event) {
+        currentHand.applyEvent(event);
+    }
+
+    private void applyEvent(ActionOnChangedEvent event) {
+        currentHand.applyEvent(event);
+    }
+
+    private void applyEvent(LastToActChangedEvent event) {
         currentHand.applyEvent(event);
     }
 
@@ -194,7 +210,7 @@ public class Table extends AggregateRoot<TableEvent> {
         Hand hand = new Hand(gameId, aggregateId, UUID.randomUUID(), seatMap,
                 cardsUsedInHand.getFlopCards(), cardsUsedInHand.getTurnCard(),
                 cardsUsedInHand.getRiverCard(), buttonOnPosition, smallBlindPosition,
-                bigBlindPosition, actionOnPosition, playerToPocketCardsMap,
+                bigBlindPosition, actionOnPosition, null, playerToPocketCardsMap,
                 possibleSeatActionsMap, playersStillInHand, new ArrayList<>(
                         handEvaluations.values()), new HashSet<>(), HandDealerState.NONE,
                 HandRoundState.ROUND_COMPLETE, chipsInBack, new HashMap<>(),
@@ -250,34 +266,57 @@ public class Table extends AggregateRoot<TableEvent> {
     public void check(UUID playerId) {
         checkHandIsBeingPlayed();
 
-        List<TableEvent> checkEvents = currentHand.check(playerId, ++aggregateVersion);
-        checkEvents.forEach(x -> addNewEvent(x));
-        applyAllEvents(checkEvents);
+        PlayerCheckedEvent playerCheckedEvent = currentHand.check(playerId,
+                ++aggregateVersion);
+        addNewEvent(playerCheckedEvent);
+        applyEvent(playerCheckedEvent);
+
+        List<TableEvent> actionOnChangedEvents = currentHand
+                .changeActionOn(++aggregateVersion);
+        actionOnChangedEvents.forEach(x -> addNewEvent(x));
+        applyAllEvents(actionOnChangedEvents);
     }
 
     public void call(UUID playerId) {
         checkHandIsBeingPlayed();
 
-        List<TableEvent> callEvents = currentHand.call(playerId, ++aggregateVersion);
-        callEvents.forEach(x -> addNewEvent(x));
-        applyAllEvents(callEvents);
+        PlayerCalledEvent playerCalledEvent = currentHand.call(playerId,
+                ++aggregateVersion);
+        addNewEvent(playerCalledEvent);
+        applyEvent(playerCalledEvent);
+
+        List<TableEvent> actionOnChangedEvents = currentHand
+                .changeActionOn(++aggregateVersion);
+        actionOnChangedEvents.forEach(x -> addNewEvent(x));
+        applyAllEvents(actionOnChangedEvents);
     }
 
     public void fold(UUID playerId) {
         checkHandIsBeingPlayed();
 
-        List<TableEvent> foldEvents = currentHand.fold(playerId, ++aggregateVersion);
-        foldEvents.forEach(x -> addNewEvent(x));
-        applyAllEvents(foldEvents);
+        PlayerFoldedEvent playerFoldedEvent = currentHand.fold(playerId,
+                ++aggregateVersion);
+        addNewEvent(playerFoldedEvent);
+        applyEvent(playerFoldedEvent);
+
+        List<TableEvent> actionOnChangedEvents = currentHand
+                .changeActionOn(++aggregateVersion);
+        actionOnChangedEvents.forEach(x -> addNewEvent(x));
+        applyAllEvents(actionOnChangedEvents);
     }
 
     public void raise(UUID playerId, int raiseToAmount) {
         checkHandIsBeingPlayed();
 
-        List<TableEvent> raiseEvents = currentHand.raise(playerId, ++aggregateVersion,
-                raiseToAmount);
-        raiseEvents.forEach(x -> addNewEvent(x));
-        applyAllEvents(raiseEvents);
+        PlayerRaisedEvent playerRaisedEvent = currentHand.raise(playerId,
+                ++aggregateVersion, raiseToAmount);
+        addNewEvent(playerRaisedEvent);
+        applyEvent(playerRaisedEvent);
+
+        List<TableEvent> actionOnChangedEvents = currentHand
+                .changeActionOn(++aggregateVersion);
+        actionOnChangedEvents.forEach(x -> addNewEvent(x));
+        applyAllEvents(actionOnChangedEvents);
     }
 
     private void checkHandIsBeingPlayed() {

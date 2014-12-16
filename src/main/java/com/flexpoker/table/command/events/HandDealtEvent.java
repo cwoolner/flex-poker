@@ -41,6 +41,8 @@ public class HandDealtEvent extends BaseEvent<TableEventType> implements TableEv
 
     private final int actionOnPosition;
 
+    private final UUID lastToActPlayerId;
+
     private final Map<Integer, UUID> seatMap;
 
     private final Map<UUID, PocketCards> playerToPocketCardsMap;
@@ -72,7 +74,7 @@ public class HandDealtEvent extends BaseEvent<TableEventType> implements TableEv
     public HandDealtEvent(UUID aggregateId, int version, UUID gameId, UUID handId,
             FlopCards flopCards, TurnCard turnCard, RiverCard riverCard,
             int buttonOnPosition, int smallBlindPosition, int bigBlindPosition,
-            int actionOnPosition, Map<Integer, UUID> seatMap,
+            int actionOnPosition, UUID lastToActPlayerId, Map<Integer, UUID> seatMap,
             Map<UUID, PocketCards> playerToPocketCardsMap,
             Map<UUID, Set<PlayerAction>> possibleSeatActionsMap,
             Set<UUID> playersStillInHand, List<HandEvaluation> handEvaluations,
@@ -91,6 +93,7 @@ public class HandDealtEvent extends BaseEvent<TableEventType> implements TableEv
         this.smallBlindPosition = smallBlindPosition;
         this.bigBlindPosition = bigBlindPosition;
         this.actionOnPosition = actionOnPosition;
+        this.lastToActPlayerId = lastToActPlayerId;
         this.seatMap = seatMap;
         this.playerToPocketCardsMap = playerToPocketCardsMap;
         this.possibleSeatActionsMap = possibleSeatActionsMap;
@@ -142,6 +145,10 @@ public class HandDealtEvent extends BaseEvent<TableEventType> implements TableEv
 
     public int getActionOnPosition() {
         return actionOnPosition;
+    }
+
+    public UUID getLastToActPlayerId() {
+        return lastToActPlayerId;
     }
 
     public Map<Integer, UUID> getSeatMap() {
