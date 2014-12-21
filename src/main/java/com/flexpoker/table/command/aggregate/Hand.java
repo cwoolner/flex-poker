@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.Timer;
 import java.util.UUID;
@@ -19,12 +20,15 @@ import com.flexpoker.model.card.PocketCards;
 import com.flexpoker.model.card.RiverCard;
 import com.flexpoker.model.card.TurnCard;
 import com.flexpoker.table.command.events.ActionOnChangedEvent;
+import com.flexpoker.table.command.events.FlopCardsDealtEvent;
 import com.flexpoker.table.command.events.HandDealtEvent;
 import com.flexpoker.table.command.events.LastToActChangedEvent;
 import com.flexpoker.table.command.events.PlayerCalledEvent;
 import com.flexpoker.table.command.events.PlayerCheckedEvent;
 import com.flexpoker.table.command.events.PlayerFoldedEvent;
 import com.flexpoker.table.command.events.PlayerRaisedEvent;
+import com.flexpoker.table.command.events.RiverCardDealtEvent;
+import com.flexpoker.table.command.events.TurnCardDealtEvent;
 import com.flexpoker.table.command.framework.TableEvent;
 
 public class Hand {
@@ -82,6 +86,12 @@ public class Hand {
     private final Blinds blinds;
 
     private final Set<UUID> playersToShowCardsMap;
+
+    private boolean flopDealt;
+
+    private boolean turnDealt;
+
+    private boolean riverDealt;
 
     public Hand(UUID gameId, UUID tableId, UUID entityId, Map<Integer, UUID> seatMap,
             FlopCards flopCards, TurnCard turnCard, RiverCard riverCard,
@@ -265,6 +275,25 @@ public class Hand {
         return eventsCreated;
     }
 
+    Optional<TableEvent> dealCommonCardsIfAppropriate(int aggregateVersion) {
+        if (handDealerState == HandDealerState.FLOP_DEALT && !flopDealt) {
+            return Optional.of(new FlopCardsDealtEvent(tableId, aggregateVersion, gameId,
+                    entityId));
+        }
+
+        if (handDealerState == HandDealerState.TURN_DEALT && !turnDealt) {
+            return Optional.of(new TurnCardDealtEvent(tableId, aggregateVersion, gameId,
+                    entityId));
+        }
+
+        if (handDealerState == HandDealerState.RIVER_DEALT && !riverDealt) {
+            return Optional.of(new RiverCardDealtEvent(tableId, aggregateVersion, gameId,
+                    entityId));
+        }
+
+        return Optional.empty();
+    }
+
     private void checkRaiseAmountValue(UUID playerId, int raiseToAmount) {
         int playersTotalChips = chipsInBackMap.get(playerId).intValue()
                 + chipsInFrontMap.get(playerId).intValue();
@@ -372,6 +401,18 @@ public class Hand {
 
     void applyEvent(LastToActChangedEvent event) {
         lastToActPlayerId = event.getPlayerId();
+    }
+
+    void applyEvent(FlopCardsDealtEvent event) {
+        flopDealt = true;
+    }
+
+    void applyEvent(TurnCardDealtEvent event) {
+        turnDealt = true;
+    }
+
+    void applyEvent(RiverCardDealtEvent event) {
+        riverDealt = true;
     }
 
     private void handleEndOfRound() {

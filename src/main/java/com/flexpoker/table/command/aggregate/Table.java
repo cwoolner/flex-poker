@@ -1,6 +1,7 @@
 package com.flexpoker.table.command.aggregate;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -21,13 +22,16 @@ import com.flexpoker.model.card.CardsUsedInHand;
 import com.flexpoker.model.card.PocketCards;
 import com.flexpoker.table.command.events.ActionOnChangedEvent;
 import com.flexpoker.table.command.events.CardsShuffledEvent;
+import com.flexpoker.table.command.events.FlopCardsDealtEvent;
 import com.flexpoker.table.command.events.HandDealtEvent;
 import com.flexpoker.table.command.events.LastToActChangedEvent;
 import com.flexpoker.table.command.events.PlayerCalledEvent;
 import com.flexpoker.table.command.events.PlayerCheckedEvent;
 import com.flexpoker.table.command.events.PlayerFoldedEvent;
 import com.flexpoker.table.command.events.PlayerRaisedEvent;
+import com.flexpoker.table.command.events.RiverCardDealtEvent;
 import com.flexpoker.table.command.events.TableCreatedEvent;
+import com.flexpoker.table.command.events.TurnCardDealtEvent;
 import com.flexpoker.table.command.framework.TableEvent;
 
 public class Table extends AggregateRoot<TableEvent> {
@@ -77,10 +81,13 @@ public class Table extends AggregateRoot<TableEvent> {
                 applyEvent((PlayerRaisedEvent) event);
                 break;
             case FlopCardsDealt:
+                applyEvent((FlopCardsDealtEvent) event);
                 break;
             case TurnCardDealt:
+                applyEvent((TurnCardDealtEvent) event);
                 break;
             case RiverCardDealt:
+                applyEvent((RiverCardDealtEvent) event);
                 break;
             case ActionOnChanged:
                 applyEvent((ActionOnChangedEvent) event);
@@ -141,6 +148,18 @@ public class Table extends AggregateRoot<TableEvent> {
     }
 
     private void applyEvent(LastToActChangedEvent event) {
+        currentHand.applyEvent(event);
+    }
+
+    private void applyEvent(RiverCardDealtEvent event) {
+        currentHand.applyEvent(event);
+    }
+
+    private void applyEvent(TurnCardDealtEvent event) {
+        currentHand.applyEvent(event);
+    }
+
+    private void applyEvent(FlopCardsDealtEvent event) {
         currentHand.applyEvent(event);
     }
 
@@ -274,6 +293,11 @@ public class Table extends AggregateRoot<TableEvent> {
                 .changeActionOn(++aggregateVersion);
         actionOnChangedEvents.forEach(x -> addNewEvent(x));
         applyAllEvents(actionOnChangedEvents);
+
+        currentHand.dealCommonCardsIfAppropriate(++aggregateVersion).ifPresent(event -> {
+            addNewEvent(event);
+            applyAllEvents(Arrays.asList(event));
+        });
     }
 
     public void call(UUID playerId) {
@@ -288,6 +312,11 @@ public class Table extends AggregateRoot<TableEvent> {
                 .changeActionOn(++aggregateVersion);
         actionOnChangedEvents.forEach(x -> addNewEvent(x));
         applyAllEvents(actionOnChangedEvents);
+
+        currentHand.dealCommonCardsIfAppropriate(++aggregateVersion).ifPresent(event -> {
+            addNewEvent(event);
+            applyAllEvents(Arrays.asList(event));
+        });
     }
 
     public void fold(UUID playerId) {
@@ -302,6 +331,11 @@ public class Table extends AggregateRoot<TableEvent> {
                 .changeActionOn(++aggregateVersion);
         actionOnChangedEvents.forEach(x -> addNewEvent(x));
         applyAllEvents(actionOnChangedEvents);
+
+        currentHand.dealCommonCardsIfAppropriate(++aggregateVersion).ifPresent(event -> {
+            addNewEvent(event);
+            applyAllEvents(Arrays.asList(event));
+        });
     }
 
     public void raise(UUID playerId, int raiseToAmount) {
