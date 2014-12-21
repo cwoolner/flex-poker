@@ -3,13 +3,11 @@ package com.flexpoker.core.handaction;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.Timer;
 
 import org.springframework.context.ApplicationEventPublisher;
 
 import com.flexpoker.core.api.chat.SendTableChatMessageCommand;
 import com.flexpoker.core.api.game.StartNewHandCommand;
-import com.flexpoker.core.api.scheduling.ScheduleAndReturnActionOnTimerCommand;
 import com.flexpoker.core.api.seatstatus.SetSeatStatusForEndOfHandCommand;
 import com.flexpoker.core.api.seatstatus.SetSeatStatusForNewHandCommand;
 import com.flexpoker.core.api.seatstatus.SetSeatStatusForNewRoundCommand;
@@ -41,8 +39,6 @@ public abstract class BaseHandActionCommand {
 
     protected DeterminePotWinnersImplQuery determinePotWinnersImplQuery;
 
-    protected ScheduleAndReturnActionOnTimerCommand scheduleAndReturnActionOnTimerCommand;
-
     protected StartNewHandCommand startNewHandCommand;
 
     protected ApplicationEventPublisher applicationEventPublisher;
@@ -52,10 +48,6 @@ public abstract class BaseHandActionCommand {
         actionOnSeat.setActionOn(false);
         Seat nextToActSeat = realTimeHand.getNextToAct();
         nextToActSeat.setActionOn(true);
-
-        Timer actionOnTimer = scheduleAndReturnActionOnTimerCommand.execute(game, table,
-                nextToActSeat);
-        nextToActSeat.setActionOnTimer(actionOnTimer);
 
         determineNextToAct(table, realTimeHand);
 

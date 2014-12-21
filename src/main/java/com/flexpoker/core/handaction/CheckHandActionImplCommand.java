@@ -10,7 +10,6 @@ import com.flexpoker.config.Command;
 import com.flexpoker.core.api.chat.SendTableChatMessageCommand;
 import com.flexpoker.core.api.game.StartNewHandCommand;
 import com.flexpoker.core.api.handaction.CheckHandActionCommand;
-import com.flexpoker.core.api.scheduling.ScheduleAndReturnActionOnTimerCommand;
 import com.flexpoker.core.api.seatstatus.SetSeatStatusForEndOfHandCommand;
 import com.flexpoker.core.api.seatstatus.SetSeatStatusForNewHandCommand;
 import com.flexpoker.core.api.seatstatus.SetSeatStatusForNewRoundCommand;
@@ -38,7 +37,6 @@ public class CheckHandActionImplCommand extends BaseHandActionCommand
             SetSeatStatusForNewHandCommand setSeatStatusForNewHandCommand,
             CalculatePotsAfterRoundImplQuery calculatePotsAfterRoundImplQuery,    
             DeterminePotWinnersImplQuery determinePotWinnersImplQuery,
-            ScheduleAndReturnActionOnTimerCommand scheduleAndReturnActionOnTimerCommand,
             StartNewHandCommand startNewHandCommand,
             ApplicationEventPublisher applicationEventPublisher) {
         this.gameRepository = gameRepository;
@@ -48,7 +46,6 @@ public class CheckHandActionImplCommand extends BaseHandActionCommand
         this.setSeatStatusForNewHandCommand = setSeatStatusForNewHandCommand;
         this.calculatePotsAfterRoundImplQuery = calculatePotsAfterRoundImplQuery;
         this.determinePotWinnersImplQuery = determinePotWinnersImplQuery;
-        this.scheduleAndReturnActionOnTimerCommand = scheduleAndReturnActionOnTimerCommand;
         this.startNewHandCommand = startNewHandCommand;
         this.applicationEventPublisher = applicationEventPublisher;
     }

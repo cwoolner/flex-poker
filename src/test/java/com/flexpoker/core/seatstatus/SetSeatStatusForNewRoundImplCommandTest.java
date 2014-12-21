@@ -7,10 +7,8 @@ import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import com.flexpoker.core.api.scheduling.ScheduleAndReturnActionOnTimerCommand;
 import com.flexpoker.model.Seat;
 import com.flexpoker.model.Table;
 import com.flexpoker.test.util.datageneration.GameGenerator;
@@ -20,14 +18,10 @@ public class SetSeatStatusForNewRoundImplCommandTest {
 
     private SetSeatStatusForNewRoundImplCommand command;
 
-    @Mock
-    ScheduleAndReturnActionOnTimerCommand createAndStartActionOnTimerCommand;
-
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        command = new SetSeatStatusForNewRoundImplCommand(
-                createAndStartActionOnTimerCommand);
+        command = new SetSeatStatusForNewRoundImplCommand();
     }
 
     @SuppressWarnings("boxing")

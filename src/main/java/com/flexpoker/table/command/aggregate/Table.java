@@ -352,6 +352,27 @@ public class Table extends AggregateRoot<TableEvent> {
         applyAllEvents(actionOnChangedEvents);
     }
 
+    public void expireActionOn(UUID playerId) {
+        checkHandIsBeingPlayed();
+
+        // TODO: player folding/checking is different than being forced. two
+        // different events should be used
+        TableEvent forcedActionOnExpiredEvent = currentHand.expireActionOn(playerId,
+                ++aggregateVersion);
+        addNewEvent(forcedActionOnExpiredEvent);
+        applyAllEvents(Arrays.asList(forcedActionOnExpiredEvent));
+
+        List<TableEvent> actionOnChangedEvents = currentHand
+                .changeActionOn(++aggregateVersion);
+        actionOnChangedEvents.forEach(x -> addNewEvent(x));
+        applyAllEvents(actionOnChangedEvents);
+
+        currentHand.dealCommonCardsIfAppropriate(++aggregateVersion).ifPresent(event -> {
+            addNewEvent(event);
+            applyAllEvents(Arrays.asList(event));
+        });
+    }
+
     private void checkHandIsBeingPlayed() {
         if (currentHand == null) {
             throw new FlexPokerException("no hand in progress");

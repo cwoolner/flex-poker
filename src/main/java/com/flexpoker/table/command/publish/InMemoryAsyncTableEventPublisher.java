@@ -2,11 +2,13 @@ package com.flexpoker.table.command.publish;
 
 import javax.inject.Inject;
 
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import com.flexpoker.framework.event.Event;
 import com.flexpoker.framework.event.EventHandler;
 import com.flexpoker.framework.event.EventPublisher;
+import com.flexpoker.framework.processmanager.ProcessManager;
 import com.flexpoker.table.command.events.ActionOnChangedEvent;
 import com.flexpoker.table.command.events.FlopCardsDealtEvent;
 import com.flexpoker.table.command.events.HandDealtEvent;
@@ -42,7 +44,10 @@ public class InMemoryAsyncTableEventPublisher implements EventPublisher<TableEve
 
     private final EventHandler<ActionOnChangedEvent> actionOnChangedEventHandler;
 
+    private final ProcessManager<ActionOnChangedEvent> actionOnCountdownProcessManager;
+
     @Inject
+    @Lazy
     public InMemoryAsyncTableEventPublisher(
             EventHandler<TableCreatedEvent> tableCreatedEventHandler,
             EventHandler<HandDealtEvent> handDealtEventHandler,
@@ -53,7 +58,8 @@ public class InMemoryAsyncTableEventPublisher implements EventPublisher<TableEve
             EventHandler<FlopCardsDealtEvent> flopCardsDealtEventHandler,
             EventHandler<TurnCardDealtEvent> turnCardDealtEventHandler,
             EventHandler<RiverCardDealtEvent> riverCardDealtEventHandler,
-            EventHandler<ActionOnChangedEvent> actionOnChangedEventHandler) {
+            EventHandler<ActionOnChangedEvent> actionOnChangedEventHandler,
+            ProcessManager<ActionOnChangedEvent> actionOnCountdownProcessManager) {
         this.tableCreatedEventHandler = tableCreatedEventHandler;
         this.handDealtEventHandler = handDealtEventHandler;
         this.playerCalledEventHandler = playerCalledEventHandler;
@@ -64,6 +70,7 @@ public class InMemoryAsyncTableEventPublisher implements EventPublisher<TableEve
         this.turnCardDealtEventHandler = turnCardDealtEventHandler;
         this.riverCardDealtEventHandler = riverCardDealtEventHandler;
         this.actionOnChangedEventHandler = actionOnChangedEventHandler;
+        this.actionOnCountdownProcessManager = actionOnCountdownProcessManager;
     }
 
     @Override
@@ -100,6 +107,7 @@ public class InMemoryAsyncTableEventPublisher implements EventPublisher<TableEve
             break;
         case ActionOnChanged:
             actionOnChangedEventHandler.handle((ActionOnChangedEvent) event);
+            actionOnCountdownProcessManager.handle((ActionOnChangedEvent) event);
             break;
         case LastToActChanged:
             break;

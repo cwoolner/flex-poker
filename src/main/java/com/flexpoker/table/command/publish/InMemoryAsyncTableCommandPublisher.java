@@ -10,6 +10,7 @@ import com.flexpoker.framework.command.CommandPublisher;
 import com.flexpoker.table.command.commands.CallCommand;
 import com.flexpoker.table.command.commands.CheckCommand;
 import com.flexpoker.table.command.commands.CreateTableCommand;
+import com.flexpoker.table.command.commands.ExpireActionOnTimerCommand;
 import com.flexpoker.table.command.commands.FoldCommand;
 import com.flexpoker.table.command.commands.RaiseCommand;
 import com.flexpoker.table.command.commands.StartNewHandForNewGameCommand;
@@ -31,6 +32,8 @@ public class InMemoryAsyncTableCommandPublisher implements
 
     private final CommandHandler<RaiseCommand> raiseCommandHandler;
 
+    private final CommandHandler<ExpireActionOnTimerCommand> expireActionOnTimerCommandHandler;
+
     @Inject
     public InMemoryAsyncTableCommandPublisher(
             CommandHandler<CreateTableCommand> createTableCommandHandler,
@@ -38,13 +41,15 @@ public class InMemoryAsyncTableCommandPublisher implements
             CommandHandler<CheckCommand> checkCommandHandler,
             CommandHandler<CallCommand> callCommandHandler,
             CommandHandler<FoldCommand> foldCommandHandler,
-            CommandHandler<RaiseCommand> raiseCommandHandler) {
+            CommandHandler<RaiseCommand> raiseCommandHandler,
+            CommandHandler<ExpireActionOnTimerCommand> expireActionOnTimerCommandHandler) {
         this.createTableCommandHandler = createTableCommandHandler;
         this.startNewHandForNewGameCommandHandler = startNewHandForNewGameCommandHandler;
         this.checkCommandHandler = checkCommandHandler;
         this.callCommandHandler = callCommandHandler;
         this.foldCommandHandler = foldCommandHandler;
         this.raiseCommandHandler = raiseCommandHandler;
+        this.expireActionOnTimerCommandHandler = expireActionOnTimerCommandHandler;
     }
 
     @Override
@@ -68,6 +73,10 @@ public class InMemoryAsyncTableCommandPublisher implements
             break;
         case Raise:
             raiseCommandHandler.handle((RaiseCommand) command);
+            break;
+        case ExpireActionOnTimer:
+            expireActionOnTimerCommandHandler
+                    .handle((ExpireActionOnTimerCommand) command);
             break;
         default:
             throw new IllegalArgumentException("Command Type cannot be handled: "

@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.Timer;
 import java.util.UUID;
 
 import com.flexpoker.exception.FlexPokerException;
@@ -72,8 +71,6 @@ public class Hand {
     private final Set<Pot> pots;
 
     private final Set<UUID> playersStillInHand;
-
-    private Timer actionOnTimer;
 
     private final Map<UUID, Integer> chipsInBackMap;
 
@@ -191,7 +188,10 @@ public class Hand {
         lastToActPlayerId = seatMap.get(Integer.valueOf(bigBlindPosition));
         handDealerState = HandDealerState.POCKET_CARDS_DEALT;
 
-        // TODO: set action on timer
+        // TODO: set action on timer. currently on the ActionOnChangedEvent will
+        // trigger the timer. either HandDealt needs to also trigger or this
+        // initial deal needs to be separated into HandDealt and
+        // ActionOnChangedEvents
 
         HandDealtEvent handDealtEvent = new HandDealtEvent(tableId, aggregateVersion,
                 gameId, entityId, flopCards, turnCard, riverCard, buttonOnPosition,
@@ -240,6 +240,14 @@ public class Hand {
         return playerRaisedEvent;
     }
 
+    TableEvent expireActionOn(UUID playerId, int aggregateVersion) {
+        if (callAmountsMap.get(playerId) == 0) {
+            return check(playerId, aggregateVersion);
+        } else {
+            return fold(playerId, aggregateVersion);
+        }
+    }
+
     public List<TableEvent> changeActionOn(int aggregateVersion) {
         List<TableEvent> eventsCreated = new ArrayList<>();
 
@@ -263,14 +271,6 @@ public class Hand {
                     aggregateVersion, gameId, entityId, nextPlayerToAct);
             eventsCreated.add(actionOnChangedEvent);
         }
-
-        // TODO: add the timer
-        // TODO: maybe have a process manager look for the actionOnChangedEvent
-        // and set the timer there?
-        // Timer actionOnTimer =
-        // scheduleAndReturnActionOnTimerCommand.execute(game, table,
-        // nextToActSeat);
-        // nextToActSeat.setActionOnTimer(actionOnTimer);
 
         return eventsCreated;
     }
