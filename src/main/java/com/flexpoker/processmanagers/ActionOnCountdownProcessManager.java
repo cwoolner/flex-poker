@@ -48,13 +48,14 @@ public class ActionOnCountdownProcessManager implements
     }
 
     private void addNewActionOnTimer(ActionOnChangedEvent event) {
+        final CommandPublisher<TableCommandType> localTableCommandPublisher = tableCommandPublisher;
         final Timer actionOnTimer = new Timer();
         final TimerTask timerTask = new TimerTask() {
             @Override
             public void run() {
                 ExpireActionOnTimerCommand command = new ExpireActionOnTimerCommand(
                         event.getAggregateId(), event.getGameId(), event.getPlayerId());
-                tableCommandPublisher.publish(command);
+                localTableCommandPublisher.publish(command);
             }
         };
         actionOnTimer.schedule(timerTask, 20000);

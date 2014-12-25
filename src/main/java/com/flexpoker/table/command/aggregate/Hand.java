@@ -62,8 +62,6 @@ public class Hand {
 
     private UUID lastToActPlayerId;
 
-    private UUID nextToActPlayerId;
-
     private HandDealerState handDealerState;
 
     private final List<HandEvaluation> handEvaluationList;
@@ -200,7 +198,7 @@ public class Hand {
         UUID actionOnPlayerId = seatMap.get(Integer.valueOf(actionOnPosition));
 
         ActionOnChangedEvent actionOnChangedEvent = new ActionOnChangedEvent(tableId,
-                ++aggregateVersion, gameId, entityId, actionOnPlayerId);
+                aggregateVersion + 1, gameId, entityId, actionOnPlayerId);
         eventsCreated.add(actionOnChangedEvent);
 
         return eventsCreated;
@@ -244,11 +242,11 @@ public class Hand {
     }
 
     TableEvent expireActionOn(UUID playerId, int aggregateVersion) {
-        if (callAmountsMap.get(playerId) == 0) {
+        if (callAmountsMap.get(playerId).intValue() == 0) {
             return check(playerId, aggregateVersion);
-        } else {
-            return fold(playerId, aggregateVersion);
         }
+
+        return fold(playerId, aggregateVersion);
     }
 
     public List<TableEvent> changeActionOn(int aggregateVersion) {
@@ -264,7 +262,7 @@ public class Hand {
             ActionOnChangedEvent actionOnChangedEvent = new ActionOnChangedEvent(tableId,
                     aggregateVersion, gameId, entityId, nextPlayerToAct);
             LastToActChangedEvent lastToActChangedEvent = new LastToActChangedEvent(
-                    tableId, ++aggregateVersion, gameId, entityId,
+                    tableId, aggregateVersion + 1, gameId, entityId,
                     newRoundLastPlayerToAct);
             eventsCreated.add(actionOnChangedEvent);
             eventsCreated.add(lastToActChangedEvent);
@@ -324,8 +322,8 @@ public class Hand {
         UUID playerId = event.getPlayerId();
 
         possibleSeatActionsMap.get(playerId).clear();
-        callAmountsMap.put(playerId, 0);
-        raiseToAmountsMap.put(playerId, 0);
+        callAmountsMap.put(playerId, Integer.valueOf(0));
+        raiseToAmountsMap.put(playerId, Integer.valueOf(0));
 
         if (playerId.equals(lastToActPlayerId)) {
             handleEndOfRound();
@@ -336,15 +334,16 @@ public class Hand {
         UUID playerId = event.getPlayerId();
 
         possibleSeatActionsMap.get(playerId).clear();
-        callAmountsMap.put(playerId, 0);
-        raiseToAmountsMap.put(playerId, 0);
+        callAmountsMap.put(playerId, Integer.valueOf(0));
+        raiseToAmountsMap.put(playerId, Integer.valueOf(0));
 
-        int newChipsInFront = chipsInFrontMap.get(playerId)
-                + callAmountsMap.get(playerId);
-        chipsInFrontMap.put(playerId, newChipsInFront);
+        int newChipsInFront = chipsInFrontMap.get(playerId).intValue()
+                + callAmountsMap.get(playerId).intValue();
+        chipsInFrontMap.put(playerId, Integer.valueOf(newChipsInFront));
 
-        int newChipsInBack = chipsInBackMap.get(playerId) - callAmountsMap.get(playerId);
-        chipsInBackMap.put(playerId, newChipsInBack);
+        int newChipsInBack = chipsInBackMap.get(playerId).intValue()
+                - callAmountsMap.get(playerId).intValue();
+        chipsInBackMap.put(playerId, Integer.valueOf(newChipsInBack));
 
         if (playerId.equals(lastToActPlayerId)) {
             handleEndOfRound();
@@ -366,8 +365,8 @@ public class Hand {
         playersStillInHand.remove(playerId);
         pots.forEach(x -> x.removeSeat(playerId));
         possibleSeatActionsMap.get(playerId).clear();
-        callAmountsMap.put(playerId, 0);
-        raiseToAmountsMap.put(playerId, 0);
+        callAmountsMap.put(playerId, Integer.valueOf(0));
+        raiseToAmountsMap.put(playerId, Integer.valueOf(0));
 
         if (playersStillInHand.size() == 1) {
             handDealerState = HandDealerState.COMPLETE;
@@ -385,8 +384,8 @@ public class Hand {
         playersStillInHand.remove(playerId);
         pots.forEach(x -> x.removeSeat(playerId));
         possibleSeatActionsMap.get(playerId).clear();
-        callAmountsMap.put(playerId, 0);
-        raiseToAmountsMap.put(playerId, 0);
+        callAmountsMap.put(playerId, Integer.valueOf(0));
+        raiseToAmountsMap.put(playerId, Integer.valueOf(0));
 
         if (playersStillInHand.size() == 1) {
             handDealerState = HandDealerState.COMPLETE;
@@ -406,15 +405,15 @@ public class Hand {
         lastToActPlayerId = event.getPlayerId();
     }
 
-    void applyEvent(FlopCardsDealtEvent event) {
+    void applyEvent(@SuppressWarnings("unused") FlopCardsDealtEvent event) {
         flopDealt = true;
     }
 
-    void applyEvent(TurnCardDealtEvent event) {
+    void applyEvent(@SuppressWarnings("unused") TurnCardDealtEvent event) {
         turnDealt = true;
     }
 
-    void applyEvent(RiverCardDealtEvent event) {
+    void applyEvent(@SuppressWarnings("unused") RiverCardDealtEvent event) {
         riverDealt = true;
     }
 
@@ -460,7 +459,7 @@ public class Hand {
         for (int i = buttonIndex + 1; i < seatMap.size(); i++) {
             UUID playerAtTable = seatMap.get(Integer.valueOf(i));
             if (playerAtTable != null && playersStillInHand.contains(playerAtTable)
-                    && chipsInBackMap.get(playerAtTable) != 0) {
+                    && chipsInBackMap.get(playerAtTable).intValue() != 0) {
                 return playerAtTable;
             }
         }
@@ -468,7 +467,7 @@ public class Hand {
         for (int i = 0; i < buttonIndex; i++) {
             UUID playerAtTable = seatMap.get(Integer.valueOf(i));
             if (playerAtTable != null && playersStillInHand.contains(playerAtTable)
-                    && chipsInBackMap.get(playerAtTable) != 0) {
+                    && chipsInBackMap.get(playerAtTable).intValue() != 0) {
                 return playerAtTable;
             }
         }
@@ -478,28 +477,32 @@ public class Hand {
 
     private void resetChipsInFront() {
         Set<UUID> playersInMap = chipsInFrontMap.keySet();
-        playersInMap.forEach(x -> chipsInFrontMap.put(x, 0));
+        playersInMap.forEach(x -> chipsInFrontMap.put(x, Integer.valueOf(0)));
     }
 
     private void resetCallAmounts() {
         Set<UUID> playersInMap = callAmountsMap.keySet();
-        playersInMap.forEach(x -> callAmountsMap.put(x, 0));
+        playersInMap.forEach(x -> callAmountsMap.put(x, Integer.valueOf(0)));
     }
 
     private void resetRaiseTo() {
         Set<UUID> playersInMap = raiseToAmountsMap.keySet();
-        playersInMap.forEach(x -> raiseToAmountsMap.put(x, 0));
+        playersInMap.forEach(x -> raiseToAmountsMap.put(x, Integer.valueOf(0)));
     }
 
     private void resetRaiseAmountsAfterRound() {
-        playersStillInHand.forEach(playerInHand -> {
-            callAmountsMap.put(playerInHand, 0);
-            if (blinds.getBigBlind() > chipsInBackMap.get(playerInHand)) {
-                raiseToAmountsMap.put(playerInHand, chipsInBackMap.get(playerInHand));
-            } else {
-                raiseToAmountsMap.put(playerInHand, blinds.getBigBlind());
-            }
-        });
+        playersStillInHand
+                .forEach(playerInHand -> {
+                    callAmountsMap.put(playerInHand, Integer.valueOf(0));
+                    if (blinds.getBigBlind() > chipsInBackMap.get(playerInHand)
+                            .intValue()) {
+                        raiseToAmountsMap.put(playerInHand,
+                                chipsInBackMap.get(playerInHand));
+                    } else {
+                        raiseToAmountsMap.put(playerInHand,
+                                Integer.valueOf(blinds.getBigBlind()));
+                    }
+                });
     }
 
     private void resetPossibleSeatActionsAfterRound() {
@@ -561,8 +564,9 @@ public class Hand {
     }
 
     private void addToChipsInBack(UUID winnerOfBonusChips, int chipsToAdd) {
-        int currentAmount = chipsInBackMap.get(winnerOfBonusChips);
-        chipsInBackMap.put(winnerOfBonusChips, currentAmount + chipsToAdd);
+        int currentAmount = chipsInBackMap.get(winnerOfBonusChips).intValue();
+        chipsInBackMap.put(winnerOfBonusChips,
+                Integer.valueOf(currentAmount + chipsToAdd));
     }
 
     private int determineLastToAct() {
