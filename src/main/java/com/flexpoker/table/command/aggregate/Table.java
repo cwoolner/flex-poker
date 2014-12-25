@@ -351,8 +351,12 @@ public class Table extends AggregateRoot<TableEvent> {
         applyAllEvents(actionOnChangedEvents);
     }
 
-    public void expireActionOn(UUID playerId) {
+    public void expireActionOn(UUID handId, UUID playerId) {
         checkHandIsBeingPlayed();
+
+        if (!currentHand.idMatches(handId)) {
+            return;
+        }
 
         // TODO: player folding/checking is different than being forced. two
         // different events should be used

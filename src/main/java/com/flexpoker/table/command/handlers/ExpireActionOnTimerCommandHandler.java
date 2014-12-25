@@ -42,7 +42,7 @@ public class ExpireActionOnTimerCommandHandler implements
                 .fetchAll(command.getTableId());
         Table table = tableFactory.createFrom(tableEvents);
 
-        table.expireActionOn(command.getPlayerId());
+        table.expireActionOn(command.getHandId(), command.getPlayerId());
         table.fetchNewEvents().forEach(x -> eventPublisher.publish(x));
         table.fetchNewEvents().forEach(x -> tableEventRepository.save(x));
     }

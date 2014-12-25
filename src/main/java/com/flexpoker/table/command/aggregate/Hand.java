@@ -609,4 +609,8 @@ public class Hand {
         }
     }
 
+    boolean idMatches(UUID handId) {
+        return entityId.equals(handId);
+    }
+
 }

@@ -54,7 +54,8 @@ public class ActionOnCountdownProcessManager implements
             @Override
             public void run() {
                 ExpireActionOnTimerCommand command = new ExpireActionOnTimerCommand(
-                        event.getAggregateId(), event.getGameId(), event.getPlayerId());
+                        event.getAggregateId(), event.getGameId(), event.getHandId(),
+                        event.getPlayerId());
                 localTableCommandPublisher.publish(command);
             }
         };
