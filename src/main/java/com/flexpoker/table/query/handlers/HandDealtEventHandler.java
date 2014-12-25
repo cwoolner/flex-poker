@@ -80,10 +80,9 @@ public class HandDealtEventHandler implements EventHandler<HandDealtEvent> {
             boolean button = event.getButtonOnPosition() == position;
             boolean smallBlind = event.getSmallBlindPosition() == position;
             boolean bigBlind = event.getBigBlindPosition() == position;
-            boolean actionOn = event.getActionOnPosition() == position;
 
             return new SeatViewModel(position, name, chipsInBack, chipsInFront, true,
-                    raiseTo, callAmount, button, smallBlind, bigBlind, actionOn);
+                    raiseTo, callAmount, button, smallBlind, bigBlind, false);
         };
 
         List<SeatViewModel> seats = event.getPlayersStillInHand().stream()

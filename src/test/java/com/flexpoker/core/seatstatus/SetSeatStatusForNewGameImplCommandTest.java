@@ -41,7 +41,7 @@ public class SetSeatStatusForNewGameImplCommandTest {
             assertTrue(smallBlindSeat.equals(table.getSeats().get(0)));
             assertTrue(bigBlindSeat.equals(table.getSeats().get(1)));
             assertTrue(actionOnSeat.equals(table.getSeats().get(0)));
-        } else if (buttonSeat.equals(table.getSeats().get(1))){
+        } else if (buttonSeat.equals(table.getSeats().get(1))) {
             assertTrue(smallBlindSeat.equals(table.getSeats().get(1)));
             assertTrue(bigBlindSeat.equals(table.getSeats().get(0)));
             assertTrue(actionOnSeat.equals(table.getSeats().get(1)));

@@ -93,8 +93,7 @@ public class Hand {
     public Hand(UUID gameId, UUID tableId, UUID entityId, Map<Integer, UUID> seatMap,
             FlopCards flopCards, TurnCard turnCard, RiverCard riverCard,
             int buttonOnPosition, int smallBlindPosition, int bigBlindPosition,
-            int actionOnPosition, UUID lastToActPlayerId,
-            Map<UUID, PocketCards> playerToPocketCardsMap,
+            UUID lastToActPlayerId, Map<UUID, PocketCards> playerToPocketCardsMap,
             Map<UUID, Set<PlayerAction>> possibleSeatActionsMap,
             Set<UUID> playersStillInHand, List<HandEvaluation> handEvaluationList,
             Set<Pot> pots, HandDealerState handDealerState,
@@ -111,7 +110,6 @@ public class Hand {
         this.buttonOnPosition = buttonOnPosition;
         this.smallBlindPosition = smallBlindPosition;
         this.bigBlindPosition = bigBlindPosition;
-        this.actionOnPosition = actionOnPosition;
         this.lastToActPlayerId = lastToActPlayerId;
         this.playerToPocketCardsMap = playerToPocketCardsMap;
         this.handEvaluationList = handEvaluationList;
@@ -127,7 +125,9 @@ public class Hand {
         this.playersToShowCardsMap = playersToShowCardsMap;
     }
 
-    public HandDealtEvent dealHand(int aggregateVersion) {
+    public List<TableEvent> dealHand(int aggregateVersion, int actionOnPosition) {
+        List<TableEvent> eventsCreated = new ArrayList<>();
+
         for (Integer seatPosition : seatMap.keySet()) {
             UUID playerId = seatMap.get(seatPosition);
 
@@ -188,19 +188,22 @@ public class Hand {
         lastToActPlayerId = seatMap.get(Integer.valueOf(bigBlindPosition));
         handDealerState = HandDealerState.POCKET_CARDS_DEALT;
 
-        // TODO: set action on timer. currently on the ActionOnChangedEvent will
-        // trigger the timer. either HandDealt needs to also trigger or this
-        // initial deal needs to be separated into HandDealt and
-        // ActionOnChangedEvents
-
         HandDealtEvent handDealtEvent = new HandDealtEvent(tableId, aggregateVersion,
                 gameId, entityId, flopCards, turnCard, riverCard, buttonOnPosition,
-                smallBlindPosition, bigBlindPosition, actionOnPosition,
-                lastToActPlayerId, seatMap, playerToPocketCardsMap,
-                possibleSeatActionsMap, playersStillInHand, handEvaluationList, pots,
-                handDealerState, chipsInBackMap, chipsInFrontMap, callAmountsMap,
-                raiseToAmountsMap, blinds, playersToShowCardsMap);
-        return handDealtEvent;
+                smallBlindPosition, bigBlindPosition, lastToActPlayerId, seatMap,
+                playerToPocketCardsMap, possibleSeatActionsMap, playersStillInHand,
+                handEvaluationList, pots, handDealerState, chipsInBackMap,
+                chipsInFrontMap, callAmountsMap, raiseToAmountsMap, blinds,
+                playersToShowCardsMap);
+        eventsCreated.add(handDealtEvent);
+
+        UUID actionOnPlayerId = seatMap.get(Integer.valueOf(actionOnPosition));
+
+        ActionOnChangedEvent actionOnChangedEvent = new ActionOnChangedEvent(tableId,
+                ++aggregateVersion, gameId, entityId, actionOnPlayerId);
+        eventsCreated.add(actionOnChangedEvent);
+
+        return eventsCreated;
     }
 
     public PlayerCheckedEvent check(UUID playerId, int aggregateVersion) {

@@ -118,13 +118,12 @@ public class Table extends AggregateRoot<TableEvent> {
                 event.getHandId(), seatMap, event.getFlopCards(), event.getTurnCard(),
                 event.getRiverCard(), event.getButtonOnPosition(),
                 event.getSmallBlindPosition(), event.getBigBlindPosition(),
-                event.getActionOnPosition(), event.getLastToActPlayerId(),
-                event.getPlayerToPocketCardsMap(), event.getPossibleSeatActionsMap(),
-                event.getPlayersStillInHand(), event.getHandEvaluations(),
-                event.getPots(), event.getHandDealerState(), event.getChipsInBack(),
-                event.getChipsInFrontMap(), event.getCallAmountsMap(),
-                event.getRaiseToAmountsMap(), event.getBlinds(),
-                event.getPlayersToShowCardsMap());
+                event.getLastToActPlayerId(), event.getPlayerToPocketCardsMap(),
+                event.getPossibleSeatActionsMap(), event.getPlayersStillInHand(),
+                event.getHandEvaluations(), event.getPots(), event.getHandDealerState(),
+                event.getChipsInBack(), event.getChipsInFrontMap(),
+                event.getCallAmountsMap(), event.getRaiseToAmountsMap(),
+                event.getBlinds(), event.getPlayersToShowCardsMap());
     }
 
     private void applyEvent(PlayerRaisedEvent event) {
@@ -228,14 +227,14 @@ public class Table extends AggregateRoot<TableEvent> {
         Hand hand = new Hand(gameId, aggregateId, UUID.randomUUID(), seatMap,
                 cardsUsedInHand.getFlopCards(), cardsUsedInHand.getTurnCard(),
                 cardsUsedInHand.getRiverCard(), buttonOnPosition, smallBlindPosition,
-                bigBlindPosition, actionOnPosition, null, playerToPocketCardsMap,
-                possibleSeatActionsMap, playersStillInHand, new ArrayList<>(
-                        handEvaluations.values()), new HashSet<>(), HandDealerState.NONE,
-                chipsInBack, new HashMap<>(), new HashMap<>(), new HashMap<>(), blinds,
-                new HashSet<>());
-        HandDealtEvent handDealtEvent = hand.dealHand(++aggregateVersion);
-        addNewEvent(handDealtEvent);
-        applyEvent(handDealtEvent);
+                bigBlindPosition, null, playerToPocketCardsMap, possibleSeatActionsMap,
+                playersStillInHand, new ArrayList<>(handEvaluations.values()),
+                new HashSet<>(), HandDealerState.NONE, chipsInBack, new HashMap<>(),
+                new HashMap<>(), new HashMap<>(), blinds, new HashSet<>());
+        List<TableEvent> eventsCreated = hand.dealHand(++aggregateVersion,
+                actionOnPosition);
+        eventsCreated.forEach(x -> addNewEvent(x));
+        applyAllEvents(eventsCreated);
     }
 
     private int assignButtonOnForNewGame() {
