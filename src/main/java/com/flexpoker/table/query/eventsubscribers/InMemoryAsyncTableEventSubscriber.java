@@ -1,17 +1,14 @@
-package com.flexpoker.table.command.publish;
+package com.flexpoker.table.query.eventsubscribers;
 
 import javax.inject.Inject;
 
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import com.flexpoker.framework.event.Event;
 import com.flexpoker.framework.event.EventHandler;
-import com.flexpoker.framework.event.EventPublisher;
-import com.flexpoker.framework.processmanager.ProcessManager;
+import com.flexpoker.framework.event.EventSubscriber;
 import com.flexpoker.table.command.events.ActionOnChangedEvent;
 import com.flexpoker.table.command.events.FlopCardsDealtEvent;
-import com.flexpoker.table.command.events.HandCompletedEvent;
 import com.flexpoker.table.command.events.HandDealtEvent;
 import com.flexpoker.table.command.events.PlayerCalledEvent;
 import com.flexpoker.table.command.events.PlayerCheckedEvent;
@@ -23,7 +20,7 @@ import com.flexpoker.table.command.events.TurnCardDealtEvent;
 import com.flexpoker.table.command.framework.TableEventType;
 
 @Component
-public class InMemoryAsyncTableEventPublisher implements EventPublisher<TableEventType> {
+public class InMemoryAsyncTableEventSubscriber implements EventSubscriber<TableEventType> {
 
     private final EventHandler<TableCreatedEvent> tableCreatedEventHandler;
 
@@ -45,13 +42,8 @@ public class InMemoryAsyncTableEventPublisher implements EventPublisher<TableEve
 
     private final EventHandler<ActionOnChangedEvent> actionOnChangedEventHandler;
 
-    private final ProcessManager<ActionOnChangedEvent> actionOnCountdownProcessManager;
-
-    private final ProcessManager<HandCompletedEvent> attemptToStartNewHandForExistingTableProcessManager;
-
     @Inject
-    @Lazy
-    public InMemoryAsyncTableEventPublisher(
+    public InMemoryAsyncTableEventSubscriber(
             EventHandler<TableCreatedEvent> tableCreatedEventHandler,
             EventHandler<HandDealtEvent> handDealtEventHandler,
             EventHandler<PlayerCalledEvent> playerCalledEventHandler,
@@ -61,9 +53,7 @@ public class InMemoryAsyncTableEventPublisher implements EventPublisher<TableEve
             EventHandler<FlopCardsDealtEvent> flopCardsDealtEventHandler,
             EventHandler<TurnCardDealtEvent> turnCardDealtEventHandler,
             EventHandler<RiverCardDealtEvent> riverCardDealtEventHandler,
-            EventHandler<ActionOnChangedEvent> actionOnChangedEventHandler,
-            ProcessManager<ActionOnChangedEvent> actionOnCountdownProcessManager,
-            ProcessManager<HandCompletedEvent> attemptToStartNewHandForExistingTableProcessManager) {
+            EventHandler<ActionOnChangedEvent> actionOnChangedEventHandler) {
         this.tableCreatedEventHandler = tableCreatedEventHandler;
         this.handDealtEventHandler = handDealtEventHandler;
         this.playerCalledEventHandler = playerCalledEventHandler;
@@ -74,12 +64,10 @@ public class InMemoryAsyncTableEventPublisher implements EventPublisher<TableEve
         this.turnCardDealtEventHandler = turnCardDealtEventHandler;
         this.riverCardDealtEventHandler = riverCardDealtEventHandler;
         this.actionOnChangedEventHandler = actionOnChangedEventHandler;
-        this.actionOnCountdownProcessManager = actionOnCountdownProcessManager;
-        this.attemptToStartNewHandForExistingTableProcessManager = attemptToStartNewHandForExistingTableProcessManager;
     }
 
     @Override
-    public void publish(Event<TableEventType> event) {
+    public void receive(Event<TableEventType> event) {
         switch (event.getType()) {
         case TableCreated:
             tableCreatedEventHandler.handle((TableCreatedEvent) event);
@@ -112,17 +100,15 @@ public class InMemoryAsyncTableEventPublisher implements EventPublisher<TableEve
             break;
         case ActionOnChanged:
             actionOnChangedEventHandler.handle((ActionOnChangedEvent) event);
-            actionOnCountdownProcessManager.handle((ActionOnChangedEvent) event);
             break;
         case LastToActChanged:
             break;
         case HandCompleted:
-            attemptToStartNewHandForExistingTableProcessManager
-                    .handle((HandCompletedEvent) event);
             break;
         default:
             throw new IllegalArgumentException("Event Type cannot be handled: "
                     + event.getType());
         }
     }
+
 }
