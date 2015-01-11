@@ -17,6 +17,7 @@ import com.flexpoker.game.command.events.GameJoinedEvent;
 import com.flexpoker.game.command.events.GameMovedToStartingStageEvent;
 import com.flexpoker.game.command.events.GameStartedEvent;
 import com.flexpoker.game.command.events.GameTablesCreatedAndPlayersAssociatedEvent;
+import com.flexpoker.game.command.events.NewHandIsClearedToStartEvent;
 import com.flexpoker.game.command.framework.GameEvent;
 import com.flexpoker.model.Blinds;
 import com.flexpoker.model.GameStage;
@@ -126,6 +127,14 @@ public class Game extends AggregateRoot<GameEvent> {
             createGameTablesCreatedAndPlayersAssociatedEvent();
             createGameStartedEvent();
         }
+    }
+
+    public void attemptToStartNewHand(UUID tableId) {
+        // TODO: check for imbalanced tables and such
+        NewHandIsClearedToStartEvent event = new NewHandIsClearedToStartEvent(
+                aggregateId, ++aggregateVersion, tableId, currentBlinds);
+        addNewEvent(event);
+        // TOOD: might want to do something for apply, not sure yet
     }
 
     public void increaseBlinds() {

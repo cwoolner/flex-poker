@@ -13,6 +13,7 @@ import com.flexpoker.table.command.commands.CreateTableCommand;
 import com.flexpoker.table.command.commands.ExpireActionOnTimerCommand;
 import com.flexpoker.table.command.commands.FoldCommand;
 import com.flexpoker.table.command.commands.RaiseCommand;
+import com.flexpoker.table.command.commands.StartNewHandForExistingTableCommand;
 import com.flexpoker.table.command.commands.StartNewHandForNewGameCommand;
 import com.flexpoker.table.command.framework.TableCommandType;
 
@@ -23,6 +24,8 @@ public class InMemoryAsyncTableCommandPublisher implements
     private final CommandHandler<CreateTableCommand> createTableCommandHandler;
 
     private final CommandHandler<StartNewHandForNewGameCommand> startNewHandForNewGameCommandHandler;
+
+    private final CommandHandler<StartNewHandForExistingTableCommand> startNewHandForExistingTableCommandHandler;
 
     private final CommandHandler<CheckCommand> checkCommandHandler;
 
@@ -38,6 +41,7 @@ public class InMemoryAsyncTableCommandPublisher implements
     public InMemoryAsyncTableCommandPublisher(
             CommandHandler<CreateTableCommand> createTableCommandHandler,
             CommandHandler<StartNewHandForNewGameCommand> startNewHandForNewGameCommandHandler,
+            CommandHandler<StartNewHandForExistingTableCommand> startNewHandForExistingTableCommandHandler,
             CommandHandler<CheckCommand> checkCommandHandler,
             CommandHandler<CallCommand> callCommandHandler,
             CommandHandler<FoldCommand> foldCommandHandler,
@@ -45,6 +49,7 @@ public class InMemoryAsyncTableCommandPublisher implements
             CommandHandler<ExpireActionOnTimerCommand> expireActionOnTimerCommandHandler) {
         this.createTableCommandHandler = createTableCommandHandler;
         this.startNewHandForNewGameCommandHandler = startNewHandForNewGameCommandHandler;
+        this.startNewHandForExistingTableCommandHandler = startNewHandForExistingTableCommandHandler;
         this.checkCommandHandler = checkCommandHandler;
         this.callCommandHandler = callCommandHandler;
         this.foldCommandHandler = foldCommandHandler;
@@ -61,6 +66,10 @@ public class InMemoryAsyncTableCommandPublisher implements
         case StartNewHandForNewGame:
             startNewHandForNewGameCommandHandler
                     .handle((StartNewHandForNewGameCommand) command);
+            break;
+        case StartNewHandForExistingTable:
+            startNewHandForExistingTableCommandHandler
+                    .handle((StartNewHandForExistingTableCommand) command);
             break;
         case Call:
             callCommandHandler.handle((CallCommand) command);

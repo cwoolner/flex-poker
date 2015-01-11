@@ -20,6 +20,7 @@ import com.flexpoker.model.card.RiverCard;
 import com.flexpoker.model.card.TurnCard;
 import com.flexpoker.table.command.events.ActionOnChangedEvent;
 import com.flexpoker.table.command.events.FlopCardsDealtEvent;
+import com.flexpoker.table.command.events.HandCompletedEvent;
 import com.flexpoker.table.command.events.HandDealtEvent;
 import com.flexpoker.table.command.events.LastToActChangedEvent;
 import com.flexpoker.table.command.events.PlayerCalledEvent;
@@ -295,6 +296,15 @@ public class Hand {
         return Optional.empty();
     }
 
+    Optional<TableEvent> finishHandIfAppropriate(int aggregateVersion) {
+        if (handDealerState == HandDealerState.COMPLETE) {
+            return Optional.of(new HandCompletedEvent(tableId, aggregateVersion, gameId,
+                    entityId));
+        }
+
+        return Optional.empty();
+    }
+
     private void checkRaiseAmountValue(UUID playerId, int raiseToAmount) {
         int playersTotalChips = chipsInBackMap.get(playerId).intValue()
                 + chipsInFrontMap.get(playerId).intValue();
@@ -426,26 +436,11 @@ public class Hand {
         // table.getCurrentHand().setPots(pots);
 
         if (handDealerState == HandDealerState.COMPLETE) {
-            // TODO: all of this stuff is probably unnecessary since a new hand
-            // will reset all of this anyway
-            resetChipsInFront();
-            resetCallAmounts();
-            resetRaiseTo();
             determineWinners();
 
             // TODO: change this to check if a new hand is necessary or if a
             // single person won
-            // TODO: add the show cards map
-            // table.resetShowCards();
 
-            // TODO: this needs to be done at the table level
-            // assignNewHandBigBlind(table);
-            // assignNewHandSmallBlind(table);
-            // assignNewHandButton(table);
-            // assignNewHandActionOn(game, table);
-
-            // TODO: can't send command from here
-            // startNewHandCommand.execute(game, table);
         } else {
             resetChipsInFront();
             resetRaiseAmountsAfterRound();

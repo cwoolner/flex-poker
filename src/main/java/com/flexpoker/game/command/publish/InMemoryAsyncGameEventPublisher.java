@@ -16,6 +16,7 @@ import com.flexpoker.game.command.events.GameJoinedEvent;
 import com.flexpoker.game.command.events.GameMovedToStartingStageEvent;
 import com.flexpoker.game.command.events.GameStartedEvent;
 import com.flexpoker.game.command.events.GameTablesCreatedAndPlayersAssociatedEvent;
+import com.flexpoker.game.command.events.NewHandIsClearedToStartEvent;
 import com.flexpoker.game.command.framework.GameEventType;
 
 @Component
@@ -33,6 +34,8 @@ public class InMemoryAsyncGameEventPublisher implements EventPublisher<GameEvent
 
     private final ProcessManager<GameStartedEvent> startFirstHandProcessManager;
 
+    private final ProcessManager<NewHandIsClearedToStartEvent> startNewHandForExistingTableProcessManager;
+
     @Inject
     public InMemoryAsyncGameEventPublisher(
             EventHandler<GameCreatedEvent> gameCreatedEventHandler,
@@ -40,13 +43,15 @@ public class InMemoryAsyncGameEventPublisher implements EventPublisher<GameEvent
             EventHandler<GameMovedToStartingStageEvent> gameMovedToStartingStageEvent,
             EventHandler<GameStartedEvent> gameStartedEventHandler,
             ProcessManager<GameTablesCreatedAndPlayersAssociatedEvent> createInitialTablesForGameProcessManager,
-            ProcessManager<GameStartedEvent> startFirstHandProcessManager) {
+            ProcessManager<GameStartedEvent> startFirstHandProcessManager,
+            ProcessManager<NewHandIsClearedToStartEvent> startNewHandForExistingTableProcessManager) {
         this.gameCreatedEventHandler = gameCreatedEventHandler;
         this.gameJoinedEventHandler = gameJoinedEventHandler;
         this.gameMovedToStartingStageEventHandler = gameMovedToStartingStageEvent;
         this.gameStartedEventHandler = gameStartedEventHandler;
         this.createInitialTablesForGameProcessManager = createInitialTablesForGameProcessManager;
         this.startFirstHandProcessManager = startFirstHandProcessManager;
+        this.startNewHandForExistingTableProcessManager = startNewHandForExistingTableProcessManager;
     }
 
     @Override
@@ -80,6 +85,10 @@ public class InMemoryAsyncGameEventPublisher implements EventPublisher<GameEvent
             timer.schedule(timerTask, 10000);
             break;
         case GameFinished:
+            break;
+        case NewHandIsClearedToStart:
+            startNewHandForExistingTableProcessManager
+                    .handle((NewHandIsClearedToStartEvent) event);
             break;
         default:
             throw new IllegalArgumentException("Event Type cannot be handled: "

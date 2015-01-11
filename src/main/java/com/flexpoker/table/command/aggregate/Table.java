@@ -23,6 +23,7 @@ import com.flexpoker.model.card.PocketCards;
 import com.flexpoker.table.command.events.ActionOnChangedEvent;
 import com.flexpoker.table.command.events.CardsShuffledEvent;
 import com.flexpoker.table.command.events.FlopCardsDealtEvent;
+import com.flexpoker.table.command.events.HandCompletedEvent;
 import com.flexpoker.table.command.events.HandDealtEvent;
 import com.flexpoker.table.command.events.LastToActChangedEvent;
 import com.flexpoker.table.command.events.PlayerCalledEvent;
@@ -45,6 +46,12 @@ public class Table extends AggregateRoot<TableEvent> {
     private final Map<Integer, UUID> seatMap;
 
     private final Map<UUID, Integer> chipsInBack;
+
+    private int buttonOnPosition;
+
+    private int smallBlindPosition;
+
+    private int bigBlindPosition;
 
     private Hand currentHand;
 
@@ -94,6 +101,9 @@ public class Table extends AggregateRoot<TableEvent> {
                 break;
             case LastToActChanged:
                 applyEvent((LastToActChangedEvent) event);
+                break;
+            case HandCompleted:
+                applyEvent((HandCompletedEvent) event);
                 break;
             default:
                 throw new IllegalArgumentException("Event Type cannot be handled: "
@@ -162,6 +172,10 @@ public class Table extends AggregateRoot<TableEvent> {
         currentHand.applyEvent(event);
     }
 
+    private void applyEvent(@SuppressWarnings("unused") HandCompletedEvent event) {
+        currentHand = null;
+    }
+
     public void createNewTable(Set<UUID> playerIds) {
         if (!seatMap.values().stream().allMatch(x -> x == null)) {
             throw new FlexPokerException("seatMap already contains players");
@@ -196,16 +210,84 @@ public class Table extends AggregateRoot<TableEvent> {
     public void startNewHandForNewGame(Blinds blinds, List<Card> shuffledDeckOfCards,
             CardsUsedInHand cardsUsedInHand,
             Map<PocketCards, HandEvaluation> handEvaluations) {
+        buttonOnPosition = assignButtonOnForNewGame();
+        smallBlindPosition = assignSmallBlindForNewGame();
+        bigBlindPosition = assignBigBlindForNewGame();
+        int actionOnPosition = assignActionOnForNewHand();
 
+        performNewHandCommonLogic(blinds, shuffledDeckOfCards, cardsUsedInHand,
+                handEvaluations, actionOnPosition);
+    }
+
+    public void startNewHandForExistingTable(Blinds blinds,
+            List<Card> shuffledDeckOfCards, CardsUsedInHand cardsUsedInHand,
+            Map<PocketCards, HandEvaluation> handEvaluations) {
+        buttonOnPosition = assignButtonOnForNewHand();
+        smallBlindPosition = assignSmallBlindForNewHand();
+        bigBlindPosition = assignBigBlindForNewHand();
+        int actionOnPosition = assignActionOnForNewHand();
+
+        performNewHandCommonLogic(blinds, shuffledDeckOfCards, cardsUsedInHand,
+                handEvaluations, actionOnPosition);
+    }
+
+    private int assignButtonOnForNewGame() {
+        while (true) {
+            int potentialButtonOnPosition = new Random().nextInt(seatMap.size());
+            if (seatMap.get(Integer.valueOf(potentialButtonOnPosition)) != null) {
+                return potentialButtonOnPosition;
+            }
+        }
+    }
+
+    private int assignSmallBlindForNewGame() {
+        return getNumberOfPlayersAtTable() == 2 ? buttonOnPosition
+                : findNextFilledSeat(buttonOnPosition);
+    }
+
+    private int assignBigBlindForNewGame() {
+        return getNumberOfPlayersAtTable() == 2 ? findNextFilledSeat(buttonOnPosition)
+                : findNextFilledSeat(smallBlindPosition);
+    }
+
+    private int assignActionOnForNewHand() {
+        return findNextFilledSeat(bigBlindPosition);
+    }
+
+    private int assignBigBlindForNewHand() {
+        return findNextFilledSeat(bigBlindPosition);
+    }
+
+    private int assignSmallBlindForNewHand() {
+        return findNextFilledSeat(smallBlindPosition);
+    }
+
+    private int assignButtonOnForNewHand() {
+        return findNextFilledSeat(buttonOnPosition);
+    }
+
+    private int findNextFilledSeat(int startingPosition) {
+        for (int i = startingPosition + 1; i < seatMap.size(); i++) {
+            if (seatMap.get(Integer.valueOf(i)) != null) {
+                return i;
+            }
+        }
+
+        for (int i = 0; i < startingPosition; i++) {
+            if (seatMap.get(Integer.valueOf(i)) != null) {
+                return i;
+            }
+        }
+
+        throw new IllegalStateException("unable to find next filled seat");
+    }
+
+    private void performNewHandCommonLogic(Blinds blinds, List<Card> shuffledDeckOfCards,
+            CardsUsedInHand cardsUsedInHand,
+            Map<PocketCards, HandEvaluation> handEvaluations, int actionOnPosition) {
         CardsShuffledEvent cardsShuffledEvent = new CardsShuffledEvent(aggregateId,
                 ++aggregateVersion, gameId, shuffledDeckOfCards);
         addNewEvent(cardsShuffledEvent);
-
-        int buttonOnPosition = assignButtonOnForNewGame();
-        int smallBlindPosition = assignSmallBlindForNewGame(buttonOnPosition);
-        int bigBlindPosition = assignBigBlindForNewGame(buttonOnPosition,
-                smallBlindPosition);
-        int actionOnPosition = assignActionOnForNewGame(bigBlindPosition);
 
         int nextToReceivePocketCards = findNextFilledSeat(buttonOnPosition);
         Map<UUID, PocketCards> playerToPocketCardsMap = new HashMap<>();
@@ -237,45 +319,6 @@ public class Table extends AggregateRoot<TableEvent> {
         applyAllEvents(eventsCreated);
     }
 
-    private int assignButtonOnForNewGame() {
-        while (true) {
-            int potentialButtonOnPosition = new Random().nextInt(seatMap.size());
-            if (seatMap.get(Integer.valueOf(potentialButtonOnPosition)) != null) {
-                return potentialButtonOnPosition;
-            }
-        }
-    }
-
-    private int assignSmallBlindForNewGame(int buttonOnPosition) {
-        return getNumberOfPlayersAtTable() == 2 ? buttonOnPosition
-                : findNextFilledSeat(buttonOnPosition);
-    }
-
-    private int assignBigBlindForNewGame(int buttonOnPosition, int smallBlindPosition) {
-        return getNumberOfPlayersAtTable() == 2 ? findNextFilledSeat(buttonOnPosition)
-                : findNextFilledSeat(smallBlindPosition);
-    }
-
-    private int assignActionOnForNewGame(int bigBlindPosition) {
-        return findNextFilledSeat(bigBlindPosition);
-    }
-
-    private int findNextFilledSeat(int startingPosition) {
-        for (int i = startingPosition + 1; i < seatMap.size(); i++) {
-            if (seatMap.get(Integer.valueOf(i)) != null) {
-                return i;
-            }
-        }
-
-        for (int i = 0; i < startingPosition; i++) {
-            if (seatMap.get(Integer.valueOf(i)) != null) {
-                return i;
-            }
-        }
-
-        throw new IllegalStateException("unable to find next filled seat");
-    }
-
     public int getNumberOfPlayersAtTable() {
         return (int) seatMap.values().stream().filter(x -> x != null).count();
     }
@@ -293,10 +336,8 @@ public class Table extends AggregateRoot<TableEvent> {
         actionOnChangedEvents.forEach(x -> addNewEvent(x));
         applyAllEvents(actionOnChangedEvents);
 
-        currentHand.dealCommonCardsIfAppropriate(++aggregateVersion).ifPresent(event -> {
-            addNewEvent(event);
-            applyAllEvents(Arrays.asList(event));
-        });
+        dealCommonCardsIfAppropriate();
+        finishHandIfAppropriate();
     }
 
     public void call(UUID playerId) {
@@ -312,10 +353,8 @@ public class Table extends AggregateRoot<TableEvent> {
         actionOnChangedEvents.forEach(x -> addNewEvent(x));
         applyAllEvents(actionOnChangedEvents);
 
-        currentHand.dealCommonCardsIfAppropriate(++aggregateVersion).ifPresent(event -> {
-            addNewEvent(event);
-            applyAllEvents(Arrays.asList(event));
-        });
+        dealCommonCardsIfAppropriate();
+        finishHandIfAppropriate();
     }
 
     public void fold(UUID playerId) {
@@ -331,10 +370,8 @@ public class Table extends AggregateRoot<TableEvent> {
         actionOnChangedEvents.forEach(x -> addNewEvent(x));
         applyAllEvents(actionOnChangedEvents);
 
-        currentHand.dealCommonCardsIfAppropriate(++aggregateVersion).ifPresent(event -> {
-            addNewEvent(event);
-            applyAllEvents(Arrays.asList(event));
-        });
+        dealCommonCardsIfAppropriate();
+        finishHandIfAppropriate();
     }
 
     public void raise(UUID playerId, int raiseToAmount) {
@@ -370,16 +407,28 @@ public class Table extends AggregateRoot<TableEvent> {
         actionOnChangedEvents.forEach(x -> addNewEvent(x));
         applyAllEvents(actionOnChangedEvents);
 
-        currentHand.dealCommonCardsIfAppropriate(++aggregateVersion).ifPresent(event -> {
-            addNewEvent(event);
-            applyAllEvents(Arrays.asList(event));
-        });
+        dealCommonCardsIfAppropriate();
+        finishHandIfAppropriate();
     }
 
     private void checkHandIsBeingPlayed() {
         if (currentHand == null) {
             throw new FlexPokerException("no hand in progress");
         }
+    }
+
+    private void dealCommonCardsIfAppropriate() {
+        currentHand.dealCommonCardsIfAppropriate(++aggregateVersion).ifPresent(event -> {
+            addNewEvent(event);
+            applyAllEvents(Arrays.asList(event));
+        });
+    }
+
+    private void finishHandIfAppropriate() {
+        currentHand.finishHandIfAppropriate(++aggregateVersion).ifPresent(event -> {
+            addNewEvent(event);
+            applyAllEvents(Arrays.asList(event));
+        });
     }
 
 }

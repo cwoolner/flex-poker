@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 import com.flexpoker.framework.command.Command;
 import com.flexpoker.framework.command.CommandHandler;
 import com.flexpoker.framework.command.CommandPublisher;
+import com.flexpoker.game.command.commands.AttemptToStartNewHandCommand;
 import com.flexpoker.game.command.commands.CreateGameCommand;
 import com.flexpoker.game.command.commands.JoinGameCommand;
 import com.flexpoker.game.command.framework.GameCommandType;
@@ -19,12 +20,16 @@ public class InMemoryAsyncGameCommandPublisher implements
 
     private final CommandHandler<JoinGameCommand> joinGameCommandHandler;
 
+    private final CommandHandler<AttemptToStartNewHandCommand> attemptToStartNewHandCommandHandler;
+
     @Inject
     public InMemoryAsyncGameCommandPublisher(
             CommandHandler<CreateGameCommand> createGameCommandHandler,
-            CommandHandler<JoinGameCommand> joinGameCommandHandler) {
+            CommandHandler<JoinGameCommand> joinGameCommandHandler,
+            CommandHandler<AttemptToStartNewHandCommand> attemptToStartNewHandCommandHandler) {
         this.createGameCommandHandler = createGameCommandHandler;
         this.joinGameCommandHandler = joinGameCommandHandler;
+        this.attemptToStartNewHandCommandHandler = attemptToStartNewHandCommandHandler;
     }
 
     @Override
@@ -35,6 +40,10 @@ public class InMemoryAsyncGameCommandPublisher implements
             break;
         case JoinGame:
             joinGameCommandHandler.handle((JoinGameCommand) command);
+            break;
+        case AttemptToStartNewHand:
+            attemptToStartNewHandCommandHandler
+                    .handle((AttemptToStartNewHandCommand) command);
             break;
         default:
             throw new IllegalArgumentException("Command Type cannot be handled: "

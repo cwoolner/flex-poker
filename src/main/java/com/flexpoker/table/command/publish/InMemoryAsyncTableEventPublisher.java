@@ -11,6 +11,7 @@ import com.flexpoker.framework.event.EventPublisher;
 import com.flexpoker.framework.processmanager.ProcessManager;
 import com.flexpoker.table.command.events.ActionOnChangedEvent;
 import com.flexpoker.table.command.events.FlopCardsDealtEvent;
+import com.flexpoker.table.command.events.HandCompletedEvent;
 import com.flexpoker.table.command.events.HandDealtEvent;
 import com.flexpoker.table.command.events.PlayerCalledEvent;
 import com.flexpoker.table.command.events.PlayerCheckedEvent;
@@ -46,6 +47,8 @@ public class InMemoryAsyncTableEventPublisher implements EventPublisher<TableEve
 
     private final ProcessManager<ActionOnChangedEvent> actionOnCountdownProcessManager;
 
+    private final ProcessManager<HandCompletedEvent> attemptToStartNewHandForExistingTableProcessManager;
+
     @Inject
     @Lazy
     public InMemoryAsyncTableEventPublisher(
@@ -59,7 +62,8 @@ public class InMemoryAsyncTableEventPublisher implements EventPublisher<TableEve
             EventHandler<TurnCardDealtEvent> turnCardDealtEventHandler,
             EventHandler<RiverCardDealtEvent> riverCardDealtEventHandler,
             EventHandler<ActionOnChangedEvent> actionOnChangedEventHandler,
-            ProcessManager<ActionOnChangedEvent> actionOnCountdownProcessManager) {
+            ProcessManager<ActionOnChangedEvent> actionOnCountdownProcessManager,
+            ProcessManager<HandCompletedEvent> attemptToStartNewHandForExistingTableProcessManager) {
         this.tableCreatedEventHandler = tableCreatedEventHandler;
         this.handDealtEventHandler = handDealtEventHandler;
         this.playerCalledEventHandler = playerCalledEventHandler;
@@ -71,6 +75,7 @@ public class InMemoryAsyncTableEventPublisher implements EventPublisher<TableEve
         this.riverCardDealtEventHandler = riverCardDealtEventHandler;
         this.actionOnChangedEventHandler = actionOnChangedEventHandler;
         this.actionOnCountdownProcessManager = actionOnCountdownProcessManager;
+        this.attemptToStartNewHandForExistingTableProcessManager = attemptToStartNewHandForExistingTableProcessManager;
     }
 
     @Override
@@ -110,6 +115,10 @@ public class InMemoryAsyncTableEventPublisher implements EventPublisher<TableEve
             actionOnCountdownProcessManager.handle((ActionOnChangedEvent) event);
             break;
         case LastToActChanged:
+            break;
+        case HandCompleted:
+            attemptToStartNewHandForExistingTableProcessManager
+                    .handle((HandCompletedEvent) event);
             break;
         default:
             throw new IllegalArgumentException("Event Type cannot be handled: "

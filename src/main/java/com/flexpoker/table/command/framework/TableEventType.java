@@ -10,6 +10,6 @@ public enum TableEventType implements EventType {
 
     FlopCardsDealt, TurnCardDealt, RiverCardDealt, //
 
-    ActionOnChanged, LastToActChanged
+    ActionOnChanged, LastToActChanged, HandCompleted
 
 }
