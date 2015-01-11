@@ -1,12 +1,17 @@
 package com.flexpoker.model;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class Blinds {
 
     private final int smallBlind;
 
     private final int bigBlind;
 
-    public Blinds(final int smallBlind, final int bigBlind) {
+    @JsonCreator
+    public Blinds(@JsonProperty(value = "smallBlind") final int smallBlind,
+            @JsonProperty(value = "bigBlind") final int bigBlind) {
         if (smallBlind > Integer.MAX_VALUE / 2) {
             throw new IllegalArgumentException("Small blind can't be that large.");
         }

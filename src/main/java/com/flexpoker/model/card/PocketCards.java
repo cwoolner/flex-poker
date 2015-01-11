@@ -3,13 +3,18 @@ package com.flexpoker.model.card;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class PocketCards {
 
     private final Card card1;
 
     private final Card card2;
 
-    public PocketCards(Card card1, Card card2) {
+    @JsonCreator
+    public PocketCards(@JsonProperty(value = "card1") Card card1,
+            @JsonProperty(value = "card2") Card card2) {
         this.card1 = card1;
         this.card2 = card2;
     }

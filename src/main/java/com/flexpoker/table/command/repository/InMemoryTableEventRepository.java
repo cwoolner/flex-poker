@@ -6,10 +6,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Repository;
 
 import com.flexpoker.table.command.framework.TableEvent;
 
+@Profile("default")
 @Repository
 public class InMemoryTableEventRepository implements TableEventRepository {
 

@@ -5,6 +5,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.flexpoker.framework.event.BaseEvent;
 import com.flexpoker.model.Blinds;
 import com.flexpoker.model.HandDealerState;
@@ -66,17 +68,32 @@ public class HandDealtEvent extends BaseEvent<TableEventType> implements TableEv
 
     private final Set<UUID> playersToShowCardsMap;
 
-    public HandDealtEvent(UUID aggregateId, int version, UUID gameId, UUID handId,
-            FlopCards flopCards, TurnCard turnCard, RiverCard riverCard,
-            int buttonOnPosition, int smallBlindPosition, int bigBlindPosition,
-            UUID lastToActPlayerId, Map<Integer, UUID> seatMap,
-            Map<UUID, PocketCards> playerToPocketCardsMap,
-            Map<UUID, Set<PlayerAction>> possibleSeatActionsMap,
-            Set<UUID> playersStillInHand, List<HandEvaluation> handEvaluations,
-            Set<Pot> pots, HandDealerState handDealerState,
-            Map<UUID, Integer> chipsInBack, Map<UUID, Integer> chipsInFrontMap,
-            Map<UUID, Integer> callAmountsMap, Map<UUID, Integer> raiseToAmountsMap,
-            Blinds blinds, Set<UUID> playersToShowCardsMap) {
+    @JsonCreator
+    public HandDealtEvent(
+            @JsonProperty(value = "aggregateId") UUID aggregateId,
+            @JsonProperty(value = "version") int version,
+            @JsonProperty(value = "gameId") UUID gameId,
+            @JsonProperty(value = "handId") UUID handId,
+            @JsonProperty(value = "flopCards") FlopCards flopCards,
+            @JsonProperty(value = "turnCard") TurnCard turnCard,
+            @JsonProperty(value = "riverCard") RiverCard riverCard,
+            @JsonProperty(value = "buttonOnPosition") int buttonOnPosition,
+            @JsonProperty(value = "smallBlindPosition") int smallBlindPosition,
+            @JsonProperty(value = "bigBlindPosition") int bigBlindPosition,
+            @JsonProperty(value = "lastToActPlayerId") UUID lastToActPlayerId,
+            @JsonProperty(value = "seatMap") Map<Integer, UUID> seatMap,
+            @JsonProperty(value = "playerToPocketCardsMap") Map<UUID, PocketCards> playerToPocketCardsMap,
+            @JsonProperty(value = "possibleSeatActionsMap") Map<UUID, Set<PlayerAction>> possibleSeatActionsMap,
+            @JsonProperty(value = "playersStillInHand") Set<UUID> playersStillInHand,
+            @JsonProperty(value = "handEvaluations") List<HandEvaluation> handEvaluations,
+            @JsonProperty(value = "pots") Set<Pot> pots,
+            @JsonProperty(value = "handDealerState") HandDealerState handDealerState,
+            @JsonProperty(value = "chipsInBack") Map<UUID, Integer> chipsInBack,
+            @JsonProperty(value = "chipsInFrontMap") Map<UUID, Integer> chipsInFrontMap,
+            @JsonProperty(value = "callAmountsMap") Map<UUID, Integer> callAmountsMap,
+            @JsonProperty(value = "raiseToAmountsMap") Map<UUID, Integer> raiseToAmountsMap,
+            @JsonProperty(value = "blinds") Blinds blinds,
+            @JsonProperty(value = "playersToShowCardsMap") Set<UUID> playersToShowCardsMap) {
         super(aggregateId, version, TYPE);
         this.gameId = gameId;
         this.handId = handId;

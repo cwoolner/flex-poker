@@ -1,5 +1,8 @@
 package com.flexpoker.model.card;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class Card implements Comparable<Card> {
 
     private final int id;
@@ -8,7 +11,10 @@ public class Card implements Comparable<Card> {
 
     private final CardSuit cardSuit;
 
-    public Card(int id, CardRank cardRank, CardSuit cardSuit) {
+    @JsonCreator
+    public Card(@JsonProperty(value = "id") int id,
+            @JsonProperty(value = "cardRank") CardRank cardRank,
+            @JsonProperty(value = "cardSuit") CardSuit cardSuit) {
         this.id = id;
         this.cardRank = cardRank;
         this.cardSuit = cardSuit;
