@@ -5,7 +5,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import com.flexpoker.core.api.chat.SendTableChatMessageCommand;
@@ -42,7 +41,6 @@ public class PlayerCheckedEventHandler implements EventHandler<PlayerCheckedEven
         this.pushNotificationPublisher = pushNotificationPublisher;
     }
 
-    @Async
     @Override
     public void handle(PlayerCheckedEvent event) {
         handleUpdatingTable(event);

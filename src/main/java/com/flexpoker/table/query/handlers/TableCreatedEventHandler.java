@@ -8,7 +8,6 @@ import java.util.function.Consumer;
 
 import javax.inject.Inject;
 
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import com.flexpoker.framework.event.EventHandler;
@@ -39,7 +38,6 @@ public class TableCreatedEventHandler implements EventHandler<TableCreatedEvent>
         this.pushNotificationPublisher = pushNotificationPublisher;
     }
 
-    @Async
     @Override
     public void handle(TableCreatedEvent event) {
         handleNewTableInsert(event);

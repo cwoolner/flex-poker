@@ -1,7 +1,14 @@
 package com.flexpoker.table.query.eventsubscribers;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+
 import javax.inject.Inject;
 
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import com.flexpoker.framework.event.Event;
@@ -21,6 +28,10 @@ import com.flexpoker.table.command.framework.TableEventType;
 
 @Component
 public class InMemoryAsyncTableEventSubscriber implements EventSubscriber<TableEventType> {
+
+    private final Map<UUID, List<Event<TableEventType>>> listOfTableEventsNeededToProcess;
+
+    private final Map<UUID, Integer> nextExpectedEventVersion;
 
     private final EventHandler<TableCreatedEvent> tableCreatedEventHandler;
 
@@ -54,6 +65,8 @@ public class InMemoryAsyncTableEventSubscriber implements EventSubscriber<TableE
             EventHandler<TurnCardDealtEvent> turnCardDealtEventHandler,
             EventHandler<RiverCardDealtEvent> riverCardDealtEventHandler,
             EventHandler<ActionOnChangedEvent> actionOnChangedEventHandler) {
+        listOfTableEventsNeededToProcess = new ConcurrentHashMap<>();
+        nextExpectedEventVersion = new ConcurrentHashMap<>();
         this.tableCreatedEventHandler = tableCreatedEventHandler;
         this.handDealtEventHandler = handDealtEventHandler;
         this.playerCalledEventHandler = playerCalledEventHandler;
@@ -66,8 +79,35 @@ public class InMemoryAsyncTableEventSubscriber implements EventSubscriber<TableE
         this.actionOnChangedEventHandler = actionOnChangedEventHandler;
     }
 
+    @Async
     @Override
     public void receive(Event<TableEventType> event) {
+        listOfTableEventsNeededToProcess.putIfAbsent(event.getAggregateId(),
+                new ArrayList<>());
+        nextExpectedEventVersion.putIfAbsent(event.getAggregateId(), Integer.valueOf(1));
+
+        if (isExpectedEvent(event)) {
+            handleEventAndRunAnyOthers(event);
+        } else {
+            listOfTableEventsNeededToProcess.get(event.getAggregateId()).add(event);
+        }
+
+    }
+
+    private void handleEventAndRunAnyOthers(Event<TableEventType> event) {
+        handleEvent(event);
+        removeEventFromUnhandleList(event);
+        incrementNextEventVersion(event);
+        handleAnyPreviouslyUnhandledEvents(event);
+    }
+
+    private boolean isExpectedEvent(Event<TableEventType> event) {
+        int expectedEventVersion = nextExpectedEventVersion.get(event.getAggregateId())
+                .intValue();
+        return expectedEventVersion == event.getVersion();
+    }
+
+    private void handleEvent(Event<TableEventType> event) {
         switch (event.getType()) {
         case TableCreated:
             tableCreatedEventHandler.handle((TableCreatedEvent) event);
@@ -111,4 +151,26 @@ public class InMemoryAsyncTableEventSubscriber implements EventSubscriber<TableE
         }
     }
 
+    private void removeEventFromUnhandleList(Event<TableEventType> event) {
+        listOfTableEventsNeededToProcess.get(event.getAggregateId()).remove(event);
+    }
+
+    private void incrementNextEventVersion(Event<TableEventType> event) {
+        Integer currentEventVersion = nextExpectedEventVersion
+                .get(event.getAggregateId());
+        Integer nextEventVersion = Integer.valueOf(currentEventVersion.intValue() + 1);
+        nextExpectedEventVersion.put(event.getAggregateId(), nextEventVersion);
+    }
+
+    private void handleAnyPreviouslyUnhandledEvents(Event<TableEventType> event) {
+        List<Event<TableEventType>> unHandledEvents = new ArrayList<>(
+                listOfTableEventsNeededToProcess.get(event.getAggregateId()));
+
+        unHandledEvents.forEach(previouslyUnRunEvent -> {
+            if (isExpectedEvent(previouslyUnRunEvent)) {
+                handleEventAndRunAnyOthers(previouslyUnRunEvent);
+            }
+        });
+
+    }
 }

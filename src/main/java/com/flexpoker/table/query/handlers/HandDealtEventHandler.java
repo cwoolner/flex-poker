@@ -9,7 +9,6 @@ import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import com.flexpoker.framework.event.EventHandler;
@@ -46,7 +45,6 @@ public class HandDealtEventHandler implements EventHandler<HandDealtEvent> {
         this.pushNotificationPublisher = pushNotificationPublisher;
     }
 
-    @Async
     @Override
     public void handle(HandDealtEvent event) {
         handleCardsUsedInHandStorage(event);

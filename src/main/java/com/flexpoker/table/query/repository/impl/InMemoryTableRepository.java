@@ -1,8 +1,8 @@
 package com.flexpoker.table.query.repository.impl;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.springframework.stereotype.Repository;
 
@@ -15,7 +15,7 @@ public class InMemoryTableRepository implements TableRepository {
     private final Map<UUID, TableViewModel> idToTableDTOMap;
 
     public InMemoryTableRepository() {
-        idToTableDTOMap = new HashMap<>();
+        idToTableDTOMap = new ConcurrentHashMap<>();
     }
 
     @Override

@@ -5,7 +5,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import com.flexpoker.framework.event.EventHandler;
@@ -37,7 +36,6 @@ public class FlopCardsDealtEventHandler implements EventHandler<FlopCardsDealtEv
         this.pushNotificationPublisher = pushNotificationPublisher;
     }
 
-    @Async
     @Override
     public void handle(FlopCardsDealtEvent event) {
         handleUpdatingTable(event);
