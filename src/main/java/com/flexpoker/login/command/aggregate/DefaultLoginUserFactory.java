@@ -24,7 +24,7 @@ public class DefaultLoginUserFactory implements LoginUserFactory {
         LoginUser loginUser = createWithGivenInfo(loginUserCreatedEvent.getAggregateId(),
                 loginUserCreatedEvent.getUsername(),
                 loginUserCreatedEvent.getEncryptedPassword());
-        loginUser.applyAllEvents(events);
+        loginUser.applyAllHistoricalEvents(events);
         return loginUser;
     }
 

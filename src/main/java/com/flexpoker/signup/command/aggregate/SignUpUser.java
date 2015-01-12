@@ -30,20 +30,31 @@ public class SignUpUser extends AggregateRoot<SignUpEvent> {
     }
 
     @Override
-    public void applyAllEvents(List<SignUpEvent> events) {
+    public void applyAllHistoricalEvents(List<SignUpEvent> events) {
         for (SignUpEvent event : events) {
             aggregateVersion++;
-            switch (event.getType()) {
-            case NewUserSignedUp:
-                applyEvent((NewUserSignedUpEvent) event);
-                break;
-            case SignedUpUserConfirmed:
-                applyEvent((SignedUpUserConfirmedEvent) event);
-                break;
-            default:
-                throw new IllegalArgumentException("Event Type cannot be handled: "
-                        + event.getType());
-            }
+            applyCommonEvent(event);
+        }
+    }
+
+    @Override
+    public void applyAllNewEvents(List<SignUpEvent> events) {
+        for (SignUpEvent event : events) {
+            applyCommonEvent(event);
+        }
+    }
+
+    private void applyCommonEvent(SignUpEvent event) {
+        switch (event.getType()) {
+        case NewUserSignedUp:
+            applyEvent((NewUserSignedUpEvent) event);
+            break;
+        case SignedUpUserConfirmed:
+            applyEvent((SignedUpUserConfirmedEvent) event);
+            break;
+        default:
+            throw new IllegalArgumentException("Event Type cannot be handled: "
+                    + event.getType());
         }
     }
 

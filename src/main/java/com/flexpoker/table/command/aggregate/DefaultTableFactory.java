@@ -29,7 +29,7 @@ public class DefaultTableFactory implements TableFactory {
         Table table = createNew(tableCreatedEvent.getAggregateId(),
                 tableCreatedEvent.getGameId(),
                 tableCreatedEvent.getNumberOfPlayersPerTable());
-        table.applyAllEvents(events);
+        table.applyAllHistoricalEvents(events);
         return table;
     }
 }

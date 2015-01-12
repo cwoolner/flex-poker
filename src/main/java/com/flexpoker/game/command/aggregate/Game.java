@@ -47,32 +47,45 @@ public class Game extends AggregateRoot<GameEvent> {
     }
 
     @Override
-    public void applyAllEvents(List<GameEvent> events) {
+    public void applyAllHistoricalEvents(List<GameEvent> events) {
         for (GameEvent event : events) {
             aggregateVersion++;
-            switch (event.getType()) {
-            case GameCreated:
-                applyEvent((GameCreatedEvent) event);
-                break;
-            case GameJoined:
-                applyEvent((GameJoinedEvent) event);
-                break;
-            case GameMovedToStartingStage:
-                applyEvent((GameMovedToStartingStageEvent) event);
-                break;
-            case GameStarted:
-                applyEvent((GameStartedEvent) event);
-                break;
-            case GameTablesCreatedAndPlayersAssociated:
-                applyEvent((GameTablesCreatedAndPlayersAssociatedEvent) event);
-                break;
-            case GameFinished:
-                applyEvent((GameFinishedEvent) event);
-                break;
-            default:
-                throw new IllegalArgumentException("Event Type cannot be handled: "
-                        + event.getType());
-            }
+            applyCommonEvent(event);
+        }
+    }
+
+    @Override
+    public void applyAllNewEvents(List<GameEvent> events) {
+        for (GameEvent event : events) {
+            applyCommonEvent(event);
+        }
+    }
+
+    private void applyCommonEvent(GameEvent event) {
+        switch (event.getType()) {
+        case GameCreated:
+            applyEvent((GameCreatedEvent) event);
+            break;
+        case GameJoined:
+            applyEvent((GameJoinedEvent) event);
+            break;
+        case GameMovedToStartingStage:
+            applyEvent((GameMovedToStartingStageEvent) event);
+            break;
+        case GameStarted:
+            applyEvent((GameStartedEvent) event);
+            break;
+        case GameTablesCreatedAndPlayersAssociated:
+            applyEvent((GameTablesCreatedAndPlayersAssociatedEvent) event);
+            break;
+        case GameFinished:
+            applyEvent((GameFinishedEvent) event);
+            break;
+        case NewHandIsClearedToStart:
+            break;
+        default:
+            throw new IllegalArgumentException("Event Type cannot be handled: "
+                    + event.getType());
         }
     }
 

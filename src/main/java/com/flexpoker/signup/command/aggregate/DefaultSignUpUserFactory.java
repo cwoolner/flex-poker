@@ -20,7 +20,7 @@ public class DefaultSignUpUserFactory implements SignUpUserFactory {
     @Override
     public SignUpUser createFrom(List<SignUpEvent> events) {
         SignUpUser signUpUser = createWithGivenId(events.get(0).getAggregateId());
-        signUpUser.applyAllEvents(events);
+        signUpUser.applyAllHistoricalEvents(events);
         return signUpUser;
     }
 

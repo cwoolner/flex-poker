@@ -10,6 +10,7 @@ public class DeckGenerator {
     public static CardsUsedInHand createDeck() {
         return new CardsUsedInHand(CardGenerator.createFlopCards(),
                 CardGenerator.createTurnCard(), CardGenerator.createRiverCard(),
-                Arrays.asList(new PocketCards[]{CardGenerator.createPocketCards()}));
+                Arrays.asList(new PocketCards[] { CardGenerator.createPocketCards1(),
+                        CardGenerator.createPocketCards2() }));
     }
 }

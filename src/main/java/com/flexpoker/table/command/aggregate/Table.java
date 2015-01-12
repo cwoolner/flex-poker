@@ -63,52 +63,63 @@ public class Table extends AggregateRoot<TableEvent> {
     }
 
     @Override
-    public void applyAllEvents(List<TableEvent> events) {
-        for (TableEvent event : events) {
+    public void applyAllHistoricalEvents(List<TableEvent> events) {
+        events.forEach(x -> {
             aggregateVersion++;
-            switch (event.getType()) {
-            case TableCreated:
-                applyEvent((TableCreatedEvent) event);
-                break;
-            case CardsShuffled:
-                break;
-            case HandDealtEvent:
-                applyEvent((HandDealtEvent) event);
-                break;
-            case PlayerCalled:
-                applyEvent((PlayerCalledEvent) event);
-                break;
-            case PlayerChecked:
-                applyEvent((PlayerCheckedEvent) event);
-                break;
-            case PlayerFolded:
-                applyEvent((PlayerFoldedEvent) event);
-                break;
-            case PlayerRaised:
-                applyEvent((PlayerRaisedEvent) event);
-                break;
-            case FlopCardsDealt:
-                applyEvent((FlopCardsDealtEvent) event);
-                break;
-            case TurnCardDealt:
-                applyEvent((TurnCardDealtEvent) event);
-                break;
-            case RiverCardDealt:
-                applyEvent((RiverCardDealtEvent) event);
-                break;
-            case ActionOnChanged:
-                applyEvent((ActionOnChangedEvent) event);
-                break;
-            case LastToActChanged:
-                applyEvent((LastToActChangedEvent) event);
-                break;
-            case HandCompleted:
-                applyEvent((HandCompletedEvent) event);
-                break;
-            default:
-                throw new IllegalArgumentException("Event Type cannot be handled: "
-                        + event.getType());
-            }
+            applyCommonEvent(x);
+        });
+    }
+
+    @Override
+    public void applyAllNewEvents(List<TableEvent> events) {
+        events.forEach(x -> {
+            applyCommonEvent(x);
+        });
+    }
+
+    private void applyCommonEvent(TableEvent event) {
+        switch (event.getType()) {
+        case TableCreated:
+            applyEvent((TableCreatedEvent) event);
+            break;
+        case CardsShuffled:
+            break;
+        case HandDealtEvent:
+            applyEvent((HandDealtEvent) event);
+            break;
+        case PlayerCalled:
+            applyEvent((PlayerCalledEvent) event);
+            break;
+        case PlayerChecked:
+            applyEvent((PlayerCheckedEvent) event);
+            break;
+        case PlayerFolded:
+            applyEvent((PlayerFoldedEvent) event);
+            break;
+        case PlayerRaised:
+            applyEvent((PlayerRaisedEvent) event);
+            break;
+        case FlopCardsDealt:
+            applyEvent((FlopCardsDealtEvent) event);
+            break;
+        case TurnCardDealt:
+            applyEvent((TurnCardDealtEvent) event);
+            break;
+        case RiverCardDealt:
+            applyEvent((RiverCardDealtEvent) event);
+            break;
+        case ActionOnChanged:
+            applyEvent((ActionOnChangedEvent) event);
+            break;
+        case LastToActChanged:
+            applyEvent((LastToActChangedEvent) event);
+            break;
+        case HandCompleted:
+            applyEvent((HandCompletedEvent) event);
+            break;
+        default:
+            throw new IllegalArgumentException("Event Type cannot be handled: "
+                    + event.getType());
         }
     }
 
@@ -124,6 +135,9 @@ public class Table extends AggregateRoot<TableEvent> {
     }
 
     private void applyEvent(HandDealtEvent event) {
+        buttonOnPosition = event.getButtonOnPosition();
+        smallBlindPosition = event.getSmallBlindPosition();
+        bigBlindPosition = event.getBigBlindPosition();
         currentHand = new Hand(event.getGameId(), event.getAggregateId(),
                 event.getHandId(), seatMap, event.getFlopCards(), event.getTurnCard(),
                 event.getRiverCard(), event.getButtonOnPosition(),
@@ -316,7 +330,9 @@ public class Table extends AggregateRoot<TableEvent> {
         List<TableEvent> eventsCreated = hand.dealHand(++aggregateVersion,
                 actionOnPosition);
         eventsCreated.forEach(x -> addNewEvent(x));
-        applyAllEvents(eventsCreated);
+        applyAllNewEvents(eventsCreated);
+
+        aggregateVersion += eventsCreated.size() - 1;
     }
 
     public int getNumberOfPlayersAtTable() {
@@ -334,7 +350,7 @@ public class Table extends AggregateRoot<TableEvent> {
         List<TableEvent> actionOnChangedEvents = currentHand
                 .changeActionOn(++aggregateVersion);
         actionOnChangedEvents.forEach(x -> addNewEvent(x));
-        applyAllEvents(actionOnChangedEvents);
+        applyAllNewEvents(actionOnChangedEvents);
 
         dealCommonCardsIfAppropriate();
         finishHandIfAppropriate();
@@ -351,7 +367,7 @@ public class Table extends AggregateRoot<TableEvent> {
         List<TableEvent> actionOnChangedEvents = currentHand
                 .changeActionOn(++aggregateVersion);
         actionOnChangedEvents.forEach(x -> addNewEvent(x));
-        applyAllEvents(actionOnChangedEvents);
+        applyAllNewEvents(actionOnChangedEvents);
 
         dealCommonCardsIfAppropriate();
         finishHandIfAppropriate();
@@ -368,7 +384,7 @@ public class Table extends AggregateRoot<TableEvent> {
         List<TableEvent> actionOnChangedEvents = currentHand
                 .changeActionOn(++aggregateVersion);
         actionOnChangedEvents.forEach(x -> addNewEvent(x));
-        applyAllEvents(actionOnChangedEvents);
+        applyAllNewEvents(actionOnChangedEvents);
 
         dealCommonCardsIfAppropriate();
         finishHandIfAppropriate();
@@ -385,7 +401,7 @@ public class Table extends AggregateRoot<TableEvent> {
         List<TableEvent> actionOnChangedEvents = currentHand
                 .changeActionOn(++aggregateVersion);
         actionOnChangedEvents.forEach(x -> addNewEvent(x));
-        applyAllEvents(actionOnChangedEvents);
+        applyAllNewEvents(actionOnChangedEvents);
     }
 
     public void expireActionOn(UUID handId, UUID playerId) {
@@ -400,12 +416,13 @@ public class Table extends AggregateRoot<TableEvent> {
         TableEvent forcedActionOnExpiredEvent = currentHand.expireActionOn(playerId,
                 ++aggregateVersion);
         addNewEvent(forcedActionOnExpiredEvent);
-        applyAllEvents(Arrays.asList(forcedActionOnExpiredEvent));
+        applyAllNewEvents(Arrays.asList(forcedActionOnExpiredEvent));
 
         List<TableEvent> actionOnChangedEvents = currentHand
                 .changeActionOn(++aggregateVersion);
         actionOnChangedEvents.forEach(x -> addNewEvent(x));
-        applyAllEvents(actionOnChangedEvents);
+        applyAllNewEvents(actionOnChangedEvents);
+        aggregateVersion += actionOnChangedEvents.size() - 1;
 
         dealCommonCardsIfAppropriate();
         finishHandIfAppropriate();
@@ -418,16 +435,19 @@ public class Table extends AggregateRoot<TableEvent> {
     }
 
     private void dealCommonCardsIfAppropriate() {
-        currentHand.dealCommonCardsIfAppropriate(++aggregateVersion).ifPresent(event -> {
-            addNewEvent(event);
-            applyAllEvents(Arrays.asList(event));
-        });
+        currentHand.dealCommonCardsIfAppropriate(aggregateVersion + 1).ifPresent(
+                event -> {
+                    addNewEvent(event);
+                    applyAllNewEvents(Arrays.asList(event));
+                    aggregateVersion++;
+                });
     }
 
     private void finishHandIfAppropriate() {
-        currentHand.finishHandIfAppropriate(++aggregateVersion).ifPresent(event -> {
+        currentHand.finishHandIfAppropriate(aggregateVersion + 1).ifPresent(event -> {
             addNewEvent(event);
-            applyAllEvents(Arrays.asList(event));
+            applyAllNewEvents(Arrays.asList(event));
+            aggregateVersion++;
         });
     }
 

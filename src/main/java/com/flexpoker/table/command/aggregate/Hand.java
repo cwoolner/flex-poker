@@ -253,6 +253,12 @@ public class Hand {
     public List<TableEvent> changeActionOn(int aggregateVersion) {
         List<TableEvent> eventsCreated = new ArrayList<>();
 
+        // do not change action on if the hand is over. starting a new hand
+        // should adjust that
+        if (handDealerState == HandDealerState.COMPLETE) {
+            return eventsCreated;
+        }
+
         UUID actionOnPlayerId = seatMap.get(Integer.valueOf(actionOnPosition));
 
         if (actionOnPlayerId.equals(lastToActPlayerId)) {

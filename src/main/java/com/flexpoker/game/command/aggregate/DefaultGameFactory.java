@@ -20,7 +20,7 @@ public class DefaultGameFactory implements GameFactory {
     @Override
     public Game createFrom(List<GameEvent> events) {
         Game game = createWithGivenId(events.get(0).getAggregateId());
-        game.applyAllEvents(events);
+        game.applyAllHistoricalEvents(events);
         return game;
     }
 
