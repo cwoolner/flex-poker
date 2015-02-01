@@ -3,6 +3,8 @@ package com.flexpoker.framework.event;
 import java.time.Instant;
 import java.util.UUID;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
+
 /**
  * Base class used to handle some standard methods and fields so that the
  * subclasses can just be specific to what they need.
@@ -42,6 +44,11 @@ public abstract class BaseEvent<T extends EventType> implements Event<T> {
     @Override
     public Instant getTime() {
         return time;
+    }
+
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this);
     }
 
 }

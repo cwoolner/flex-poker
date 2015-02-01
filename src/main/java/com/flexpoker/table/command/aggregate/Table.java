@@ -351,6 +351,7 @@ public class Table extends AggregateRoot<TableEvent> {
                 .changeActionOn(++aggregateVersion);
         actionOnChangedEvents.forEach(x -> addNewEvent(x));
         applyAllNewEvents(actionOnChangedEvents);
+        aggregateVersion += actionOnChangedEvents.size() - 1;
 
         dealCommonCardsIfAppropriate();
         finishHandIfAppropriate();
@@ -368,6 +369,7 @@ public class Table extends AggregateRoot<TableEvent> {
                 .changeActionOn(++aggregateVersion);
         actionOnChangedEvents.forEach(x -> addNewEvent(x));
         applyAllNewEvents(actionOnChangedEvents);
+        aggregateVersion += actionOnChangedEvents.size() - 1;
 
         dealCommonCardsIfAppropriate();
         finishHandIfAppropriate();
@@ -385,6 +387,7 @@ public class Table extends AggregateRoot<TableEvent> {
                 .changeActionOn(++aggregateVersion);
         actionOnChangedEvents.forEach(x -> addNewEvent(x));
         applyAllNewEvents(actionOnChangedEvents);
+        aggregateVersion += actionOnChangedEvents.size() - 1;
 
         dealCommonCardsIfAppropriate();
         finishHandIfAppropriate();
@@ -402,6 +405,7 @@ public class Table extends AggregateRoot<TableEvent> {
                 .changeActionOn(++aggregateVersion);
         actionOnChangedEvents.forEach(x -> addNewEvent(x));
         applyAllNewEvents(actionOnChangedEvents);
+        aggregateVersion += actionOnChangedEvents.size() - 1;
     }
 
     public void expireActionOn(UUID handId, UUID playerId) {
