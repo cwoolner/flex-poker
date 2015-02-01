@@ -22,6 +22,7 @@ import com.flexpoker.table.command.events.ActionOnChangedEvent;
 import com.flexpoker.table.command.factory.TableFactory;
 import com.flexpoker.table.command.framework.TableEvent;
 import com.flexpoker.table.command.framework.TableEventType;
+import com.flexpoker.test.util.CommonAssertions;
 import com.flexpoker.test.util.datageneration.CardGenerator;
 import com.flexpoker.test.util.datageneration.DeckGenerator;
 
@@ -44,7 +45,7 @@ public class TableTest {
         assertEquals(1, newEvents.size());
         assertEquals(TableEventType.TableCreated, newEvents.get(0).getType());
 
-        verifyEventIdsAndVersionNumbers(tableId, newEvents);
+        CommonAssertions.verifyEventIdsAndVersionNumbers(tableId, newEvents);
     }
 
     @Test(expected = FlexPokerException.class)
@@ -116,15 +117,7 @@ public class TableTest {
         assertEquals(TableEventType.PlayerFolded, newEvents.get(4).getType());
         assertEquals(TableEventType.HandCompleted, newEvents.get(5).getType());
 
-        verifyEventIdsAndVersionNumbers(tableId, newEvents);
-    }
-
-    private void verifyEventIdsAndVersionNumbers(UUID tableId, List<TableEvent> newEvents) {
-        int version = 0;
-        for (TableEvent tableEvent : newEvents) {
-            assertEquals(tableId, tableEvent.getAggregateId());
-            assertEquals(++version, tableEvent.getVersion());
-        }
+        CommonAssertions.verifyEventIdsAndVersionNumbers(tableId, newEvents);
     }
 
 }
