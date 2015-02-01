@@ -20,14 +20,14 @@ flexpokerModule.controller('TableController', ['$scope', '$rootScope', '$routePa
                 + '/table/' + $scope.tableId + '/user', function(message) {
             var scrollHeight = $('.chat-display').prop('scrollHeight');
             $('.chat-display').prop('scrollTop', scrollHeight);
-            $scope.chatDisplay += $.parseJSON(message.body) + '\n';
+            $scope.chatDisplay += message.body + '\n';
         });
 
         $scope.client.subscribe('/topic/chat/game/' + $scope.gameId
                 + '/table/' + $scope.tableId + '/system', function(message) {
             var scrollHeight = $('.chat-display').prop('scrollHeight');
             $('.chat-display').prop('scrollTop', scrollHeight);
-            $scope.chatDisplay += $.parseJSON(message.body) + '\n';
+            $scope.chatDisplay += message.body + '\n';
         });
 
         $scope.client.subscribe('/topic/game/' + $scope.gameId

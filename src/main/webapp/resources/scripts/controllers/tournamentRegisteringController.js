@@ -34,12 +34,12 @@ flexpokerModule.controller('TournamentRegisteringController', ['$rootScope', '$s
         $scope.client.subscribe('/topic/chat/global/user', function(message) {
             var scrollHeight = $('.chat-display').prop('scrollHeight');
             $('.chat-display').prop('scrollTop', scrollHeight);
-            $scope.chatDisplay += $.parseJSON(message.body) + '\n';
+            $scope.chatDisplay += message.body + '\n';
         });
         $scope.client.subscribe('/topic/chat/global/system', function(message) {
             var scrollHeight = $('.chat-display').prop('scrollHeight');
             $('.chat-display').prop('scrollTop', scrollHeight);
-            $scope.chatDisplay += $.parseJSON(message.body) + '\n';
+            $scope.chatDisplay += message.body + '\n';
         });
     }, function() {}, '/');
     

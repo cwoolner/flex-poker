@@ -12,12 +12,12 @@ flexpokerModule.controller('GameController', ['$scope', '$rootScope', '$routePar
         $scope.client.subscribe('/topic/chat/game/' + $scope.gameId + '/user', function(message) {
             var scrollHeight = $('.chat-display').prop('scrollHeight');
             $('.chat-display').prop('scrollTop', scrollHeight);
-            $scope.chatDisplay += $.parseJSON(message.body) + '\n';
+            $scope.chatDisplay += message.body + '\n';
         });
         $scope.client.subscribe('/topic/chat/game/' + $scope.gameId + '/system', function(message) {
             var scrollHeight = $('.chat-display').prop('scrollHeight');
             $('.chat-display').prop('scrollTop', scrollHeight);
-            $scope.chatDisplay += $.parseJSON(message.body) + '\n';
+            $scope.chatDisplay += message.body + '\n';
         });
     }, function() {}, '/');
     

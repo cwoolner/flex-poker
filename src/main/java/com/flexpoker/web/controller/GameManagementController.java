@@ -35,7 +35,8 @@ public class GameManagementController {
     private final GameListRepository gameRepository;
 
     @Inject
-    public GameManagementController(OpenGameForPlayerRepository openGameForUserRepository,
+    public GameManagementController(
+            OpenGameForPlayerRepository openGameForUserRepository,
             CommandPublisher<GameCommandType> commandPublisher,
             LoginRepository loginRepository, GameListRepository gameRepository) {
         this.openGameForUserRepository = openGameForUserRepository;
@@ -64,10 +65,9 @@ public class GameManagementController {
     }
 
     @MessageMapping(value = "/app/joingame")
-    public void joinGame(String gameId, Principal principal) {
+    public void joinGame(UUID gameId, Principal principal) {
         UUID playerId = loginRepository.fetchAggregateIdByUsername(principal.getName());
-        UUID gameAggregateId = UUID.fromString(gameId);
-        JoinGameCommand command = new JoinGameCommand(gameAggregateId, playerId);
+        JoinGameCommand command = new JoinGameCommand(gameId, playerId);
         commandPublisher.publish(command);
     }
 
