@@ -1,6 +1,19 @@
 package com.flexpoker.table.command.aggregate;
 
-import static org.junit.Assert.assertEquals;
+import static com.flexpoker.table.command.framework.TableEventType.ActionOnChanged;
+import static com.flexpoker.table.command.framework.TableEventType.CardsShuffled;
+import static com.flexpoker.table.command.framework.TableEventType.FlopCardsDealt;
+import static com.flexpoker.table.command.framework.TableEventType.HandCompleted;
+import static com.flexpoker.table.command.framework.TableEventType.HandDealtEvent;
+import static com.flexpoker.table.command.framework.TableEventType.LastToActChanged;
+import static com.flexpoker.table.command.framework.TableEventType.PlayerCalled;
+import static com.flexpoker.table.command.framework.TableEventType.PlayerChecked;
+import static com.flexpoker.table.command.framework.TableEventType.PlayerFolded;
+import static com.flexpoker.table.command.framework.TableEventType.RiverCardDealt;
+import static com.flexpoker.table.command.framework.TableEventType.TableCreated;
+import static com.flexpoker.table.command.framework.TableEventType.TurnCardDealt;
+import static com.flexpoker.test.util.CommonAssertions.verifyEventIdsAndVersionNumbers;
+import static com.flexpoker.test.util.CommonAssertions.verifyNumberOfEventsAndEntireOrderByType;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,8 +32,6 @@ import com.flexpoker.model.card.CardsUsedInHand;
 import com.flexpoker.model.card.PocketCards;
 import com.flexpoker.table.command.events.ActionOnChangedEvent;
 import com.flexpoker.table.command.framework.TableEvent;
-import com.flexpoker.table.command.framework.TableEventType;
-import com.flexpoker.test.util.CommonAssertions;
 import com.flexpoker.test.util.datageneration.CardGenerator;
 import com.flexpoker.test.util.datageneration.DeckGenerator;
 
@@ -43,15 +54,10 @@ public class TwoPersonTableTest {
 
         List<TableEvent> newEvents = table.fetchNewEvents();
 
-        assertEquals(6, newEvents.size());
-        assertEquals(TableEventType.TableCreated, newEvents.get(0).getType());
-        assertEquals(TableEventType.CardsShuffled, newEvents.get(1).getType());
-        assertEquals(TableEventType.HandDealtEvent, newEvents.get(2).getType());
-        assertEquals(TableEventType.ActionOnChanged, newEvents.get(3).getType());
-        assertEquals(TableEventType.PlayerFolded, newEvents.get(4).getType());
-        assertEquals(TableEventType.HandCompleted, newEvents.get(5).getType());
-
-        CommonAssertions.verifyEventIdsAndVersionNumbers(tableId, newEvents);
+        verifyNumberOfEventsAndEntireOrderByType(6, newEvents, TableCreated,
+                CardsShuffled, HandDealtEvent, ActionOnChanged, PlayerFolded,
+                HandCompleted);
+        verifyEventIdsAndVersionNumbers(tableId, newEvents);
     }
 
     @Test
@@ -87,44 +93,23 @@ public class TwoPersonTableTest {
 
         List<TableEvent> newEvents = table.fetchNewEvents();
 
-        assertEquals(26, newEvents.size());
-        assertEquals(TableEventType.TableCreated, newEvents.get(0).getType());
-        assertEquals(TableEventType.CardsShuffled, newEvents.get(1).getType());
-        assertEquals(TableEventType.HandDealtEvent, newEvents.get(2).getType());
-        assertEquals(TableEventType.ActionOnChanged, newEvents.get(3).getType());
-
-        // pre-flop
-        assertEquals(TableEventType.PlayerCalled, newEvents.get(4).getType());
-        assertEquals(TableEventType.ActionOnChanged, newEvents.get(5).getType());
-        assertEquals(TableEventType.PlayerChecked, newEvents.get(6).getType());
-        assertEquals(TableEventType.ActionOnChanged, newEvents.get(7).getType());
-        assertEquals(TableEventType.LastToActChanged, newEvents.get(8).getType());
-        assertEquals(TableEventType.FlopCardsDealt, newEvents.get(9).getType());
-
-        // post-flop
-        assertEquals(TableEventType.PlayerChecked, newEvents.get(10).getType());
-        assertEquals(TableEventType.ActionOnChanged, newEvents.get(11).getType());
-        assertEquals(TableEventType.PlayerChecked, newEvents.get(12).getType());
-        assertEquals(TableEventType.ActionOnChanged, newEvents.get(13).getType());
-        assertEquals(TableEventType.LastToActChanged, newEvents.get(14).getType());
-        assertEquals(TableEventType.TurnCardDealt, newEvents.get(15).getType());
-
-        // post-turn
-        assertEquals(TableEventType.PlayerChecked, newEvents.get(16).getType());
-        assertEquals(TableEventType.ActionOnChanged, newEvents.get(17).getType());
-        assertEquals(TableEventType.PlayerChecked, newEvents.get(18).getType());
-        assertEquals(TableEventType.ActionOnChanged, newEvents.get(19).getType());
-        assertEquals(TableEventType.LastToActChanged, newEvents.get(20).getType());
-        assertEquals(TableEventType.RiverCardDealt, newEvents.get(21).getType());
-
-        // post-river
-        assertEquals(TableEventType.PlayerChecked, newEvents.get(22).getType());
-        assertEquals(TableEventType.ActionOnChanged, newEvents.get(23).getType());
-        assertEquals(TableEventType.PlayerChecked, newEvents.get(24).getType());
-
-        assertEquals(TableEventType.HandCompleted, newEvents.get(25).getType());
-
-        CommonAssertions.verifyEventIdsAndVersionNumbers(tableId, newEvents);
+        verifyNumberOfEventsAndEntireOrderByType(26, newEvents, TableCreated,
+                CardsShuffled,
+                HandDealtEvent,
+                ActionOnChanged,
+                // pre-flop
+                PlayerCalled, ActionOnChanged, PlayerChecked, ActionOnChanged,
+                LastToActChanged,
+                FlopCardsDealt,
+                // post-flop
+                PlayerChecked, ActionOnChanged, PlayerChecked, ActionOnChanged,
+                LastToActChanged, TurnCardDealt,
+                // post-turn
+                PlayerChecked, ActionOnChanged, PlayerChecked, ActionOnChanged,
+                LastToActChanged, RiverCardDealt,
+                // post-river
+                PlayerChecked, ActionOnChanged, PlayerChecked, HandCompleted);
+        verifyEventIdsAndVersionNumbers(tableId, newEvents);
     }
 
     @Test
@@ -160,44 +145,23 @@ public class TwoPersonTableTest {
 
         List<TableEvent> newEvents = table.fetchNewEvents();
 
-        assertEquals(26, newEvents.size());
-        assertEquals(TableEventType.TableCreated, newEvents.get(0).getType());
-        assertEquals(TableEventType.CardsShuffled, newEvents.get(1).getType());
-        assertEquals(TableEventType.HandDealtEvent, newEvents.get(2).getType());
-        assertEquals(TableEventType.ActionOnChanged, newEvents.get(3).getType());
-
-        // pre-flop
-        assertEquals(TableEventType.PlayerCalled, newEvents.get(4).getType());
-        assertEquals(TableEventType.ActionOnChanged, newEvents.get(5).getType());
-        assertEquals(TableEventType.PlayerChecked, newEvents.get(6).getType());
-        assertEquals(TableEventType.ActionOnChanged, newEvents.get(7).getType());
-        assertEquals(TableEventType.LastToActChanged, newEvents.get(8).getType());
-        assertEquals(TableEventType.FlopCardsDealt, newEvents.get(9).getType());
-
-        // post-flop
-        assertEquals(TableEventType.PlayerChecked, newEvents.get(10).getType());
-        assertEquals(TableEventType.ActionOnChanged, newEvents.get(11).getType());
-        assertEquals(TableEventType.PlayerChecked, newEvents.get(12).getType());
-        assertEquals(TableEventType.ActionOnChanged, newEvents.get(13).getType());
-        assertEquals(TableEventType.LastToActChanged, newEvents.get(14).getType());
-        assertEquals(TableEventType.TurnCardDealt, newEvents.get(15).getType());
-
-        // post-turn
-        assertEquals(TableEventType.PlayerChecked, newEvents.get(16).getType());
-        assertEquals(TableEventType.ActionOnChanged, newEvents.get(17).getType());
-        assertEquals(TableEventType.PlayerChecked, newEvents.get(18).getType());
-        assertEquals(TableEventType.ActionOnChanged, newEvents.get(19).getType());
-        assertEquals(TableEventType.LastToActChanged, newEvents.get(20).getType());
-        assertEquals(TableEventType.RiverCardDealt, newEvents.get(21).getType());
-
-        // post-river
-        assertEquals(TableEventType.PlayerChecked, newEvents.get(22).getType());
-        assertEquals(TableEventType.ActionOnChanged, newEvents.get(23).getType());
-        assertEquals(TableEventType.PlayerChecked, newEvents.get(24).getType());
-
-        assertEquals(TableEventType.HandCompleted, newEvents.get(25).getType());
-
-        CommonAssertions.verifyEventIdsAndVersionNumbers(tableId, newEvents);
+        verifyNumberOfEventsAndEntireOrderByType(26, newEvents, TableCreated,
+                CardsShuffled,
+                HandDealtEvent,
+                ActionOnChanged,
+                // pre-flop
+                PlayerCalled, ActionOnChanged, PlayerChecked, ActionOnChanged,
+                LastToActChanged,
+                FlopCardsDealt,
+                // post-flop
+                PlayerChecked, ActionOnChanged, PlayerChecked, ActionOnChanged,
+                LastToActChanged, TurnCardDealt,
+                // post-turn
+                PlayerChecked, ActionOnChanged, PlayerChecked, ActionOnChanged,
+                LastToActChanged, RiverCardDealt,
+                // post-river
+                PlayerChecked, ActionOnChanged, PlayerChecked, HandCompleted);
+        verifyEventIdsAndVersionNumbers(tableId, newEvents);
     }
 
     private Table createBasicTable(UUID tableId, Set<UUID> playerIds) {
