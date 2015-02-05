@@ -17,8 +17,6 @@ import static com.flexpoker.test.util.CommonAssertions.verifyEventIdsAndVersionN
 import static com.flexpoker.test.util.CommonAssertions.verifyNumberOfEventsAndEntireOrderByType;
 import static org.junit.Assert.assertEquals;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -28,17 +26,10 @@ import java.util.stream.Collectors;
 
 import org.junit.Test;
 
-import com.flexpoker.model.Blinds;
-import com.flexpoker.model.HandEvaluation;
-import com.flexpoker.model.card.Card;
-import com.flexpoker.model.card.CardsUsedInHand;
-import com.flexpoker.model.card.PocketCards;
 import com.flexpoker.table.command.events.ActionOnChangedEvent;
 import com.flexpoker.table.command.events.HandDealtEvent;
 import com.flexpoker.table.command.events.TableCreatedEvent;
 import com.flexpoker.table.command.framework.TableEvent;
-import com.flexpoker.test.util.datageneration.CardGenerator;
-import com.flexpoker.test.util.datageneration.DeckGenerator;
 
 public class TwoPersonTableTest {
 
@@ -51,7 +42,7 @@ public class TwoPersonTableTest {
         playerIds.add(player1Id);
         playerIds.add(player2Id);
 
-        Table table = createBasicTable(tableId, playerIds);
+        Table table = TableTestUtils.createBasicTable(tableId, playerIds);
 
         // check seat positions
         Map<Integer, UUID> seatPositionToPlayerIdMap = ((TableCreatedEvent) table
@@ -109,7 +100,7 @@ public class TwoPersonTableTest {
         playerIds.add(UUID.randomUUID());
         playerIds.add(UUID.randomUUID());
 
-        Table table = createBasicTable(tableId, playerIds);
+        Table table = TableTestUtils.createBasicTable(tableId, playerIds);
 
         // use the info in action on event to simulate the expire
         ActionOnChangedEvent actionOnChangedEvent = (ActionOnChangedEvent) table
@@ -132,7 +123,7 @@ public class TwoPersonTableTest {
         playerIds.add(UUID.randomUUID());
         playerIds.add(UUID.randomUUID());
 
-        Table table = createBasicTable(tableId, playerIds);
+        Table table = TableTestUtils.createBasicTable(tableId, playerIds);
 
         // use the info in action on event to simulate the expire
         UUID smallBlindAndButtonPlayerId = ((ActionOnChangedEvent) table.fetchNewEvents()
@@ -184,7 +175,7 @@ public class TwoPersonTableTest {
         playerIds.add(UUID.randomUUID());
         playerIds.add(UUID.randomUUID());
 
-        Table table = createBasicTable(tableId, playerIds);
+        Table table = TableTestUtils.createBasicTable(tableId, playerIds);
 
         // use the info in action on event to get the player id of the small
         // blind
@@ -236,7 +227,7 @@ public class TwoPersonTableTest {
         playerIds.add(UUID.randomUUID());
         playerIds.add(UUID.randomUUID());
 
-        Table table = createBasicTable(tableId, playerIds);
+        Table table = TableTestUtils.createBasicTable(tableId, playerIds);
 
         // use the info in action on event to determine who the small
         // blind/button is on
@@ -254,21 +245,6 @@ public class TwoPersonTableTest {
                 CardsShuffled, HandDealtEvent, ActionOnChanged, PlayerRaised,
                 ActionOnChanged, LastToActChanged, PlayerFolded, HandCompleted);
         verifyEventIdsAndVersionNumbers(tableId, newEvents);
-    }
-
-    private Table createBasicTable(UUID tableId, Set<UUID> playerIds) {
-        Blinds blinds = new Blinds(10, 20);
-        List<Card> shuffledDeckOfCards = new ArrayList<>();
-        CardsUsedInHand cardsUsedInHand = DeckGenerator.createDeck();
-        Map<PocketCards, HandEvaluation> handEvaluations = new HashMap<>();
-        handEvaluations.put(CardGenerator.createPocketCards1(), new HandEvaluation());
-        handEvaluations.put(CardGenerator.createPocketCards2(), new HandEvaluation());
-
-        Table table = new DefaultTableFactory().createNew(tableId, UUID.randomUUID(), 6);
-        table.createNewTable(playerIds);
-        table.startNewHandForNewGame(blinds, shuffledDeckOfCards, cardsUsedInHand,
-                handEvaluations);
-        return table;
     }
 
 }
