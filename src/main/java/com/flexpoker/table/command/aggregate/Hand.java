@@ -261,7 +261,22 @@ public class Hand {
 
         UUID actionOnPlayerId = seatMap.get(Integer.valueOf(actionOnPosition));
 
-        if (actionOnPlayerId.equals(lastToActPlayerId)) {
+        // the player just bet, so a new last to act needs to be determined
+        if (actionOnPlayerId.equals(originatingBettorPlayerId)) {
+            UUID nextPlayerToAct = findNextToAct();
+            UUID lastPlayerToAct = seatMap.get(Integer.valueOf(determineLastToAct()));
+
+            ActionOnChangedEvent actionOnChangedEvent = new ActionOnChangedEvent(tableId,
+                    aggregateVersion, gameId, entityId, nextPlayerToAct);
+            LastToActChangedEvent lastToActChangedEvent = new LastToActChangedEvent(
+                    tableId, aggregateVersion + 1, gameId, entityId, lastPlayerToAct);
+
+            eventsCreated.add(actionOnChangedEvent);
+            eventsCreated.add(lastToActChangedEvent);
+
+        }
+        // if it's the last player to act, recalculate for a new round
+        else if (actionOnPlayerId.equals(lastToActPlayerId)) {
             UUID nextPlayerToAct = findActionOnPlayerIdForNewRound();
             UUID newRoundLastPlayerToAct = seatMap.get(Integer
                     .valueOf(determineLastToAct()));
@@ -273,7 +288,9 @@ public class Hand {
                     newRoundLastPlayerToAct);
             eventsCreated.add(actionOnChangedEvent);
             eventsCreated.add(lastToActChangedEvent);
-        } else {
+        }
+        // just a normal transition mid-round
+        else {
             UUID nextPlayerToAct = findNextToAct();
             ActionOnChangedEvent actionOnChangedEvent = new ActionOnChangedEvent(tableId,
                     aggregateVersion, gameId, entityId, nextPlayerToAct);
@@ -394,21 +411,29 @@ public class Hand {
 
     void applyEvent(PlayerRaisedEvent event) {
         UUID playerId = event.getPlayerId();
+        int raiseToAmount = event.getRaiseToAmount();
 
-        // TODO: this isn't correct. Need to pull the logic out of
-        // RaiseHandActionImplCommand
-        playersStillInHand.remove(playerId);
-        pots.forEach(x -> x.removeSeat(playerId));
+        originatingBettorPlayerId = playerId;
+
+        int raiseAboveCall = raiseToAmount
+                - (chipsInFrontMap.get(playerId).intValue() + callAmountsMap
+                        .get(playerId).intValue());
+        int increaseOfChipsInFront = raiseToAmount
+                - chipsInFrontMap.get(playerId).intValue();
+
+        playersStillInHand.stream().filter(x -> !x.equals(playerId)).forEach(x -> {
+            adjustPlayersFieldsAfterRaise(raiseToAmount, raiseAboveCall, x);
+        });
+
         possibleSeatActionsMap.get(playerId).clear();
         callAmountsMap.put(playerId, Integer.valueOf(0));
-        raiseToAmountsMap.put(playerId, Integer.valueOf(0));
+        raiseToAmountsMap.put(playerId, Integer.valueOf(blinds.getBigBlind()));
 
-        if (playersStillInHand.size() == 1) {
-            handDealerState = HandDealerState.COMPLETE;
-            handleEndOfRound();
-        } else if (playerId.equals(lastToActPlayerId)) {
-            handleEndOfRound();
-        }
+        chipsInFrontMap.put(playerId, Integer.valueOf(raiseToAmount));
+
+        int newChipsInBack = chipsInBackMap.get(playerId).intValue()
+                - increaseOfChipsInFront;
+        chipsInBackMap.put(playerId, Integer.valueOf(newChipsInBack));
     }
 
     void applyEvent(ActionOnChangedEvent event) {
@@ -612,6 +637,33 @@ public class Hand {
 
     boolean idMatches(UUID handId) {
         return entityId.equals(handId);
+    }
+
+    private void adjustPlayersFieldsAfterRaise(int raiseToAmount, int raiseAboveCall,
+            UUID playerId) {
+        possibleSeatActionsMap.get(playerId).clear();
+        possibleSeatActionsMap.get(playerId).add(PlayerAction.CALL);
+        possibleSeatActionsMap.get(playerId).add(PlayerAction.FOLD);
+
+        int totalChips = chipsInBackMap.get(playerId).intValue()
+                + chipsInFrontMap.get(playerId).intValue();
+
+        if (totalChips <= raiseToAmount) {
+            callAmountsMap.put(playerId, Integer.valueOf(totalChips));
+            raiseToAmountsMap.put(playerId, Integer.valueOf(0));
+        } else {
+            callAmountsMap.put(
+                    playerId,
+                    Integer.valueOf(raiseToAmount
+                            - chipsInFrontMap.get(playerId).intValue()));
+            possibleSeatActionsMap.get(playerId).add(PlayerAction.RAISE);
+            if (totalChips < raiseToAmount + raiseAboveCall) {
+                raiseToAmountsMap.put(playerId, Integer.valueOf(totalChips));
+            } else {
+                raiseToAmountsMap.put(playerId,
+                        Integer.valueOf(raiseToAmount + raiseAboveCall));
+            }
+        }
     }
 
 }
