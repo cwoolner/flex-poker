@@ -1,7 +1,9 @@
 package com.flexpoker.table.command.aggregate;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -17,7 +19,10 @@ import com.flexpoker.test.util.datageneration.DeckGenerator;
 
 public class TableTestUtils {
 
-    static Table createBasicTable(UUID tableId, Set<UUID> playerIds) {
+    static Table createBasicTable(UUID tableId, UUID... playerIdsArray) {
+        Set<UUID> playerIds = new HashSet<>();
+        Collections.addAll(playerIds, playerIdsArray);
+
         Blinds blinds = new Blinds(10, 20);
         List<Card> shuffledDeckOfCards = new ArrayList<>();
         CardsUsedInHand cardsUsedInHand = DeckGenerator.createDeck();
@@ -31,5 +36,4 @@ public class TableTestUtils {
                 handEvaluations);
         return table;
     }
-
 }

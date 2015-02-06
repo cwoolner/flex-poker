@@ -17,10 +17,8 @@ import static com.flexpoker.test.util.CommonAssertions.verifyEventIdsAndVersionN
 import static com.flexpoker.test.util.CommonAssertions.verifyNumberOfEventsAndEntireOrderByType;
 import static org.junit.Assert.assertEquals;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -36,13 +34,10 @@ public class TwoPersonTableTest {
     @Test
     public void testSeatPositionsAndButtonAndBlinds() {
         UUID tableId = UUID.randomUUID();
-        Set<UUID> playerIds = new HashSet<>();
         UUID player1Id = UUID.randomUUID();
         UUID player2Id = UUID.randomUUID();
-        playerIds.add(player1Id);
-        playerIds.add(player2Id);
 
-        Table table = TableTestUtils.createBasicTable(tableId, playerIds);
+        Table table = TableTestUtils.createBasicTable(tableId, player1Id, player2Id);
 
         // check seat positions
         Map<Integer, UUID> seatPositionToPlayerIdMap = ((TableCreatedEvent) table
@@ -85,22 +80,14 @@ public class TwoPersonTableTest {
             throw new IllegalStateException(
                     "for a new two-player hand, one of the players must be the button");
         }
-
-        List<TableEvent> newEvents = table.fetchNewEvents();
-
-        verifyNumberOfEventsAndEntireOrderByType(4, newEvents, TableCreated,
-                CardsShuffled, HandDealtEvent, ActionOnChanged);
-        verifyEventIdsAndVersionNumbers(tableId, newEvents);
     }
 
     @Test
     public void testFoldDueToTimeoutSuccess() {
         UUID tableId = UUID.randomUUID();
-        Set<UUID> playerIds = new HashSet<>();
-        playerIds.add(UUID.randomUUID());
-        playerIds.add(UUID.randomUUID());
 
-        Table table = TableTestUtils.createBasicTable(tableId, playerIds);
+        Table table = TableTestUtils.createBasicTable(tableId, UUID.randomUUID(),
+                UUID.randomUUID());
 
         // use the info in action on event to simulate the expire
         ActionOnChangedEvent actionOnChangedEvent = (ActionOnChangedEvent) table
@@ -119,11 +106,9 @@ public class TwoPersonTableTest {
     @Test
     public void testSmallBlindCallAndBigBlindCheckDueToTimeoutSuccess() {
         UUID tableId = UUID.randomUUID();
-        Set<UUID> playerIds = new HashSet<>();
-        playerIds.add(UUID.randomUUID());
-        playerIds.add(UUID.randomUUID());
 
-        Table table = TableTestUtils.createBasicTable(tableId, playerIds);
+        Table table = TableTestUtils.createBasicTable(tableId, UUID.randomUUID(),
+                UUID.randomUUID());
 
         // use the info in action on event to simulate the expire
         UUID smallBlindAndButtonPlayerId = ((ActionOnChangedEvent) table.fetchNewEvents()
@@ -171,11 +156,9 @@ public class TwoPersonTableTest {
     @Test
     public void testSmallBlindCallAndChecksTillTheEndsSuccess() {
         UUID tableId = UUID.randomUUID();
-        Set<UUID> playerIds = new HashSet<>();
-        playerIds.add(UUID.randomUUID());
-        playerIds.add(UUID.randomUUID());
 
-        Table table = TableTestUtils.createBasicTable(tableId, playerIds);
+        Table table = TableTestUtils.createBasicTable(tableId, UUID.randomUUID(),
+                UUID.randomUUID());
 
         // use the info in action on event to get the player id of the small
         // blind
@@ -223,11 +206,9 @@ public class TwoPersonTableTest {
     @Test
     public void testRaiseBySmallBlindAndBigBlindFoldsSuccess() {
         UUID tableId = UUID.randomUUID();
-        Set<UUID> playerIds = new HashSet<>();
-        playerIds.add(UUID.randomUUID());
-        playerIds.add(UUID.randomUUID());
 
-        Table table = TableTestUtils.createBasicTable(tableId, playerIds);
+        Table table = TableTestUtils.createBasicTable(tableId, UUID.randomUUID(),
+                UUID.randomUUID());
 
         // use the info in action on event to determine who the small
         // blind/button is on
