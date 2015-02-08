@@ -53,6 +53,14 @@ public class Pot {
         recalculateWinners();
     }
 
+    public boolean isOpen() {
+        return open;
+    }
+
+    public void closePot() {
+        open = false;
+    }
+
     private void recalculateWinners() {
         List<HandEvaluation> sortedHandEvaluations = new ArrayList<>(handEvaluationList);
         Collections.sort(sortedHandEvaluations);
@@ -92,4 +100,5 @@ public class Pot {
         }
 
     }
+
 }

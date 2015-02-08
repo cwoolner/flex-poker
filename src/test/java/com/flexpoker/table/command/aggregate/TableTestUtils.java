@@ -11,7 +11,9 @@ import java.util.UUID;
 
 import com.flexpoker.model.Blinds;
 import com.flexpoker.model.HandEvaluation;
+import com.flexpoker.model.HandRanking;
 import com.flexpoker.model.card.Card;
+import com.flexpoker.model.card.CardRank;
 import com.flexpoker.model.card.CardsUsedInHand;
 import com.flexpoker.model.card.PocketCards;
 import com.flexpoker.test.util.datageneration.CardGenerator;
@@ -26,9 +28,20 @@ public class TableTestUtils {
         Blinds blinds = new Blinds(10, 20);
         List<Card> shuffledDeckOfCards = new ArrayList<>();
         CardsUsedInHand cardsUsedInHand = DeckGenerator.createDeck();
+
+        HandEvaluation handEvaluation1 = new HandEvaluation();
+        handEvaluation1.setPlayerId(playerIdsArray[0]);
+        handEvaluation1.setHandRanking(HandRanking.STRAIGHT);
+        handEvaluation1.setPrimaryCardRank(CardRank.KING);
+
+        HandEvaluation handEvaluation2 = new HandEvaluation();
+        handEvaluation2.setPlayerId(playerIdsArray[1]);
+        handEvaluation2.setHandRanking(HandRanking.STRAIGHT);
+        handEvaluation2.setPrimaryCardRank(CardRank.KING);
+
         Map<PocketCards, HandEvaluation> handEvaluations = new HashMap<>();
-        handEvaluations.put(CardGenerator.createPocketCards1(), new HandEvaluation());
-        handEvaluations.put(CardGenerator.createPocketCards2(), new HandEvaluation());
+        handEvaluations.put(CardGenerator.createPocketCards1(), handEvaluation1);
+        handEvaluations.put(CardGenerator.createPocketCards2(), handEvaluation2);
 
         Table table = new DefaultTableFactory().createNew(tableId, UUID.randomUUID(), 6);
         table.createNewTable(playerIds);

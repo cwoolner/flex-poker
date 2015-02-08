@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import com.flexpoker.exception.FlexPokerException;
 import com.flexpoker.model.Blinds;
@@ -461,9 +462,7 @@ public class Hand {
         originatingBettorPlayerId = null;
         moveToNextDealerState();
 
-        // TODO: pot stuff
-        // Set<Pot> pots = calculatePotsAfterRoundImplQuery.execute(table);
-        // table.getCurrentHand().setPots(pots);
+        calculatePots();
 
         if (handDealerState == HandDealerState.COMPLETE) {
             determineWinners();
@@ -476,6 +475,64 @@ public class Hand {
             resetRaiseAmountsAfterRound();
             resetPossibleSeatActionsAfterRound();
         }
+    }
+
+    /**
+     * The general approach to calculating pots is as follows:
+     * 
+     * 1. Discover all of the distinct numbers of chips in front of each player.
+     * For example, if everyone has 30 chips in front, 30 would be the only
+     * number in the distinct set. If two players had 10 and one person had 20,
+     * then 10 and 20 would be in the set.
+     * 
+     * 2. Loop through each chip count, starting with the smallest, and shave
+     * off the number of chips from each stack in front of each player, and
+     * place them into an open pot.
+     * 
+     * 3. If an open pot does not exist, create a new one.
+     * 
+     * 4. If it's determined that a player is all-in, then the pot for that
+     * player's all-in should be closed. Multiple closed pots can exist, but
+     * only one open pot should ever exist at any given time.
+     */
+    private void calculatePots() {
+        List<Integer> distinctChipsInFrontAmountsList = chipsInFrontMap.values().stream()
+                .filter(x -> x.intValue() != 0).distinct().collect(Collectors.toList());
+        distinctChipsInFrontAmountsList.sort(null);
+
+        distinctChipsInFrontAmountsList.forEach(chipsPerLevel -> {
+            Pot openPot = pots.stream().filter(x -> x.isOpen()).findAny()
+                    .orElse(new Pot(UUID.randomUUID(), handEvaluationList));
+            pots.add(openPot);
+            openPot.addChips(chipsPerLevel.intValue());
+
+            seatMap.values()
+                    .stream()
+                    .forEach(
+                            playerInSeat -> {
+                                handleEachPlayerForPot(chipsPerLevel, openPot,
+                                        playerInSeat);
+                            });
+        });
+
+    }
+
+    private void handleEachPlayerForPot(Integer chipsPerLevel, Pot openPot,
+            UUID playerInSeat) {
+        if (chipsInFrontMap.getOrDefault(playerInSeat,
+                Integer.valueOf(0)).intValue() > 0) {
+
+            if (playerIsAllIn(playerInSeat)) {
+                openPot.closePot();
+            }
+
+            subtractFromChipsInFront(playerInSeat,
+                    chipsPerLevel.intValue());
+        }
+    }
+
+    private boolean playerIsAllIn(UUID playerInSeat) {
+        return chipsInBackMap.getOrDefault(playerInSeat, Integer.valueOf(0)).intValue() == 0;
     }
 
     private UUID findActionOnPlayerIdForNewRound() {
@@ -572,6 +629,11 @@ public class Hand {
     private void addToChipsInBack(UUID playerId, int chipsToAdd) {
         int currentAmount = chipsInBackMap.get(playerId).intValue();
         chipsInBackMap.put(playerId, Integer.valueOf(currentAmount + chipsToAdd));
+    }
+
+    private void subtractFromChipsInFront(UUID playerId, int chipsToSubtract) {
+        int currentAmount = chipsInFrontMap.get(playerId).intValue();
+        chipsInFrontMap.put(playerId, Integer.valueOf(currentAmount - chipsToSubtract));
     }
 
     private int determineLastToAct() {
