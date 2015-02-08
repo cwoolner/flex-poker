@@ -1,7 +1,6 @@
 package com.flexpoker.table.command.aggregate;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -81,7 +80,7 @@ public class Hand {
 
     private final Blinds blinds;
 
-    private final Set<UUID> playersToShowCardsMap;
+    private final Set<UUID> playersToShowCards;
 
     private boolean flopDealt;
 
@@ -98,7 +97,7 @@ public class Hand {
             Set<Pot> pots, HandDealerState handDealerState,
             Map<UUID, Integer> chipsInBack, Map<UUID, Integer> chipsInFrontMap,
             Map<UUID, Integer> callAmountsMap, Map<UUID, Integer> raiseToAmountsMap,
-            Blinds blinds, Set<UUID> playersToShowCardsMap) {
+            Blinds blinds, Set<UUID> playersToShowCards) {
         this.gameId = gameId;
         this.tableId = tableId;
         this.entityId = entityId;
@@ -121,7 +120,7 @@ public class Hand {
         this.callAmountsMap = callAmountsMap;
         this.raiseToAmountsMap = raiseToAmountsMap;
         this.blinds = blinds;
-        this.playersToShowCardsMap = playersToShowCardsMap;
+        this.playersToShowCards = playersToShowCards;
     }
 
     public List<TableEvent> dealHand(int aggregateVersion, int actionOnPosition) {
@@ -193,7 +192,7 @@ public class Hand {
                 playerToPocketCardsMap, possibleSeatActionsMap, playersStillInHand,
                 handEvaluationList, pots, handDealerState, chipsInBackMap,
                 chipsInFrontMap, callAmountsMap, raiseToAmountsMap, blinds,
-                playersToShowCardsMap);
+                playersToShowCards);
         eventsCreated.add(handDealtEvent);
 
         UUID actionOnPlayerId = seatMap.get(Integer.valueOf(actionOnPosition));
@@ -396,7 +395,7 @@ public class Hand {
         UUID playerId = event.getPlayerId();
 
         playersStillInHand.remove(playerId);
-        pots.forEach(x -> x.removeSeat(playerId));
+        pots.forEach(x -> x.removePlayer(playerId));
         possibleSeatActionsMap.get(playerId).clear();
         callAmountsMap.put(playerId, Integer.valueOf(0));
         raiseToAmountsMap.put(playerId, Integer.valueOf(0));
@@ -558,41 +557,21 @@ public class Hand {
     }
 
     private void determineWinners() {
-        for (Pot pot : pots) {
-            // TODO: commented-out because pot changed to UUID
-            Set<UUID> winners = new HashSet<>();
-            // Set<Seat> winners = determinePotWinnersImplQuery.execute(table,
-            // pot.getSeats(), handEvaluationList);
+        pots.forEach(pot -> {
+            playersStillInHand.forEach(playerInHand -> {
+                int numberOfChipsWonForPlayer = pot.getChipsWon(playerInHand);
+                addToChipsInBack(playerInHand, numberOfChipsWonForPlayer);
 
-            pot.addWinners(winners);
-
-            int numberOfWinners = winners.size();
-            int numberOfChips = pot.getAmount() / numberOfWinners;
-            int bonusChips = pot.getAmount() % numberOfWinners;
-            int numberOfPlayersInPot = pot.getSeats().size();
-
-            if (bonusChips > 0) {
-                // TODO: randomize this (or maybe being in a Set is good enough)
-                UUID winnerOfBonusChips = winners.stream().findFirst().get();
-                addToChipsInBack(winnerOfBonusChips, bonusChips);
-            }
-
-            for (UUID winner : winners) {
-                addToChipsInBack(winner, numberOfChips);
-                if (numberOfPlayersInPot > 1) {
-                    // TODO: this is the only place at the moment, but having a
-                    // player decide whether they want to show their cards is
-                    // another use case
-                    playersToShowCardsMap.add(winner);
+                if (pot.forcePlayerToShowCards(playerInHand)) {
+                    playersToShowCards.add(playerInHand);
                 }
-            }
-        }
+            });
+        });
     }
 
-    private void addToChipsInBack(UUID winnerOfBonusChips, int chipsToAdd) {
-        int currentAmount = chipsInBackMap.get(winnerOfBonusChips).intValue();
-        chipsInBackMap.put(winnerOfBonusChips,
-                Integer.valueOf(currentAmount + chipsToAdd));
+    private void addToChipsInBack(UUID playerId, int chipsToAdd) {
+        int currentAmount = chipsInBackMap.get(playerId).intValue();
+        chipsInBackMap.put(playerId, Integer.valueOf(currentAmount + chipsToAdd));
     }
 
     private int determineLastToAct() {
