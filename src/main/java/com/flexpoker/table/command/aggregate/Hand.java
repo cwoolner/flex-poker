@@ -1,6 +1,8 @@
 package com.flexpoker.table.command.aggregate;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -27,7 +29,11 @@ import com.flexpoker.table.command.events.PlayerCalledEvent;
 import com.flexpoker.table.command.events.PlayerCheckedEvent;
 import com.flexpoker.table.command.events.PlayerFoldedEvent;
 import com.flexpoker.table.command.events.PlayerRaisedEvent;
+import com.flexpoker.table.command.events.PotAmountIncreasedEvent;
+import com.flexpoker.table.command.events.PotClosedEvent;
+import com.flexpoker.table.command.events.PotCreatedEvent;
 import com.flexpoker.table.command.events.RiverCardDealtEvent;
+import com.flexpoker.table.command.events.RoundCompletedEvent;
 import com.flexpoker.table.command.events.TurnCardDealtEvent;
 import com.flexpoker.table.command.framework.TableEvent;
 
@@ -95,10 +101,10 @@ public class Hand {
             UUID lastToActPlayerId, Map<UUID, PocketCards> playerToPocketCardsMap,
             Map<UUID, Set<PlayerAction>> possibleSeatActionsMap,
             Set<UUID> playersStillInHand, List<HandEvaluation> handEvaluationList,
-            Set<Pot> pots, HandDealerState handDealerState,
-            Map<UUID, Integer> chipsInBack, Map<UUID, Integer> chipsInFrontMap,
-            Map<UUID, Integer> callAmountsMap, Map<UUID, Integer> raiseToAmountsMap,
-            Blinds blinds, Set<UUID> playersToShowCards) {
+            HandDealerState handDealerState, Map<UUID, Integer> chipsInBack,
+            Map<UUID, Integer> chipsInFrontMap, Map<UUID, Integer> callAmountsMap,
+            Map<UUID, Integer> raiseToAmountsMap, Blinds blinds,
+            Set<UUID> playersToShowCards) {
         this.gameId = gameId;
         this.tableId = tableId;
         this.entityId = entityId;
@@ -114,7 +120,7 @@ public class Hand {
         this.handEvaluationList = handEvaluationList;
         this.possibleSeatActionsMap = possibleSeatActionsMap;
         this.playersStillInHand = playersStillInHand;
-        this.pots = pots;
+        this.pots = new HashSet<>();
         this.handDealerState = handDealerState;
         this.chipsInBackMap = chipsInBack;
         this.chipsInFrontMap = chipsInFrontMap;
@@ -127,62 +133,10 @@ public class Hand {
     public List<TableEvent> dealHand(int aggregateVersion, int actionOnPosition) {
         List<TableEvent> eventsCreated = new ArrayList<>();
 
-        for (Integer seatPosition : seatMap.keySet()) {
-            UUID playerId = seatMap.get(seatPosition);
-
-            if (playerId == null) {
-                continue;
-            }
-
-            int chipsInFront = 0;
-            int callAmount = blinds.getBigBlind();
-            int raiseToAmount = blinds.getBigBlind() * 2;
-
-            if (seatPosition == bigBlindPosition) {
-                chipsInFront = blinds.getBigBlind();
-                callAmount = 0;
-            } else if (seatPosition == smallBlindPosition) {
-                chipsInFront = blinds.getSmallBlind();
-                callAmount = blinds.getSmallBlind();
-            }
-
-            if (chipsInFront > chipsInBackMap.get(playerId)) {
-                chipsInFrontMap.put(playerId, chipsInBackMap.get(playerId));
-            } else {
-                chipsInFrontMap.put(playerId, chipsInFront);
-            }
-
-            chipsInBackMap.put(playerId,
-                    chipsInBackMap.get(playerId) - chipsInFrontMap.get(playerId));
-
-            if (callAmount > chipsInBackMap.get(playerId)) {
-                callAmountsMap.put(playerId, chipsInBackMap.get(playerId));
-            } else {
-                callAmountsMap.put(playerId, callAmount);
-            }
-
-            int totalChips = chipsInBackMap.get(playerId) + chipsInFrontMap.get(playerId);
-
-            if (raiseToAmount > totalChips) {
-                raiseToAmountsMap.put(playerId, totalChips);
-            } else {
-                raiseToAmountsMap.put(playerId, raiseToAmount);
-            }
-
-            if (raiseToAmountsMap.get(playerId) > 0) {
-                Set<PlayerAction> playerActions = possibleSeatActionsMap.get(playerId);
-                playerActions.add(PlayerAction.RAISE);
-            }
-
-            if (callAmountsMap.get(playerId) > 0) {
-                Set<PlayerAction> playerActions = possibleSeatActionsMap.get(playerId);
-                playerActions.add(PlayerAction.CALL);
-                playerActions.add(PlayerAction.FOLD);
-            } else {
-                Set<PlayerAction> playerActions = possibleSeatActionsMap.get(playerId);
-                playerActions.add(PlayerAction.CHECK);
-            }
-        }
+        seatMap.keySet().stream().filter(x -> seatMap.get(x) != null)
+                .forEach(seatPosition -> {
+                    handleStartOfHandPlayerValues(seatPosition.intValue());
+                });
 
         lastToActPlayerId = seatMap.get(Integer.valueOf(bigBlindPosition));
         handDealerState = HandDealerState.POCKET_CARDS_DEALT;
@@ -191,9 +145,8 @@ public class Hand {
                 gameId, entityId, flopCards, turnCard, riverCard, buttonOnPosition,
                 smallBlindPosition, bigBlindPosition, lastToActPlayerId, seatMap,
                 playerToPocketCardsMap, possibleSeatActionsMap, playersStillInHand,
-                handEvaluationList, pots, handDealerState, chipsInBackMap,
-                chipsInFrontMap, callAmountsMap, raiseToAmountsMap, blinds,
-                playersToShowCards);
+                handEvaluationList, handDealerState, chipsInBackMap, chipsInFrontMap,
+                callAmountsMap, raiseToAmountsMap, blinds, playersToShowCards);
         eventsCreated.add(handDealtEvent);
 
         UUID actionOnPlayerId = seatMap.get(Integer.valueOf(actionOnPosition));
@@ -203,6 +156,59 @@ public class Hand {
         eventsCreated.add(actionOnChangedEvent);
 
         return eventsCreated;
+    }
+
+    private void handleStartOfHandPlayerValues(int seatPosition) {
+        UUID playerId = seatMap.get(Integer.valueOf(seatPosition));
+
+        int chipsInFront = 0;
+        int callAmount = blinds.getBigBlind();
+        int raiseToAmount = blinds.getBigBlind() * 2;
+
+        if (seatPosition == bigBlindPosition) {
+            chipsInFront = blinds.getBigBlind();
+            callAmount = 0;
+        } else if (seatPosition == smallBlindPosition) {
+            chipsInFront = blinds.getSmallBlind();
+            callAmount = blinds.getSmallBlind();
+        }
+
+        if (chipsInFront > chipsInBackMap.get(playerId).intValue()) {
+            chipsInFrontMap.put(playerId, chipsInBackMap.get(playerId));
+        } else {
+            chipsInFrontMap.put(playerId, Integer.valueOf(chipsInFront));
+        }
+
+        subtractFromChipsInBack(playerId, chipsInFrontMap.get(playerId).intValue());
+
+        if (callAmount > chipsInBackMap.get(playerId).intValue()) {
+            callAmountsMap.put(playerId, chipsInBackMap.get(playerId));
+        } else {
+            callAmountsMap.put(playerId, Integer.valueOf(callAmount));
+        }
+
+        int totalChips = chipsInBackMap.get(playerId).intValue()
+                + chipsInFrontMap.get(playerId).intValue();
+
+        if (raiseToAmount > totalChips) {
+            raiseToAmountsMap.put(playerId, Integer.valueOf(totalChips));
+        } else {
+            raiseToAmountsMap.put(playerId, Integer.valueOf(raiseToAmount));
+        }
+
+        if (raiseToAmountsMap.get(playerId).intValue() > 0) {
+            Set<PlayerAction> playerActions = possibleSeatActionsMap.get(playerId);
+            playerActions.add(PlayerAction.RAISE);
+        }
+
+        if (callAmountsMap.get(playerId).intValue() > 0) {
+            Set<PlayerAction> playerActions = possibleSeatActionsMap.get(playerId);
+            playerActions.add(PlayerAction.CALL);
+            playerActions.add(PlayerAction.FOLD);
+        } else {
+            Set<PlayerAction> playerActions = possibleSeatActionsMap.get(playerId);
+            playerActions.add(PlayerAction.CHECK);
+        }
     }
 
     public PlayerCheckedEvent check(UUID playerId, int aggregateVersion) {
@@ -319,6 +325,23 @@ public class Hand {
         return Optional.empty();
     }
 
+    List<TableEvent> handleEndOfRoundIfAppropriate(int aggregateVersion) {
+        if (!seatMap.get(Integer.valueOf(actionOnPosition)).equals(lastToActPlayerId)
+                && playersStillInHand.size() > 1) {
+            return Collections.emptyList();
+        }
+
+        List<TableEvent> tableEvents = new ArrayList<>();
+        tableEvents.addAll(calculatePots(aggregateVersion));
+
+        HandDealerState nextHandDealerState = playersStillInHand.size() == 1 ? HandDealerState.COMPLETE
+                : HandDealerState.values()[handDealerState.ordinal() + 1];
+        tableEvents.add(new RoundCompletedEvent(tableId, aggregateVersion
+                + tableEvents.size(), gameId, entityId, nextHandDealerState));
+
+        return tableEvents;
+    }
+
     Optional<TableEvent> finishHandIfAppropriate(int aggregateVersion) {
         if (handDealerState == HandDealerState.COMPLETE) {
             return Optional.of(new HandCompletedEvent(tableId, aggregateVersion, gameId,
@@ -353,19 +376,13 @@ public class Hand {
 
     void applyEvent(PlayerCheckedEvent event) {
         UUID playerId = event.getPlayerId();
-
         possibleSeatActionsMap.get(playerId).clear();
         callAmountsMap.put(playerId, Integer.valueOf(0));
         raiseToAmountsMap.put(playerId, Integer.valueOf(0));
-
-        if (playerId.equals(lastToActPlayerId)) {
-            handleEndOfRound();
-        }
     }
 
     void applyEvent(PlayerCalledEvent event) {
         UUID playerId = event.getPlayerId();
-
         possibleSeatActionsMap.get(playerId).clear();
         callAmountsMap.put(playerId, Integer.valueOf(0));
         raiseToAmountsMap.put(playerId, Integer.valueOf(0));
@@ -377,36 +394,15 @@ public class Hand {
         int newChipsInBack = chipsInBackMap.get(playerId).intValue()
                 - callAmountsMap.get(playerId).intValue();
         chipsInBackMap.put(playerId, Integer.valueOf(newChipsInBack));
-
-        if (playerId.equals(lastToActPlayerId)) {
-            handleEndOfRound();
-        }
-
-        // TODO: This should be a check with all of the tables in the game.
-        // TODO: This check should also be done at the beginning of the
-        // hand in case the player does not have enough to call the
-        // blinds.
-        // if (numberOfPlayersLeft == 1) {
-        // game.setGameStage(GameStage.FINISHED);
-        // }
-
     }
 
     void applyEvent(PlayerFoldedEvent event) {
         UUID playerId = event.getPlayerId();
-
         playersStillInHand.remove(playerId);
         pots.forEach(x -> x.removePlayer(playerId));
         possibleSeatActionsMap.get(playerId).clear();
         callAmountsMap.put(playerId, Integer.valueOf(0));
         raiseToAmountsMap.put(playerId, Integer.valueOf(0));
-
-        if (playersStillInHand.size() == 1) {
-            handDealerState = HandDealerState.COMPLETE;
-            handleEndOfRound();
-        } else if (playerId.equals(lastToActPlayerId)) {
-            handleEndOfRound();
-        }
     }
 
     void applyEvent(PlayerRaisedEvent event) {
@@ -458,25 +454,6 @@ public class Hand {
         riverDealt = true;
     }
 
-    private void handleEndOfRound() {
-        originatingBettorPlayerId = null;
-        moveToNextDealerState();
-
-        calculatePots();
-
-        if (handDealerState == HandDealerState.COMPLETE) {
-            determineWinners();
-
-            // TODO: change this to check if a new hand is necessary or if a
-            // single person won
-
-        } else {
-            resetChipsInFront();
-            resetRaiseAmountsAfterRound();
-            resetPossibleSeatActionsAfterRound();
-        }
-    }
-
     /**
      * The general approach to calculating pots is as follows:
      * 
@@ -494,41 +471,66 @@ public class Hand {
      * 4. If it's determined that a player is all-in, then the pot for that
      * player's all-in should be closed. Multiple closed pots can exist, but
      * only one open pot should ever exist at any given time.
+     * 
+     * @param aggregateVersion
      */
-    private void calculatePots() {
+    private List<TableEvent> calculatePots(int aggregateVersion) {
+        List<TableEvent> newPotEvents = new ArrayList<>();
+
         List<Integer> distinctChipsInFrontAmountsList = chipsInFrontMap.values().stream()
                 .filter(x -> x.intValue() != 0).distinct().collect(Collectors.toList());
         distinctChipsInFrontAmountsList.sort(null);
 
-        distinctChipsInFrontAmountsList.forEach(chipsPerLevel -> {
-            Pot openPot = pots.stream().filter(x -> x.isOpen()).findAny()
-                    .orElse(new Pot(UUID.randomUUID(), handEvaluationList));
-            pots.add(openPot);
-            openPot.addChips(chipsPerLevel.intValue());
+        distinctChipsInFrontAmountsList
+                .forEach(chipsPerLevel -> {
+                    Optional<Pot> openPotOptional = pots.stream().filter(x -> x.isOpen())
+                            .findAny();
 
-            seatMap.values()
-                    .stream()
-                    .forEach(
-                            playerInSeat -> {
-                                handleEachPlayerForPot(chipsPerLevel, openPot,
-                                        playerInSeat);
-                            });
-        });
+                    Pot openPot;
 
-    }
+                    if (openPotOptional.isPresent()) {
+                        openPot = openPotOptional.get();
+                    } else {
+                        openPot = new Pot(UUID.randomUUID(),
+                                handEvaluationList
+                                        .stream()
+                                        .filter(x -> playersStillInHand.contains(x
+                                                .getPlayerId()))
+                                        .collect(Collectors.toSet()));
+                        PotCreatedEvent potCreatedEvent = new PotCreatedEvent(tableId,
+                                aggregateVersion, gameId, entityId, openPot.getId(),
+                                playersStillInHand
+                                        .stream()
+                                        .filter(x -> chipsInFrontMap.getOrDefault(x,
+                                                Integer.valueOf(0)).intValue() > 0)
+                                        .collect(Collectors.toSet()));
+                        newPotEvents.add(potCreatedEvent);
+                        applyEvent(potCreatedEvent);
+                    }
 
-    private void handleEachPlayerForPot(Integer chipsPerLevel, Pot openPot,
-            UUID playerInSeat) {
-        if (chipsInFrontMap.getOrDefault(playerInSeat,
-                Integer.valueOf(0)).intValue() > 0) {
+                    PotAmountIncreasedEvent potAmountIncreasedEvent = new PotAmountIncreasedEvent(
+                            tableId, aggregateVersion + newPotEvents.size(), gameId,
+                            entityId, openPot.getId(), chipsPerLevel.intValue());
+                    newPotEvents.add(potAmountIncreasedEvent);
+                    applyEvent(potAmountIncreasedEvent);
 
-            if (playerIsAllIn(playerInSeat)) {
-                openPot.closePot();
-            }
+                    seatMap.values()
+                            .forEach(
+                                    playerInSeat -> {
+                                        if (chipsInFrontMap.getOrDefault(playerInSeat,
+                                                Integer.valueOf(0)).intValue() > 0) {
 
-            subtractFromChipsInFront(playerInSeat,
-                    chipsPerLevel.intValue());
-        }
+                                            if (playerIsAllIn(playerInSeat)) {
+                                                PotClosedEvent potClosedEvent = new PotClosedEvent(
+                                                        tableId, aggregateVersion,
+                                                        gameId, entityId, openPot.getId());
+                                                newPotEvents.add(potClosedEvent);
+                                                applyEvent(potClosedEvent);
+                                            }
+                                        }
+                                    });
+                });
+        return newPotEvents;
     }
 
     private boolean playerIsAllIn(UUID playerInSeat) {
@@ -613,6 +615,8 @@ public class Hand {
         throw new IllegalStateException("unable to find next to act");
     }
 
+    // TODO: add a new WinnersDeterminedEvent and a new
+    // determineWinnersIfAppropriate() style method in Table
     private void determineWinners() {
         pots.forEach(pot -> {
             playersStillInHand.forEach(playerInHand -> {
@@ -629,6 +633,11 @@ public class Hand {
     private void addToChipsInBack(UUID playerId, int chipsToAdd) {
         int currentAmount = chipsInBackMap.get(playerId).intValue();
         chipsInBackMap.put(playerId, Integer.valueOf(currentAmount + chipsToAdd));
+    }
+
+    private void subtractFromChipsInBack(UUID playerId, int chipsToSubtract) {
+        int currentAmount = chipsInBackMap.get(playerId).intValue();
+        chipsInBackMap.put(playerId, Integer.valueOf(currentAmount - chipsToSubtract));
     }
 
     private void subtractFromChipsInFront(UUID playerId, int chipsToSubtract) {
@@ -670,12 +679,6 @@ public class Hand {
         throw new IllegalStateException("unable to determine last to act");
     }
 
-    private void moveToNextDealerState() {
-        if (handDealerState != HandDealerState.COMPLETE) {
-            handDealerState = HandDealerState.values()[handDealerState.ordinal() + 1];
-        }
-    }
-
     boolean idMatches(UUID handId) {
         return entityId.equals(handId);
     }
@@ -705,6 +708,37 @@ public class Hand {
                         Integer.valueOf(raiseToAmount + raiseAboveCall));
             }
         }
+    }
+
+    void applyEvent(PotAmountIncreasedEvent event) {
+        Pot pot = fetchPotById(event.getPotId());
+        pot.addChips(event.getAmountIncreased());
+        playersStillInHand.forEach(x -> subtractFromChipsInFront(x,
+                event.getAmountIncreased()));
+    }
+
+    void applyEvent(PotClosedEvent event) {
+        Pot pot = fetchPotById(event.getPotId());
+        pot.closePot();
+    }
+
+    void applyEvent(PotCreatedEvent event) {
+        Set<HandEvaluation> handEvaluationsOfPlayersInPot = handEvaluationList.stream()
+                .filter(x -> event.getPlayersInvolved().contains(x.getPlayerId()))
+                .collect(Collectors.toSet());
+        pots.add(new Pot(event.getPotId(), handEvaluationsOfPlayersInPot));
+    }
+
+    void applyEvent(RoundCompletedEvent event) {
+        handDealerState = event.getNextHandDealerState();
+        originatingBettorPlayerId = null;
+        resetChipsInFront();
+        resetRaiseAmountsAfterRound();
+        resetPossibleSeatActionsAfterRound();
+    }
+
+    private Pot fetchPotById(UUID potId) {
+        return pots.stream().filter(x -> x.idMatches(potId)).findAny().get();
     }
 
 }

@@ -9,7 +9,10 @@ import static com.flexpoker.table.command.framework.TableEventType.LastToActChan
 import static com.flexpoker.table.command.framework.TableEventType.PlayerCalled;
 import static com.flexpoker.table.command.framework.TableEventType.PlayerChecked;
 import static com.flexpoker.table.command.framework.TableEventType.PlayerFolded;
+import static com.flexpoker.table.command.framework.TableEventType.PotAmountIncreased;
+import static com.flexpoker.table.command.framework.TableEventType.PotCreated;
 import static com.flexpoker.table.command.framework.TableEventType.RiverCardDealt;
+import static com.flexpoker.table.command.framework.TableEventType.RoundCompleted;
 import static com.flexpoker.table.command.framework.TableEventType.TableCreated;
 import static com.flexpoker.table.command.framework.TableEventType.TurnCardDealt;
 import static com.flexpoker.test.util.CommonAssertions.verifyEventIdsAndVersionNumbers;
@@ -121,9 +124,10 @@ public class ThreePersonTableTest {
 
         List<TableEvent> newEvents = table.fetchNewEvents();
 
-        verifyNumberOfEventsAndEntireOrderByType(8, newEvents, TableCreated,
+        verifyNumberOfEventsAndEntireOrderByType(12, newEvents, TableCreated,
                 CardsShuffled, HandDealtEvent, ActionOnChanged, PlayerFolded,
-                ActionOnChanged, PlayerFolded, HandCompleted);
+                ActionOnChanged, PlayerFolded, PotCreated, PotAmountIncreased,
+                PotAmountIncreased, RoundCompleted, HandCompleted);
         verifyEventIdsAndVersionNumbers(tableId, newEvents);
     }
 
@@ -166,26 +170,34 @@ public class ThreePersonTableTest {
 
         List<TableEvent> newEvents = table.fetchNewEvents();
 
-        verifyNumberOfEventsAndEntireOrderByType(34, newEvents,
+        verifyNumberOfEventsAndEntireOrderByType(
+                41,
+                newEvents,
                 TableCreated,
                 CardsShuffled,
                 HandDealtEvent,
                 ActionOnChanged,
                 // pre-flop
                 PlayerCalled, ActionOnChanged, PlayerCalled, ActionOnChanged,
-                PlayerChecked, ActionOnChanged,
+                PlayerChecked, PotCreated, PotAmountIncreased,
+                PotAmountIncreased,
+                RoundCompleted,
+                ActionOnChanged,
                 LastToActChanged,
                 FlopCardsDealt,
                 // post-flop
                 PlayerChecked, ActionOnChanged, PlayerChecked, ActionOnChanged,
-                PlayerChecked, ActionOnChanged, LastToActChanged,
+                PlayerChecked, RoundCompleted,
+                ActionOnChanged,
+                LastToActChanged,
                 TurnCardDealt,
                 // post-turn
                 PlayerChecked, ActionOnChanged, PlayerChecked, ActionOnChanged,
-                PlayerChecked, ActionOnChanged, LastToActChanged, RiverCardDealt,
+                PlayerChecked, RoundCompleted, ActionOnChanged, LastToActChanged,
+                RiverCardDealt,
                 // post-river
                 PlayerChecked, ActionOnChanged, PlayerChecked, ActionOnChanged,
-                PlayerChecked, HandCompleted);
+                PlayerChecked, RoundCompleted, HandCompleted);
         verifyEventIdsAndVersionNumbers(tableId, newEvents);
     }
 }

@@ -30,7 +30,11 @@ import com.flexpoker.table.command.events.PlayerCalledEvent;
 import com.flexpoker.table.command.events.PlayerCheckedEvent;
 import com.flexpoker.table.command.events.PlayerFoldedEvent;
 import com.flexpoker.table.command.events.PlayerRaisedEvent;
+import com.flexpoker.table.command.events.PotAmountIncreasedEvent;
+import com.flexpoker.table.command.events.PotClosedEvent;
+import com.flexpoker.table.command.events.PotCreatedEvent;
 import com.flexpoker.table.command.events.RiverCardDealtEvent;
+import com.flexpoker.table.command.events.RoundCompletedEvent;
 import com.flexpoker.table.command.events.TableCreatedEvent;
 import com.flexpoker.table.command.events.TurnCardDealtEvent;
 import com.flexpoker.table.command.framework.TableEvent;
@@ -108,6 +112,18 @@ public class Table extends AggregateRoot<TableEvent> {
         case RiverCardDealt:
             applyEvent((RiverCardDealtEvent) event);
             break;
+        case PotAmountIncreased:
+            applyEvent((PotAmountIncreasedEvent) event);
+            break;
+        case PotClosed:
+            applyEvent((PotClosedEvent) event);
+            break;
+        case PotCreated:
+            applyEvent((PotCreatedEvent) event);
+            break;
+        case RoundCompleted:
+            applyEvent((RoundCompletedEvent) event);
+            break;
         case ActionOnChanged:
             applyEvent((ActionOnChangedEvent) event);
             break;
@@ -144,7 +160,7 @@ public class Table extends AggregateRoot<TableEvent> {
                 event.getSmallBlindPosition(), event.getBigBlindPosition(),
                 event.getLastToActPlayerId(), event.getPlayerToPocketCardsMap(),
                 event.getPossibleSeatActionsMap(), event.getPlayersStillInHand(),
-                event.getHandEvaluations(), event.getPots(), event.getHandDealerState(),
+                event.getHandEvaluations(), event.getHandDealerState(),
                 event.getChipsInBack(), event.getChipsInFrontMap(),
                 event.getCallAmountsMap(), event.getRaiseToAmountsMap(),
                 event.getBlinds(), event.getPlayersToShowCardsMap());
@@ -183,6 +199,22 @@ public class Table extends AggregateRoot<TableEvent> {
     }
 
     private void applyEvent(FlopCardsDealtEvent event) {
+        currentHand.applyEvent(event);
+    }
+
+    private void applyEvent(PotAmountIncreasedEvent event) {
+        currentHand.applyEvent(event);
+    }
+
+    private void applyEvent(PotClosedEvent event) {
+        currentHand.applyEvent(event);
+    }
+
+    private void applyEvent(PotCreatedEvent event) {
+        currentHand.applyEvent(event);
+    }
+
+    private void applyEvent(RoundCompletedEvent event) {
         currentHand.applyEvent(event);
     }
 
@@ -325,8 +357,8 @@ public class Table extends AggregateRoot<TableEvent> {
                 cardsUsedInHand.getRiverCard(), buttonOnPosition, smallBlindPosition,
                 bigBlindPosition, null, playerToPocketCardsMap, possibleSeatActionsMap,
                 playersStillInHand, new ArrayList<>(handEvaluations.values()),
-                new HashSet<>(), HandDealerState.NONE, chipsInBack, new HashMap<>(),
-                new HashMap<>(), new HashMap<>(), blinds, new HashSet<>());
+                HandDealerState.NONE, chipsInBack, new HashMap<>(), new HashMap<>(),
+                new HashMap<>(), blinds, new HashSet<>());
         List<TableEvent> eventsCreated = hand.dealHand(++aggregateVersion,
                 actionOnPosition);
         eventsCreated.forEach(x -> addNewEvent(x));
@@ -347,12 +379,8 @@ public class Table extends AggregateRoot<TableEvent> {
         addNewEvent(playerCheckedEvent);
         applyEvent(playerCheckedEvent);
 
-        List<TableEvent> actionOnChangedEvents = currentHand
-                .changeActionOn(++aggregateVersion);
-        actionOnChangedEvents.forEach(x -> addNewEvent(x));
-        applyAllNewEvents(actionOnChangedEvents);
-        aggregateVersion += actionOnChangedEvents.size() - 1;
-
+        handleEndOfRoundIfAppropriate();
+        changeActionOnIfAppropriate();
         dealCommonCardsIfAppropriate();
         finishHandIfAppropriate();
     }
@@ -365,12 +393,8 @@ public class Table extends AggregateRoot<TableEvent> {
         addNewEvent(playerCalledEvent);
         applyEvent(playerCalledEvent);
 
-        List<TableEvent> actionOnChangedEvents = currentHand
-                .changeActionOn(++aggregateVersion);
-        actionOnChangedEvents.forEach(x -> addNewEvent(x));
-        applyAllNewEvents(actionOnChangedEvents);
-        aggregateVersion += actionOnChangedEvents.size() - 1;
-
+        handleEndOfRoundIfAppropriate();
+        changeActionOnIfAppropriate();
         dealCommonCardsIfAppropriate();
         finishHandIfAppropriate();
     }
@@ -383,12 +407,8 @@ public class Table extends AggregateRoot<TableEvent> {
         addNewEvent(playerFoldedEvent);
         applyEvent(playerFoldedEvent);
 
-        List<TableEvent> actionOnChangedEvents = currentHand
-                .changeActionOn(++aggregateVersion);
-        actionOnChangedEvents.forEach(x -> addNewEvent(x));
-        applyAllNewEvents(actionOnChangedEvents);
-        aggregateVersion += actionOnChangedEvents.size() - 1;
-
+        handleEndOfRoundIfAppropriate();
+        changeActionOnIfAppropriate();
         dealCommonCardsIfAppropriate();
         finishHandIfAppropriate();
     }
@@ -401,11 +421,7 @@ public class Table extends AggregateRoot<TableEvent> {
         addNewEvent(playerRaisedEvent);
         applyEvent(playerRaisedEvent);
 
-        List<TableEvent> actionOnChangedEvents = currentHand
-                .changeActionOn(++aggregateVersion);
-        actionOnChangedEvents.forEach(x -> addNewEvent(x));
-        applyAllNewEvents(actionOnChangedEvents);
-        aggregateVersion += actionOnChangedEvents.size() - 1;
+        changeActionOnIfAppropriate();
     }
 
     public void expireActionOn(UUID handId, UUID playerId) {
@@ -422,12 +438,8 @@ public class Table extends AggregateRoot<TableEvent> {
         addNewEvent(forcedActionOnExpiredEvent);
         applyAllNewEvents(Arrays.asList(forcedActionOnExpiredEvent));
 
-        List<TableEvent> actionOnChangedEvents = currentHand
-                .changeActionOn(++aggregateVersion);
-        actionOnChangedEvents.forEach(x -> addNewEvent(x));
-        applyAllNewEvents(actionOnChangedEvents);
-        aggregateVersion += actionOnChangedEvents.size() - 1;
-
+        handleEndOfRoundIfAppropriate();
+        changeActionOnIfAppropriate();
         dealCommonCardsIfAppropriate();
         finishHandIfAppropriate();
     }
@@ -436,6 +448,22 @@ public class Table extends AggregateRoot<TableEvent> {
         if (currentHand == null) {
             throw new FlexPokerException("no hand in progress");
         }
+    }
+
+    private void handleEndOfRoundIfAppropriate() {
+        List<TableEvent> endOfRoundEvents = currentHand
+                .handleEndOfRoundIfAppropriate(++aggregateVersion);
+        endOfRoundEvents.forEach(x -> addNewEvent(x));
+        applyAllNewEvents(endOfRoundEvents);
+        aggregateVersion += endOfRoundEvents.size() - 1;
+    }
+
+    private void changeActionOnIfAppropriate() {
+        List<TableEvent> actionOnChangedEvents = currentHand
+                .changeActionOn(++aggregateVersion);
+        actionOnChangedEvents.forEach(x -> addNewEvent(x));
+        applyAllNewEvents(actionOnChangedEvents);
+        aggregateVersion += actionOnChangedEvents.size() - 1;
     }
 
     private void dealCommonCardsIfAppropriate() {

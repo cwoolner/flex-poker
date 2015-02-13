@@ -9,7 +9,10 @@ import static com.flexpoker.table.command.framework.TableEventType.LastToActChan
 import static com.flexpoker.table.command.framework.TableEventType.PlayerCalled;
 import static com.flexpoker.table.command.framework.TableEventType.PlayerChecked;
 import static com.flexpoker.table.command.framework.TableEventType.PlayerFolded;
+import static com.flexpoker.table.command.framework.TableEventType.PotAmountIncreased;
+import static com.flexpoker.table.command.framework.TableEventType.PotCreated;
 import static com.flexpoker.table.command.framework.TableEventType.RiverCardDealt;
+import static com.flexpoker.table.command.framework.TableEventType.RoundCompleted;
 import static com.flexpoker.table.command.framework.TableEventType.TableCreated;
 import static com.flexpoker.table.command.framework.TableEventType.TurnCardDealt;
 import static com.flexpoker.test.util.CommonAssertions.verifyEventIdsAndVersionNumbers;
@@ -124,10 +127,10 @@ public class FourPersonTableTest {
                 smallBlindActionOnChangedEvent.getPlayerId());
         List<TableEvent> newEvents = table.fetchNewEvents();
 
-        verifyNumberOfEventsAndEntireOrderByType(10, newEvents, TableCreated,
+        verifyNumberOfEventsAndEntireOrderByType(14, newEvents, TableCreated,
                 CardsShuffled, HandDealtEvent, ActionOnChanged, PlayerFolded,
-                ActionOnChanged, PlayerFolded, ActionOnChanged, PlayerFolded,
-                HandCompleted);
+                ActionOnChanged, PlayerFolded, ActionOnChanged, PlayerFolded, PotCreated,
+                PotAmountIncreased, PotAmountIncreased, RoundCompleted, HandCompleted);
         verifyEventIdsAndVersionNumbers(tableId, newEvents);
     }
 
@@ -179,7 +182,7 @@ public class FourPersonTableTest {
         List<TableEvent> newEvents = table.fetchNewEvents();
 
         verifyNumberOfEventsAndEntireOrderByType(
-                42,
+                49,
                 newEvents,
                 TableCreated,
                 CardsShuffled,
@@ -187,25 +190,30 @@ public class FourPersonTableTest {
                 ActionOnChanged,
                 // pre-flop
                 PlayerCalled, ActionOnChanged, PlayerCalled, ActionOnChanged,
-                PlayerCalled,
-                ActionOnChanged,
-                PlayerChecked,
+                PlayerCalled, ActionOnChanged, PlayerChecked,
+                PotCreated,
+                PotAmountIncreased,
+                PotAmountIncreased,
+                RoundCompleted,
                 ActionOnChanged,
                 LastToActChanged,
                 FlopCardsDealt,
                 // post-flop
                 PlayerChecked, ActionOnChanged, PlayerChecked, ActionOnChanged,
                 PlayerChecked, ActionOnChanged, PlayerChecked,
+                RoundCompleted,
                 ActionOnChanged,
                 LastToActChanged,
                 TurnCardDealt,
                 // post-turn
                 PlayerChecked, ActionOnChanged, PlayerChecked, ActionOnChanged,
-                PlayerChecked, ActionOnChanged, PlayerChecked, ActionOnChanged,
-                LastToActChanged, RiverCardDealt,
+                PlayerChecked, ActionOnChanged, PlayerChecked, RoundCompleted,
+                ActionOnChanged, LastToActChanged,
+                RiverCardDealt,
                 // post-river
                 PlayerChecked, ActionOnChanged, PlayerChecked, ActionOnChanged,
-                PlayerChecked, ActionOnChanged, PlayerChecked, HandCompleted);
+                PlayerChecked, ActionOnChanged, PlayerChecked, RoundCompleted,
+                HandCompleted);
         verifyEventIdsAndVersionNumbers(tableId, newEvents);
     }
 }

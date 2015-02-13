@@ -15,7 +15,11 @@ import com.flexpoker.table.command.events.PlayerCalledEvent;
 import com.flexpoker.table.command.events.PlayerCheckedEvent;
 import com.flexpoker.table.command.events.PlayerFoldedEvent;
 import com.flexpoker.table.command.events.PlayerRaisedEvent;
+import com.flexpoker.table.command.events.PotAmountIncreasedEvent;
+import com.flexpoker.table.command.events.PotClosedEvent;
+import com.flexpoker.table.command.events.PotCreatedEvent;
 import com.flexpoker.table.command.events.RiverCardDealtEvent;
+import com.flexpoker.table.command.events.RoundCompletedEvent;
 import com.flexpoker.table.command.events.TableCreatedEvent;
 import com.flexpoker.table.command.events.TurnCardDealtEvent;
 
@@ -31,7 +35,11 @@ import com.flexpoker.table.command.events.TurnCardDealtEvent;
         @JsonSubTypes.Type(value = PlayerCheckedEvent.class, name = "PlayerChecked"),
         @JsonSubTypes.Type(value = PlayerFoldedEvent.class, name = "PlayerFolded"),
         @JsonSubTypes.Type(value = PlayerRaisedEvent.class, name = "PlayerRaised"),
+        @JsonSubTypes.Type(value = PotAmountIncreasedEvent.class, name = "PotAmountIncreased"),
+        @JsonSubTypes.Type(value = PotClosedEvent.class, name = "PotClosed"),
+        @JsonSubTypes.Type(value = PotCreatedEvent.class, name = "PotCreated"),
         @JsonSubTypes.Type(value = RiverCardDealtEvent.class, name = "RiverCardDealt"),
+        @JsonSubTypes.Type(value = RoundCompletedEvent.class, name = "RoundCompleted"),
         @JsonSubTypes.Type(value = TableCreatedEvent.class, name = "TableCreated"),
         @JsonSubTypes.Type(value = TurnCardDealtEvent.class, name = "TurnCardDealt") })
 public interface TableEvent extends Event<TableEventType> {

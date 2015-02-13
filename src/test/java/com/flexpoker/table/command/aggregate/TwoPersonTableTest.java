@@ -10,7 +10,10 @@ import static com.flexpoker.table.command.framework.TableEventType.PlayerCalled;
 import static com.flexpoker.table.command.framework.TableEventType.PlayerChecked;
 import static com.flexpoker.table.command.framework.TableEventType.PlayerFolded;
 import static com.flexpoker.table.command.framework.TableEventType.PlayerRaised;
+import static com.flexpoker.table.command.framework.TableEventType.PotAmountIncreased;
+import static com.flexpoker.table.command.framework.TableEventType.PotCreated;
 import static com.flexpoker.table.command.framework.TableEventType.RiverCardDealt;
+import static com.flexpoker.table.command.framework.TableEventType.RoundCompleted;
 import static com.flexpoker.table.command.framework.TableEventType.TableCreated;
 import static com.flexpoker.table.command.framework.TableEventType.TurnCardDealt;
 import static com.flexpoker.test.util.CommonAssertions.verifyEventIdsAndVersionNumbers;
@@ -97,9 +100,9 @@ public class TwoPersonTableTest {
 
         List<TableEvent> newEvents = table.fetchNewEvents();
 
-        verifyNumberOfEventsAndEntireOrderByType(6, newEvents, TableCreated,
-                CardsShuffled, HandDealtEvent, ActionOnChanged, PlayerFolded,
-                HandCompleted);
+        verifyNumberOfEventsAndEntireOrderByType(10, newEvents, TableCreated,
+                CardsShuffled, HandDealtEvent, ActionOnChanged, PlayerFolded, PotCreated,
+                PotAmountIncreased, PotAmountIncreased, RoundCompleted, HandCompleted);
         verifyEventIdsAndVersionNumbers(tableId, newEvents);
     }
 
@@ -134,22 +137,28 @@ public class TwoPersonTableTest {
 
         List<TableEvent> newEvents = table.fetchNewEvents();
 
-        verifyNumberOfEventsAndEntireOrderByType(26, newEvents, TableCreated,
+        verifyNumberOfEventsAndEntireOrderByType(33,
+                newEvents,
+                TableCreated,
                 CardsShuffled,
                 HandDealtEvent,
                 ActionOnChanged,
                 // pre-flop
-                PlayerCalled, ActionOnChanged, PlayerChecked, ActionOnChanged,
+                PlayerCalled, ActionOnChanged, PlayerChecked, PotCreated,
+                PotAmountIncreased, PotAmountIncreased, RoundCompleted,
+                ActionOnChanged,
                 LastToActChanged,
                 FlopCardsDealt,
                 // post-flop
-                PlayerChecked, ActionOnChanged, PlayerChecked, ActionOnChanged,
-                LastToActChanged, TurnCardDealt,
+                PlayerChecked, ActionOnChanged, PlayerChecked, RoundCompleted,
+                ActionOnChanged, LastToActChanged,
+                TurnCardDealt,
                 // post-turn
-                PlayerChecked, ActionOnChanged, PlayerChecked, ActionOnChanged,
-                LastToActChanged, RiverCardDealt,
+                PlayerChecked, ActionOnChanged, PlayerChecked, RoundCompleted,
+                ActionOnChanged, LastToActChanged, RiverCardDealt,
                 // post-river
-                PlayerChecked, ActionOnChanged, PlayerChecked, HandCompleted);
+                PlayerChecked, ActionOnChanged, PlayerChecked, RoundCompleted,
+                HandCompleted);
         verifyEventIdsAndVersionNumbers(tableId, newEvents);
     }
 
@@ -184,22 +193,28 @@ public class TwoPersonTableTest {
 
         List<TableEvent> newEvents = table.fetchNewEvents();
 
-        verifyNumberOfEventsAndEntireOrderByType(26, newEvents, TableCreated,
+        verifyNumberOfEventsAndEntireOrderByType(33,
+                newEvents,
+                TableCreated,
                 CardsShuffled,
                 HandDealtEvent,
                 ActionOnChanged,
                 // pre-flop
-                PlayerCalled, ActionOnChanged, PlayerChecked, ActionOnChanged,
+                PlayerCalled, ActionOnChanged, PlayerChecked, PotCreated,
+                PotAmountIncreased, PotAmountIncreased, RoundCompleted,
+                ActionOnChanged,
                 LastToActChanged,
                 FlopCardsDealt,
                 // post-flop
-                PlayerChecked, ActionOnChanged, PlayerChecked, ActionOnChanged,
-                LastToActChanged, TurnCardDealt,
+                PlayerChecked, ActionOnChanged, PlayerChecked, RoundCompleted,
+                ActionOnChanged, LastToActChanged,
+                TurnCardDealt,
                 // post-turn
-                PlayerChecked, ActionOnChanged, PlayerChecked, ActionOnChanged,
-                LastToActChanged, RiverCardDealt,
+                PlayerChecked, ActionOnChanged, PlayerChecked, RoundCompleted,
+                ActionOnChanged, LastToActChanged, RiverCardDealt,
                 // post-river
-                PlayerChecked, ActionOnChanged, PlayerChecked, HandCompleted);
+                PlayerChecked, ActionOnChanged, PlayerChecked, RoundCompleted,
+                HandCompleted);
         verifyEventIdsAndVersionNumbers(tableId, newEvents);
     }
 
@@ -222,9 +237,10 @@ public class TwoPersonTableTest {
 
         List<TableEvent> newEvents = table.fetchNewEvents();
 
-        verifyNumberOfEventsAndEntireOrderByType(9, newEvents, TableCreated,
+        verifyNumberOfEventsAndEntireOrderByType(13, newEvents, TableCreated,
                 CardsShuffled, HandDealtEvent, ActionOnChanged, PlayerRaised,
-                ActionOnChanged, LastToActChanged, PlayerFolded, HandCompleted);
+                ActionOnChanged, LastToActChanged, PlayerFolded, PotCreated,
+                PotAmountIncreased, PotAmountIncreased, RoundCompleted, HandCompleted);
         verifyEventIdsAndVersionNumbers(tableId, newEvents);
     }
 

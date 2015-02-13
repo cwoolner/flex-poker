@@ -6,6 +6,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
 
@@ -40,8 +41,8 @@ public class PotTest {
         winningHands.add(handEvaluation1);
         winningHands.add(handEvaluation2);
 
-        Pot pot = new Pot(UUID.randomUUID(), Arrays.asList(handEvaluation1,
-                handEvaluation2));
+        Pot pot = new Pot(UUID.randomUUID(), new HashSet<>(Arrays.asList(handEvaluation1,
+                handEvaluation2)));
         pot.addChips(60);
 
         assertTrue(pot.forcePlayerToShowCards(player1));
@@ -74,8 +75,8 @@ public class PotTest {
         winningHands.add(handEvaluation2);
         winningHands.add(handEvaluation3);
 
-        Pot pot = new Pot(UUID.randomUUID(), Arrays.asList(handEvaluation1,
-                handEvaluation2, handEvaluation3));
+        Pot pot = new Pot(UUID.randomUUID(), new HashSet<>(Arrays.asList(handEvaluation1,
+                handEvaluation2, handEvaluation3)));
         pot.addChips(60);
 
         assertFalse(pot.forcePlayerToShowCards(player1));
@@ -110,8 +111,8 @@ public class PotTest {
         winningHands.add(handEvaluation2);
         winningHands.add(handEvaluation3);
 
-        Pot pot = new Pot(UUID.randomUUID(), Arrays.asList(handEvaluation1,
-                handEvaluation2, handEvaluation3));
+        Pot pot = new Pot(UUID.randomUUID(), new HashSet<>(Arrays.asList(handEvaluation1,
+                handEvaluation2, handEvaluation3)));
         pot.addChips(61);
 
         assertFalse(pot.forcePlayerToShowCards(player1));
@@ -155,8 +156,8 @@ public class PotTest {
         winningHands.add(handEvaluation2);
         winningHands.add(handEvaluation3);
 
-        Pot pot = new Pot(UUID.randomUUID(), Arrays.asList(handEvaluation1,
-                handEvaluation2, handEvaluation3));
+        Pot pot = new Pot(UUID.randomUUID(), new HashSet<>(Arrays.asList(handEvaluation1,
+                handEvaluation2, handEvaluation3)));
         pot.addChips(60);
         pot.removePlayer(player3);
 

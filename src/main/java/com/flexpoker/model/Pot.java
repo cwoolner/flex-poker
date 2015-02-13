@@ -14,7 +14,7 @@ public class Pot {
 
     private final UUID entityId;
 
-    private final List<HandEvaluation> handEvaluationList;
+    private final Set<HandEvaluation> handEvaluations;
 
     private final Set<UUID> playersInvolved;
 
@@ -24,14 +24,18 @@ public class Pot {
 
     private boolean open;
 
-    public Pot(UUID entityId, List<HandEvaluation> handEvaluationList) {
+    public Pot(UUID entityId, Set<HandEvaluation> handEvaluations) {
         this.entityId = entityId;
-        this.handEvaluationList = handEvaluationList;
-        playersInvolved = handEvaluationList.stream().map(x -> x.getPlayerId())
+        this.handEvaluations = handEvaluations;
+        this.playersInvolved = handEvaluations.stream().map(x -> x.getPlayerId())
                 .collect(Collectors.toSet());
         chipsForPlayerToWin = new HashMap<>();
         open = true;
         recalculateWinners();
+    }
+
+    public UUID getId() {
+        return entityId;
     }
 
     public int getChipsWon(UUID playerInHand) {
@@ -50,6 +54,7 @@ public class Pot {
 
     public void removePlayer(UUID playerId) {
         playersInvolved.remove(playerId);
+        handEvaluations.removeIf(x -> x.getPlayerId().equals(playerId));
         recalculateWinners();
     }
 
@@ -61,8 +66,13 @@ public class Pot {
         open = false;
     }
 
+    // TODO: make this package visibility after the class is moved
+    public boolean idMatches(UUID potId) {
+        return entityId.equals(potId);
+    }
+
     private void recalculateWinners() {
-        List<HandEvaluation> sortedHandEvaluations = new ArrayList<>(handEvaluationList);
+        List<HandEvaluation> sortedHandEvaluations = new ArrayList<>(handEvaluations);
         Collections.sort(sortedHandEvaluations);
         Collections.reverse(sortedHandEvaluations);
 

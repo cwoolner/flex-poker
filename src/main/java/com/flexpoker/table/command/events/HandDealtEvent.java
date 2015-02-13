@@ -12,7 +12,6 @@ import com.flexpoker.model.Blinds;
 import com.flexpoker.model.HandDealerState;
 import com.flexpoker.model.HandEvaluation;
 import com.flexpoker.model.PlayerAction;
-import com.flexpoker.model.Pot;
 import com.flexpoker.model.card.FlopCards;
 import com.flexpoker.model.card.PocketCards;
 import com.flexpoker.model.card.RiverCard;
@@ -52,8 +51,6 @@ public class HandDealtEvent extends BaseEvent<TableEventType> implements TableEv
 
     private final List<HandEvaluation> handEvaluations;
 
-    private final Set<Pot> pots;
-
     private final HandDealerState handDealerState;
 
     private final Map<UUID, Integer> chipsInBack;
@@ -86,7 +83,6 @@ public class HandDealtEvent extends BaseEvent<TableEventType> implements TableEv
             @JsonProperty(value = "possibleSeatActionsMap") Map<UUID, Set<PlayerAction>> possibleSeatActionsMap,
             @JsonProperty(value = "playersStillInHand") Set<UUID> playersStillInHand,
             @JsonProperty(value = "handEvaluations") List<HandEvaluation> handEvaluations,
-            @JsonProperty(value = "pots") Set<Pot> pots,
             @JsonProperty(value = "handDealerState") HandDealerState handDealerState,
             @JsonProperty(value = "chipsInBack") Map<UUID, Integer> chipsInBack,
             @JsonProperty(value = "chipsInFrontMap") Map<UUID, Integer> chipsInFrontMap,
@@ -109,7 +105,6 @@ public class HandDealtEvent extends BaseEvent<TableEventType> implements TableEv
         this.possibleSeatActionsMap = possibleSeatActionsMap;
         this.playersStillInHand = playersStillInHand;
         this.handEvaluations = handEvaluations;
-        this.pots = pots;
         this.handDealerState = handDealerState;
         this.chipsInBack = chipsInBack;
         this.chipsInFrontMap = chipsInFrontMap;
@@ -174,10 +169,6 @@ public class HandDealtEvent extends BaseEvent<TableEventType> implements TableEv
 
     public List<HandEvaluation> getHandEvaluations() {
         return handEvaluations;
-    }
-
-    public Set<Pot> getPots() {
-        return pots;
     }
 
     public HandDealerState getHandDealerState() {
