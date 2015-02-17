@@ -125,10 +125,10 @@ public class ThreePersonTableTest {
 
         List<TableEvent> newEvents = table.fetchNewEvents();
 
-        verifyNumberOfEventsAndEntireOrderByType(13, newEvents, TableCreated,
-                CardsShuffled, HandDealtEvent, ActionOnChanged, PlayerFolded,
-                ActionOnChanged, PlayerFolded, PotCreated, PotAmountIncreased,
-                PotAmountIncreased, RoundCompleted, WinnersDetermined, HandCompleted);
+        verifyNumberOfEventsAndEntireOrderByType(newEvents, TableCreated, CardsShuffled,
+                HandDealtEvent, ActionOnChanged, PlayerFolded, ActionOnChanged,
+                PlayerFolded, PotCreated, PotAmountIncreased, PotAmountIncreased,
+                RoundCompleted, WinnersDetermined, HandCompleted);
         verifyEventIdsAndVersionNumbers(tableId, newEvents);
     }
 
@@ -172,7 +172,6 @@ public class ThreePersonTableTest {
         List<TableEvent> newEvents = table.fetchNewEvents();
 
         verifyNumberOfEventsAndEntireOrderByType(
-                42,
                 newEvents,
                 TableCreated,
                 CardsShuffled,

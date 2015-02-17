@@ -128,9 +128,9 @@ public class FourPersonTableTest {
                 smallBlindActionOnChangedEvent.getPlayerId());
         List<TableEvent> newEvents = table.fetchNewEvents();
 
-        verifyNumberOfEventsAndEntireOrderByType(15, newEvents, TableCreated,
-                CardsShuffled, HandDealtEvent, ActionOnChanged, PlayerFolded,
-                ActionOnChanged, PlayerFolded, ActionOnChanged, PlayerFolded, PotCreated,
+        verifyNumberOfEventsAndEntireOrderByType(newEvents, TableCreated, CardsShuffled,
+                HandDealtEvent, ActionOnChanged, PlayerFolded, ActionOnChanged,
+                PlayerFolded, ActionOnChanged, PlayerFolded, PotCreated,
                 PotAmountIncreased, PotAmountIncreased, RoundCompleted,
                 WinnersDetermined, HandCompleted);
         verifyEventIdsAndVersionNumbers(tableId, newEvents);
@@ -184,7 +184,6 @@ public class FourPersonTableTest {
         List<TableEvent> newEvents = table.fetchNewEvents();
 
         verifyNumberOfEventsAndEntireOrderByType(
-                50,
                 newEvents,
                 TableCreated,
                 CardsShuffled,

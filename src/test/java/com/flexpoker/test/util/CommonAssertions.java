@@ -2,7 +2,6 @@ package com.flexpoker.test.util;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 import java.util.UUID;
@@ -21,10 +20,9 @@ public class CommonAssertions {
         }
     }
 
-    public static void verifyNumberOfEventsAndEntireOrderByType(int numberOfEvents,
+    public static void verifyNumberOfEventsAndEntireOrderByType(
             List<? extends Event<? extends EventType>> events, EventType... eventTypes) {
-        assertTrue(events.size() == eventTypes.length);
-        assertEquals(numberOfEvents, events.size());
+        assertEquals(eventTypes.length, events.size());
         assertArrayEquals(eventTypes, events.stream().map(x -> x.getType()).toArray());
     }
 }
