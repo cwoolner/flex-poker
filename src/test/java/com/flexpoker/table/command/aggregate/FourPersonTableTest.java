@@ -15,6 +15,7 @@ import static com.flexpoker.table.command.framework.TableEventType.RiverCardDeal
 import static com.flexpoker.table.command.framework.TableEventType.RoundCompleted;
 import static com.flexpoker.table.command.framework.TableEventType.TableCreated;
 import static com.flexpoker.table.command.framework.TableEventType.TurnCardDealt;
+import static com.flexpoker.table.command.framework.TableEventType.WinnersDetermined;
 import static com.flexpoker.test.util.CommonAssertions.verifyEventIdsAndVersionNumbers;
 import static com.flexpoker.test.util.CommonAssertions.verifyNumberOfEventsAndEntireOrderByType;
 import static org.junit.Assert.assertEquals;
@@ -127,10 +128,11 @@ public class FourPersonTableTest {
                 smallBlindActionOnChangedEvent.getPlayerId());
         List<TableEvent> newEvents = table.fetchNewEvents();
 
-        verifyNumberOfEventsAndEntireOrderByType(14, newEvents, TableCreated,
+        verifyNumberOfEventsAndEntireOrderByType(15, newEvents, TableCreated,
                 CardsShuffled, HandDealtEvent, ActionOnChanged, PlayerFolded,
                 ActionOnChanged, PlayerFolded, ActionOnChanged, PlayerFolded, PotCreated,
-                PotAmountIncreased, PotAmountIncreased, RoundCompleted, HandCompleted);
+                PotAmountIncreased, PotAmountIncreased, RoundCompleted,
+                WinnersDetermined, HandCompleted);
         verifyEventIdsAndVersionNumbers(tableId, newEvents);
     }
 
@@ -182,7 +184,7 @@ public class FourPersonTableTest {
         List<TableEvent> newEvents = table.fetchNewEvents();
 
         verifyNumberOfEventsAndEntireOrderByType(
-                49,
+                50,
                 newEvents,
                 TableCreated,
                 CardsShuffled,
@@ -213,7 +215,7 @@ public class FourPersonTableTest {
                 // post-river
                 PlayerChecked, ActionOnChanged, PlayerChecked, ActionOnChanged,
                 PlayerChecked, ActionOnChanged, PlayerChecked, RoundCompleted,
-                HandCompleted);
+                WinnersDetermined, HandCompleted);
         verifyEventIdsAndVersionNumbers(tableId, newEvents);
     }
 }

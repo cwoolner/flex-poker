@@ -12,6 +12,6 @@ public enum TableEventType implements EventType {
 
     PotCreated, PotAmountIncreased, PotClosed, //
 
-    RoundCompleted, ActionOnChanged, LastToActChanged, HandCompleted
+    RoundCompleted, ActionOnChanged, LastToActChanged, WinnersDetermined, HandCompleted
 
 }

@@ -15,6 +15,7 @@ import static com.flexpoker.table.command.framework.TableEventType.RiverCardDeal
 import static com.flexpoker.table.command.framework.TableEventType.RoundCompleted;
 import static com.flexpoker.table.command.framework.TableEventType.TableCreated;
 import static com.flexpoker.table.command.framework.TableEventType.TurnCardDealt;
+import static com.flexpoker.table.command.framework.TableEventType.WinnersDetermined;
 import static com.flexpoker.test.util.CommonAssertions.verifyEventIdsAndVersionNumbers;
 import static com.flexpoker.test.util.CommonAssertions.verifyNumberOfEventsAndEntireOrderByType;
 import static org.junit.Assert.assertEquals;
@@ -124,10 +125,10 @@ public class ThreePersonTableTest {
 
         List<TableEvent> newEvents = table.fetchNewEvents();
 
-        verifyNumberOfEventsAndEntireOrderByType(12, newEvents, TableCreated,
+        verifyNumberOfEventsAndEntireOrderByType(13, newEvents, TableCreated,
                 CardsShuffled, HandDealtEvent, ActionOnChanged, PlayerFolded,
                 ActionOnChanged, PlayerFolded, PotCreated, PotAmountIncreased,
-                PotAmountIncreased, RoundCompleted, HandCompleted);
+                PotAmountIncreased, RoundCompleted, WinnersDetermined, HandCompleted);
         verifyEventIdsAndVersionNumbers(tableId, newEvents);
     }
 
@@ -171,7 +172,7 @@ public class ThreePersonTableTest {
         List<TableEvent> newEvents = table.fetchNewEvents();
 
         verifyNumberOfEventsAndEntireOrderByType(
-                41,
+                42,
                 newEvents,
                 TableCreated,
                 CardsShuffled,
@@ -197,7 +198,7 @@ public class ThreePersonTableTest {
                 RiverCardDealt,
                 // post-river
                 PlayerChecked, ActionOnChanged, PlayerChecked, ActionOnChanged,
-                PlayerChecked, RoundCompleted, HandCompleted);
+                PlayerChecked, RoundCompleted, WinnersDetermined, HandCompleted);
         verifyEventIdsAndVersionNumbers(tableId, newEvents);
     }
 }

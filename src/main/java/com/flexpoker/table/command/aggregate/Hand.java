@@ -2,6 +2,7 @@ package com.flexpoker.table.command.aggregate;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -35,6 +36,7 @@ import com.flexpoker.table.command.events.PotCreatedEvent;
 import com.flexpoker.table.command.events.RiverCardDealtEvent;
 import com.flexpoker.table.command.events.RoundCompletedEvent;
 import com.flexpoker.table.command.events.TurnCardDealtEvent;
+import com.flexpoker.table.command.events.WinnersDeterminedEvent;
 import com.flexpoker.table.command.framework.TableEvent;
 
 public class Hand {
@@ -615,19 +617,28 @@ public class Hand {
         throw new IllegalStateException("unable to find next to act");
     }
 
-    // TODO: add a new WinnersDeterminedEvent and a new
-    // determineWinnersIfAppropriate() style method in Table
-    private void determineWinners() {
-        pots.forEach(pot -> {
-            playersStillInHand.forEach(playerInHand -> {
-                int numberOfChipsWonForPlayer = pot.getChipsWon(playerInHand);
-                addToChipsInBack(playerInHand, numberOfChipsWonForPlayer);
+    Optional<WinnersDeterminedEvent> determineWinnersIfAppropriate(int aggregateVersion) {
+        if (handDealerState == HandDealerState.COMPLETE) {
+            Set<UUID> playersToShowCards = new HashSet<>();
+            Map<UUID, Integer> playersToChipsWonMap = new HashMap<>();
 
-                if (pot.forcePlayerToShowCards(playerInHand)) {
-                    playersToShowCards.add(playerInHand);
-                }
+            pots.forEach(pot -> {
+                playersStillInHand.forEach(playerInHand -> {
+                    int numberOfChipsWonForPlayer = pot.getChipsWon(playerInHand);
+                    playersToChipsWonMap.put(playerInHand,
+                            Integer.valueOf(numberOfChipsWonForPlayer));
+
+                    if (pot.forcePlayerToShowCards(playerInHand)) {
+                        playersToShowCards.add(playerInHand);
+                    }
+                });
             });
-        });
+
+            return Optional.of(new WinnersDeterminedEvent(tableId, aggregateVersion,
+                    gameId, entityId, playersToShowCards, playersToChipsWonMap));
+        }
+
+        return Optional.empty();
     }
 
     private void addToChipsInBack(UUID playerId, int chipsToAdd) {
@@ -735,6 +746,13 @@ public class Hand {
         resetChipsInFront();
         resetRaiseAmountsAfterRound();
         resetPossibleSeatActionsAfterRound();
+    }
+
+    void applyEvent(WinnersDeterminedEvent event) {
+        playersToShowCards.addAll(event.getPlayersToShowCards());
+        event.getPlayersToChipsWonMap().forEach((playerId, chips) -> {
+            addToChipsInBack(playerId, chips.intValue());
+        });
     }
 
     private Pot fetchPotById(UUID potId) {

@@ -37,6 +37,7 @@ import com.flexpoker.table.command.events.RiverCardDealtEvent;
 import com.flexpoker.table.command.events.RoundCompletedEvent;
 import com.flexpoker.table.command.events.TableCreatedEvent;
 import com.flexpoker.table.command.events.TurnCardDealtEvent;
+import com.flexpoker.table.command.events.WinnersDeterminedEvent;
 import com.flexpoker.table.command.framework.TableEvent;
 
 public class Table extends AggregateRoot<TableEvent> {
@@ -130,6 +131,9 @@ public class Table extends AggregateRoot<TableEvent> {
         case LastToActChanged:
             applyEvent((LastToActChangedEvent) event);
             break;
+        case WinnersDetermined:
+            applyEvent((WinnersDeterminedEvent) event);
+            break;
         case HandCompleted:
             applyEvent((HandCompletedEvent) event);
             break;
@@ -215,6 +219,10 @@ public class Table extends AggregateRoot<TableEvent> {
     }
 
     private void applyEvent(RoundCompletedEvent event) {
+        currentHand.applyEvent(event);
+    }
+
+    private void applyEvent(WinnersDeterminedEvent event) {
         currentHand.applyEvent(event);
     }
 
@@ -436,6 +444,7 @@ public class Table extends AggregateRoot<TableEvent> {
         handlePotAndRoundCompleted();
         changeActionOnIfAppropriate();
         dealCommonCardsIfAppropriate();
+        determineWinnersIfAppropriate();
         finishHandIfAppropriate();
     }
 
@@ -463,6 +472,15 @@ public class Table extends AggregateRoot<TableEvent> {
 
     private void dealCommonCardsIfAppropriate() {
         currentHand.dealCommonCardsIfAppropriate(aggregateVersion + 1).ifPresent(
+                event -> {
+                    addNewEvent(event);
+                    applyAllNewEvents(Arrays.asList(event));
+                    aggregateVersion++;
+                });
+    }
+
+    private void determineWinnersIfAppropriate() {
+        currentHand.determineWinnersIfAppropriate(aggregateVersion + 1).ifPresent(
                 event -> {
                     addNewEvent(event);
                     applyAllNewEvents(Arrays.asList(event));

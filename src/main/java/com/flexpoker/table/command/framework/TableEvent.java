@@ -22,6 +22,7 @@ import com.flexpoker.table.command.events.RiverCardDealtEvent;
 import com.flexpoker.table.command.events.RoundCompletedEvent;
 import com.flexpoker.table.command.events.TableCreatedEvent;
 import com.flexpoker.table.command.events.TurnCardDealtEvent;
+import com.flexpoker.table.command.events.WinnersDeterminedEvent;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
 @JsonSubTypes({
@@ -41,7 +42,8 @@ import com.flexpoker.table.command.events.TurnCardDealtEvent;
         @JsonSubTypes.Type(value = RiverCardDealtEvent.class, name = "RiverCardDealt"),
         @JsonSubTypes.Type(value = RoundCompletedEvent.class, name = "RoundCompleted"),
         @JsonSubTypes.Type(value = TableCreatedEvent.class, name = "TableCreated"),
-        @JsonSubTypes.Type(value = TurnCardDealtEvent.class, name = "TurnCardDealt") })
+        @JsonSubTypes.Type(value = TurnCardDealtEvent.class, name = "TurnCardDealt"),
+        @JsonSubTypes.Type(value = WinnersDeterminedEvent.class, name = "WinnersDetermined") })
 public interface TableEvent extends Event<TableEventType> {
 
     UUID getGameId();
