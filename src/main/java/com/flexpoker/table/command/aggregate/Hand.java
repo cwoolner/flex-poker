@@ -325,7 +325,7 @@ public class Hand {
         return Optional.empty();
     }
 
-    List<TableEvent> handleEndOfRoundIfAppropriate(int aggregateVersion) {
+    List<TableEvent> handlePotAndRoundCompleted(int aggregateVersion) {
         if (!seatMap.get(Integer.valueOf(actionOnPosition)).equals(lastToActPlayerId)
                 && playersStillInHand.size() > 1) {
             return Collections.emptyList();

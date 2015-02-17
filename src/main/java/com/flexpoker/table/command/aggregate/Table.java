@@ -379,10 +379,7 @@ public class Table extends AggregateRoot<TableEvent> {
         addNewEvent(playerCheckedEvent);
         applyEvent(playerCheckedEvent);
 
-        handleEndOfRoundIfAppropriate();
-        changeActionOnIfAppropriate();
-        dealCommonCardsIfAppropriate();
-        finishHandIfAppropriate();
+        handleEndOfRound();
     }
 
     public void call(UUID playerId) {
@@ -393,10 +390,7 @@ public class Table extends AggregateRoot<TableEvent> {
         addNewEvent(playerCalledEvent);
         applyEvent(playerCalledEvent);
 
-        handleEndOfRoundIfAppropriate();
-        changeActionOnIfAppropriate();
-        dealCommonCardsIfAppropriate();
-        finishHandIfAppropriate();
+        handleEndOfRound();
     }
 
     public void fold(UUID playerId) {
@@ -407,10 +401,7 @@ public class Table extends AggregateRoot<TableEvent> {
         addNewEvent(playerFoldedEvent);
         applyEvent(playerFoldedEvent);
 
-        handleEndOfRoundIfAppropriate();
-        changeActionOnIfAppropriate();
-        dealCommonCardsIfAppropriate();
-        finishHandIfAppropriate();
+        handleEndOfRound();
     }
 
     public void raise(UUID playerId, int raiseToAmount) {
@@ -438,7 +429,11 @@ public class Table extends AggregateRoot<TableEvent> {
         addNewEvent(forcedActionOnExpiredEvent);
         applyAllNewEvents(Arrays.asList(forcedActionOnExpiredEvent));
 
-        handleEndOfRoundIfAppropriate();
+        handleEndOfRound();
+    }
+
+    private void handleEndOfRound() {
+        handlePotAndRoundCompleted();
         changeActionOnIfAppropriate();
         dealCommonCardsIfAppropriate();
         finishHandIfAppropriate();
@@ -450,9 +445,9 @@ public class Table extends AggregateRoot<TableEvent> {
         }
     }
 
-    private void handleEndOfRoundIfAppropriate() {
+    private void handlePotAndRoundCompleted() {
         List<TableEvent> endOfRoundEvents = currentHand
-                .handleEndOfRoundIfAppropriate(++aggregateVersion);
+                .handlePotAndRoundCompleted(++aggregateVersion);
         endOfRoundEvents.forEach(x -> addNewEvent(x));
         applyAllNewEvents(endOfRoundEvents);
         aggregateVersion += endOfRoundEvents.size() - 1;
