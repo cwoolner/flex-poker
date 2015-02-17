@@ -16,8 +16,8 @@ import com.flexpoker.model.chat.outgoing.TableChatMessage;
 import com.flexpoker.pushnotifications.TableUpdatedPushNotification;
 import com.flexpoker.table.command.events.PlayerCheckedEvent;
 import com.flexpoker.table.query.repository.TableRepository;
-import com.flexpoker.web.model.table.SeatViewModel;
-import com.flexpoker.web.model.table.TableViewModel;
+import com.flexpoker.web.model.outgoing.SeatDTO;
+import com.flexpoker.web.model.outgoing.TableDTO;
 
 @Component
 public class PlayerCheckedEventHandler implements EventHandler<PlayerCheckedEvent> {
@@ -49,24 +49,24 @@ public class PlayerCheckedEventHandler implements EventHandler<PlayerCheckedEven
     }
 
     private void handleUpdatingTable(PlayerCheckedEvent event) {
-        TableViewModel currentTable = tableRepository.fetchById(event.getAggregateId());
+        TableDTO currentTable = tableRepository.fetchById(event.getAggregateId());
         String username = loginRepository.fetchUsernameByAggregateId(event.getPlayerId());
 
-        List<SeatViewModel> updatedSeats = new ArrayList<>();
+        List<SeatDTO> updatedSeats = new ArrayList<>();
 
-        for (SeatViewModel seatViewModel : currentTable.getSeats()) {
-            if (seatViewModel.getName().equals(username)) {
-                updatedSeats.add(new SeatViewModel(seatViewModel.getPosition(),
-                        seatViewModel.getName(), seatViewModel.getChipsInBack(),
-                        seatViewModel.getChipsInFront(), seatViewModel.isStillInHand(),
-                        0, 0, seatViewModel.isButton(), seatViewModel.isSmallBlind(),
-                        seatViewModel.isBigBlind(), false));
+        for (SeatDTO seatDTO : currentTable.getSeats()) {
+            if (seatDTO.getName().equals(username)) {
+                updatedSeats.add(new SeatDTO(seatDTO.getPosition(),
+                        seatDTO.getName(), seatDTO.getChipsInBack(),
+                        seatDTO.getChipsInFront(), seatDTO.isStillInHand(),
+                        0, 0, seatDTO.isButton(), seatDTO.isSmallBlind(),
+                        seatDTO.isBigBlind(), false));
             } else {
-                updatedSeats.add(seatViewModel);
+                updatedSeats.add(seatDTO);
             }
         }
 
-        TableViewModel updatedTable = new TableViewModel(currentTable.getId(),
+        TableDTO updatedTable = new TableDTO(currentTable.getId(),
                 updatedSeats, currentTable.getTotalPot(), currentTable.getPots(),
                 currentTable.getVisibleCommonCards());
         tableRepository.save(updatedTable);

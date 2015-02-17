@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.UUID;
 
 import com.flexpoker.model.GameStage;
-import com.flexpoker.web.model.GameInListDTO;
+import com.flexpoker.web.model.incoming.GameInListDTO;
 
 public interface GameListRepository {
 

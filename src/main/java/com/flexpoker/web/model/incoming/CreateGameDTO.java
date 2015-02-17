@@ -1,9 +1,9 @@
-package com.flexpoker.web.model;
+package com.flexpoker.web.model.incoming;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class CreateGameViewModel {
+public class CreateGameDTO {
 
     private final String name;
 
@@ -12,7 +12,7 @@ public class CreateGameViewModel {
     private final int playersPerTable;
 
     @JsonCreator
-    public CreateGameViewModel(@JsonProperty(value = "name") String name,
+    public CreateGameDTO(@JsonProperty(value = "name") String name,
             @JsonProperty(value = "players") int players,
             @JsonProperty(value = "playersPerTable") int playersPerTable) {
         this.name = name;

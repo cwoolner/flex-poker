@@ -10,7 +10,7 @@ import com.flexpoker.framework.pushnotifier.PushNotificationHandler;
 import com.flexpoker.pushnotifications.TableUpdatedPushNotification;
 import com.flexpoker.table.query.repository.TableRepository;
 import com.flexpoker.util.MessagingConstants;
-import com.flexpoker.web.model.table.TableViewModel;
+import com.flexpoker.web.model.outgoing.TableDTO;
 
 @Component
 public class TableUpdatedPushNotificationHandler implements
@@ -31,12 +31,11 @@ public class TableUpdatedPushNotificationHandler implements
     @Async
     @Override
     public void handle(TableUpdatedPushNotification pushNotification) {
-        TableViewModel tableViewModel = tableRepository.fetchById(pushNotification
-                .getTableId());
+        TableDTO tableDTO = tableRepository.fetchById(pushNotification.getTableId());
         messagingTemplate.convertAndSend(
                 String.format(MessagingConstants.TABLE_STATUS,
                         pushNotification.getGameId(), pushNotification.getTableId()),
-                tableViewModel);
+                tableDTO);
     }
 
 }

@@ -20,8 +20,8 @@ import com.flexpoker.pushnotifications.TableUpdatedPushNotification;
 import com.flexpoker.table.command.events.HandDealtEvent;
 import com.flexpoker.table.query.repository.CardsUsedInHandRepository;
 import com.flexpoker.table.query.repository.TableRepository;
-import com.flexpoker.web.model.table.SeatViewModel;
-import com.flexpoker.web.model.table.TableViewModel;
+import com.flexpoker.web.model.outgoing.SeatDTO;
+import com.flexpoker.web.model.outgoing.TableDTO;
 
 @Component
 public class HandDealtEventHandler implements EventHandler<HandDealtEvent> {
@@ -61,12 +61,12 @@ public class HandDealtEventHandler implements EventHandler<HandDealtEvent> {
     }
 
     private void handleUpdatingTable(HandDealtEvent event) {
-        TableViewModel currentTable = tableRepository.fetchById(event.getAggregateId());
+        TableDTO currentTable = tableRepository.fetchById(event.getAggregateId());
 
         int totalPot = event.getChipsInFrontMap().values().stream()
                 .mapToInt(x -> x.intValue()).sum();
 
-        Function<UUID, SeatViewModel> seatMapper = (UUID playerId) -> {
+        Function<UUID, SeatDTO> seatMapper = (UUID playerId) -> {
             int position = event.getSeatMap().entrySet().stream()
                     .filter(x -> x.getValue().equals(playerId)).findAny().get().getKey()
                     .intValue();
@@ -79,14 +79,14 @@ public class HandDealtEventHandler implements EventHandler<HandDealtEvent> {
             boolean smallBlind = event.getSmallBlindPosition() == position;
             boolean bigBlind = event.getBigBlindPosition() == position;
 
-            return new SeatViewModel(position, name, chipsInBack, chipsInFront, true,
+            return new SeatDTO(position, name, chipsInBack, chipsInFront, true,
                     raiseTo, callAmount, button, smallBlind, bigBlind, false);
         };
 
-        List<SeatViewModel> seats = event.getPlayersStillInHand().stream()
+        List<SeatDTO> seats = event.getPlayersStillInHand().stream()
                 .map(seatMapper).collect(Collectors.toList());
 
-        TableViewModel updatedTable = new TableViewModel(currentTable.getId(), seats,
+        TableDTO updatedTable = new TableDTO(currentTable.getId(), seats,
                 totalPot, Collections.emptySet(), Collections.emptyList());
         tableRepository.save(updatedTable);
     }

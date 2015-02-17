@@ -1,16 +1,17 @@
-package com.flexpoker.web.model.table.handaction;
+package com.flexpoker.web.model.incoming;
+
+import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class RaiseHandActionViewModel extends BaseHandActionViewModel {
+public class RaiseTableActionDTO extends DefaultTableActionDTO {
 
     private final int raiseToAmount;
-    
+
     @JsonCreator
-    public RaiseHandActionViewModel(
-            @JsonProperty(value = "gameId") String gameId,
-            @JsonProperty(value = "tableId") String tableId,
+    public RaiseTableActionDTO(@JsonProperty(value = "gameId") UUID gameId,
+            @JsonProperty(value = "tableId") UUID tableId,
             @JsonProperty(value = "raiseToAmount") int raiseToAmount) {
         super(gameId, tableId);
         this.raiseToAmount = raiseToAmount;

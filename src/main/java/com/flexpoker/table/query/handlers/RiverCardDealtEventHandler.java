@@ -14,8 +14,8 @@ import com.flexpoker.pushnotifications.TableUpdatedPushNotification;
 import com.flexpoker.table.command.events.RiverCardDealtEvent;
 import com.flexpoker.table.query.repository.CardsUsedInHandRepository;
 import com.flexpoker.table.query.repository.TableRepository;
-import com.flexpoker.web.model.table.CardViewModel;
-import com.flexpoker.web.model.table.TableViewModel;
+import com.flexpoker.web.model.outgoing.CardDTO;
+import com.flexpoker.web.model.outgoing.TableDTO;
 
 @Component
 public class RiverCardDealtEventHandler implements EventHandler<RiverCardDealtEvent> {
@@ -42,13 +42,13 @@ public class RiverCardDealtEventHandler implements EventHandler<RiverCardDealtEv
     }
 
     private void handleUpdatingTable(RiverCardDealtEvent event) {
-        TableViewModel currentTable = tableRepository.fetchById(event.getAggregateId());
+        TableDTO currentTable = tableRepository.fetchById(event.getAggregateId());
 
         RiverCard riverCard = cardsUsedInHandRepository.fetchRiverCard(event.getHandId());
-        List<CardViewModel> visibleCommonCards = currentTable.getVisibleCommonCards();
-        visibleCommonCards.add(new CardViewModel(riverCard.getCard().getId()));
+        List<CardDTO> visibleCommonCards = currentTable.getVisibleCommonCards();
+        visibleCommonCards.add(new CardDTO(riverCard.getCard().getId()));
 
-        TableViewModel updatedTable = new TableViewModel(currentTable.getId(),
+        TableDTO updatedTable = new TableDTO(currentTable.getId(),
                 currentTable.getSeats(), currentTable.getTotalPot(),
                 currentTable.getPots(), visibleCommonCards);
         tableRepository.save(updatedTable);

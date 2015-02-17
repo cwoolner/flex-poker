@@ -15,8 +15,8 @@ import com.flexpoker.pushnotifications.TableUpdatedPushNotification;
 import com.flexpoker.table.command.events.FlopCardsDealtEvent;
 import com.flexpoker.table.query.repository.CardsUsedInHandRepository;
 import com.flexpoker.table.query.repository.TableRepository;
-import com.flexpoker.web.model.table.CardViewModel;
-import com.flexpoker.web.model.table.TableViewModel;
+import com.flexpoker.web.model.outgoing.CardDTO;
+import com.flexpoker.web.model.outgoing.TableDTO;
 
 @Component
 public class FlopCardsDealtEventHandler implements EventHandler<FlopCardsDealtEvent> {
@@ -43,15 +43,15 @@ public class FlopCardsDealtEventHandler implements EventHandler<FlopCardsDealtEv
     }
 
     private void handleUpdatingTable(FlopCardsDealtEvent event) {
-        TableViewModel currentTable = tableRepository.fetchById(event.getAggregateId());
+        TableDTO currentTable = tableRepository.fetchById(event.getAggregateId());
 
         FlopCards flopCards = cardsUsedInHandRepository.fetchFlopCards(event.getHandId());
-        List<CardViewModel> visibleCommonCards = new ArrayList<>();
-        visibleCommonCards.add(new CardViewModel(flopCards.getCard1().getId()));
-        visibleCommonCards.add(new CardViewModel(flopCards.getCard2().getId()));
-        visibleCommonCards.add(new CardViewModel(flopCards.getCard3().getId()));
+        List<CardDTO> visibleCommonCards = new ArrayList<>();
+        visibleCommonCards.add(new CardDTO(flopCards.getCard1().getId()));
+        visibleCommonCards.add(new CardDTO(flopCards.getCard2().getId()));
+        visibleCommonCards.add(new CardDTO(flopCards.getCard3().getId()));
 
-        TableViewModel updatedTable = new TableViewModel(currentTable.getId(),
+        TableDTO updatedTable = new TableDTO(currentTable.getId(),
                 currentTable.getSeats(), currentTable.getTotalPot(),
                 currentTable.getPots(), visibleCommonCards);
         tableRepository.save(updatedTable);

@@ -20,8 +20,8 @@ import com.flexpoker.game.query.repository.GameListRepository;
 import com.flexpoker.game.query.repository.OpenGameForPlayerRepository;
 import com.flexpoker.login.query.repository.LoginRepository;
 import com.flexpoker.model.OpenGameForUser;
-import com.flexpoker.web.model.CreateGameViewModel;
-import com.flexpoker.web.model.GameInListDTO;
+import com.flexpoker.web.model.incoming.CreateGameDTO;
+import com.flexpoker.web.model.incoming.GameInListDTO;
 
 @Controller
 public class GameManagementController {
@@ -57,7 +57,7 @@ public class GameManagementController {
     }
 
     @MessageMapping(value = "/app/creategame")
-    public void createGame(CreateGameViewModel model, Principal principal) {
+    public void createGame(CreateGameDTO model, Principal principal) {
         UUID playerId = loginRepository.fetchAggregateIdByUsername(principal.getName());
         CreateGameCommand command = new CreateGameCommand(model.getName(),
                 model.getPlayers(), model.getPlayersPerTable(), playerId);

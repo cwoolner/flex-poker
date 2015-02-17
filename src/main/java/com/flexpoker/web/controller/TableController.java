@@ -18,9 +18,9 @@ import com.flexpoker.table.command.commands.FoldCommand;
 import com.flexpoker.table.command.commands.RaiseCommand;
 import com.flexpoker.table.command.framework.TableCommandType;
 import com.flexpoker.table.query.repository.TableRepository;
-import com.flexpoker.web.model.table.TableViewModel;
-import com.flexpoker.web.model.table.handaction.BaseHandActionViewModel;
-import com.flexpoker.web.model.table.handaction.RaiseHandActionViewModel;
+import com.flexpoker.web.model.incoming.DefaultTableActionDTO;
+import com.flexpoker.web.model.incoming.RaiseTableActionDTO;
+import com.flexpoker.web.model.outgoing.TableDTO;
 
 @Controller
 public class TableController {
@@ -40,42 +40,37 @@ public class TableController {
     }
 
     @SubscribeMapping(value = "/topic/game/{gameId}/table/{tableId}")
-    public TableViewModel fetchTable(@DestinationVariable UUID gameId,
+    public TableDTO fetchTable(@DestinationVariable UUID gameId,
             @DestinationVariable UUID tableId) {
         return tableRepository.fetchById(tableId);
     }
 
     @MessageMapping(value = "/app/check")
-    public void check(BaseHandActionViewModel model, Principal principal) {
-        UUID gameId = UUID.fromString(model.getGameId());
-        UUID tableId = UUID.fromString(model.getTableId());
+    public void check(DefaultTableActionDTO model, Principal principal) {
         UUID playerId = loginRepository.fetchAggregateIdByUsername(principal.getName());
-        commandPublisher.publish(new CheckCommand(tableId, gameId, playerId));
+        commandPublisher.publish(new CheckCommand(model.getTableId(), model.getGameId(),
+                playerId));
     }
 
     @MessageMapping(value = "/app/fold")
-    public void fold(BaseHandActionViewModel model, Principal principal) {
-        UUID gameId = UUID.fromString(model.getGameId());
-        UUID tableId = UUID.fromString(model.getTableId());
+    public void fold(DefaultTableActionDTO model, Principal principal) {
         UUID playerId = loginRepository.fetchAggregateIdByUsername(principal.getName());
-        commandPublisher.publish(new FoldCommand(tableId, gameId, playerId));
+        commandPublisher.publish(new FoldCommand(model.getTableId(), model.getGameId(),
+                playerId));
     }
 
     @MessageMapping(value = "/app/call")
-    public void call(BaseHandActionViewModel model, Principal principal) {
-        UUID gameId = UUID.fromString(model.getGameId());
-        UUID tableId = UUID.fromString(model.getTableId());
+    public void call(DefaultTableActionDTO model, Principal principal) {
         UUID playerId = loginRepository.fetchAggregateIdByUsername(principal.getName());
-        commandPublisher.publish(new CallCommand(tableId, gameId, playerId));
+        commandPublisher.publish(new CallCommand(model.getTableId(), model.getTableId(),
+                playerId));
     }
 
     @MessageMapping(value = "/app/raise")
-    public void raise(RaiseHandActionViewModel model, Principal principal) {
-        UUID gameId = UUID.fromString(model.getGameId());
-        UUID tableId = UUID.fromString(model.getTableId());
+    public void raise(RaiseTableActionDTO model, Principal principal) {
         UUID playerId = loginRepository.fetchAggregateIdByUsername(principal.getName());
-        commandPublisher.publish(new RaiseCommand(tableId, gameId, playerId, model
-                .getRaiseToAmount()));
+        commandPublisher.publish(new RaiseCommand(model.getTableId(), model.getGameId(),
+                playerId, model.getRaiseToAmount()));
     }
 
 }

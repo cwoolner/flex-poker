@@ -1,4 +1,4 @@
-package com.flexpoker.web.model;
+package com.flexpoker.web.model.incoming;
 
 import java.util.UUID;
 

@@ -17,8 +17,8 @@ import com.flexpoker.login.query.repository.LoginRepository;
 import com.flexpoker.pushnotifications.OpenTableForUserPushNotification;
 import com.flexpoker.table.command.events.TableCreatedEvent;
 import com.flexpoker.table.query.repository.TableRepository;
-import com.flexpoker.web.model.table.SeatViewModel;
-import com.flexpoker.web.model.table.TableViewModel;
+import com.flexpoker.web.model.outgoing.SeatDTO;
+import com.flexpoker.web.model.outgoing.TableDTO;
 
 @Component
 public class TableCreatedEventHandler implements EventHandler<TableCreatedEvent> {
@@ -45,21 +45,21 @@ public class TableCreatedEventHandler implements EventHandler<TableCreatedEvent>
     }
 
     private void handleNewTableInsert(TableCreatedEvent event) {
-        List<SeatViewModel> seats = new ArrayList<>();
+        List<SeatDTO> seats = new ArrayList<>();
 
         for (int position : event.getSeatPositionToPlayerMap().keySet()) {
             String displayName = loginRepository.fetchUsernameByAggregateId(event
                     .getSeatPositionToPlayerMap().get(Integer.valueOf(position)));
-            SeatViewModel seatViewModel = new SeatViewModel(position, displayName,
+            SeatDTO seatDTO = new SeatDTO(position, displayName,
                     event.getStartingNumberOfChips(), 0, false, 0, 0, false, false,
                     false, false);
-            seats.add(seatViewModel);
+            seats.add(seatDTO);
         }
 
-        TableViewModel tableViewModel = new TableViewModel(event.getAggregateId(), seats,
+        TableDTO tableDTO = new TableDTO(event.getAggregateId(), seats,
                 0, Collections.emptySet(), Collections.emptyList());
 
-        tableRepository.save(tableViewModel);
+        tableRepository.save(tableDTO);
     }
 
     private void handlePushNotifications(TableCreatedEvent event) {

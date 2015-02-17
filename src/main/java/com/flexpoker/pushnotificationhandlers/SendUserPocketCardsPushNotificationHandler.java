@@ -10,7 +10,7 @@ import com.flexpoker.framework.pushnotifier.PushNotificationHandler;
 import com.flexpoker.login.query.repository.LoginRepository;
 import com.flexpoker.pushnotifications.SendUserPocketCardsPushNotification;
 import com.flexpoker.util.MessagingConstants;
-import com.flexpoker.web.model.PocketCardsViewModel;
+import com.flexpoker.web.model.outgoing.PocketCardsDTO;
 
 @Component
 public class SendUserPocketCardsPushNotificationHandler implements
@@ -32,12 +32,11 @@ public class SendUserPocketCardsPushNotificationHandler implements
     public void handle(SendUserPocketCardsPushNotification pushNotification) {
         String username = loginRepository.fetchUsernameByAggregateId(pushNotification
                 .getPlayerId());
-        PocketCardsViewModel pocketCardsViewModel = new PocketCardsViewModel(
-                pushNotification.getPocketCards().getCard1().getId(), pushNotification
-                        .getPocketCards().getCard2().getId(),
-                pushNotification.getTableId());
+        PocketCardsDTO pocketCardsDTO = new PocketCardsDTO(pushNotification
+                .getPocketCards().getCard1().getId(), pushNotification.getPocketCards()
+                .getCard2().getId(), pushNotification.getTableId());
         messagingTemplate.convertAndSendToUser(username, MessagingConstants.POCKET_CARDS,
-                pocketCardsViewModel);
+                pocketCardsDTO);
     }
 
 }

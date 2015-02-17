@@ -10,7 +10,7 @@ import com.flexpoker.framework.pushnotifier.PushNotificationHandler;
 import com.flexpoker.login.query.repository.LoginRepository;
 import com.flexpoker.pushnotifications.OpenTableForUserPushNotification;
 import com.flexpoker.util.MessagingConstants;
-import com.flexpoker.web.model.OpenTableForUserViewModel;
+import com.flexpoker.web.model.outgoing.OpenTableForUserDTO;
 
 @Component
 public class OpenTableForUserPushNotificationHandler implements
@@ -32,10 +32,10 @@ public class OpenTableForUserPushNotificationHandler implements
     public void handle(OpenTableForUserPushNotification pushNotification) {
         String username = loginRepository.fetchUsernameByAggregateId(pushNotification
                 .getPlayerId());
-        OpenTableForUserViewModel viewModel = new OpenTableForUserViewModel(
-                pushNotification.getGameId(), pushNotification.getTableId());
+        OpenTableForUserDTO dto = new OpenTableForUserDTO(pushNotification.getGameId(),
+                pushNotification.getTableId());
         messagingTemplate.convertAndSendToUser(username,
-                MessagingConstants.OPEN_TABLE_FOR_USER, viewModel);
+                MessagingConstants.OPEN_TABLE_FOR_USER, dto);
     }
 
 }

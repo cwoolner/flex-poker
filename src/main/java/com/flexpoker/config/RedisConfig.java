@@ -9,7 +9,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 
 import com.flexpoker.table.command.framework.TableEvent;
-import com.flexpoker.web.model.GameInListDTO;
+import com.flexpoker.web.model.incoming.GameInListDTO;
 
 @Configuration
 public class RedisConfig {

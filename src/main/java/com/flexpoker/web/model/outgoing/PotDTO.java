@@ -1,10 +1,10 @@
-package com.flexpoker.web.model.table;
+package com.flexpoker.web.model.outgoing;
 
 import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class PotViewModel {
+public class PotDTO {
 
     @JsonProperty
     private final Set<String> seats;
@@ -18,7 +18,7 @@ public class PotViewModel {
     @JsonProperty
     private final Set<String> winners;
 
-    public PotViewModel(Set<String> seats, int amount, boolean open, Set<String> winners) {
+    public PotDTO(Set<String> seats, int amount, boolean open, Set<String> winners) {
         this.seats = seats;
         this.amount = amount;
         this.open = open;

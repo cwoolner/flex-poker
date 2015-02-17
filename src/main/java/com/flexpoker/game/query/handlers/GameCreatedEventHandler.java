@@ -12,7 +12,7 @@ import com.flexpoker.game.query.repository.GameListRepository;
 import com.flexpoker.login.query.repository.LoginRepository;
 import com.flexpoker.model.GameStage;
 import com.flexpoker.pushnotifications.GameListUpdatedPushNotification;
-import com.flexpoker.web.model.GameInListDTO;
+import com.flexpoker.web.model.incoming.GameInListDTO;
 
 @Component
 public class GameCreatedEventHandler implements EventHandler<GameCreatedEvent> {

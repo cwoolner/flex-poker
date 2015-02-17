@@ -1,4 +1,4 @@
-package com.flexpoker.web.model.table;
+package com.flexpoker.web.model.outgoing;
 
 import java.util.List;
 import java.util.Set;
@@ -6,24 +6,24 @@ import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class TableViewModel {
+public class TableDTO {
 
     private final UUID tableId;
 
     @JsonProperty
-    private List<SeatViewModel> seats;
+    private List<SeatDTO> seats;
 
     @JsonProperty
     private int totalPot;
 
     @JsonProperty
-    private Set<PotViewModel> pots;
+    private Set<PotDTO> pots;
 
     @JsonProperty
-    private List<CardViewModel> visibleCommonCards;
+    private List<CardDTO> visibleCommonCards;
 
-    public TableViewModel(UUID tableId, List<SeatViewModel> seats, int totalPot,
-            Set<PotViewModel> pots, List<CardViewModel> visibleCommonCards) {
+    public TableDTO(UUID tableId, List<SeatDTO> seats, int totalPot,
+            Set<PotDTO> pots, List<CardDTO> visibleCommonCards) {
         this.tableId = tableId;
         this.seats = seats;
         this.totalPot = totalPot;
@@ -35,11 +35,11 @@ public class TableViewModel {
         return tableId;
     }
 
-    public List<SeatViewModel> getSeats() {
+    public List<SeatDTO> getSeats() {
         return seats;
     }
 
-    public void setSeats(List<SeatViewModel> seats) {
+    public void setSeats(List<SeatDTO> seats) {
         this.seats = seats;
     }
 
@@ -51,19 +51,19 @@ public class TableViewModel {
         this.totalPot = totalPot;
     }
 
-    public Set<PotViewModel> getPots() {
+    public Set<PotDTO> getPots() {
         return pots;
     }
 
-    public void setPots(Set<PotViewModel> pots) {
+    public void setPots(Set<PotDTO> pots) {
         this.pots = pots;
     }
 
-    public List<CardViewModel> getVisibleCommonCards() {
+    public List<CardDTO> getVisibleCommonCards() {
         return visibleCommonCards;
     }
 
-    public void setVisibleCommonCards(List<CardViewModel> visibleCommonCards) {
+    public void setVisibleCommonCards(List<CardDTO> visibleCommonCards) {
         this.visibleCommonCards = visibleCommonCards;
     }
 

@@ -1,8 +1,8 @@
-package com.flexpoker.web.model.table;
+package com.flexpoker.web.model.outgoing;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class SeatViewModel {
+public class SeatDTO {
 
     @JsonProperty
     private int position;
@@ -37,7 +37,7 @@ public class SeatViewModel {
     @JsonProperty
     private boolean actionOn;
 
-    public SeatViewModel(int position, String name, int chipsInBack, int chipsInFront,
+    public SeatDTO(int position, String name, int chipsInBack, int chipsInFront,
             boolean stillInHand, int raiseTo, int callAmount, boolean button,
             boolean smallBlind, boolean bigBlind, boolean actionOn) {
         this.position = position;

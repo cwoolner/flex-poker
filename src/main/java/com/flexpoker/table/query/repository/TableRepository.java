@@ -2,12 +2,12 @@ package com.flexpoker.table.query.repository;
 
 import java.util.UUID;
 
-import com.flexpoker.web.model.table.TableViewModel;
+import com.flexpoker.web.model.outgoing.TableDTO;
 
 public interface TableRepository {
 
-    TableViewModel fetchById(UUID tableId);
+    TableDTO fetchById(UUID tableId);
 
-    void save(TableViewModel tableViewModel);
+    void save(TableDTO tableDTO);
 
 }
