@@ -21,9 +21,13 @@ import com.flexpoker.table.command.events.PlayerCalledEvent;
 import com.flexpoker.table.command.events.PlayerCheckedEvent;
 import com.flexpoker.table.command.events.PlayerFoldedEvent;
 import com.flexpoker.table.command.events.PlayerRaisedEvent;
+import com.flexpoker.table.command.events.PotAmountIncreasedEvent;
+import com.flexpoker.table.command.events.PotClosedEvent;
+import com.flexpoker.table.command.events.PotCreatedEvent;
 import com.flexpoker.table.command.events.RiverCardDealtEvent;
 import com.flexpoker.table.command.events.TableCreatedEvent;
 import com.flexpoker.table.command.events.TurnCardDealtEvent;
+import com.flexpoker.table.command.events.WinnersDeterminedEvent;
 import com.flexpoker.table.command.framework.TableEventType;
 
 @Component
@@ -53,6 +57,14 @@ public class InMemoryAsyncTableEventSubscriber implements EventSubscriber<TableE
 
     private final EventHandler<ActionOnChangedEvent> actionOnChangedEventHandler;
 
+    private final EventHandler<PotAmountIncreasedEvent> potAmountIncreasedEventHandler;
+
+    private final EventHandler<PotClosedEvent> potClosedEventHandler;
+
+    private final EventHandler<PotCreatedEvent> potCreatedEventHandler;
+
+    private final EventHandler<WinnersDeterminedEvent> winnersDeterminedEventHandler;
+
     @Inject
     public InMemoryAsyncTableEventSubscriber(
             EventHandler<TableCreatedEvent> tableCreatedEventHandler,
@@ -64,7 +76,11 @@ public class InMemoryAsyncTableEventSubscriber implements EventSubscriber<TableE
             EventHandler<FlopCardsDealtEvent> flopCardsDealtEventHandler,
             EventHandler<TurnCardDealtEvent> turnCardDealtEventHandler,
             EventHandler<RiverCardDealtEvent> riverCardDealtEventHandler,
-            EventHandler<ActionOnChangedEvent> actionOnChangedEventHandler) {
+            EventHandler<ActionOnChangedEvent> actionOnChangedEventHandler,
+            EventHandler<PotAmountIncreasedEvent> potAmountIncreasedEventHandler,
+            EventHandler<PotClosedEvent> potClosedEventHandler,
+            EventHandler<PotCreatedEvent> potCreatedEventHandler,
+            EventHandler<WinnersDeterminedEvent> winnersDeterminedEventHandler) {
         listOfTableEventsNeededToProcess = new ConcurrentHashMap<>();
         nextExpectedEventVersion = new ConcurrentHashMap<>();
         this.tableCreatedEventHandler = tableCreatedEventHandler;
@@ -77,6 +93,10 @@ public class InMemoryAsyncTableEventSubscriber implements EventSubscriber<TableE
         this.turnCardDealtEventHandler = turnCardDealtEventHandler;
         this.riverCardDealtEventHandler = riverCardDealtEventHandler;
         this.actionOnChangedEventHandler = actionOnChangedEventHandler;
+        this.potAmountIncreasedEventHandler = potAmountIncreasedEventHandler;
+        this.potClosedEventHandler = potClosedEventHandler;
+        this.potCreatedEventHandler = potCreatedEventHandler;
+        this.winnersDeterminedEventHandler = winnersDeterminedEventHandler;
     }
 
     @Async
@@ -142,6 +162,20 @@ public class InMemoryAsyncTableEventSubscriber implements EventSubscriber<TableE
             actionOnChangedEventHandler.handle((ActionOnChangedEvent) event);
             break;
         case LastToActChanged:
+            break;
+        case PotAmountIncreased:
+            potAmountIncreasedEventHandler.handle((PotAmountIncreasedEvent) event);
+            break;
+        case PotClosed:
+            potClosedEventHandler.handle((PotClosedEvent) event);
+            break;
+        case PotCreated:
+            potCreatedEventHandler.handle((PotCreatedEvent) event);
+            break;
+        case RoundCompleted:
+            break;
+        case WinnersDetermined:
+            winnersDeterminedEventHandler.handle((WinnersDeterminedEvent) event);
             break;
         case HandCompleted:
             break;
