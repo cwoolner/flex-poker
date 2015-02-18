@@ -30,7 +30,7 @@ public class WinnersDeterminedEvent extends BaseEvent<TableEventType> implements
             @JsonProperty(value = "gameId") UUID gameId,
             @JsonProperty(value = "handId") UUID handId,
             @JsonProperty(value = "playersToShowCards") Set<UUID> playersToShowCards,
-            @JsonProperty(value = "playersToShowCards") Map<UUID, Integer> playersToChipsWonMap) {
+            @JsonProperty(value = "playersToChipsWonMap") Map<UUID, Integer> playersToChipsWonMap) {
         super(aggregateId, version, TYPE);
         this.gameId = gameId;
         this.handId = handId;
