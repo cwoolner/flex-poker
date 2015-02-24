@@ -37,8 +37,8 @@ public class CreateTableCommandHandler implements CommandHandler<CreateTableComm
         Table table = tableFactory.createNew(command.getTableId(), command.getGameId(),
                 command.getNumberOfPlayersPerTable());
         table.createNewTable(command.getPlayerIds());
-        table.fetchNewEvents().forEach(x -> eventPublisher.publish(x));
         table.fetchNewEvents().forEach(x -> tableEventRepository.save(x));
+        table.fetchNewEvents().forEach(x -> eventPublisher.publish(x));
     }
 
 }

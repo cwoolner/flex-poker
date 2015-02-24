@@ -42,8 +42,8 @@ public class ConfirmSignUpUserEmailCommandHandler implements
                 .getAggregateId());
         SignUpUser signUpUser = signUpUserFactory.createFrom(signUpEvents);
         signUpUser.confirmSignedUpUser(command.getUsername(), command.getSignUpCode());
-        signUpUser.fetchNewEvents().forEach(x -> eventPublisher.publish(x));
         signUpUser.fetchNewEvents().forEach(x -> signUpEventRepository.save(x));
+        signUpUser.fetchNewEvents().forEach(x -> eventPublisher.publish(x));
     }
 
 }

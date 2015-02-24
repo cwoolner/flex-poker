@@ -41,7 +41,7 @@ public class JoinGameCommandHandler implements CommandHandler<JoinGameCommand> {
                 .getAggregateId());
         Game game = gameFactory.createFrom(gameEvents);
         game.joinGame(command.getPlayerId());
-        game.fetchNewEvents().forEach(x -> eventPublisher.publish(x));
         game.fetchNewEvents().forEach(x -> gameEventRepository.save(x));
+        game.fetchNewEvents().forEach(x -> eventPublisher.publish(x));
     }
 }

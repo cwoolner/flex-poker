@@ -37,8 +37,8 @@ public class SignUpNewUserCommandHandler implements CommandHandler<SignUpNewUser
         SignUpUser signUpUser = signUpUserFactory.createNew();
         signUpUser.signUpNewUser(command.getEmailAddress(), command.getUsername(),
                 command.getPassword());
-        signUpUser.fetchNewEvents().forEach(x -> eventPublisher.publish(x));
         signUpUser.fetchNewEvents().forEach(x -> signUpEventRepository.save(x));
+        signUpUser.fetchNewEvents().forEach(x -> eventPublisher.publish(x));
     }
 
 }

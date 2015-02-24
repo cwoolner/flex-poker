@@ -71,8 +71,8 @@ public class StartNewHandForExistingTableCommandHandler implements
 
         table.startNewHandForExistingTable(command.getBlinds(), shuffledDeckOfCards,
                 cardsUsedInHand, handEvaluations);
-        table.fetchNewEvents().forEach(x -> eventPublisher.publish(x));
         table.fetchNewEvents().forEach(x -> tableEventRepository.save(x));
+        table.fetchNewEvents().forEach(x -> eventPublisher.publish(x));
     }
 
 }

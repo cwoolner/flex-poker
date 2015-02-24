@@ -38,8 +38,8 @@ public class CreateLoginUserCommandHandler implements
         LoginUser loginUser = loginUserFactory.createNew(command.getAggregateId(),
                 command.getUsername(), command.getEncryptedPassword());
         loginUser.enableNewUser();
-        loginUser.fetchNewEvents().forEach(x -> eventPublisher.publish(x));
         loginUser.fetchNewEvents().forEach(x -> loginEventRepository.save(x));
-
+        loginUser.fetchNewEvents().forEach(x -> eventPublisher.publish(x));
     }
+
 }

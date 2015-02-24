@@ -37,7 +37,7 @@ public class CreateGameCommandHandler implements CommandHandler<CreateGameComman
         Game game = gameFactory.createNew();
         game.createNewGame(command.getGameName(), command.getNumberOfPlayers(),
                 command.getNumberOfPlayersPerTable(), command.getCreatedByPlayerId());
-        game.fetchNewEvents().forEach(x -> eventPublisher.publish(x));
         game.fetchNewEvents().forEach(x -> gameEventRepository.save(x));
+        game.fetchNewEvents().forEach(x -> eventPublisher.publish(x));
     }
 }

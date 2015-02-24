@@ -42,8 +42,8 @@ public class AttemptToStartNewHandCommandHandler implements
                 .getAggregateId());
         Game game = gameFactory.createFrom(gameEvents);
         game.attemptToStartNewHand(command.getTableId());
-        game.fetchNewEvents().forEach(x -> eventPublisher.publish(x));
         game.fetchNewEvents().forEach(x -> gameEventRepository.save(x));
+        game.fetchNewEvents().forEach(x -> eventPublisher.publish(x));
     }
 
 }

@@ -42,8 +42,8 @@ public class FoldCommandHandler implements CommandHandler<FoldCommand> {
         Table table = tableFactory.createFrom(tableEvents);
 
         table.fold(command.getPlayerId());
-        table.fetchNewEvents().forEach(x -> eventPublisher.publish(x));
         table.fetchNewEvents().forEach(x -> tableEventRepository.save(x));
+        table.fetchNewEvents().forEach(x -> eventPublisher.publish(x));
     }
 
 }

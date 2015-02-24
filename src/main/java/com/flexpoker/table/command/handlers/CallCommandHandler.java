@@ -42,8 +42,8 @@ public class CallCommandHandler implements CommandHandler<CallCommand> {
         Table table = tableFactory.createFrom(tableEvents);
 
         table.call(command.getPlayerId());
-        table.fetchNewEvents().forEach(x -> eventPublisher.publish(x));
         table.fetchNewEvents().forEach(x -> tableEventRepository.save(x));
+        table.fetchNewEvents().forEach(x -> eventPublisher.publish(x));
     }
 
 }
