@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.inject.Inject;
 
@@ -103,7 +104,7 @@ public class InMemoryAsyncTableEventSubscriber implements EventSubscriber<TableE
     @Override
     public void receive(Event<TableEventType> event) {
         listOfTableEventsNeededToProcess.putIfAbsent(event.getAggregateId(),
-                new ArrayList<>());
+                new CopyOnWriteArrayList<>());
         nextExpectedEventVersion.putIfAbsent(event.getAggregateId(), Integer.valueOf(1));
 
         if (isExpectedEvent(event)) {
@@ -111,7 +112,6 @@ public class InMemoryAsyncTableEventSubscriber implements EventSubscriber<TableE
         } else {
             listOfTableEventsNeededToProcess.get(event.getAggregateId()).add(event);
         }
-
     }
 
     private void handleEventAndRunAnyOthers(Event<TableEventType> event) {
