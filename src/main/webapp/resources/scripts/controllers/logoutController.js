@@ -3,7 +3,7 @@ flexpokerModule.controller('LogoutController', ['$rootScope', '$scope', 'ngstomp
         $scope.client = ngstomp(new SockJS(rootUrl + 'application'));
     }
 
-    $scope.client.connect("", "", function() {
+    $scope.client.connect("guest", "guest", function() {
     }, function() {}, '/');
 
     if ($rootScope.stompClients === undefined) {

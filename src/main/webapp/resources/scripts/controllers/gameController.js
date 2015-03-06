@@ -7,7 +7,7 @@ flexpokerModule.controller('GameController', ['$scope', '$rootScope', '$routePar
         $scope.client = ngstomp(new SockJS(rootUrl + 'application'));
     }
 
-    $scope.client.connect("", "", function() {
+    $scope.client.connect("guest", "guest", function() {
         
         $scope.client.subscribe('/topic/chat/game/' + $scope.gameId + '/user', function(message) {
             var scrollHeight = $('.chat-display').prop('scrollHeight');

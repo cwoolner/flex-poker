@@ -14,7 +14,7 @@ flexpokerModule.controller('TableController', ['$scope', '$rootScope', '$routePa
         $scope.myRightCardUrl = cardData[data.cardId2];
     });
 
-    $scope.client.connect("", "", function() {
+    $scope.client.connect("guest", "guest", function() {
         
         $scope.client.subscribe('/topic/chat/game/' + $scope.gameId
                 + '/table/' + $scope.tableId + '/user', function(message) {

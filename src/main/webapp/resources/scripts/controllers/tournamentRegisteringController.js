@@ -27,7 +27,7 @@ flexpokerModule.controller('TournamentRegisteringController', ['$rootScope', '$s
         $scope.client = ngstomp(new SockJS(rootUrl + 'application'));
     }
 
-    $scope.client.connect("", "", function() {
+    $scope.client.connect("guest", "guest", function() {
         $scope.client.subscribe("/topic/availabletournaments", function(message) {
             $scope.games = $.parseJSON(message.body);
         });

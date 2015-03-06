@@ -11,7 +11,7 @@ flexpokerModule.controller('MainController', ['$rootScope', '$scope', 'ngstomp',
         $scope.client = ngstomp(new SockJS(rootUrl + 'application'));
     }
 
-    $scope.client.connect("", "", function(frame) {
+    $scope.client.connect("guest", "guest", function(frame) {
 
         $scope.client.subscribe('/user/queue/errors', function(message) {
             alert("Error " + message.body);
