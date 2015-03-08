@@ -8,12 +8,19 @@
 <script type="text/javascript">
 var rootUrl = "<c:url value='/' />";
 </script>
-<script type="text/javascript" src="<c:url value='/resources/scripts/3rdparty/jquery-2.0.3.min.js' />"></script>
-<script type="text/javascript" src="<c:url value='/resources/scripts/3rdparty/angular.min.js' />"></script>
-<script type="text/javascript" src="<c:url value='/resources/scripts/3rdparty/ng-grid.min.js' />"></script>
+<script type="text/javascript" src="<c:url value='/resources/js/libs/jquery.min.js' />"></script>
+<script type="text/javascript" src="<c:url value='/resources/js/libs/angular.min.js' />"></script>
+<script type="text/javascript" src="<c:url value='/resources/js/libs/angular-route.min.js' />"></script>
+<script type="text/javascript" src="<c:url value='/resources/js/libs/ng-grid-2.0.14.min.js' />"></script>
 <script type="text/javascript" src="<c:url value='/resources/js/libs/sockjs.js' />"></script>
-<script type="text/javascript" src="<c:url value='/resources/scripts/3rdparty/jquery-ui.min.js' />"></script>
-<script type="text/javascript" src="<c:url value='/resources/scripts/3rdparty/lodash.min.js' />"></script>
+<script type="text/javascript" src="<c:url value='/resources/js/libs/jquery-ui/core.min.js' />"></script>
+<script type="text/javascript" src="<c:url value='/resources/js/libs/jquery-ui/widget.min.js' />"></script>
+<script type="text/javascript" src="<c:url value='/resources/js/libs/jquery-ui/position.min.js' />"></script>
+<script type="text/javascript" src="<c:url value='/resources/js/libs/jquery-ui/dialog.min.js' />"></script>
+<script type="text/javascript" src="<c:url value='/resources/js/libs/jquery-ui/button.min.js' />"></script>
+<script type="text/javascript" src="<c:url value='/resources/js/libs/jquery-ui/mouse.min.js' />"></script>
+<script type="text/javascript" src="<c:url value='/resources/js/libs/jquery-ui/draggable.min.js' />"></script>
+<script type="text/javascript" src="<c:url value='/resources/js/libs/lodash.min.js' />"></script>
 <script type="text/javascript" src="<c:url value='/resources/js/libs/stomp.min.js' />"></script>
 
 <script type="text/javascript" src="<c:url value='/resources/scripts/main.js' />"></script>
@@ -27,7 +34,7 @@ var rootUrl = "<c:url value='/' />";
 
 <link rel="stylesheet" type="text/css" href="<c:url value='/resources/css/ng-grid.min.css' />"></link>
 <link rel="stylesheet" type="text/css" href="<c:url value='/resources/css/main.css' />"></link>
-<link rel="stylesheet" type="text/css" href="<c:url value='/resources/css/smoothness/jquery-ui-1.10.3.custom.min.css' />"></link>
+<link rel="stylesheet" type="text/css" href="<c:url value='/resources/css/jquery-ui.min.css' />"></link>
 
 <title>Home</title>
 </head>

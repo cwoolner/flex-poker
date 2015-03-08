@@ -1,4 +1,4 @@
-var flexpokerModule = angular.module('flexpoker', ['ngGrid']);
+var flexpokerModule = angular.module('flexpoker', ['ngRoute', 'ngGrid']);
 
 var stompClient = Stomp.over(new SockJS(rootUrl + 'application'));
 

@@ -1,4 +1,4 @@
-flexpokerModule.config(function($routeProvider) {
+flexpokerModule.config(['$routeProvider', function($routeProvider) {
     $routeProvider
         .when('/', {
             controller: 'TournamentRegisteringController',
@@ -12,4 +12,4 @@ flexpokerModule.config(function($routeProvider) {
             controller: 'TableController',
             templateUrl: rootUrl + 'resources/templates/table.html'
         });
-});
+}]);

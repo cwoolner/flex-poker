@@ -7,5 +7,4 @@ log.out
 dump.rdb
 bower_components/
 node_modules/
-src/main/webapp/resources/js/libs/stomp.min.js
-src/main/webapp/resources/js/libs/sockjs.js
+src/main/webapp/resources/js/
