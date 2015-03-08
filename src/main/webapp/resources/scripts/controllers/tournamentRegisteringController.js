@@ -1,4 +1,4 @@
-flexpokerModule.controller('TournamentRegisteringController', ['$rootScope', '$scope', 'ngstomp', function($rootScope, $scope, ngstomp) {
+flexpokerModule.controller('TournamentRegisteringController', ['$rootScope', '$scope', function($rootScope, $scope) {
     
     $('#create-game-dialog, #join-game-dialog').hide();
     $('body').find('button, input[type=submit]').button();
@@ -22,32 +22,39 @@ flexpokerModule.controller('TournamentRegisteringController', ['$rootScope', '$s
                           {field: 'createdBy', displayName: 'Creator'}, 
                           {field: 'createdOn', displayName: 'Created'}]
         };
-    
-    if ($scope.client === undefined) {
-        $scope.client = ngstomp(new SockJS(rootUrl + 'application'));
+
+    if (stompClient.connected) {
+        registerStompSubscriptions();
     }
 
-    $scope.client.connect("guest", "guest", function() {
-        $scope.client.subscribe("/topic/availabletournaments", function(message) {
-            $scope.games = $.parseJSON(message.body);
-        });
-        $scope.client.subscribe('/topic/chat/global/user', function(message) {
-            var scrollHeight = $('.chat-display').prop('scrollHeight');
-            $('.chat-display').prop('scrollTop', scrollHeight);
-            $scope.chatDisplay += message.body + '\n';
-        });
-        $scope.client.subscribe('/topic/chat/global/system', function(message) {
-            var scrollHeight = $('.chat-display').prop('scrollHeight');
-            $('.chat-display').prop('scrollTop', scrollHeight);
-            $scope.chatDisplay += message.body + '\n';
-        });
-    }, function() {}, '/');
-    
-    if ($rootScope.stompClients === undefined) {
-        $rootScope.stompClients = [];
-    }
-    $rootScope.stompClients.push($scope.client);
+    $scope.$on('stomp-connected', function(event, data) {
+        registerStompSubscriptions();
+    });
 
+    function registerStompSubscriptions() {
+        stompClient.subscribe("/topic/availabletournaments", function(message) {
+            $scope.$apply(function() {
+                $scope.games = $.parseJSON(message.body);
+            });
+        });
+
+        stompClient.subscribe('/topic/chat/global/user', function(message) {
+            var scrollHeight = $('.chat-display').prop('scrollHeight');
+            $('.chat-display').prop('scrollTop', scrollHeight);
+            $scope.$apply(function() {
+                $scope.chatDisplay += message.body + '\n';
+            });
+        });
+
+        stompClient.subscribe('/topic/chat/global/system', function(message) {
+            var scrollHeight = $('.chat-display').prop('scrollHeight');
+            $('.chat-display').prop('scrollTop', scrollHeight);
+            $scope.$apply(function() {
+                $scope.chatDisplay += message.body + '\n';
+            });
+        });
+    };
+    
     $scope.openCreateGameDialog = function() {
         $('#create-game-dialog').dialog({ width: 550 });
     }
@@ -65,7 +72,7 @@ flexpokerModule.controller('TournamentRegisteringController', ['$rootScope', '$s
                 players: $scope.players,
                 playersPerTable: $scope.playersPerTable
         };
-        $scope.client.send("/app/creategame", {}, JSON.stringify(newGame));
+        stompClient.send("/app/creategame", {}, JSON.stringify(newGame));
         $scope.name = '';
         $scope.players = '';
         $scope.playersPerTable = '';
@@ -73,7 +80,7 @@ flexpokerModule.controller('TournamentRegisteringController', ['$rootScope', '$s
     };
     
     $scope.submitJoinGame = function() {
-        $scope.client.send("/app/joingame", {}, JSON.stringify($scope.joinGameId));
+        stompClient.send("/app/joingame", {}, JSON.stringify($scope.joinGameId));
         $('#join-game-dialog').dialog('destroy');
     };
     
@@ -89,7 +96,7 @@ flexpokerModule.controller('TournamentRegisteringController', ['$rootScope', '$s
                 tableId: null
         };
 
-        $scope.client.send('/app/sendchatmessage', {}, JSON.stringify(globalMessage)); 
+        stompClient.send('/app/sendchatmessage', {}, JSON.stringify(globalMessage));
         $scope.chatMessage = '';
     };
 

@@ -1,65 +1,22 @@
-flexpokerModule.controller('TableController', ['$scope', '$rootScope', '$routeParams', 'ngstomp', function($scope, $rootScope, $routeParams, ngstomp) {
+flexpokerModule.controller('TableController', ['$scope', '$rootScope', '$routeParams', function($scope, $rootScope, $routeParams) {
     $scope.gameId = $routeParams['gameId'];
     $scope.tableId = $routeParams['tableId'];
     $scope.username = $rootScope.username;
 
     $scope.chatDisplay = '';
-    
-    if ($scope.client === undefined) {
-        $scope.client = ngstomp(new SockJS(rootUrl + 'application'));
-    }
-    
+
     $rootScope.$on('pocketCardsReceived' + $scope.tableId, function(event, data) {
         $scope.myLeftCardUrl = cardData[data.cardId1];
         $scope.myRightCardUrl = cardData[data.cardId2];
     });
-
-    $scope.client.connect("guest", "guest", function() {
-        
-        $scope.client.subscribe('/topic/chat/game/' + $scope.gameId
-                + '/table/' + $scope.tableId + '/user', function(message) {
-            var scrollHeight = $('.chat-display').prop('scrollHeight');
-            $('.chat-display').prop('scrollTop', scrollHeight);
-            $scope.chatDisplay += message.body + '\n';
-        });
-
-        $scope.client.subscribe('/topic/chat/game/' + $scope.gameId
-                + '/table/' + $scope.tableId + '/system', function(message) {
-            var scrollHeight = $('.chat-display').prop('scrollHeight');
-            $('.chat-display').prop('scrollTop', scrollHeight);
-            $scope.chatDisplay += message.body + '\n';
-        });
-
-        $scope.client.subscribe('/topic/game/' + $scope.gameId
-                + '/table/' + $scope.tableId, function(message) {
-            var table = $.parseJSON(message.body);
-            $scope.table = table;
-            
-            var mySeat = _.find(table.seats, {name: $scope.username});
-            
-            if (mySeat) {
-                var pokerActions = {
-                    actionOn: mySeat.actionOn,
-                    check: mySeat.callAmount === 0,
-                    fold: mySeat.callAmount !== 0,
-                    call: mySeat.callAmount !== 0,
-                    raise: mySeat.raiseTo !== 0
-                };
-                $scope.pokerActions = pokerActions;
-            }
-            
-            $scope.commonCards = [];
-            $scope.table.visibleCommonCards.forEach(function(commonCard) {
-                $scope.commonCards.push(cardData[commonCard.id]);
-            });
-        });
-
-    }, function() {}, '/');
     
-    if ($rootScope.stompClients === undefined) {
-        $rootScope.stompClients = [];
+    if (stompClient.connected) {
+        registerStompSubscriptions();
     }
-    $rootScope.stompClients.push($scope.client);
+
+    $scope.$on('stomp-connected', function(event, data) {
+        registerStompSubscriptions();
+    });
 
     $scope.sendChat = function() {
         if ($scope.chatMessage == '') {
@@ -73,7 +30,7 @@ flexpokerModule.controller('TableController', ['$scope', '$rootScope', '$routePa
                 tableId: $scope.tableId
         };
 
-        $scope.client.send('/app/sendchatmessage', {}, JSON.stringify(tableMessage)); 
+        stompClient.send('/app/sendchatmessage', {}, JSON.stringify(tableMessage));
         $scope.chatMessage = '';
     };
     
@@ -82,7 +39,7 @@ flexpokerModule.controller('TableController', ['$scope', '$rootScope', '$routePa
             gameId: $scope.gameId,
             tableId: $scope.tableId
         };
-        $scope.client.send('/app/check', {}, JSON.stringify(checkMessage));
+        stompClient.send('/app/check', {}, JSON.stringify(checkMessage));
     };
 
     $scope.call = function() {
@@ -90,7 +47,7 @@ flexpokerModule.controller('TableController', ['$scope', '$rootScope', '$routePa
             gameId: $scope.gameId,
             tableId: $scope.tableId
         };
-        $scope.client.send('/app/call', {}, JSON.stringify(callMessage));
+        stompClient.send('/app/call', {}, JSON.stringify(callMessage));
     };
 
     $scope.raise = function() {
@@ -98,7 +55,7 @@ flexpokerModule.controller('TableController', ['$scope', '$rootScope', '$routePa
             gameId: $scope.gameId,
             tableId: $scope.tableId
         };
-        $scope.client.send('/app/raise', {}, JSON.stringify(raiseMessage));
+        stompClient.send('/app/raise', {}, JSON.stringify(raiseMessage));
     };
 
     $scope.fold = function() {
@@ -106,7 +63,55 @@ flexpokerModule.controller('TableController', ['$scope', '$rootScope', '$routePa
             gameId: $scope.gameId,
             tableId: $scope.tableId
         };
-        $scope.client.send('/app/fold', {}, JSON.stringify(foldMessage));
+        stompClient.send('/app/fold', {}, JSON.stringify(foldMessage));
     };
+
+    function registerStompSubscriptions() {
+        stompClient.subscribe('/topic/chat/game/' + $scope.gameId
+                + '/table/' + $scope.tableId + '/user', function(message) {
+            var scrollHeight = $('.chat-display').prop('scrollHeight');
+            $('.chat-display').prop('scrollTop', scrollHeight);
+            $scope.$apply(function() {
+                $scope.chatDisplay += message.body + '\n';
+            });
+        });
+
+        stompClient.subscribe('/topic/chat/game/' + $scope.gameId
+                + '/table/' + $scope.tableId + '/system', function(message) {
+            var scrollHeight = $('.chat-display').prop('scrollHeight');
+            $('.chat-display').prop('scrollTop', scrollHeight);
+            $scope.$apply(function() {
+                $scope.chatDisplay += message.body + '\n';
+            });
+        });
+
+        stompClient.subscribe('/topic/game/' + $scope.gameId
+                + '/table/' + $scope.tableId, function(message) {
+            var table = $.parseJSON(message.body);
+            $scope.$apply(function() {
+                $scope.table = table;
+            });
+            var mySeat = _.find(table.seats, {name: $scope.username});
+            if (mySeat) {
+                var pokerActions = {
+                    actionOn: mySeat.actionOn,
+                    check: mySeat.callAmount === 0,
+                    fold: mySeat.callAmount !== 0,
+                    call: mySeat.callAmount !== 0,
+                    raise: mySeat.raiseTo !== 0
+                };
+                $scope.$apply(function() {
+                    $scope.pokerActions = pokerActions;
+                });
+            }
+
+            $scope.$apply(function() {
+                $scope.commonCards = [];
+                $scope.table.visibleCommonCards.forEach(function(commonCard) {
+                    $scope.commonCards.push(cardData[commonCard.id]);
+                });
+            });
+        });
+    }
 
 }]);

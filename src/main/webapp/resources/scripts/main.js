@@ -1,4 +1,6 @@
-var flexpokerModule = angular.module('flexpoker', ['AngularStomp', 'ngGrid']);
+var flexpokerModule = angular.module('flexpoker', ['ngGrid']);
+
+var stompClient = Stomp.over(new SockJS(rootUrl + 'application'));
 
 // taken from http://jsfiddle.net/thomporter/DwKZh/
 flexpokerModule.directive('numbersOnly', function() {

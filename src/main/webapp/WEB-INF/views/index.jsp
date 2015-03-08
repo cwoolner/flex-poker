@@ -15,7 +15,6 @@ var rootUrl = "<c:url value='/' />";
 <script type="text/javascript" src="<c:url value='/resources/scripts/3rdparty/jquery-ui.min.js' />"></script>
 <script type="text/javascript" src="<c:url value='/resources/scripts/3rdparty/lodash.min.js' />"></script>
 <script type="text/javascript" src="<c:url value='/resources/js/libs/stomp.min.js' />"></script>
-<script type="text/javascript" src="<c:url value='/resources/scripts/3rdparty/angular-stomp.js' />"></script>
 
 <script type="text/javascript" src="<c:url value='/resources/scripts/main.js' />"></script>
 <script type="text/javascript" src="<c:url value='/resources/scripts/controllers/gameController.js' />"></script>
