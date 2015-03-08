@@ -1,5 +1,12 @@
 module.exports = function(grunt) {
   grunt.initConfig({
+      watch: {
+          scripts: {
+              files: ['src/main/webapp/resources/scripts/**/*.js'],
+              tasks: ['browserify']
+          }
+      },
+
     bowercopy: {
         options: {
           clean: true
@@ -42,14 +49,63 @@ module.exports = function(grunt) {
                 'src/main/webapp/resources/js/libs/jquery-ui/mouse.min.js': 'jquery-ui/ui/minified/mouse.min.js',
                 'target/flexpoker/resources/js/libs/jquery-ui/draggable.min.js': 'jquery-ui/ui/minified/draggable.min.js',
                 'src/main/webapp/resources/js/libs/jquery-ui/draggable.min.js': 'jquery-ui/ui/minified/draggable.min.js',
-                'target/main/webapp/resources/css/jquery-ui.min.css': 'jquery-ui/themes/smoothness/jquery-ui.min.css',
-                'src/main/webapp/resources/css/jquery-ui.min.css': 'jquery-ui/themes/smoothness/jquery-ui.min.css'
+                'target/flexpoker/resources/css/jquery-ui.min.css': 'jquery-ui/themes/smoothness/jquery-ui.min.css',
+                'src/main/webapp/resources/css/jquery-ui.min.css': 'jquery-ui/themes/smoothness/jquery-ui.min.css',
+                'target/flexpoker/resources/css/images/': 'jquery-ui/themes/smoothness/images/*.png',
+                'src/main/webapp/resources/css/images/': 'jquery-ui/themes/smoothness/images/*.png'
             }
         }
-    }
+    },
+
+    cssmin: {
+        options: {
+          shorthandCompacting: false,
+          roundingPrecision: -1
+        },
+        target: {
+          files: {
+            'src/main/webapp/resources/css/bundle.css': [
+                                                         'src/main/webapp/resources/css/ng-grid.min.css',
+                                                         'src/main/webapp/resources/css/jquery-ui.min.css',
+                                                         'src/main/webapp/resources/css/main.css'
+                                                         ],
+           'target/flexpoker/resources/css/bundle.css': [
+                                                         'src/main/webapp/resources/css/ng-grid.min.css',
+                                                         'src/main/webapp/resources/css/jquery-ui.min.css',
+                                                         'src/main/webapp/resources/css/main.css'
+                                                        ]
+
+          }
+        }
+      },
+
+      browserify: {
+          dist: {
+            files: {
+                'src/main/webapp/resources/js/libs/bundle.js': [
+                                                                'src/main/webapp/resources/scripts/routes.js',
+                                                                'src/main/webapp/resources/scripts/main.js',
+                                                                'src/main/webapp/resources/scripts/cardData.js',
+                                                                'src/main/webapp/resources/scripts/controllers/*.js'
+                                                                ],
+                'target/flexpoker/resources/js/libs/bundle.js': [
+                                                                 'src/main/webapp/resources/scripts/routes.js',
+                                                                 'src/main/webapp/resources/scripts/main.js',
+                                                                 'src/main/webapp/resources/scripts/cardData.js',
+                                                                 'src/main/webapp/resources/scripts/controllers/*.js'
+                                                                ]
+            },
+            options: {
+              transform: ['babelify']
+            }
+          }
+        }
   });
 
   grunt.loadNpmTasks('grunt-bowercopy');
-  grunt.registerTask('default', ['bowercopy']);
+  grunt.loadNpmTasks('grunt-contrib-uglify');
+  grunt.loadNpmTasks('grunt-contrib-cssmin');
+  grunt.loadNpmTasks('grunt-browserify');
+  grunt.loadNpmTasks('grunt-contrib-watch');
+  grunt.registerTask('default', ['bowercopy', 'cssmin', 'browserify']);
 };
-

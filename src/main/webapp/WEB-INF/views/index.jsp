@@ -22,19 +22,9 @@ var rootUrl = "<c:url value='/' />";
 <script type="text/javascript" src="<c:url value='/resources/js/libs/jquery-ui/draggable.min.js' />"></script>
 <script type="text/javascript" src="<c:url value='/resources/js/libs/lodash.min.js' />"></script>
 <script type="text/javascript" src="<c:url value='/resources/js/libs/stomp.min.js' />"></script>
+<script type="text/javascript" src="<c:url value='/resources/js/libs/bundle.js' />"></script>
 
-<script type="text/javascript" src="<c:url value='/resources/scripts/main.js' />"></script>
-<script type="text/javascript" src="<c:url value='/resources/scripts/controllers/gameController.js' />"></script>
-<script type="text/javascript" src="<c:url value='/resources/scripts/controllers/tableController.js' />"></script>
-<script type="text/javascript" src="<c:url value='/resources/scripts/controllers/mainController.js' />"></script>
-<script type="text/javascript" src="<c:url value='/resources/scripts/controllers/tournamentRegisteringController.js' />"></script>
-<script type="text/javascript" src="<c:url value='/resources/scripts/controllers/logoutController.js' />"></script>
-<script type="text/javascript" src="<c:url value='/resources/scripts/routes.js' />"></script>
-<script type="text/javascript" src="<c:url value='/resources/scripts/cardData.js' />"></script>
-
-<link rel="stylesheet" type="text/css" href="<c:url value='/resources/css/ng-grid.min.css' />"></link>
-<link rel="stylesheet" type="text/css" href="<c:url value='/resources/css/main.css' />"></link>
-<link rel="stylesheet" type="text/css" href="<c:url value='/resources/css/jquery-ui.min.css' />"></link>
+<link rel="stylesheet" type="text/css" href="<c:url value='/resources/css/bundle.css' />"></link>
 
 <title>Home</title>
 </head>
