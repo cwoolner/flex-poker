@@ -1,3 +1,5 @@
+import { flexpokerModule } from './main';
+
 flexpokerModule.config(['$routeProvider', function($routeProvider) {
     $routeProvider
         .when('/', {

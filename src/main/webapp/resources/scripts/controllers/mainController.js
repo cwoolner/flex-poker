@@ -1,3 +1,5 @@
+import { flexpokerModule, stompClient } from '../main';
+
 flexpokerModule.controller('MainController', ['$rootScope', '$scope', '$location', '$templateCache',
     function($rootScope, $scope, $location, $templateCache) {
     

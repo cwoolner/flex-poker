@@ -1,3 +1,5 @@
+import { flexpokerModule, stompClient } from '../main';
+
 flexpokerModule.controller('TournamentRegisteringController', ['$rootScope', '$scope', function($rootScope, $scope) {
     
     $('#create-game-dialog, #join-game-dialog').hide();

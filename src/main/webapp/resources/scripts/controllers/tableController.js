@@ -1,3 +1,6 @@
+import { flexpokerModule, stompClient } from '../main';
+import cardData from '../cardData';
+
 flexpokerModule.controller('TableController', ['$scope', '$rootScope', '$routeParams', function($scope, $rootScope, $routeParams) {
     $scope.gameId = $routeParams['gameId'];
     $scope.tableId = $routeParams['tableId'];

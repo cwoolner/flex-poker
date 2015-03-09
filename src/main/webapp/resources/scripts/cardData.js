@@ -51,3 +51,5 @@ var cardData = [
         '/resources/img/nicubunu_Ornamental_deck_Queen_of_clubs.svg',
         '/resources/img/nicubunu_Ornamental_deck_King_of_clubs.svg',
         '/resources/img/nicubunu_Ornamental_deck_Ace_of_clubs.svg'];
+
+export default cardData;

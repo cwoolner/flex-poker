@@ -44,3 +44,5 @@ flexpokerModule.directive('seat', function() {
         restrict: 'A'
     }
 });
+
+export { flexpokerModule, stompClient };
