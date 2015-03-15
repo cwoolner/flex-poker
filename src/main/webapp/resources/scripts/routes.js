@@ -1,4 +1,4 @@
-import { flexpokerModule } from './main';
+import flexpokerModule  from './main';
 
 flexpokerModule.config(['$routeProvider', function($routeProvider) {
     $routeProvider

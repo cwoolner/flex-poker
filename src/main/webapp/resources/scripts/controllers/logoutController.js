@@ -1,7 +1,8 @@
-import { flexpokerModule, stompClient } from '../main';
+import flexpokerModule from '../main';
+import webSocketService from '../webSocketService';
 
 flexpokerModule.controller('LogoutController', ['$scope', function($scope) {
     $scope.logout = function() {
-        stompClient.disconnect();
+        webSocketService.disconnect();
     }
 }]);

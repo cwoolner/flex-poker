@@ -79,27 +79,29 @@ module.exports = function(grunt) {
         }
       },
 
-      browserify: {
-          dist: {
-            files: {
-                'src/main/webapp/resources/js/libs/bundle.js': [
-                                                                'src/main/webapp/resources/scripts/routes.js',
-                                                                'src/main/webapp/resources/scripts/main.js',
-                                                                'src/main/webapp/resources/scripts/cardData.js',
-                                                                'src/main/webapp/resources/scripts/controllers/*.js'
-                                                                ],
-                'target/flexpoker/resources/js/libs/bundle.js': [
-                                                                 'src/main/webapp/resources/scripts/routes.js',
-                                                                 'src/main/webapp/resources/scripts/main.js',
-                                                                 'src/main/webapp/resources/scripts/cardData.js',
-                                                                 'src/main/webapp/resources/scripts/controllers/*.js'
-                                                                ]
-            },
-            options: {
-              transform: ['babelify']
-            }
-          }
+    browserify: {
+      dist: {
+        files: {
+          'src/main/webapp/resources/js/libs/bundle.js': [
+            'src/main/webapp/resources/scripts/routes.js',
+            'src/main/webapp/resources/scripts/main.js',
+            'src/main/webapp/resources/scripts/cardData.js',
+            'src/main/webapp/resources/scripts/webSocketService.js',
+            'src/main/webapp/resources/scripts/controllers/*.js'
+          ],
+          'target/flexpoker/resources/js/libs/bundle.js': [
+            'src/main/webapp/resources/scripts/routes.js',
+            'src/main/webapp/resources/scripts/main.js',
+            'src/main/webapp/resources/scripts/cardData.js',
+            'src/main/webapp/resources/scripts/webSocketService.js',
+            'src/main/webapp/resources/scripts/controllers/*.js'
+          ]
+        },
+        options: {
+          transform: ['babelify']
         }
+      }
+    }
   });
 
   grunt.loadNpmTasks('grunt-bowercopy');

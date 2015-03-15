@@ -1,7 +1,5 @@
 var flexpokerModule = angular.module('flexpoker', ['ngRoute', 'ngGrid']);
 
-var stompClient = Stomp.over(new SockJS('/application'));
-
 // taken from http://jsfiddle.net/thomporter/DwKZh/
 flexpokerModule.directive('numbersOnly', function() {
     return {
@@ -45,4 +43,4 @@ flexpokerModule.directive('seat', function() {
     }
 });
 
-export { flexpokerModule, stompClient };
+export default flexpokerModule;

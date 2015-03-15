@@ -1,17 +1,10 @@
-import { flexpokerModule, stompClient } from '../main';
+import flexpokerModule from '../main';
+import webSocketService from '../webSocketService';
 
 flexpokerModule.controller('GameController', ['$scope', '$routeParams', function($scope, $routeParams) {
     $scope.gameId = $routeParams['gameId'];
 
     $scope.chatDisplay = '';
-    
-    if (stompClient.connected) {
-        registerStompSubscriptions();
-    }
-
-    $scope.$on('stomp-connected', function(event, data) {
-        registerStompSubscriptions();
-    });
 
     $scope.sendChat = function() {
         if ($scope.chatMessage == '') {
@@ -19,31 +12,24 @@ flexpokerModule.controller('GameController', ['$scope', '$routeParams', function
         }
 
         var gameMessage = {
-                message: $scope.chatMessage,
-                receiverUsernames: null,
-                gameId: $scope.gameId,
-                tableId: null
+            message: $scope.chatMessage,
+            receiverUsernames: null,
+            gameId: $scope.gameId,
+            tableId: null
         };
 
-        stompClient.send('/app/sendchatmessage', {}, JSON.stringify(gameMessage));
+        webSocketService.send('/app/sendchatmessage', gameMessage);
         $scope.chatMessage = '';
     };
 
-    function registerStompSubscriptions() {
-        stompClient.subscribe('/topic/chat/game/' + $scope.gameId + '/user', function(message) {
-            var scrollHeight = $('.chat-display').prop('scrollHeight');
-            $('.chat-display').prop('scrollTop', scrollHeight);
-            $scope.$apply(function() {
-                $scope.chatDisplay += message.body + '\n';
-            });
-        });
+    webSocketService.registerSubscription('/topic/chat/game/' + $scope.gameId + '/user', receiveChat);
+    webSocketService.registerSubscription('/topic/chat/game/' + $scope.gameId + '/system', receiveChat);
 
-        stompClient.subscribe('/topic/chat/game/' + $scope.gameId + '/system', function(message) {
-            var scrollHeight = $('.chat-display').prop('scrollHeight');
-            $('.chat-display').prop('scrollTop', scrollHeight);
-            $scope.$apply(function() {
-                $scope.chatDisplay += message.body + '\n';
-            });
+    function receiveChat(message) {
+        var scrollHeight = $('.chat-display').prop('scrollHeight');
+        $('.chat-display').prop('scrollTop', scrollHeight);
+        $scope.$apply(function() {
+            $scope.chatDisplay += message.body + '\n';
         });
     }
 

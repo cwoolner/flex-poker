@@ -1,4 +1,5 @@
-import { flexpokerModule, stompClient } from '../main';
+import flexpokerModule from '../main';
+import webSocketService from '../webSocketService'
 import cardData from '../cardData';
 
 flexpokerModule.controller('TableController', ['$scope', '$rootScope', '$routeParams', function($scope, $rootScope, $routeParams) {
@@ -9,16 +10,10 @@ flexpokerModule.controller('TableController', ['$scope', '$rootScope', '$routePa
     $scope.chatDisplay = '';
 
     $rootScope.$on('pocketCardsReceived' + $scope.tableId, function(event, data) {
-        $scope.myLeftCardUrl = cardData[data.cardId1];
-        $scope.myRightCardUrl = cardData[data.cardId2];
-    });
-    
-    if (stompClient.connected) {
-        registerStompSubscriptions();
-    }
-
-    $scope.$on('stomp-connected', function(event, data) {
-        registerStompSubscriptions();
+        $scope.$apply(function() {
+            $scope.myLeftCardUrl = cardData[data.cardId1];
+            $scope.myRightCardUrl = cardData[data.cardId2];
+        });
     });
 
     $scope.sendChat = function() {
@@ -27,22 +22,22 @@ flexpokerModule.controller('TableController', ['$scope', '$rootScope', '$routePa
         }
 
         var tableMessage = {
-                message: $scope.chatMessage,
-                receiverUsernames: null,
-                gameId: $scope.gameId,
-                tableId: $scope.tableId
+            message: $scope.chatMessage,
+            receiverUsernames: null,
+            gameId: $scope.gameId,
+            tableId: $scope.tableId
         };
 
-        stompClient.send('/app/sendchatmessage', {}, JSON.stringify(tableMessage));
+        webSocketService.send('/app/sendchatmessage', tableMessage);
         $scope.chatMessage = '';
     };
-    
+
     $scope.check = function() {
         var checkMessage = {
             gameId: $scope.gameId,
             tableId: $scope.tableId
         };
-        stompClient.send('/app/check', {}, JSON.stringify(checkMessage));
+        webSocketService.send('/app/check', checkMessage);
     };
 
     $scope.call = function() {
@@ -50,7 +45,7 @@ flexpokerModule.controller('TableController', ['$scope', '$rootScope', '$routePa
             gameId: $scope.gameId,
             tableId: $scope.tableId
         };
-        stompClient.send('/app/call', {}, JSON.stringify(callMessage));
+        webSocketService.send('/app/call', callMessage);
     };
 
     $scope.raise = function() {
@@ -58,7 +53,7 @@ flexpokerModule.controller('TableController', ['$scope', '$rootScope', '$routePa
             gameId: $scope.gameId,
             tableId: $scope.tableId
         };
-        stompClient.send('/app/raise', {}, JSON.stringify(raiseMessage));
+        webSocketService.send('/app/raise', raiseMessage);
     };
 
     $scope.fold = function() {
@@ -66,53 +61,44 @@ flexpokerModule.controller('TableController', ['$scope', '$rootScope', '$routePa
             gameId: $scope.gameId,
             tableId: $scope.tableId
         };
-        stompClient.send('/app/fold', {}, JSON.stringify(foldMessage));
+        webSocketService.send('/app/fold', foldMessage);
     };
 
-    function registerStompSubscriptions() {
-        stompClient.subscribe('/topic/chat/game/' + $scope.gameId
-                + '/table/' + $scope.tableId + '/user', function(message) {
-            var scrollHeight = $('.chat-display').prop('scrollHeight');
-            $('.chat-display').prop('scrollTop', scrollHeight);
-            $scope.$apply(function() {
-                $scope.chatDisplay += message.body + '\n';
-            });
+    webSocketService.registerSubscription('/topic/chat/game/' + $scope.gameId + '/table/' + $scope.tableId + '/user', receiveChat);
+    webSocketService.registerSubscription('/topic/chat/game/' + $scope.gameId + '/table/' + $scope.tableId + '/system', receiveChat);
+    webSocketService.registerSubscription('/topic/game/' + $scope.gameId + '/table/' + $scope.tableId, receiveTableUpdate);
+
+    function receiveChat(message) {
+        var scrollHeight = $('.chat-display').prop('scrollHeight');
+        $('.chat-display').prop('scrollTop', scrollHeight);
+        $scope.$apply(function() {
+            $scope.chatDisplay += message.body + '\n';
         });
+    }
 
-        stompClient.subscribe('/topic/chat/game/' + $scope.gameId
-                + '/table/' + $scope.tableId + '/system', function(message) {
-            var scrollHeight = $('.chat-display').prop('scrollHeight');
-            $('.chat-display').prop('scrollTop', scrollHeight);
-            $scope.$apply(function() {
-                $scope.chatDisplay += message.body + '\n';
-            });
+    function receiveTableUpdate(message) {
+        var table = $.parseJSON(message.body);
+        $scope.$apply(function() {
+            $scope.table = table;
         });
-
-        stompClient.subscribe('/topic/game/' + $scope.gameId
-                + '/table/' + $scope.tableId, function(message) {
-            var table = $.parseJSON(message.body);
+        var mySeat = _.find(table.seats, {name: $scope.username});
+        if (mySeat) {
+            var pokerActions = {
+                actionOn: mySeat.actionOn,
+                check: mySeat.callAmount === 0,
+                fold: mySeat.callAmount !== 0,
+                call: mySeat.callAmount !== 0,
+                raise: mySeat.raiseTo !== 0
+            };
             $scope.$apply(function() {
-                $scope.table = table;
+                $scope.pokerActions = pokerActions;
             });
-            var mySeat = _.find(table.seats, {name: $scope.username});
-            if (mySeat) {
-                var pokerActions = {
-                    actionOn: mySeat.actionOn,
-                    check: mySeat.callAmount === 0,
-                    fold: mySeat.callAmount !== 0,
-                    call: mySeat.callAmount !== 0,
-                    raise: mySeat.raiseTo !== 0
-                };
-                $scope.$apply(function() {
-                    $scope.pokerActions = pokerActions;
-                });
-            }
+        }
 
-            $scope.$apply(function() {
-                $scope.commonCards = [];
-                $scope.table.visibleCommonCards.forEach(function(commonCard) {
-                    $scope.commonCards.push(cardData[commonCard.id]);
-                });
+        $scope.$apply(function() {
+            $scope.commonCards = [];
+            $scope.table.visibleCommonCards.forEach(function(commonCard) {
+                $scope.commonCards.push(cardData[commonCard.id]);
             });
         });
     }

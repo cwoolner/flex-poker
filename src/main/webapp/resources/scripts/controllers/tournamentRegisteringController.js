@@ -1,4 +1,5 @@
-import { flexpokerModule, stompClient } from '../main';
+import flexpokerModule from '../main';
+import webSocketService from '../webSocketService';
 
 flexpokerModule.controller('TournamentRegisteringController', ['$rootScope', '$scope', function($rootScope, $scope) {
     
@@ -25,80 +26,65 @@ flexpokerModule.controller('TournamentRegisteringController', ['$rootScope', '$s
                           {field: 'createdOn', displayName: 'Created'}]
         };
 
-    if (stompClient.connected) {
-        registerStompSubscriptions();
-    }
-
-    $scope.$on('stomp-connected', function(event, data) {
-        registerStompSubscriptions();
+    webSocketService.registerSubscription('/topic/availabletournaments', function(message) {
+        $scope.$apply(function() {
+            $scope.games = $.parseJSON(message.body);
+        });
     });
 
-    function registerStompSubscriptions() {
-        stompClient.subscribe("/topic/availabletournaments", function(message) {
-            $scope.$apply(function() {
-                $scope.games = $.parseJSON(message.body);
-            });
-        });
+    webSocketService.registerSubscription('/topic/chat/global/user', receiveChat);
+    webSocketService.registerSubscription('/topic/chat/global/system', receiveChat);
 
-        stompClient.subscribe('/topic/chat/global/user', function(message) {
-            var scrollHeight = $('.chat-display').prop('scrollHeight');
-            $('.chat-display').prop('scrollTop', scrollHeight);
-            $scope.$apply(function() {
-                $scope.chatDisplay += message.body + '\n';
-            });
+    function receiveChat(message) {
+        var scrollHeight = $('.chat-display').prop('scrollHeight');
+        $('.chat-display').prop('scrollTop', scrollHeight);
+        $scope.$apply(function() {
+            $scope.chatDisplay += message.body + '\n';
         });
+    }
 
-        stompClient.subscribe('/topic/chat/global/system', function(message) {
-            var scrollHeight = $('.chat-display').prop('scrollHeight');
-            $('.chat-display').prop('scrollTop', scrollHeight);
-            $scope.$apply(function() {
-                $scope.chatDisplay += message.body + '\n';
-            });
-        });
-    };
-    
     $scope.openCreateGameDialog = function() {
         $('#create-game-dialog').dialog({ width: 550 });
-    }
-    
+    };
+
     $scope.openJoinGameDialog = function(row) {
         var gameId = $scope.games[row.rowIndex].id;
         $scope.joinGameId = gameId;
-        $rootScope.tryingToJoinGameId = gameId; 
+        $rootScope.tryingToJoinGameId = gameId;
         $('#join-game-dialog').dialog({ width: 550 });
-    }
-    
+    };
+
     $scope.submitCreateGame = function() {
         var newGame = {
-                name: $scope.name,
-                players: $scope.players,
-                playersPerTable: $scope.playersPerTable
+            name: $scope.name,
+            players: $scope.players,
+            playersPerTable: $scope.playersPerTable
         };
-        stompClient.send("/app/creategame", {}, JSON.stringify(newGame));
+        webSocketService.send('/app/creategame', newGame);
         $scope.name = '';
         $scope.players = '';
         $scope.playersPerTable = '';
         $('#create-game-dialog').dialog('destroy');
     };
-    
+
     $scope.submitJoinGame = function() {
-        stompClient.send("/app/joingame", {}, JSON.stringify($scope.joinGameId));
+        webSocketService.send('/app/joingame', $scope.joinGameId);
         $('#join-game-dialog').dialog('destroy');
     };
-    
+
     $scope.sendChat = function() {
         if ($scope.chatMessage == '') {
             return;
         }
 
         var globalMessage = {
-                message: $scope.chatMessage,
-                receiverUsernames: null,
-                gameId: null,
-                tableId: null
+            message: $scope.chatMessage,
+            receiverUsernames: null,
+            gameId: null,
+            tableId: null
         };
 
-        stompClient.send('/app/sendchatmessage', {}, JSON.stringify(globalMessage));
+        webSocketService.send('/app/sendchatmessage', globalMessage);
         $scope.chatMessage = '';
     };
 
