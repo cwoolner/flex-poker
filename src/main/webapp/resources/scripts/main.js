@@ -1,6 +1,6 @@
 var flexpokerModule = angular.module('flexpoker', ['ngRoute', 'ngGrid']);
 
-var stompClient = Stomp.over(new SockJS(rootUrl + 'application'));
+var stompClient = Stomp.over(new SockJS('/application'));
 
 // taken from http://jsfiddle.net/thomporter/DwKZh/
 flexpokerModule.directive('numbersOnly', function() {
@@ -28,7 +28,7 @@ flexpokerModule.directive('numbersOnly', function() {
 
 flexpokerModule.directive('chat', function() {
     return {
-        templateUrl: rootUrl + 'resources/templates/chatWindow.html',
+        templateUrl: '/resources/templates/chatWindow.html',
         restrict: 'A',
         compile: function compile(tElement, tAttrs) {
             return function postLink(scope, iElement, iAttrs) {
@@ -40,7 +40,7 @@ flexpokerModule.directive('chat', function() {
 
 flexpokerModule.directive('seat', function() {
     return {
-        templateUrl: rootUrl + 'resources/templates/seat.html',
+        templateUrl: '/resources/templates/seat.html',
         restrict: 'A'
     }
 });
