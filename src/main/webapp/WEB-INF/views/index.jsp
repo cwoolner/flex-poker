@@ -41,8 +41,6 @@
   </ul>
 </div>
 
-<button ng-click='clearCache()'>Clear cache</button>
-
 <div ng-view></div>
 
 </body>

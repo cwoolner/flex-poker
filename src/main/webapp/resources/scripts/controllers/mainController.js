@@ -3,10 +3,6 @@ import webSocketService from '../webSocketService'
 
 flexpokerModule.controller('MainController', ['$rootScope', '$scope', '$location', '$templateCache', function($rootScope, $scope, $location, $templateCache) {
 
-    $scope.clearCache = function() {
-        $templateCache.removeAll();
-    };
-
     $rootScope.username = $('.username').prop('innerText');
 
     webSocketService.registerSubscription('/user/queue/errors', function(message) {
