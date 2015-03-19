@@ -10,14 +10,6 @@ flexpokerModule.controller('MainController', ['$rootScope', '$scope', '$location
         $rootScope.tryingToJoinGameId = null;
     });
 
-    webSocketService.registerSubscription('/user/topic/chat/personal/user', function(message) {
-        alert('personal' + message.body);
-    });
-
-    webSocketService.registerSubscription('/user/topic/chat/personal/system', function(message) {
-        alert('personal' + message.body);
-    });
-
     webSocketService.registerSubscription('/app/opengamesforuser', function(message) {
         $scope.$apply(function() {
             $scope.gameTabs = $.parseJSON(message.body);

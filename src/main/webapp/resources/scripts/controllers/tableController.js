@@ -1,6 +1,7 @@
 import flexpokerModule from '../main';
 import webSocketService from '../webSocketService'
 import cardData from '../cardData';
+import chat from '../chat/chat';
 
 flexpokerModule.controller('TableController', ['$scope', '$rootScope', '$routeParams', function($scope, $rootScope, $routeParams) {
     $scope.gameId = $routeParams['gameId'];
@@ -64,17 +65,10 @@ flexpokerModule.controller('TableController', ['$scope', '$rootScope', '$routePa
         webSocketService.send('/app/fold', foldMessage);
     };
 
-    webSocketService.registerSubscription(`/topic/chat/game/${$scope.gameId}/table/${$scope.tableId}/user`, receiveChat);
-    webSocketService.registerSubscription(`/topic/chat/game/${$scope.gameId}/table/${$scope.tableId}/system`, receiveChat);
-    webSocketService.registerSubscription(`/topic/game/${$scope.gameId}/table/${$scope.tableId}`, receiveTableUpdate);
+    chat.registerChat(`/topic/chat/game/${$scope.gameId}/table/${$scope.tableId}/user`);
+    chat.registerChat(`/topic/chat/game/${$scope.gameId}/table/${$scope.tableId}/system`);
 
-    function receiveChat(message) {
-        var scrollHeight = $('.chat-display').prop('scrollHeight');
-        $('.chat-display').prop('scrollTop', scrollHeight);
-        $scope.$apply(function() {
-            $scope.chatDisplay += message.body + '\n';
-        });
-    }
+    webSocketService.registerSubscription(`/topic/game/${$scope.gameId}/table/${$scope.tableId}`, receiveTableUpdate);
 
     function receiveTableUpdate(message) {
         let table = $.parseJSON(message.body);

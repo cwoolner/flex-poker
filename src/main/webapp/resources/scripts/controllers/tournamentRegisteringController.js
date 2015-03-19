@@ -32,17 +32,6 @@ flexpokerModule.controller('TournamentRegisteringController', ['$rootScope', '$s
         });
     });
 
-    webSocketService.registerSubscription('/topic/chat/global/user', receiveChat);
-    webSocketService.registerSubscription('/topic/chat/global/system', receiveChat);
-
-    function receiveChat(message) {
-        var scrollHeight = $('.chat-display').prop('scrollHeight');
-        $('.chat-display').prop('scrollTop', scrollHeight);
-        $scope.$apply(function() {
-            $scope.chatDisplay += message.body + '\n';
-        });
-    }
-
     $scope.openCreateGameDialog = function() {
         $('#create-game-dialog').dialog({ width: 550 });
     };
