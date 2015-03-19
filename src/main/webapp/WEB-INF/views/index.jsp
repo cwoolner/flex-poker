@@ -30,7 +30,7 @@
 
 <p>Logged in as: <span class="username"><sec:authentication property="principal.username" /></span></p>
 
-<p ng-controller="LogoutController"><a href='<c:url value="/logout" />' ng-click="logout()">Logout</a></p>
+<p><a href="/#logout">Logout</a></p>
 
 <div ng-controller="MainController">
   <ul class="game-tab-container">

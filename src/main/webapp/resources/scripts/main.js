@@ -1,4 +1,7 @@
 require('babel/polyfill');
+import handleRoutes from './routes'
+
+window.onhashchange = handleRoutes;
 
 var flexpokerModule = angular.module('flexpoker', ['ngRoute', 'ngGrid']);
 
