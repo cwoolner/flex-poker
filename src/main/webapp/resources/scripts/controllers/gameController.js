@@ -7,23 +7,22 @@ flexpokerModule.controller('GameController', ['$scope', '$routeParams', function
 
     $scope.chatDisplay = '';
 
-    $scope.sendChat = function() {
-        if ($scope.chatMessage == '') {
-            return;
-        }
-
+    $scope.sendChat = function(message) {
         var gameMessage = {
-            message: $scope.chatMessage,
+            message: message,
             receiverUsernames: null,
             gameId: $scope.gameId,
             tableId: null
         };
 
         webSocketService.send('/app/sendchatmessage', gameMessage);
-        $scope.chatMessage = '';
     };
 
     chat.registerChat(`/topic/chat/game/${$scope.gameId}/user`);
     chat.registerChat(`/topic/chat/game/${$scope.gameId}/system`);
+
+    document.querySelector('.game-chat').addEventListener('chat-msg-entered', function(evt) {
+        $scope.sendChat(evt.detail);
+    });
 
 }]);

@@ -23,6 +23,8 @@
 
 <link rel="stylesheet" type="text/css" href="<c:url value='/resources/css/bundle.css' />"></link>
 
+<link rel="import" href="<c:url value='/resources/chat.html' />"></link>
+
 <title>Home</title>
 </head>
 

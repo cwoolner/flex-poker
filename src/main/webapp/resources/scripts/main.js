@@ -30,18 +30,6 @@ flexpokerModule.directive('numbersOnly', function() {
     };
 });
 
-flexpokerModule.directive('chat', function() {
-    return {
-        templateUrl: '/resources/templates/chatWindow.html',
-        restrict: 'A',
-        compile: function compile(tElement, tAttrs) {
-            return function postLink(scope, iElement, iAttrs) {
-                iElement.find('button, input[type=submit]').button();
-            }
-        }
-    }
-});
-
 flexpokerModule.directive('seat', function() {
     return {
         templateUrl: '/resources/templates/seat.html',

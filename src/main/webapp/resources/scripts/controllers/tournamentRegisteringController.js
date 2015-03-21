@@ -6,7 +6,7 @@ flexpokerModule.controller('TournamentRegisteringController', ['$rootScope', '$s
     $('#create-game-dialog, #join-game-dialog').hide();
     $('body').find('button, input[type=submit]').button();
     $scope.chatDisplay = '';
-    
+
     $scope.games = [];
     $scope.gridOptions = {
             data: 'games',
@@ -61,20 +61,19 @@ flexpokerModule.controller('TournamentRegisteringController', ['$rootScope', '$s
         $('#join-game-dialog').dialog('destroy');
     };
 
-    $scope.sendChat = function() {
-        if ($scope.chatMessage == '') {
-            return;
-        }
-
+    $scope.sendChat = function(message) {
         var globalMessage = {
-            message: $scope.chatMessage,
+            message: message,
             receiverUsernames: null,
             gameId: null,
             tableId: null
         };
 
         webSocketService.send('/app/sendchatmessage', globalMessage);
-        $scope.chatMessage = '';
     };
+
+    document.querySelector('.global-chat').addEventListener('chat-msg-entered', function(evt) {
+        $scope.sendChat(evt.detail);
+    });
 
 }]);

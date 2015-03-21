@@ -6,19 +6,6 @@
     height: 600px
 }
 
-textarea {
-    height: 100px;
-    width: 100%;
-}
-
-.chat-message {
-    width: 100%;
-}
-
-.chat-display {
-    background-color: white;
-}
-
 .game-tab-container li {
     width: 100px;
 }

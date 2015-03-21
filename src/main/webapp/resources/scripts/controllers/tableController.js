@@ -17,20 +17,15 @@ flexpokerModule.controller('TableController', ['$scope', '$rootScope', '$routePa
         });
     });
 
-    $scope.sendChat = function() {
-        if ($scope.chatMessage == '') {
-            return;
-        }
-
+    $scope.sendChat = function(message) {
         var tableMessage = {
-            message: $scope.chatMessage,
+            message: message,
             receiverUsernames: null,
             gameId: $scope.gameId,
             tableId: $scope.tableId
         };
 
         webSocketService.send('/app/sendchatmessage', tableMessage);
-        $scope.chatMessage = '';
     };
 
     $scope.check = function() {
@@ -96,5 +91,9 @@ flexpokerModule.controller('TableController', ['$scope', '$rootScope', '$routePa
             });
         });
     }
+
+    document.querySelector('.table-chat').addEventListener('chat-msg-entered', function(evt) {
+        $scope.sendChat(evt.detail);
+    });
 
 }]);
