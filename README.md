@@ -58,7 +58,6 @@ Front-end libraries/frameworks
 
 * AngularJS
 * jQuery
-* ng-grid from the AngularUI project
 * SockJS
 * jQuery UI
 * STOMP.js - (https://github.com/jmesnil/stomp-websocket/)

@@ -10,7 +10,6 @@ module.exports = function(grunt) {
               'angular-route/angular-route.min.js.map',
               'jquery/dist/jquery.min.js',
               'jquery/dist/jquery.min.map',
-              'angular-grid/ng-grid-2.0.14.min.js',
               'jquery-ui/ui/minified/core.min.js',
               'jquery-ui/ui/minified/widget.min.js',
               'jquery-ui/ui/minified/position.min.js',
@@ -20,14 +19,12 @@ module.exports = function(grunt) {
               'jquery-ui/ui/minified/draggable.min.js'
           ],
           bowerCssFiles:[
-              'angular-grid/ng-grid.min.css',
               'jquery-ui/themes/smoothness/jquery-ui.min.css'
           ],
           bowerImgFiles:[
               'jquery-ui/themes/smoothness/images/*.png'
           ],
           cssminFiles: [
-              'src/main/webapp/resources/css/libs/ng-grid.min.css',
               'src/main/webapp/resources/css/libs/jquery-ui.min.css',
               'src/main/webapp/resources/css/main.css'
           ],

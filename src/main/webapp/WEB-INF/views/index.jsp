@@ -9,7 +9,6 @@
 <script type="text/javascript" src="<c:url value='/resources/js/libs/jquery.min.js' />"></script>
 <script type="text/javascript" src="<c:url value='/resources/js/libs/angular.min.js' />"></script>
 <script type="text/javascript" src="<c:url value='/resources/js/libs/angular-route.min.js' />"></script>
-<script type="text/javascript" src="<c:url value='/resources/js/libs/ng-grid-2.0.14.min.js' />"></script>
 <script type="text/javascript" src="<c:url value='/resources/js/libs/sockjs.js' />"></script>
 <script type="text/javascript" src="<c:url value='/resources/js/libs/core.min.js' />"></script>
 <script type="text/javascript" src="<c:url value='/resources/js/libs/widget.min.js' />"></script>
@@ -24,6 +23,7 @@
 <link rel="stylesheet" type="text/css" href="<c:url value='/resources/css/dist/bundle.css' />" />
 
 <link rel="import" href="/resources/fp-chat/chat.html" />
+<link rel="import" href="/resources/fp-gamelist/gamelist.html" />
 
 <title>Home</title>
 </head>

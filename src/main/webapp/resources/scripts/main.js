@@ -4,7 +4,7 @@ import chat from './chat/chat';
 
 window.onhashchange = handleRoutes;
 
-var flexpokerModule = angular.module('flexpoker', ['ngRoute', 'ngGrid']);
+var flexpokerModule = angular.module('flexpoker', ['ngRoute']);
 
 // taken from http://jsfiddle.net/thomporter/DwKZh/
 flexpokerModule.directive('numbersOnly', function() {
