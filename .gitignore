@@ -8,3 +8,6 @@ dump.rdb
 bower_components/
 node_modules/
 src/main/webapp/resources/js/
+src/main/webapp/resources/css/dist/
+src/main/webapp/resources/css/libs/
+

@@ -11,17 +11,17 @@
 <script type="text/javascript" src="<c:url value='/resources/js/libs/angular-route.min.js' />"></script>
 <script type="text/javascript" src="<c:url value='/resources/js/libs/ng-grid-2.0.14.min.js' />"></script>
 <script type="text/javascript" src="<c:url value='/resources/js/libs/sockjs.js' />"></script>
-<script type="text/javascript" src="<c:url value='/resources/js/libs/jquery-ui/core.min.js' />"></script>
-<script type="text/javascript" src="<c:url value='/resources/js/libs/jquery-ui/widget.min.js' />"></script>
-<script type="text/javascript" src="<c:url value='/resources/js/libs/jquery-ui/position.min.js' />"></script>
-<script type="text/javascript" src="<c:url value='/resources/js/libs/jquery-ui/dialog.min.js' />"></script>
-<script type="text/javascript" src="<c:url value='/resources/js/libs/jquery-ui/button.min.js' />"></script>
-<script type="text/javascript" src="<c:url value='/resources/js/libs/jquery-ui/mouse.min.js' />"></script>
-<script type="text/javascript" src="<c:url value='/resources/js/libs/jquery-ui/draggable.min.js' />"></script>
+<script type="text/javascript" src="<c:url value='/resources/js/libs/core.min.js' />"></script>
+<script type="text/javascript" src="<c:url value='/resources/js/libs/widget.min.js' />"></script>
+<script type="text/javascript" src="<c:url value='/resources/js/libs/position.min.js' />"></script>
+<script type="text/javascript" src="<c:url value='/resources/js/libs/dialog.min.js' />"></script>
+<script type="text/javascript" src="<c:url value='/resources/js/libs/button.min.js' />"></script>
+<script type="text/javascript" src="<c:url value='/resources/js/libs/mouse.min.js' />"></script>
+<script type="text/javascript" src="<c:url value='/resources/js/libs/draggable.min.js' />"></script>
 <script type="text/javascript" src="<c:url value='/resources/js/libs/stomp.min.js' />"></script>
 <script type="text/javascript" src="<c:url value='/resources/js/libs/bundle.js' />"></script>
 
-<link rel="stylesheet" type="text/css" href="<c:url value='/resources/css/bundle.css' />"></link>
+<link rel="stylesheet" type="text/css" href="<c:url value='/resources/css/dist/bundle.css' />"></link>
 
 <link rel="import" href="<c:url value='/resources/chat.html' />"></link>
 
