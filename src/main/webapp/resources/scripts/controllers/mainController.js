@@ -34,7 +34,7 @@ flexpokerModule.controller('MainController', ['$rootScope', '$scope', '$location
         });
         if ($rootScope.tryingToJoinGameId != null) {
             $scope.$apply(function() {
-                $location.path('/game/' + $rootScope.tryingToJoinGameId);
+                $location.path(`/game/${$rootScope.tryingToJoinGameId}`);
             });
             $rootScope.tryingToJoinGameId = null;
         }
@@ -43,7 +43,7 @@ flexpokerModule.controller('MainController', ['$rootScope', '$scope', '$location
     webSocketService.registerSubscription('/user/queue/opentable', function(message) {
         var openTable = $.parseJSON(message.body);
         $scope.$apply(function() {
-            $location.path('/game/' + openTable.gameId + '/table/' + openTable.tableId);
+            $location.path(`/game/${openTable.gameId}/table/${openTable.tableId}`);
         });
     });
 
@@ -52,9 +52,12 @@ flexpokerModule.controller('MainController', ['$rootScope', '$scope', '$location
     });
 
     webSocketService.registerSubscription('/user/queue/pocketcards', function(message) {
-        var pocketCards = $.parseJSON(message.body);
-        $rootScope.$broadcast('pocketCardsReceived' + pocketCards.tableId,
-            {cardId1: pocketCards.cardId1, cardId2: pocketCards.cardId2});
+        let parsedData = $.parseJSON(message.body);
+        let pocketCards = {
+            cardId1: parsedData.cardId1,
+            cardId2: parsedData.cardId2
+        };
+        $rootScope.$broadcast(`pocketCardsReceived-${parsedData.tableId}`, pocketCards);
     });
 
 }]);

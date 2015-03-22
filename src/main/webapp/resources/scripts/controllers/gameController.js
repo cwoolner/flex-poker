@@ -22,8 +22,8 @@ flexpokerModule.controller('GameController', ['$scope', '$routeParams', function
         $scope.chatMessage = '';
     };
 
-    webSocketService.registerSubscription('/topic/chat/game/' + $scope.gameId + '/user', receiveChat);
-    webSocketService.registerSubscription('/topic/chat/game/' + $scope.gameId + '/system', receiveChat);
+    webSocketService.registerSubscription(`/topic/chat/game/${$scope.gameId}/user`, receiveChat);
+    webSocketService.registerSubscription(`/topic/chat/game/${$scope.gameId}/system`, receiveChat);
 
     function receiveChat(message) {
         var scrollHeight = $('.chat-display').prop('scrollHeight');

@@ -9,7 +9,7 @@ flexpokerModule.controller('TableController', ['$scope', '$rootScope', '$routePa
 
     $scope.chatDisplay = '';
 
-    $rootScope.$on('pocketCardsReceived' + $scope.tableId, function(event, data) {
+    $rootScope.$on(`pocketCardsReceived-${$scope.tableId}`, function(event, data) {
         $scope.$apply(function() {
             $scope.myLeftCardUrl = cardData[data.cardId1];
             $scope.myRightCardUrl = cardData[data.cardId2];
@@ -64,9 +64,9 @@ flexpokerModule.controller('TableController', ['$scope', '$rootScope', '$routePa
         webSocketService.send('/app/fold', foldMessage);
     };
 
-    webSocketService.registerSubscription('/topic/chat/game/' + $scope.gameId + '/table/' + $scope.tableId + '/user', receiveChat);
-    webSocketService.registerSubscription('/topic/chat/game/' + $scope.gameId + '/table/' + $scope.tableId + '/system', receiveChat);
-    webSocketService.registerSubscription('/topic/game/' + $scope.gameId + '/table/' + $scope.tableId, receiveTableUpdate);
+    webSocketService.registerSubscription(`/topic/chat/game/${$scope.gameId}/table/${$scope.tableId}/user`, receiveChat);
+    webSocketService.registerSubscription(`/topic/chat/game/${$scope.gameId}/table/${$scope.tableId}/system`, receiveChat);
+    webSocketService.registerSubscription(`/topic/game/${$scope.gameId}/table/${$scope.tableId}`, receiveTableUpdate);
 
     function receiveChat(message) {
         var scrollHeight = $('.chat-display').prop('scrollHeight');
