@@ -21,9 +21,9 @@
 <script type="text/javascript" src="<c:url value='/resources/js/libs/stomp.min.js' />"></script>
 <script type="text/javascript" src="<c:url value='/resources/js/libs/bundle.js' />"></script>
 
-<link rel="stylesheet" type="text/css" href="<c:url value='/resources/css/dist/bundle.css' />"></link>
+<link rel="stylesheet" type="text/css" href="<c:url value='/resources/css/dist/bundle.css' />" />
 
-<link rel="import" href="<c:url value='/resources/chat.html' />"></link>
+<link rel="import" href="/resources/fp-chat/chat.html" />
 
 <title>Home</title>
 </head>
