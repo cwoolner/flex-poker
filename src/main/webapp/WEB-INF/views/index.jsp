@@ -18,7 +18,6 @@
 <script type="text/javascript" src="<c:url value='/resources/js/libs/jquery-ui/button.min.js' />"></script>
 <script type="text/javascript" src="<c:url value='/resources/js/libs/jquery-ui/mouse.min.js' />"></script>
 <script type="text/javascript" src="<c:url value='/resources/js/libs/jquery-ui/draggable.min.js' />"></script>
-<script type="text/javascript" src="<c:url value='/resources/js/libs/lodash.min.js' />"></script>
 <script type="text/javascript" src="<c:url value='/resources/js/libs/stomp.min.js' />"></script>
 <script type="text/javascript" src="<c:url value='/resources/js/libs/bundle.js' />"></script>
 

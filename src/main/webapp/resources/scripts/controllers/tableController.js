@@ -77,11 +77,11 @@ flexpokerModule.controller('TableController', ['$scope', '$rootScope', '$routePa
     }
 
     function receiveTableUpdate(message) {
-        var table = $.parseJSON(message.body);
+        let table = $.parseJSON(message.body);
         $scope.$apply(function() {
             $scope.table = table;
         });
-        var mySeat = _.find(table.seats, {name: $scope.username});
+        let mySeat = $scope.table.seats.find((element, index, array) => {return element.name === $scope.username;})
         if (mySeat) {
             var pokerActions = {
                 actionOn: mySeat.actionOn,

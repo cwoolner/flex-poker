@@ -33,8 +33,6 @@ module.exports = function(grunt) {
                 'src/main/webapp/resources/js/libs/ng-grid-2.0.14.min.js': 'angular-grid/ng-grid-2.0.14.min.js',
                 'target/flexpoker/resources/css/ng-grid.min.css': 'angular-grid/ng-grid.min.css',
                 'src/main/webapp/resources/css/ng-grid.min.css': 'angular-grid/ng-grid.min.css',
-                'target/flexpoker/resources/js/libs/lodash.min.js': 'lodash/lodash.min.js',
-                'src/main/webapp/resources/js/libs/lodash.min.js': 'lodash/lodash.min.js',
                 'target/flexpoker/resources/js/libs/jquery-ui/core.min.js': 'jquery-ui/ui/minified/core.min.js',
                 'src/main/webapp/resources/js/libs/jquery-ui/core.min.js': 'jquery-ui/ui/minified/core.min.js',
                 'target/flexpoker/resources/js/libs/jquery-ui/widget.min.js': 'jquery-ui/ui/minified/widget.min.js',

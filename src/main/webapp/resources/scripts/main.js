@@ -1,3 +1,5 @@
+require('babel/polyfill');
+
 var flexpokerModule = angular.module('flexpoker', ['ngRoute', 'ngGrid']);
 
 // taken from http://jsfiddle.net/thomporter/DwKZh/
