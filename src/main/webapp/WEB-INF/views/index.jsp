@@ -24,6 +24,7 @@
 
 <link rel="import" href="/resources/fp-chat/chat.html" />
 <link rel="import" href="/resources/fp-gamelist/gamelist.html" />
+<link rel="import" href="/resources/fp-seat/seat.html" />
 
 <title>Home</title>
 </head>

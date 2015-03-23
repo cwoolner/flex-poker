@@ -20,20 +20,8 @@
     background-color: #FF0000;
 }
 
-.action-on-true {
-    background-color: #00FF00;
-}
-
-.action-on-false {
-    background-color: #FF0000;
-}
-
 .table {
     background: url(/resources/img/Table.svg) no-repeat;
-}
-
-.my-seat {
-    box-shadow: inset 0 0 1em gold;
 }
 
 .my-cards {

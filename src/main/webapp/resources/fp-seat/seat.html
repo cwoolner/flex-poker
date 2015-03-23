@@ -1,0 +1,95 @@
+<template id="fp-seat">
+    <style>
+        .my-seat {
+            box-shadow: inset 0 0 1em gold;
+        }
+
+        div[data-action-on='true'] {
+            background-color: #00FF00;
+        }
+
+        div[data-action-on='false'] {
+            background-color: #FF0000;
+        }
+
+        div[data-still-in-hand='true'] {
+            color: #0000FF;
+        }
+
+        div[data-still-in-hand='false'] {
+            color: #FF00FF;
+        }
+    </style>
+
+    <div>
+    </div>
+</template>
+
+<script>
+"use strict";
+
+(function(){
+    let localDocument = (document._currentScript || document.currentScript).ownerDocument;
+    let element = Object.create(HTMLElement.prototype);
+
+    element.createdCallback = function() {
+        let template = localDocument.querySelector('#fp-seat').content;
+        let templateNode = document.importNode(template, true);
+        this.createShadowRoot().appendChild(templateNode);
+    };
+
+    element.populateSeatInfo = function(seatInfo) {
+        let oldSeat = this.shadowRoot.querySelector('div');
+        let newSeat = document.createElement('div');
+
+        let seatName = document.createElement('p');
+        seatName.innerHTML = seatInfo.name;
+        newSeat.appendChild(seatName);
+
+        let chipsInFront = document.createElement('p');
+        chipsInFront.innerHTML = seatInfo.chipsInFront;
+        newSeat.appendChild(chipsInFront);
+
+        let chipsInBack = document.createElement('p');
+        chipsInBack.innerHTML = seatInfo.chipsInBack;
+        newSeat.appendChild(chipsInBack);
+
+        if (seatInfo.button) {
+            let buttonImg = document.createElement('img');
+            buttonImg.src = '/resources/img/button.png';
+            newSeat.appendChild(buttonImg);
+        }
+
+        if (seatInfo.smallBlind) {
+            let smallBlindImg = document.createElement('img');
+            smallBlindImg.src = '/resources/img/smallBlind.png';
+            newSeat.appendChild(smallBlindImg);
+        }
+
+        if (seatInfo.bigBlind) {
+            let bigBlindImg = document.createElement('img');
+            bigBlindImg.src = '/resources/img/bigBlind.png';
+            newSeat.appendChild(bigBlindImg);
+        }
+
+        newSeat.dataset.actionOn = seatInfo.actionOn;
+        newSeat.dataset.stillInHand = seatInfo.stillInHand;
+
+        this.shadowRoot.replaceChild(newSeat, oldSeat);
+    };
+
+    element.toggleMySeat = function(mySeat) {
+        let seat = this.shadowRoot.querySelector('div');
+
+        if (mySeat && !seat.className.includes('my-seat')) {
+            seat.className += 'my-seat';
+        } else if (!mySeat) {
+            seat.className = seat.className.replace('my-seat', '').trim();
+        }
+    };
+
+    document.registerElement('fp-seat', {
+        prototype: element
+    });
+})();
+</script>

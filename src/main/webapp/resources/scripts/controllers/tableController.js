@@ -70,7 +70,28 @@ flexpokerModule.controller('TableController', ['$scope', '$rootScope', '$routePa
         $scope.$apply(function() {
             $scope.table = table;
         });
-        let mySeat = $scope.table.seats.find((element, index, array) => {return element.name === $scope.username;})
+
+        let mySeat = $scope.table.seats.find((element, index, array) => {return element.name === $scope.username;});
+        let seatHolder = document.querySelector('.seat-holder');
+
+        if (!seatHolder.hasChildNodes()) {
+            $scope.table.seats.forEach(seat => {
+                let seatElement = document.createElement('fp-seat');
+                seatElement.dataset.position = seat.position;
+                seatHolder.appendChild(seatElement);
+            });
+        }
+
+        let seatElementArray = [].slice.call(seatHolder.children);
+
+        $scope.table.seats.forEach(seat => {
+            let seatElement = seatElementArray.find((element, index, array) => {
+                return element.dataset.position === seat.position.toString();
+            });
+            seatElement.populateSeatInfo(seat);
+            seatElement.toggleMySeat(seat === mySeat);
+        });
+
         if (mySeat) {
             var pokerActions = {
                 actionOn: mySeat.actionOn,

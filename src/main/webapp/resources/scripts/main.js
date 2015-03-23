@@ -30,11 +30,4 @@ flexpokerModule.directive('numbersOnly', function() {
     };
 });
 
-flexpokerModule.directive('seat', function() {
-    return {
-        templateUrl: '/resources/templates/seat.html',
-        restrict: 'A'
-    }
-});
-
 export default flexpokerModule;
