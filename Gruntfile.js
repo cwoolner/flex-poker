@@ -34,7 +34,9 @@ module.exports = function(grunt) {
               'src/main/webapp/resources/scripts/cardData.js',
               'src/main/webapp/resources/scripts/webSocketService.js',
               'src/main/webapp/resources/scripts/controllers/*.js',
-              'src/main/webapp/resources/scripts/logout/logout.js'
+              'src/main/webapp/resources/scripts/logout/logout.js',
+              'src/main/webapp/resources/scripts/game/gameController.js',
+              'src/main/webapp/resources/scripts/router/router.js'
           ]
       },
 

@@ -1,5 +1,5 @@
 require('babel/polyfill');
-import handleRoutes from './routes';
+import handleRoutes from './router/router';
 import chat from './chat/chat';
 
 window.onhashchange = handleRoutes;

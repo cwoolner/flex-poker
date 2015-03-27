@@ -1,19 +1,4 @@
 import flexpokerModule  from './main';
-import logout from './logout/logout'
-
-class Router {
-
-    handleRoutes() {
-        switch (location.hash) {
-            case '#logout':
-                logout();
-                break;
-            default:
-                break;
-        }
-    }
-
-}
 
 flexpokerModule.config(['$routeProvider', function($routeProvider) {
     $routeProvider
@@ -30,5 +15,3 @@ flexpokerModule.config(['$routeProvider', function($routeProvider) {
             templateUrl: '/resources/templates/table.html'
         });
 }]);
-
-export default new Router().handleRoutes;
