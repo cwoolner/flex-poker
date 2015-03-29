@@ -25,6 +25,7 @@
 <link rel="import" href="/resources/fp-chat/chat.html" />
 <link rel="import" href="/resources/fp-gamelist/gamelist.html" />
 <link rel="import" href="/resources/fp-seat/seat.html" />
+<link rel="import" href="/resources/game-page/game-page.html" />
 
 <title>Home</title>
 </head>
@@ -45,6 +46,7 @@
 </div>
 
 <div ng-view></div>
+<div id="view-area"></div>
 
 </body>
 </html>

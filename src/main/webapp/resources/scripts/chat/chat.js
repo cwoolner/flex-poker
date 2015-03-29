@@ -16,8 +16,6 @@ function receiveChat(message) {
 
     if (destination.match(/\/topic\/chat\/global/)) {
         document.querySelector('.global-chat').displayChat(message.body);
-    } else if (destination.match(/\/topic\/chat\/game\/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\/(user|system)/)) {
-        document.querySelector('.game-chat').displayChat(message.body);
     } else if (destination.match(/\/topic\/chat\/game\/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\/table\/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\/(user|system)/)) {
         document.querySelector('.table-chat').displayChat(message.body);
     }

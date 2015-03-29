@@ -6,10 +6,6 @@ flexpokerModule.config(['$routeProvider', function($routeProvider) {
             controller: 'TournamentRegisteringController',
             templateUrl: '/resources/templates/availableTournaments.html'
         })
-        .when('/game/:gameId', {
-            controller: 'GameController',
-            templateUrl: '/resources/templates/game.html'
-        })
         .when('/game/:gameId/table/:tableId', {
             controller: 'TableController',
             templateUrl: '/resources/templates/table.html'

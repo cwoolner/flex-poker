@@ -31,4 +31,11 @@ class WebSocketService {
 
 }
 
-export default new WebSocketService();
+// HACK: making it global for usage inside of a WebComponent.  get rid of this once a real es6 module loader is added to the project
+let webSocketService = new WebSocketService();
+
+if (window) {
+    window.webSocketService = webSocketService;
+}
+
+export default webSocketService;
