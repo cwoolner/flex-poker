@@ -10,13 +10,6 @@
 <script type="text/javascript" src="<c:url value='/resources/js/libs/angular.min.js' />"></script>
 <script type="text/javascript" src="<c:url value='/resources/js/libs/angular-route.min.js' />"></script>
 <script type="text/javascript" src="<c:url value='/resources/js/libs/sockjs.js' />"></script>
-<script type="text/javascript" src="<c:url value='/resources/js/libs/core.min.js' />"></script>
-<script type="text/javascript" src="<c:url value='/resources/js/libs/widget.min.js' />"></script>
-<script type="text/javascript" src="<c:url value='/resources/js/libs/position.min.js' />"></script>
-<script type="text/javascript" src="<c:url value='/resources/js/libs/dialog.min.js' />"></script>
-<script type="text/javascript" src="<c:url value='/resources/js/libs/button.min.js' />"></script>
-<script type="text/javascript" src="<c:url value='/resources/js/libs/mouse.min.js' />"></script>
-<script type="text/javascript" src="<c:url value='/resources/js/libs/draggable.min.js' />"></script>
 <script type="text/javascript" src="<c:url value='/resources/js/libs/stomp.min.js' />"></script>
 <script type="text/javascript" src="<c:url value='/resources/js/libs/bundle.js' />"></script>
 

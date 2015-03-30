@@ -9,23 +9,9 @@ module.exports = function(grunt) {
               'angular-route/angular-route.min.js',
               'angular-route/angular-route.min.js.map',
               'jquery/dist/jquery.min.js',
-              'jquery/dist/jquery.min.map',
-              'jquery-ui/ui/minified/core.min.js',
-              'jquery-ui/ui/minified/widget.min.js',
-              'jquery-ui/ui/minified/position.min.js',
-              'jquery-ui/ui/minified/dialog.min.js',
-              'jquery-ui/ui/minified/button.min.js',
-              'jquery-ui/ui/minified/mouse.min.js',
-              'jquery-ui/ui/minified/draggable.min.js'
-          ],
-          bowerCssFiles:[
-              'jquery-ui/themes/smoothness/jquery-ui.min.css'
-          ],
-          bowerImgFiles:[
-              'jquery-ui/themes/smoothness/images/*.png'
+              'jquery/dist/jquery.min.map'
           ],
           cssminFiles: [
-              'src/main/webapp/resources/css/libs/jquery-ui.min.css',
               'src/main/webapp/resources/css/main.css'
           ],
           browserifyFiles: [
@@ -51,11 +37,7 @@ module.exports = function(grunt) {
         libs: {
             files: {
                 'target/flexpoker/resources/js/libs/': '<%= fileDefs.bowerJsFiles %>',
-                'src/main/webapp/resources/js/libs/': '<%= fileDefs.bowerJsFiles %>',
-                'target/flexpoker/resources/css/libs/': '<%= fileDefs.bowerCssFiles %>',
-                'src/main/webapp/resources/css/libs/': '<%= fileDefs.bowerCssFiles %>',
-                'target/flexpoker/resources/css/dist/images': '<%= fileDefs.bowerImgFiles %>',
-                'src/main/webapp/resources/css/dist/images': '<%= fileDefs.bowerImgFiles %>'
+                'src/main/webapp/resources/js/libs/': '<%= fileDefs.bowerJsFiles %>'
             }
         }
     },
