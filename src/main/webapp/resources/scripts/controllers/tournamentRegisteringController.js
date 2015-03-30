@@ -12,26 +12,13 @@ flexpokerModule.controller('TournamentRegisteringController', ['$rootScope', '$s
     });
 
     $scope.openCreateGameDialog = function() {
-        $('#create-game-dialog').dialog({ width: 550 });
+        document.querySelector('fp-create-game-dialog').showDialog();
     };
 
     $scope.openJoinGameDialog = function(gameId) {
         $scope.joinGameId = gameId;
         $rootScope.tryingToJoinGameId = gameId;
         $('#join-game-dialog').dialog({ width: 550 });
-    };
-
-    $scope.submitCreateGame = function() {
-        var newGame = {
-            name: $scope.name,
-            players: $scope.players,
-            playersPerTable: $scope.playersPerTable
-        };
-        webSocketService.send('/app/creategame', newGame);
-        $scope.name = '';
-        $scope.players = '';
-        $scope.playersPerTable = '';
-        $('#create-game-dialog').dialog('destroy');
     };
 
     $scope.submitJoinGame = function() {
@@ -56,6 +43,10 @@ flexpokerModule.controller('TournamentRegisteringController', ['$rootScope', '$s
 
     document.querySelector('fp-gamelist').addEventListener('game-open-selected', function(evt) {
         $scope.openJoinGameDialog(evt.detail);
+    });
+
+    document.querySelector('fp-create-game-dialog').addEventListener('create-game-submitted', function(evt) {
+        webSocketService.send('/app/creategame', evt.detail);
     });
 
 }]);
