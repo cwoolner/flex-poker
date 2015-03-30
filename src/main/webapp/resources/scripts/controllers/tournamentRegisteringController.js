@@ -3,7 +3,6 @@ import webSocketService from '../webSocketService';
 
 flexpokerModule.controller('TournamentRegisteringController', ['$rootScope', '$scope', function($rootScope, $scope) {
     
-    $('#create-game-dialog, #join-game-dialog').hide();
     $('body').find('button, input[type=submit]').button();
     $scope.chatDisplay = '';
 
@@ -16,14 +15,9 @@ flexpokerModule.controller('TournamentRegisteringController', ['$rootScope', '$s
     };
 
     $scope.openJoinGameDialog = function(gameId) {
-        $scope.joinGameId = gameId;
         $rootScope.tryingToJoinGameId = gameId;
-        $('#join-game-dialog').dialog({ width: 550 });
-    };
-
-    $scope.submitJoinGame = function() {
-        webSocketService.send('/app/joingame', $scope.joinGameId);
-        $('#join-game-dialog').dialog('destroy');
+        let joinGameDialog = document.querySelector('fp-join-game-dialog');
+        joinGameDialog.showDialog(gameId);
     };
 
     $scope.sendChat = function(message) {
@@ -47,6 +41,10 @@ flexpokerModule.controller('TournamentRegisteringController', ['$rootScope', '$s
 
     document.querySelector('fp-create-game-dialog').addEventListener('create-game-submitted', function(evt) {
         webSocketService.send('/app/creategame', evt.detail);
+    });
+
+    document.querySelector('fp-join-game-dialog').addEventListener('join-game-submitted', function(evt) {
+        webSocketService.send('/app/joingame', evt.detail);
     });
 
 }]);

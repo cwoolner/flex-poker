@@ -27,6 +27,7 @@
 <link rel="import" href="/resources/fp-seat/seat.html" />
 <link rel="import" href="/resources/game-page/game-page.html" />
 <link rel="import" href="/resources/fp-create-game-dialog.html" />
+<link rel="import" href="/resources/fp-join-game-dialog.html" />
 
 <title>Home</title>
 </head>
