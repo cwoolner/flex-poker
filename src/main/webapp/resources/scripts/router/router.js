@@ -5,6 +5,18 @@ class Router {
     handleRoutes() {
         let hash = location.hash;
 
+        if (hash === '#/') {
+            let viewArea = document.querySelector('#view-area');
+            let mainPageElement = document.createElement('fp-main-page');
+
+            // NOTE: probably leaks memory since no handlers are cleaned
+            while (viewArea.firstChild) {
+                viewArea.removeChild(viewArea.firstChild);
+            }
+            viewArea.appendChild(mainPageElement);
+            return;
+        }
+
         if (hash.startsWith('#/logout')) {
             logout();
             return;

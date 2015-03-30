@@ -1,0 +1,75 @@
+<template id="fp-main-page">
+    <style>
+
+    </style>
+
+    <div>
+        <button id="create-game-button">Create Game</button>
+        <fp-gamelist></fp-gamelist>
+        <fp-chat class="global-chat"></fp-chat>
+        <fp-create-game-dialog></fp-create-game-dialog>
+        <fp-join-game-dialog></fp-join-game-dialog>
+    </div>
+
+</template>
+
+<script>
+    'use strict';
+
+    (function() {
+        let localDocument = (document._currentScript || document.currentScript).ownerDocument;
+        let element = Object.create(HTMLElement.prototype);
+
+        element.createdCallback = function() {
+            let template = localDocument.querySelector('#fp-main-page').content;
+            let templateNode = document.importNode(template, true);
+
+            let self = this;
+            let displayChat = function(message) {
+                self.shadowRoot.querySelector('fp-chat').displayChat(message.body);
+            };
+
+            webSocketService.registerSubscription('/topic/chat/global/user', displayChat);
+            webSocketService.registerSubscription('/topic/chat/global/system', displayChat);
+
+            webSocketService.registerSubscription('/topic/availabletournaments', function(message) {
+                self.shadowRoot.querySelector('fp-gamelist').displayGames($.parseJSON(message.body));
+            });
+
+            templateNode.querySelector('#create-game-button').addEventListener('click', function(evt) {
+                self.shadowRoot.querySelector('fp-create-game-dialog').showDialog();
+            });
+
+            templateNode.querySelector('.global-chat').addEventListener('chat-msg-entered', function(evt) {
+                var globalMessage = {
+                    message: evt.detail,
+                    receiverUsernames: null,
+                    gameId: null,
+                    tableId: null
+                };
+
+                webSocketService.send('/app/sendchatmessage', globalMessage);
+            });
+
+            templateNode.querySelector('fp-gamelist').addEventListener('game-open-selected', function(evt) {
+                window.tryingToJoinGameId = evt.detail;
+                let joinGameDialog = self.shadowRoot.querySelector('fp-join-game-dialog');
+                joinGameDialog.showDialog(evt.detail);
+            });
+
+            templateNode.querySelector('fp-create-game-dialog').addEventListener('create-game-submitted', function(evt) {
+                webSocketService.send('/app/creategame', evt.detail);
+            });
+
+            templateNode.querySelector('fp-join-game-dialog').addEventListener('join-game-submitted', function(evt) {
+                webSocketService.send('/app/joingame', evt.detail);
+            });
+
+            this.createShadowRoot().appendChild(templateNode);
+        };
+
+        document.registerElement('fp-main-page', {
+            prototype: element
+        });
+    })();
+</script>
