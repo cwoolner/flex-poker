@@ -7,7 +7,7 @@ flexpokerModule.controller('MainController', ['$rootScope', '$scope', '$location
 
     webSocketService.registerSubscription('/user/queue/errors', function(message) {
         alert("Error " + message.body);
-        $rootScope.tryingToJoinGameId = null;
+        window.tryingToJoinGameId = null;
     });
 
     webSocketService.registerSubscription('/app/opengamesforuser', function(message) {
@@ -20,11 +20,11 @@ flexpokerModule.controller('MainController', ['$rootScope', '$scope', '$location
         $scope.$apply(function() {
             $scope.gameTabs = $.parseJSON(message.body);
         });
-        if ($rootScope.tryingToJoinGameId != null) {
+        if (window.tryingToJoinGameId != null) {
             $scope.$apply(function() {
-                $location.path(`/game/${$rootScope.tryingToJoinGameId}`);
+                $location.path(`/game/${window.tryingToJoinGameId}`);
             });
-            $rootScope.tryingToJoinGameId = null;
+            window.tryingToJoinGameId = null;
         }
     });
 
