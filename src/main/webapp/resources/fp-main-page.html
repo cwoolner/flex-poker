@@ -33,7 +33,7 @@
             webSocketService.registerSubscription('/topic/chat/global/system', displayChat);
 
             webSocketService.registerSubscription('/topic/availabletournaments', function(message) {
-                self.shadowRoot.querySelector('fp-gamelist').displayGames($.parseJSON(message.body));
+                self.shadowRoot.querySelector('fp-gamelist').displayGames(JSON.parse(message.body));
             });
 
             templateNode.querySelector('#create-game-button').addEventListener('click', function(evt) {

@@ -66,7 +66,7 @@ flexpokerModule.controller('TableController', ['$scope', '$rootScope', '$routePa
     webSocketService.registerSubscription(`/topic/game/${$scope.gameId}/table/${$scope.tableId}`, receiveTableUpdate);
 
     function receiveTableUpdate(message) {
-        let table = $.parseJSON(message.body);
+        let table = JSON.parse(message.body);
         $scope.$apply(function() {
             $scope.table = table;
         });

@@ -6,7 +6,6 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta http-equiv="pragma" content="no-cache" />
 
-<script type="text/javascript" src="<c:url value='/resources/js/libs/jquery.min.js' />"></script>
 <script type="text/javascript" src="<c:url value='/resources/js/libs/angular.min.js' />"></script>
 <script type="text/javascript" src="<c:url value='/resources/js/libs/angular-route.min.js' />"></script>
 <script type="text/javascript" src="<c:url value='/resources/js/libs/sockjs.js' />"></script>

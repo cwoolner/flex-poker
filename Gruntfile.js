@@ -7,9 +7,7 @@ module.exports = function(grunt) {
               'angular/angular.min.js',
               'angular/angular.min.js.map',
               'angular-route/angular-route.min.js',
-              'angular-route/angular-route.min.js.map',
-              'jquery/dist/jquery.min.js',
-              'jquery/dist/jquery.min.map'
+              'angular-route/angular-route.min.js.map'
           ],
           cssminFiles: [
               'src/main/webapp/resources/css/main.css'
