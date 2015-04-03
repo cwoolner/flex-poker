@@ -17,7 +17,7 @@
     'use strict';
 
     (function() {
-        let localDocument = (document._currentScript || document.currentScript).ownerDocument;
+        let localDocument = document.currentScript.ownerDocument;
         let element = Object.create(HTMLElement.prototype);
 
         element.createdCallback = function() {
