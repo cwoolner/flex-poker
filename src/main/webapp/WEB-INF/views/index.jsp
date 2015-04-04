@@ -21,6 +21,7 @@
 <link rel="import" href="/resources/fp-create-game-dialog.html" />
 <link rel="import" href="/resources/fp-join-game-dialog.html" />
 <link rel="import" href="/resources/fp-main-page.html" />
+<link rel="import" href="/resources/fp-main-tabs.html" />
 
 <title>Home</title>
 </head>
@@ -31,14 +32,7 @@
 
 <p><a href="/#logout">Logout</a></p>
 
-<div ng-controller="MainController">
-  <ul class="game-tab-container">
-    <li><a href="#/">Home</a></li>
-    <li ng-repeat="gameTab in gameTabs" class="game-tab-{{gameTab.gameStage | lowercase}}">
-      <a href="#/game/{{gameTab.gameId}}">{{gameTab.name}}</a>
-    </li>
-  </ul>
-</div>
+<fp-main-tabs></fp-main-tabs>
 
 <div ng-view></div>
 <div id="view-area"></div>

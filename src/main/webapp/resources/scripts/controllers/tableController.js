@@ -6,14 +6,14 @@ import chat from '../chat/chat';
 flexpokerModule.controller('TableController', ['$scope', '$rootScope', '$routeParams', function($scope, $rootScope, $routeParams) {
     $scope.gameId = $routeParams['gameId'];
     $scope.tableId = $routeParams['tableId'];
-    $scope.username = $rootScope.username;
+    $scope.username = document.querySelector('.username').innerHTML;
 
     $scope.chatDisplay = '';
 
-    $rootScope.$on(`pocketCardsReceived-${$scope.tableId}`, function(event, data) {
+    document.querySelector('fp-main-tabs').addEventListener(`pocketCardsReceived-${$scope.tableId}`, function(evt) {
         $scope.$apply(function() {
-            $scope.myLeftCardUrl = cardData[data.cardId1];
-            $scope.myRightCardUrl = cardData[data.cardId2];
+            $scope.myLeftCardUrl = cardData[evt.detail.cardId1];
+            $scope.myRightCardUrl = cardData[evt.detail.cardId2];
         });
     });
 

@@ -1,0 +1,111 @@
+<template id="fp-main-tabs">
+    <style>
+        .game-tab-container li {
+            width: 100px;
+        }
+
+        .game-tab-registering {
+            background-color: #FFFFFF;
+        }
+
+        .game-tab-starting {
+            background-color: #0000FF;
+        }
+
+        .game-tab-inprogress {
+            background-color: #00FF00;
+        }
+
+        .game-tab-finished {
+            background-color: #FF0000;
+        }
+    </style>
+
+    <div>
+        <ul class="game-tab-container">
+            <li><a href="#/">Home</a></li>
+        </ul>
+    </div>
+
+</template>
+
+<script>
+    'use strict';
+
+    (function() {
+        let localDocument = document.currentScript.ownerDocument;
+        let element = Object.create(HTMLElement.prototype);
+
+        element.createdCallback = function() {
+            let template = localDocument.querySelector('#fp-main-tabs').content;
+            let templateNode = document.importNode(template, true);
+
+            webSocketService.registerSubscription('/user/queue/errors', function(message) {
+                alert("Error " + message.body);
+                window.tryingToJoinGameId = null;
+            });
+
+            let self = this;
+            webSocketService.registerSubscription('/app/opengamesforuser', function(message) {
+                displayGameTabs.call(self, message);
+            });
+
+            webSocketService.registerSubscription('/user/queue/opengamesforuser', function(message) {
+                displayGameTabs.call(self, message);
+                if (window.tryingToJoinGameId != null) {
+                    window.location.hash = `/game/${window.tryingToJoinGameId}`;
+                    window.tryingToJoinGameId = null;
+                }
+            });
+
+            webSocketService.registerSubscription('/user/queue/opentable', function(message) {
+                let openTable = JSON.parse(message.body);
+                window.location.hash = `/game/${openTable.gameId}/table/${openTable.tableId}`;
+            });
+
+            webSocketService.registerSubscription('/user/queue/personaltablestatus', function(message) {
+                alert(JSON.parse(message.body));
+            });
+
+            webSocketService.registerSubscription('/user/queue/pocketcards', function(message) {
+                let parsedData = JSON.parse(message.body);
+                let pocketCards = {
+                    cardId1: parsedData.cardId1,
+                    cardId2: parsedData.cardId2
+                };
+
+                let pocketCardsReceivedEvent = new CustomEvent(`pocketCardsReceived-${parsedData.tableId}`, {
+                    detail: pocketCards,
+                    bubbles: true
+                });
+                self.dispatchEvent(pocketCardsReceivedEvent);
+            });
+
+            this.createShadowRoot().appendChild(templateNode);
+        };
+
+        function displayGameTabs(message){
+            let container = this.shadowRoot.querySelector('.game-tab-container');
+
+            while(container.childElementCount > 1) {
+                container.removeChild(container.lastChild);
+            }
+
+            JSON.parse(message.body).forEach(function(openGame) {
+                let gameAnchor = document.createElement('a');
+                gameAnchor.innerHTML = openGame.name;
+                gameAnchor.href = `#/game/${openGame.gameId}`;
+
+                let gameTab = document.createElement('li');
+                gameTab.className = `game-tab-${openGame.gameStage.toLowerCase()}`;
+
+                gameTab.appendChild(gameAnchor);
+                container.appendChild(gameTab);
+            });
+        }
+
+        document.registerElement('fp-main-tabs', {
+            prototype: element
+        });
+    })();
+</script>

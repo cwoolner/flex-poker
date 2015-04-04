@@ -1,25 +1,5 @@
 @CHARSET "UTF-8";
 
-.game-tab-container li {
-    width: 100px;
-}
-
-.game-tab-registering {
-    background-color: #FFFFFF;
-}
-
-.game-tab-starting {
-    background-color: #0000FF;
-}
-
-.game-tab-inprogress {
-    background-color: #00FF00;
-}
-
-.game-tab-finished {
-    background-color: #FF0000;
-}
-
 .table {
     background: url(/resources/img/Table.svg) no-repeat;
 }
