@@ -6,8 +6,6 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta http-equiv="pragma" content="no-cache" />
 
-<script type="text/javascript" src="<c:url value='/resources/js/libs/angular.min.js' />"></script>
-<script type="text/javascript" src="<c:url value='/resources/js/libs/angular-route.min.js' />"></script>
 <script type="text/javascript" src="<c:url value='/resources/js/libs/sockjs.js' />"></script>
 <script type="text/javascript" src="<c:url value='/resources/js/libs/stomp.min.js' />"></script>
 <script type="text/javascript" src="<c:url value='/resources/js/libs/bundle.js' />"></script>
@@ -22,11 +20,12 @@
 <link rel="import" href="/resources/fp-join-game-dialog.html" />
 <link rel="import" href="/resources/fp-main-page.html" />
 <link rel="import" href="/resources/fp-main-tabs.html" />
+<link rel="import" href="/resources/fp-table-page.html" />
 
 <title>Home</title>
 </head>
 
-<body ng-app="flexpoker">
+<body>
 
 <p>Logged in as: <span class="username"><sec:authentication property="principal.username" /></span></p>
 
@@ -34,7 +33,6 @@
 
 <fp-main-tabs></fp-main-tabs>
 
-<div ng-view></div>
 <div id="view-area"></div>
 
 </body>

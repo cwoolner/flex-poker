@@ -3,17 +3,12 @@ module.exports = function(grunt) {
       fileDefs: {
           bowerJsFiles: [
               'stomp-websocket/lib/stomp.min.js',
-              'sockjs-client/dist/sockjs.js',
-              'angular/angular.min.js',
-              'angular/angular.min.js.map',
-              'angular-route/angular-route.min.js',
-              'angular-route/angular-route.min.js.map'
+              'sockjs-client/dist/sockjs.js'
           ],
           cssminFiles: [
               'src/main/webapp/resources/css/main.css'
           ],
           browserifyFiles: [
-              'src/main/webapp/resources/scripts/routes.js',
               'src/main/webapp/resources/scripts/main.js',
               'src/main/webapp/resources/scripts/cardData.js',
               'src/main/webapp/resources/scripts/webSocketService.js',

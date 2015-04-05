@@ -1,0 +1,248 @@
+<template id="fp-table-page">
+    <style>
+        .display-none {
+            display: none;
+        }
+
+        .table {
+            background: url(/resources/img/Table.svg) no-repeat;
+        }
+
+        .my-cards {
+            width: 100px;
+            height: 100px;
+        }
+
+        .common-card {
+            width: 100px;
+            height: 100px;
+        }
+    </style>
+
+    <div>
+        <p id="gameId"></p>
+        <p id="tableId"></p>
+
+        <div class="table">
+            <div id="total-pot"></div>
+            <div class="common-cards-area"></div>
+            <div class="seat-holder"></div>
+        </div>
+
+        <div>
+            <img id="my-left-card" class="my-cards" />
+            <img id="my-right-card" class="my-cards" />
+        </div>
+
+        <div class="poker-actions">
+            <button id="check-button">Check</button>
+            <button id="call-button">Call</button>
+            <button id="raise-button">Raise</button>
+            <button id="fold-button">Fold</button>
+            <input type="checkbox" id="check-checkbox" /><label for="check-checkbox">Check</label>
+            <input type="checkbox" id="call-checkbox" /><label for="call-checkbox">Call</label>
+            <input type="checkbox" id="raise-checkbox" /><label for="raise-checkbox">Raise</label>
+            <input type="checkbox" id="fold-checkbox" /><label for="fold-checkbox">Fold</label>
+        </div>
+
+        <fp-chat class="table-chat"></fp-chat>
+    </div>
+</template>
+
+<script>
+    'use strict';
+
+    (function() {
+        let localDocument = document.currentScript.ownerDocument;
+        let element = Object.create(HTMLElement.prototype);
+
+        element.createdCallback = function() {
+            let template = localDocument.querySelector('#fp-table-page').content;
+            let templateNode = document.importNode(template, true);
+            this.createShadowRoot().appendChild(templateNode);
+        };
+
+        element.attributeChangedCallback = function(attrName, oldValue, newValue) {
+            if (attrName === 'gameid') {
+                let gameId = newValue;
+                this.shadowRoot.querySelector('#gameId').innerHTML = gameId;
+            }
+
+            if (attrName === 'tableid') {
+                let gameId = this.attributes['gameid'].value;
+                let tableId = newValue;
+                this.shadowRoot.querySelector('#tableId').innerHTML = tableId;
+
+                let self = this;
+                let displayChat = function(message) {
+                    self.shadowRoot.querySelector('fp-chat').displayChat(message.body);
+                };
+
+                webSocketService.registerSubscription(`/topic/game/${gameId}/table/${tableId}`, receiveTableUpdate.bind(self));
+                webSocketService.registerSubscription(`/topic/chat/game/${gameId}/table/${tableId}/user`, displayChat);
+                webSocketService.registerSubscription(`/topic/chat/game/${gameId}/table/${tableId}/system`, displayChat);
+
+                this.shadowRoot.querySelector('.table-chat').addEventListener('chat-msg-entered', function(evt) {
+                    sendChat(evt.detail, gameId, tableId);
+                });
+
+                document.querySelector('fp-main-tabs').addEventListener(`pocketCardsReceived-${tableId}`, function(evt) {
+                    self.shadowRoot.querySelector('#my-left-card').src = cardData[evt.detail.cardId1];
+                    self.shadowRoot.querySelector('#my-right-card').src = cardData[evt.detail.cardId2];
+                });
+
+                let checkButton = this.shadowRoot.querySelector('#check-button');
+                let callButton = this.shadowRoot.querySelector('#call-button');
+                let raiseButton = this.shadowRoot.querySelector('#raise-button');
+                let foldButton = this.shadowRoot.querySelector('#fold-button');
+
+                checkButton.addEventListener('click', function(evt) { check(gameId, tableId); });
+                callButton.addEventListener('click', function(evt) { call(gameId, tableId); });
+                raiseButton.addEventListener('click', function(evt) { raise(gameId, tableId, 0); });
+                foldButton.addEventListener('click', function(evt) { fold(gameId, tableId); });
+            }
+        };
+
+        function sendChat(message, gameId, tableId) {
+            let tableMessage = {
+                message: message,
+                receiverUsernames: null,
+                gameId: gameId,
+                tableId: tableId
+            };
+
+            webSocketService.send('/app/sendchatmessage', tableMessage);
+        }
+
+        function check(gameId, tableId) {
+            webSocketService.send('/app/check', {gameId: gameId, tableId: tableId});
+        };
+
+        function call(gameId, tableId) {
+            webSocketService.send('/app/call', {gameId: gameId, tableId: tableId});
+        };
+
+        function raise(gameId, tableId, raiseToAmount) {
+            webSocketService.send('/app/raise', {gameId: gameId, tableId: tableId, raiseToAmount: raiseToAmount});
+        };
+
+        function fold(gameId, tableId) {
+            webSocketService.send('/app/fold', {gameId: gameId, tableId: tableId});
+        };
+
+        function receiveTableUpdate(message) {
+            let self = this;
+
+            let table = JSON.parse(message.body);
+            self.shadowRoot.querySelector('#total-pot').innerHTML = table.totalPot;
+
+            let username = document.querySelector('.username').innerHTML;
+
+            let mySeat = table.seats.find(function(element) {
+                return element.name === username;
+            });
+            let seatHolder = this.shadowRoot.querySelector('.seat-holder');
+
+            if (!seatHolder.hasChildNodes()) {
+                table.seats.forEach(function(seat) {
+                    let seatElement = document.createElement('fp-seat');
+                    seatElement.dataset.position = seat.position;
+                    seatHolder.appendChild(seatElement);
+                });
+            }
+
+            table.seats.forEach(function(seat) {
+                let seatElement = [].slice.call(seatHolder.children).find(function(element) {
+                    return element.dataset.position === seat.position.toString();
+                });
+                seatElement.populateSeatInfo(seat);
+                seatElement.toggleMySeat(seat === mySeat);
+            });
+
+            let pokerActionsArea = self.shadowRoot.querySelector('.poker-actions');
+
+            [].slice.call(pokerActionsArea.children).forEach(function(pokerActionElement) {
+                pokerActionElement.className += ' display-none ';
+            });
+
+            if (mySeat) {
+                var pokerActions = {
+                    actionOn: mySeat.actionOn,
+                    check: mySeat.callAmount === 0,
+                    fold: mySeat.callAmount !== 0,
+                    call: mySeat.callAmount !== 0,
+                    raise: mySeat.raiseTo !== 0
+                };
+
+                if (pokerActions.actionOn) {
+                    if (pokerActions.check) {
+                        let checkButton = self.shadowRoot.querySelector('#check-button');
+                        checkButton.className = checkButton.className.replace(/display-none/g, '').trim();
+                    }
+
+                    if (pokerActions.call) {
+                        let callButton = self.shadowRoot.querySelector('#call-button');
+                        callButton.className = callButton.className.replace(/display-none/g, '').trim();
+                    }
+
+                    if (pokerActions.raise) {
+                        let raiseButton = self.shadowRoot.querySelector('#raise-button');
+                        raiseButton.className = raiseButton.className.replace(/display-none/g, '').trim();
+                    }
+
+                    if (pokerActions.fold) {
+                        let foldButton = self.shadowRoot.querySelector('#fold-button');
+                        foldButton.className = foldButton.className.replace(/display-none/g, '').trim();
+                    }
+                } else {
+                    if (pokerActions.check) {
+                        let checkCheckbox = self.shadowRoot.querySelector('#check-checkbox');
+                        checkCheckbox.className = checkCheckbox.className.replace(/display-none/g, '').trim();
+                        checkCheckbox.nextSibling.className = checkCheckbox.nextSibling.className.replace(/display-none/g, '').trim();
+                    }
+
+                    if (pokerActions.call) {
+                        let callCheckbox = self.shadowRoot.querySelector('#call-checkbox');
+                        callCheckbox.className = callCheckbox.className.replace(/display-none/g, '').trim();
+                        callCheckbox.nextSibling.className = callCheckbox.nextSibling.className.replace(/display-none/g, '').trim();
+                    }
+
+                    if (pokerActions.raise) {
+                        let raiseCheckbox = self.shadowRoot.querySelector('#raise-checkbox');
+                        raiseCheckbox.className = raiseCheckbox.className.replace(/display-none/g, '').trim();
+                        raiseCheckbox.nextSibling.className = raiseCheckbox.nextSibling.className.replace(/display-none/g, '').trim();
+                    }
+
+                    if (pokerActions.fold) {
+                        let foldCheckbox = self.shadowRoot.querySelector('#fold-checkbox');
+                        foldCheckbox.className = foldCheckbox.className.replace(/display-none/g, '').trim();
+                        foldCheckbox.nextSibling.className = foldCheckbox.nextSibling.className.replace(/display-none/g, '').trim();
+                    }
+                }
+
+            }
+
+            let commonCardsArea = self.shadowRoot.querySelector('.common-cards-area');
+
+            while (commonCardsArea.firstChild) {
+                commonCardsArea.removeChild(commonCardsArea.firstChild);
+            }
+
+            table.visibleCommonCards.forEach(function(commonCard) {
+                let card = document.createElement('img');
+                card.className = 'common-card';
+                card.src = cardData[commonCard.id];
+
+                let cardContainer = document.createElement('span');
+                cardContainer.appendChild(card);
+
+                commonCardsArea.appendChild(cardContainer);
+            });
+        }
+
+        document.registerElement('fp-table-page', {
+            prototype: element
+        });
+
+    })();
+</script>

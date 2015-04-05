@@ -1,9 +1,8 @@
 require('babel/polyfill');
 import handleRoutes from './router/router';
-import chat from './chat/chat';
+import webSocketService from './webSocketService';
+
+webSocketService.registerSubscription('/user/topic/chat/personal/user', function(message) { alert('personal' + message.body); });
+webSocketService.registerSubscription('/user/topic/chat/personal/system', function(message) { alert('personal' + message.body); });
 
 window.onhashchange = handleRoutes;
-
-var flexpokerModule = angular.module('flexpoker', ['ngRoute']);
-
-export default flexpokerModule;

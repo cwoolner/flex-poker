@@ -50,6 +50,12 @@ var cardData = [
         '/resources/img/nicubunu_Ornamental_deck_Jack_of_clubs.svg',
         '/resources/img/nicubunu_Ornamental_deck_Queen_of_clubs.svg',
         '/resources/img/nicubunu_Ornamental_deck_King_of_clubs.svg',
-        '/resources/img/nicubunu_Ornamental_deck_Ace_of_clubs.svg'];
+        '/resources/img/nicubunu_Ornamental_deck_Ace_of_clubs.svg'
+];
+
+// HACK: making it global for usage inside of a WebComponent.  get rid of this once a real es6 module loader is added to the project
+if (window) {
+    window.cardData = cardData;
+}
 
 export default cardData;
