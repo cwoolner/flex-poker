@@ -1,4 +1,4 @@
-package com.flexpoker.table.command.aggregate;
+package com.flexpoker.table.command.aggregate.basicevent;
 
 import static com.flexpoker.table.command.framework.TableEventType.ActionOnChanged;
 import static com.flexpoker.table.command.framework.TableEventType.CardsShuffled;
@@ -20,7 +20,6 @@ import static com.flexpoker.test.util.CommonAssertions.verifyEventIdsAndVersionN
 import static com.flexpoker.test.util.CommonAssertions.verifyNumberOfEventsAndEntireOrderByType;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 import java.util.HashSet;
 import java.util.List;
@@ -31,12 +30,14 @@ import java.util.stream.Collectors;
 
 import org.junit.Test;
 
+import com.flexpoker.table.command.aggregate.Table;
+import com.flexpoker.table.command.aggregate.testhelpers.TableTestUtils;
 import com.flexpoker.table.command.events.ActionOnChangedEvent;
 import com.flexpoker.table.command.events.HandDealtEvent;
 import com.flexpoker.table.command.events.TableCreatedEvent;
 import com.flexpoker.table.command.framework.TableEvent;
 
-public class ThreePersonTableTest {
+public class FourPersonTableTest {
 
     @Test
     public void testSeatPositionsAndButtonAndBlinds() {
@@ -44,9 +45,10 @@ public class ThreePersonTableTest {
         UUID player1Id = UUID.randomUUID();
         UUID player2Id = UUID.randomUUID();
         UUID player3Id = UUID.randomUUID();
+        UUID player4Id = UUID.randomUUID();
 
         Table table = TableTestUtils.createBasicTable(tableId, player1Id, player2Id,
-                player3Id);
+                player3Id, player4Id);
 
         // check seat positions
         Map<Integer, UUID> seatPositionToPlayerIdMap = ((TableCreatedEvent) table
@@ -61,28 +63,21 @@ public class ThreePersonTableTest {
                 .filter(x -> x.equals(player2Id)).collect(Collectors.toList());
         List<UUID> player3MatchList = seatPositionToPlayerIdMap.values().stream()
                 .filter(x -> x.equals(player3Id)).collect(Collectors.toList());
+        List<UUID> player4MatchList = seatPositionToPlayerIdMap.values().stream()
+                .filter(x -> x.equals(player4Id)).collect(Collectors.toList());
 
         // verify that each player id is only in one seat position and that
-        // those are the only three filled-in positions
+        // those are the only two filled-in positions
         assertEquals(1, player1MatchList.size());
         assertEquals(1, player2MatchList.size());
         assertEquals(1, player3MatchList.size());
+        assertEquals(1, player4MatchList.size());
 
         long numberOfOtherPlayerPositions = seatPositionToPlayerIdMap.values().stream()
                 .filter(x -> !x.equals(player1Id)).filter(x -> !x.equals(player2Id))
-                .filter(x -> !x.equals(player3Id)).distinct().count();
+                .filter(x -> !x.equals(player3Id)).filter(x -> !x.equals(player4Id))
+                .distinct().count();
         assertEquals(0, numberOfOtherPlayerPositions);
-
-        // check blinds
-        int player1Position = seatPositionToPlayerIdMap.entrySet().stream()
-                .filter(x -> x.getValue().equals(player1Id)).findAny().get().getKey()
-                .intValue();
-        int player2Position = seatPositionToPlayerIdMap.entrySet().stream()
-                .filter(x -> x.getValue().equals(player2Id)).findAny().get().getKey()
-                .intValue();
-        int player3Position = seatPositionToPlayerIdMap.entrySet().stream()
-                .filter(x -> x.getValue().equals(player3Id)).findAny().get().getKey()
-                .intValue();
 
         HandDealtEvent handDealtEvent = ((HandDealtEvent) table.fetchNewEvents().get(2));
 
@@ -101,75 +96,94 @@ public class ThreePersonTableTest {
         buttonAndBlindPositions
                 .add(Integer.valueOf(handDealtEvent.getBigBlindPosition()));
 
-        assertTrue(buttonAndBlindPositions.contains(Integer.valueOf(player1Position)));
-        assertTrue(buttonAndBlindPositions.contains(Integer.valueOf(player2Position)));
-        assertTrue(buttonAndBlindPositions.contains(Integer.valueOf(player3Position)));
+        Set<Integer> seatPositionsWithAPlayer = seatPositionToPlayerIdMap.entrySet()
+                .stream().filter(x -> x.getValue() != null).map(x -> x.getKey())
+                .collect(Collectors.toSet());
+
+        long numberOfPlayersThatAreNotABlindOrButton = seatPositionsWithAPlayer.stream()
+                .filter(x -> !buttonAndBlindPositions.contains(x)).distinct().count();
+
+        assertEquals(1, numberOfPlayersThatAreNotABlindOrButton);
     }
 
     @Test
-    public void testTwoTimeoutsCauseFolds() {
+    public void testThreeTimeoutsCauseFolds() {
         UUID tableId = UUID.randomUUID();
         UUID player1Id = UUID.randomUUID();
         UUID player2Id = UUID.randomUUID();
         UUID player3Id = UUID.randomUUID();
+        UUID player4Id = UUID.randomUUID();
 
         Table table = TableTestUtils.createBasicTable(tableId, player1Id, player2Id,
-                player3Id);
+                player3Id, player4Id);
+
+        ActionOnChangedEvent rightOfButtonActionOnChangedEvent = (ActionOnChangedEvent) table
+                .fetchNewEvents().get(3);
+        table.expireActionOn(rightOfButtonActionOnChangedEvent.getHandId(),
+                rightOfButtonActionOnChangedEvent.getPlayerId());
 
         ActionOnChangedEvent buttonActionOnChangedEvent = (ActionOnChangedEvent) table
-                .fetchNewEvents().get(3);
+                .fetchNewEvents().get(5);
         table.expireActionOn(buttonActionOnChangedEvent.getHandId(),
                 buttonActionOnChangedEvent.getPlayerId());
 
         ActionOnChangedEvent smallBlindActionOnChangedEvent = (ActionOnChangedEvent) table
-                .fetchNewEvents().get(5);
+                .fetchNewEvents().get(7);
         table.expireActionOn(smallBlindActionOnChangedEvent.getHandId(),
                 smallBlindActionOnChangedEvent.getPlayerId());
-
         List<TableEvent> newEvents = table.fetchNewEvents();
 
         verifyNumberOfEventsAndEntireOrderByType(newEvents, TableCreated, CardsShuffled,
                 HandDealtEvent, ActionOnChanged, PlayerFolded, ActionOnChanged,
-                PlayerFolded, PotCreated, PotAmountIncreased, PotAmountIncreased,
-                RoundCompleted, WinnersDetermined, HandCompleted);
+                PlayerFolded, ActionOnChanged, PlayerFolded, PotCreated,
+                PotAmountIncreased, PotAmountIncreased, RoundCompleted,
+                WinnersDetermined, HandCompleted);
         verifyEventIdsAndVersionNumbers(tableId, newEvents);
     }
 
     @Test
-    public void testTwoCallsAndCheckingTheRestOfTheWay() {
+    public void testThreeCallsAndCheckingTheRestOfTheWay() {
         UUID tableId = UUID.randomUUID();
         UUID player1Id = UUID.randomUUID();
         UUID player2Id = UUID.randomUUID();
         UUID player3Id = UUID.randomUUID();
+        UUID player4Id = UUID.randomUUID();
 
         Table table = TableTestUtils.createBasicTable(tableId, player1Id, player2Id,
-                player3Id);
+                player3Id, player4Id);
 
-        UUID buttonOnPlayerId = ((ActionOnChangedEvent) table.fetchNewEvents().get(3))
+        UUID rightOfButtonOnPlayerId = ((ActionOnChangedEvent) table.fetchNewEvents()
+                .get(3)).getPlayerId();
+        table.call(rightOfButtonOnPlayerId);
+
+        UUID buttonOnPlayerId = ((ActionOnChangedEvent) table.fetchNewEvents().get(5))
                 .getPlayerId();
         table.call(buttonOnPlayerId);
 
-        UUID smallBlindPlayerId = ((ActionOnChangedEvent) table.fetchNewEvents().get(5))
+        UUID smallBlindPlayerId = ((ActionOnChangedEvent) table.fetchNewEvents().get(7))
                 .getPlayerId();
         table.call(smallBlindPlayerId);
 
-        UUID bigBlindPlayerId = ((ActionOnChangedEvent) table.fetchNewEvents().get(7))
+        UUID bigBlindPlayerId = ((ActionOnChangedEvent) table.fetchNewEvents().get(9))
                 .getPlayerId();
         table.check(bigBlindPlayerId);
 
         // post-flop
         table.check(smallBlindPlayerId);
         table.check(bigBlindPlayerId);
+        table.check(rightOfButtonOnPlayerId);
         table.check(buttonOnPlayerId);
 
         // post-turn
         table.check(smallBlindPlayerId);
         table.check(bigBlindPlayerId);
+        table.check(rightOfButtonOnPlayerId);
         table.check(buttonOnPlayerId);
 
         // post-river
         table.check(smallBlindPlayerId);
         table.check(bigBlindPlayerId);
+        table.check(rightOfButtonOnPlayerId);
         table.check(buttonOnPlayerId);
 
         List<TableEvent> newEvents = table.fetchNewEvents();
@@ -182,7 +196,9 @@ public class ThreePersonTableTest {
                 ActionOnChanged,
                 // pre-flop
                 PlayerCalled, ActionOnChanged, PlayerCalled, ActionOnChanged,
-                PlayerChecked, PotCreated, PotAmountIncreased,
+                PlayerCalled, ActionOnChanged, PlayerChecked,
+                PotCreated,
+                PotAmountIncreased,
                 PotAmountIncreased,
                 RoundCompleted,
                 ActionOnChanged,
@@ -190,17 +206,20 @@ public class ThreePersonTableTest {
                 FlopCardsDealt,
                 // post-flop
                 PlayerChecked, ActionOnChanged, PlayerChecked, ActionOnChanged,
-                PlayerChecked, RoundCompleted,
+                PlayerChecked, ActionOnChanged, PlayerChecked,
+                RoundCompleted,
                 ActionOnChanged,
                 LastToActChanged,
                 TurnCardDealt,
                 // post-turn
                 PlayerChecked, ActionOnChanged, PlayerChecked, ActionOnChanged,
-                PlayerChecked, RoundCompleted, ActionOnChanged, LastToActChanged,
+                PlayerChecked, ActionOnChanged, PlayerChecked, RoundCompleted,
+                ActionOnChanged, LastToActChanged,
                 RiverCardDealt,
                 // post-river
                 PlayerChecked, ActionOnChanged, PlayerChecked, ActionOnChanged,
-                PlayerChecked, RoundCompleted, WinnersDetermined, HandCompleted);
+                PlayerChecked, ActionOnChanged, PlayerChecked, RoundCompleted,
+                WinnersDetermined, HandCompleted);
         verifyEventIdsAndVersionNumbers(tableId, newEvents);
     }
 }

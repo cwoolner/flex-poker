@@ -1,4 +1,4 @@
-package com.flexpoker.table.command.aggregate;
+package com.flexpoker.table.command.aggregate.testhelpers;
 
 import java.util.ArrayList;
 import java.util.Collections;

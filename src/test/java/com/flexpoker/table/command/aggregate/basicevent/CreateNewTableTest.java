@@ -1,4 +1,4 @@
-package com.flexpoker.table.command.aggregate;
+package com.flexpoker.table.command.aggregate.basicevent;
 
 import static org.junit.Assert.assertEquals;
 
@@ -10,6 +10,8 @@ import java.util.UUID;
 import org.junit.Test;
 
 import com.flexpoker.exception.FlexPokerException;
+import com.flexpoker.table.command.aggregate.DefaultTableFactory;
+import com.flexpoker.table.command.aggregate.Table;
 import com.flexpoker.table.command.commands.CreateTableCommand;
 import com.flexpoker.table.command.framework.TableEvent;
 import com.flexpoker.table.command.framework.TableEventType;

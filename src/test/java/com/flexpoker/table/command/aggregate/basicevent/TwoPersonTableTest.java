@@ -1,4 +1,4 @@
-package com.flexpoker.table.command.aggregate;
+package com.flexpoker.table.command.aggregate.basicevent;
 
 import static com.flexpoker.table.command.framework.TableEventType.ActionOnChanged;
 import static com.flexpoker.table.command.framework.TableEventType.CardsShuffled;
@@ -28,6 +28,8 @@ import java.util.stream.Collectors;
 
 import org.junit.Test;
 
+import com.flexpoker.table.command.aggregate.Table;
+import com.flexpoker.table.command.aggregate.testhelpers.TableTestUtils;
 import com.flexpoker.table.command.events.ActionOnChangedEvent;
 import com.flexpoker.table.command.events.HandDealtEvent;
 import com.flexpoker.table.command.events.TableCreatedEvent;
