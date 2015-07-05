@@ -1,4 +1,4 @@
-package com.flexpoker.table.command.aggregate.basicevent;
+package com.flexpoker.table.command.aggregate.generic;
 
 import static org.junit.Assert.assertEquals;
 

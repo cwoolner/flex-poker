@@ -1,4 +1,4 @@
-package com.flexpoker.table.command.aggregate.basicevent;
+package com.flexpoker.table.command.aggregate.singlehand.twoplayer;
 
 import static com.flexpoker.table.command.framework.TableEventType.ActionOnChanged;
 import static com.flexpoker.table.command.framework.TableEventType.CardsShuffled;
