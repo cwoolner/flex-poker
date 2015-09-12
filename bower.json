@@ -20,7 +20,7 @@
   ],
   "dependencies": {
     "stomp-websocket": "~2.3.4",
-    "sockjs-client": "~0.3.4"
+    "sockjs-client": "~1.0.3"
   },
   "devDependencies": {}
 }
