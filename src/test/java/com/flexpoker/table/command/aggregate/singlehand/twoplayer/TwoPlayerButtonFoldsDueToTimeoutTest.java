@@ -1,0 +1,99 @@
+package com.flexpoker.table.command.aggregate.singlehand.twoplayer;
+
+import static com.flexpoker.table.command.aggregate.testhelpers.TableTestUtils.fetchIdForBigBlind;
+import static com.flexpoker.table.command.aggregate.testhelpers.TableTestUtils.fetchIdForButton;
+import static com.flexpoker.table.command.framework.TableEventType.ActionOnChanged;
+import static com.flexpoker.table.command.framework.TableEventType.CardsShuffled;
+import static com.flexpoker.table.command.framework.TableEventType.HandCompleted;
+import static com.flexpoker.table.command.framework.TableEventType.HandDealtEvent;
+import static com.flexpoker.table.command.framework.TableEventType.PlayerFolded;
+import static com.flexpoker.table.command.framework.TableEventType.PotAmountIncreased;
+import static com.flexpoker.table.command.framework.TableEventType.PotCreated;
+import static com.flexpoker.table.command.framework.TableEventType.RoundCompleted;
+import static com.flexpoker.table.command.framework.TableEventType.TableCreated;
+import static com.flexpoker.table.command.framework.TableEventType.WinnersDetermined;
+import static com.flexpoker.test.util.CommonAssertions.verifyEventIdsAndVersionNumbers;
+import static com.flexpoker.test.util.CommonAssertions.verifyNumberOfEventsAndEntireOrderByType;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
+
+import org.junit.Test;
+
+import com.flexpoker.table.command.aggregate.HandDealerState;
+import com.flexpoker.table.command.aggregate.Table;
+import com.flexpoker.table.command.aggregate.testhelpers.TableTestUtils;
+import com.flexpoker.table.command.events.ActionOnChangedEvent;
+import com.flexpoker.table.command.events.HandDealtEvent;
+import com.flexpoker.table.command.events.PotAmountIncreasedEvent;
+import com.flexpoker.table.command.events.PotCreatedEvent;
+import com.flexpoker.table.command.events.RoundCompletedEvent;
+import com.flexpoker.table.command.events.TableCreatedEvent;
+import com.flexpoker.table.command.events.WinnersDeterminedEvent;
+import com.flexpoker.table.command.framework.TableEvent;
+
+public class TwoPlayerButtonFoldsDueToTimeoutTest {
+
+    @Test
+    public void test() {
+        UUID tableId = UUID.randomUUID();
+
+        Table table = TableTestUtils.createBasicTable(tableId, UUID.randomUUID(),
+                UUID.randomUUID());
+
+        // use the info in action on event to simulate the expire
+        ActionOnChangedEvent actionOnChangedEvent = (ActionOnChangedEvent) table
+                .fetchNewEvents().get(3);
+        table.expireActionOn(actionOnChangedEvent.getHandId(),
+                actionOnChangedEvent.getPlayerId());
+
+        List<TableEvent> newEvents = table.fetchNewEvents();
+        TableCreatedEvent tableCreatedEvent = (TableCreatedEvent) newEvents.get(0);
+        HandDealtEvent handDealtEvent = (HandDealtEvent) newEvents.get(2);
+        PotCreatedEvent potCreatedEvent = (PotCreatedEvent) newEvents.get(5);
+        PotAmountIncreasedEvent smallBlindPotAmountIncreasedEvent = (PotAmountIncreasedEvent) newEvents.get(6);
+        PotAmountIncreasedEvent bigBlindPotAmountIncreasedEvent = (PotAmountIncreasedEvent) newEvents.get(7);
+        RoundCompletedEvent roundCompletedEvent = (RoundCompletedEvent) newEvents.get(8);
+
+        UUID buttonPlayerId = fetchIdForButton(
+                tableCreatedEvent, handDealtEvent);
+        UUID bigBlindPlayerId = fetchIdForBigBlind(
+                tableCreatedEvent, handDealtEvent);
+
+        assertEquals(10, handDealtEvent.getCallAmountsMap().get(buttonPlayerId).intValue());
+        assertEquals(0, handDealtEvent.getCallAmountsMap().get(bigBlindPlayerId).intValue());
+        assertEquals(1490, handDealtEvent.getChipsInBack().get(buttonPlayerId).intValue());
+        assertEquals(1480, handDealtEvent.getChipsInBack().get(bigBlindPlayerId).intValue());
+        assertEquals(10, handDealtEvent.getChipsInFrontMap().get(buttonPlayerId).intValue());
+        assertEquals(20, handDealtEvent.getChipsInFrontMap().get(bigBlindPlayerId).intValue());
+        assertEquals(HandDealerState.POCKET_CARDS_DEALT, handDealtEvent.getHandDealerState());
+
+        assertEquals(1, potCreatedEvent.getPlayersInvolved().size());
+        assertTrue(potCreatedEvent.getPlayersInvolved().contains(bigBlindPlayerId));
+
+        assertEquals(10, smallBlindPotAmountIncreasedEvent.getAmountIncreased());
+        assertEquals(20, bigBlindPotAmountIncreasedEvent.getAmountIncreased());
+
+        assertEquals(HandDealerState.COMPLETE, roundCompletedEvent.getNextHandDealerState());
+
+        WinnersDeterminedEvent winnersDeterminedEvent = ((WinnersDeterminedEvent) newEvents.get(9));
+        Map<UUID, Integer> playersToChipsWonMap = winnersDeterminedEvent.getPlayersToChipsWonMap();
+        Set<UUID> playersToShowCards = winnersDeterminedEvent.getPlayersToShowCards();
+
+        assertNull(playersToChipsWonMap.get(buttonPlayerId));
+        assertEquals(30, playersToChipsWonMap.get(bigBlindPlayerId).intValue());
+        assertTrue(playersToShowCards.isEmpty());
+
+        verifyNumberOfEventsAndEntireOrderByType(newEvents, TableCreated, CardsShuffled,
+                HandDealtEvent, ActionOnChanged, PlayerFolded, PotCreated,
+                PotAmountIncreased, PotAmountIncreased, RoundCompleted,
+                WinnersDetermined, HandCompleted);
+        verifyEventIdsAndVersionNumbers(tableId, newEvents);
+    }
+
+}
