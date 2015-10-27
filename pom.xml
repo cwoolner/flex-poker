@@ -74,6 +74,21 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>org.pitest</groupId>
+                <artifactId>pitest-maven</artifactId>
+                <version>1.1.7</version>
+                <configuration>
+                    <targetClasses>
+                        <param>com.flexpoker.*</param>
+                    </targetClasses>
+                    <targetTests>
+                        <param>com.flexpoker.*</param>
+                    </targetTests>
+                    <timeoutFactor>3</timeoutFactor>
+                    <threads>4</threads>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 

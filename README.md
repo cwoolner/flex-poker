@@ -90,3 +90,9 @@ NOTE: Since the app uses in-memory persistence, the entire state of the app is e
 #Dev environment setup
 
 Just been using Eclipse, so to generate the .classpath file, from the top-level directory: `mvn eclipse:eclipse`
+
+#Testing
+
+The basic unit tests run as part of a normal Maven lifecycle.  No external systems are hit.
+
+Been recently playing around with mutation testing.  The PIT plugin has been included.  To run (after building): `mvn org.pitest:pitest-maven:mutationCoverage`
