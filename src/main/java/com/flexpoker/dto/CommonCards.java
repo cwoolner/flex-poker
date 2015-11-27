@@ -1,9 +1,7 @@
 package com.flexpoker.dto;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-
-import org.apache.commons.collections.CollectionUtils;
 
 import com.flexpoker.model.card.Card;
 import com.flexpoker.model.card.FlopCards;
@@ -16,8 +14,7 @@ public class CommonCards {
 
     public CommonCards(FlopCards flopCards, TurnCard turnCard,
             RiverCard riverCard) {
-        cards = new ArrayList<>();
-        CollectionUtils.addAll(cards, new Object[] { flopCards.getCard1(),
+        cards = Arrays.asList(new Card[] { flopCards.getCard1(),
                 flopCards.getCard2(), flopCards.getCard3(), turnCard.getCard(),
                 riverCard.getCard() });
     }

@@ -7,8 +7,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.Predicate;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
@@ -152,19 +150,8 @@ public class Game {
     }
 
     public Table getTable(final UUID tableId) {
-        Object table = CollectionUtils.find(tables, new Predicate() {
-
-            @Override
-            public boolean evaluate(Object table) {
-                return ((Table) table).getId().equals(tableId);
-            }
-        });
-
-        if (table == null) {
-            return null;
-        }
-
-        return (Table) table;
+        return tables.stream().filter(x -> x.getId().equals(tableId)).findAny()
+                .orElse(null);
     }
 
     public void addUserGameStatus(UserGameStatus userGameStatus) {

@@ -6,8 +6,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.Predicate;
 import org.springframework.stereotype.Repository;
 
 import com.flexpoker.game.query.repository.OpenGameForPlayerRepository;
@@ -37,16 +35,9 @@ public class OpenGameForPlayerInMemoryRepository implements OpenGameForPlayerRep
     public void deleteOpenGameForPlayer(final UUID playerId, final UUID gameId) {
         synchronized (openGameForUserMap) {
             List<OpenGameForUser> openGameForUserList = openGameForUserMap.get(playerId);
-
-            OpenGameForUser openGameForUserToDelete = (OpenGameForUser) CollectionUtils
-                    .find(openGameForUserList, new Predicate() {
-
-                        @Override
-                        public boolean evaluate(Object openGameForUser) {
-                            return gameId == ((OpenGameForUser) openGameForUser)
-                                    .getGameId();
-                        }
-                    });
+            OpenGameForUser openGameForUserToDelete = openGameForUserList
+                    .stream().filter(x -> x.getGameId().equals(gameId)).findAny()
+                    .orElseThrow(IllegalArgumentException::new);
             openGameForUserList.remove(openGameForUserToDelete);
         }
     }
@@ -66,16 +57,9 @@ public class OpenGameForPlayerInMemoryRepository implements OpenGameForPlayerRep
     public void setGameStage(UUID playerId, final UUID gameId, GameStage gameStage) {
         synchronized (openGameForUserMap) {
             List<OpenGameForUser> openGameForUserList = openGameForUserMap.get(playerId);
-
-            OpenGameForUser openGameForUser = (OpenGameForUser) CollectionUtils.find(
-                    openGameForUserList, new Predicate() {
-
-                        @Override
-                        public boolean evaluate(Object openGameForUser) {
-                            return gameId.equals(((OpenGameForUser) openGameForUser)
-                                    .getGameId());
-                        }
-                    });
+            OpenGameForUser openGameForUser = openGameForUserList.stream()
+                    .filter(x -> x.getGameId().equals(gameId)).findAny()
+                    .orElseThrow(IllegalArgumentException::new);
             openGameForUser.changeGameStage(gameStage);
         }
     }

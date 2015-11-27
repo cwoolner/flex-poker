@@ -167,10 +167,6 @@
             <groupId>commons-lang</groupId>
             <artifactId>commons-lang</artifactId>
         </dependency>
-        <dependency>
-            <groupId>commons-collections</groupId>
-            <artifactId>commons-collections</artifactId>
-        </dependency>
         <!-- Required when the "stomp-broker-relay" profile is enabled -->
         <dependency>
             <groupId>io.projectreactor</groupId>
