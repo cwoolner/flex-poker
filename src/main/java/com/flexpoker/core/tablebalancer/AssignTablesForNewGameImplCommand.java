@@ -80,16 +80,14 @@ public class AssignTablesForNewGameImplCommand implements AssignInitialTablesFor
 
     private void addUserGameStatusToAnyEmptySeat(Table table,
             UserGameStatus userGameStatus) {
-        synchronized (table) {
-            for (Seat seat : table.getSeats()) {
-                if (seat.getUserGameStatus() == null) {
-                    seat.setUserGameStatus(userGameStatus);
-                    return;
-                }
+        for (Seat seat : table.getSeats()) {
+            if (seat.getUserGameStatus() == null) {
+                seat.setUserGameStatus(userGameStatus);
+                return;
             }
-
-            throw new IllegalArgumentException("No empty seats were found.");
         }
+
+        throw new IllegalArgumentException("No empty seats were found.");
     }
 
 }

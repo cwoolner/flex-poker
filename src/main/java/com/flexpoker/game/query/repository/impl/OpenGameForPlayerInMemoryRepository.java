@@ -1,10 +1,10 @@
 package com.flexpoker.game.query.repository.impl;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.springframework.stereotype.Repository;
 
@@ -18,50 +18,36 @@ public class OpenGameForPlayerInMemoryRepository implements OpenGameForPlayerRep
     private final Map<UUID, List<OpenGameForUser>> openGameForUserMap;
 
     public OpenGameForPlayerInMemoryRepository() {
-        openGameForUserMap = new HashMap<>();
+        openGameForUserMap = new ConcurrentHashMap<>();
     }
 
     @Override
     public List<OpenGameForUser> fetchAllOpenGamesForPlayer(UUID playerId) {
-        synchronized (openGameForUserMap) {
-            if (!openGameForUserMap.containsKey(playerId)) {
-                openGameForUserMap.put(playerId, new ArrayList<OpenGameForUser>());
-            }
-            return openGameForUserMap.get(playerId);
-        }
+        return openGameForUserMap.getOrDefault(playerId, new ArrayList<>());
     }
 
     @Override
-    public void deleteOpenGameForPlayer(final UUID playerId, final UUID gameId) {
-        synchronized (openGameForUserMap) {
-            List<OpenGameForUser> openGameForUserList = openGameForUserMap.get(playerId);
-            OpenGameForUser openGameForUserToDelete = openGameForUserList
-                    .stream().filter(x -> x.getGameId().equals(gameId)).findAny()
-                    .orElseThrow(IllegalArgumentException::new);
-            openGameForUserList.remove(openGameForUserToDelete);
-        }
+    public void deleteOpenGameForPlayer(UUID playerId, UUID gameId) {
+        List<OpenGameForUser> openGameForUserList = openGameForUserMap.get(playerId);
+        OpenGameForUser openGameForUserToDelete = openGameForUserList
+                .stream().filter(x -> x.getGameId().equals(gameId)).findAny()
+                .orElseThrow(IllegalArgumentException::new);
+        openGameForUserList.remove(openGameForUserToDelete);
     }
 
     @Override
     public void addOpenGameForUser(UUID playerId, OpenGameForUser openGameForUser) {
-        synchronized (openGameForUserMap) {
-            if (!openGameForUserMap.containsKey(playerId)) {
-                openGameForUserMap.put(playerId, new ArrayList<OpenGameForUser>());
-            }
-            List<OpenGameForUser> openGameForUserList = openGameForUserMap.get(playerId);
-            openGameForUserList.add(openGameForUser);
-        }
+        openGameForUserMap.putIfAbsent(playerId, new ArrayList<>());
+        openGameForUserMap.get(playerId).add(openGameForUser);
     }
 
     @Override
-    public void setGameStage(UUID playerId, final UUID gameId, GameStage gameStage) {
-        synchronized (openGameForUserMap) {
-            List<OpenGameForUser> openGameForUserList = openGameForUserMap.get(playerId);
-            OpenGameForUser openGameForUser = openGameForUserList.stream()
-                    .filter(x -> x.getGameId().equals(gameId)).findAny()
-                    .orElseThrow(IllegalArgumentException::new);
-            openGameForUser.changeGameStage(gameStage);
-        }
+    public void setGameStage(UUID playerId, UUID gameId, GameStage gameStage) {
+        List<OpenGameForUser> openGameForUserList = openGameForUserMap.get(playerId);
+        OpenGameForUser openGameForUser = openGameForUserList.stream()
+                .filter(x -> x.getGameId().equals(gameId)).findAny()
+                .orElseThrow(IllegalArgumentException::new);
+        openGameForUser.changeGameStage(gameStage);
     }
 
 }
