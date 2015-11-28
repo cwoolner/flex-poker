@@ -20,7 +20,6 @@ import com.flexpoker.game.command.events.GameTablesCreatedAndPlayersAssociatedEv
 import com.flexpoker.game.command.events.NewHandIsClearedToStartEvent;
 import com.flexpoker.game.command.framework.GameEvent;
 import com.flexpoker.game.query.dto.GameStage;
-import com.flexpoker.model.Blinds;
 
 public class Game extends AggregateRoot<GameEvent> {
 

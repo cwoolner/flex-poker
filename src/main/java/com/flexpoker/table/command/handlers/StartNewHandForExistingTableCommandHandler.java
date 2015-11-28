@@ -69,8 +69,9 @@ public class StartNewHandForExistingTableCommandHandler implements
                         cardsUsedInHand.getTurnCard(), cardsUsedInHand.getRiverCard(),
                         cardsUsedInHand.getPocketCards(), possibleHandRankings);
 
-        table.startNewHandForExistingTable(command.getBlinds(), shuffledDeckOfCards,
-                cardsUsedInHand, handEvaluations);
+        table.startNewHandForExistingTable(command.getSmallBlind(),
+                command.getBigBlind(), shuffledDeckOfCards, cardsUsedInHand,
+                handEvaluations);
         table.fetchNewEvents().forEach(x -> tableEventRepository.save(x));
         table.fetchNewEvents().forEach(x -> eventPublisher.publish(x));
     }

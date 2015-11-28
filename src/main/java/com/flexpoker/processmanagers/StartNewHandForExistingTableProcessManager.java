@@ -27,7 +27,9 @@ public class StartNewHandForExistingTableProcessManager implements
     @Override
     public void handle(NewHandIsClearedToStartEvent event) {
         StartNewHandForExistingTableCommand command = new StartNewHandForExistingTableCommand(
-                event.getTableId(), event.getAggregateId(), event.getBlinds());
+                event.getTableId(), event.getAggregateId(),
+                event.getBlinds().getSmallBlind(),
+                event.getBlinds().getBigBlind());
         tableCommandPublisher.publish(command);
     }
 }

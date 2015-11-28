@@ -8,7 +8,6 @@ import java.util.UUID;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.flexpoker.framework.event.BaseEvent;
-import com.flexpoker.model.Blinds;
 import com.flexpoker.model.PlayerAction;
 import com.flexpoker.model.card.FlopCards;
 import com.flexpoker.model.card.PocketCards;
@@ -61,7 +60,9 @@ public class HandDealtEvent extends BaseEvent<TableEventType> implements TableEv
 
     private final Map<UUID, Integer> raiseToAmountsMap;
 
-    private final Blinds blinds;
+    private final int smallBlind;
+
+    private final int bigBlind;
 
     private final Set<UUID> playersToShowCardsMap;
 
@@ -88,7 +89,8 @@ public class HandDealtEvent extends BaseEvent<TableEventType> implements TableEv
             @JsonProperty(value = "chipsInFrontMap") Map<UUID, Integer> chipsInFrontMap,
             @JsonProperty(value = "callAmountsMap") Map<UUID, Integer> callAmountsMap,
             @JsonProperty(value = "raiseToAmountsMap") Map<UUID, Integer> raiseToAmountsMap,
-            @JsonProperty(value = "blinds") Blinds blinds,
+            @JsonProperty(value = "smallBlind") int smallBlind,
+            @JsonProperty(value = "bigBlind") int bigBlind,
             @JsonProperty(value = "playersToShowCardsMap") Set<UUID> playersToShowCardsMap) {
         super(aggregateId, version, TYPE);
         this.gameId = gameId;
@@ -110,7 +112,8 @@ public class HandDealtEvent extends BaseEvent<TableEventType> implements TableEv
         this.chipsInFrontMap = chipsInFrontMap;
         this.callAmountsMap = callAmountsMap;
         this.raiseToAmountsMap = raiseToAmountsMap;
-        this.blinds = blinds;
+        this.smallBlind = smallBlind;
+        this.bigBlind = bigBlind;
         this.playersToShowCardsMap = playersToShowCardsMap;
     }
 
@@ -191,8 +194,12 @@ public class HandDealtEvent extends BaseEvent<TableEventType> implements TableEv
         return raiseToAmountsMap;
     }
 
-    public Blinds getBlinds() {
-        return blinds;
+    public int getSmallBlind() {
+        return smallBlind;
+    }
+
+    public int getBigBlind() {
+        return bigBlind;
     }
 
     public Set<UUID> getPlayersToShowCardsMap() {

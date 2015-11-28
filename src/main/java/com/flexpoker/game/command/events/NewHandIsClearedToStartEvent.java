@@ -3,9 +3,9 @@ package com.flexpoker.game.command.events;
 import java.util.UUID;
 
 import com.flexpoker.framework.event.BaseEvent;
+import com.flexpoker.game.command.aggregate.Blinds;
 import com.flexpoker.game.command.framework.GameEvent;
 import com.flexpoker.game.command.framework.GameEventType;
-import com.flexpoker.model.Blinds;
 
 public class NewHandIsClearedToStartEvent extends BaseEvent<GameEventType> implements
         GameEvent {

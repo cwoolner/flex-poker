@@ -1,8 +1,17 @@
-package com.flexpoker.model;
+package com.flexpoker.game.command.aggregate;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+/**
+ * TODO: This class will eventually be more than just a wrapper for two ints. It
+ * will eventually be created with some sort of BlindSchedule object that
+ * contains how often blinds raise and the values of the small/big blinds at
+ * each level. In addition, this class will eventually be responsible for
+ * spitting out events to say "raise the blinds". That's why the class was moved
+ * to be more closely associated with the Game domain and is independent from
+ * the Table domain.
+ */
 public class Blinds {
 
     private final int smallBlind;

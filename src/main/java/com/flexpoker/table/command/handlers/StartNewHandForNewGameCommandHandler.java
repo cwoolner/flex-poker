@@ -69,7 +69,7 @@ public class StartNewHandForNewGameCommandHandler implements
                         cardsUsedInHand.getTurnCard(), cardsUsedInHand.getRiverCard(),
                         cardsUsedInHand.getPocketCards(), possibleHandRankings);
 
-        table.startNewHandForNewGame(command.getBlinds(), shuffledDeckOfCards,
+        table.startNewHandForNewGame(command.getSmallBlind(), command.getBigBlind(), shuffledDeckOfCards,
                 cardsUsedInHand, handEvaluations);
         table.fetchNewEvents().forEach(x -> tableEventRepository.save(x));
         table.fetchNewEvents().forEach(x -> eventPublisher.publish(x));

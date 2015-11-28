@@ -12,7 +12,6 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import com.flexpoker.exception.FlexPokerException;
-import com.flexpoker.model.Blinds;
 import com.flexpoker.model.PlayerAction;
 import com.flexpoker.model.Pot;
 import com.flexpoker.model.card.FlopCards;
@@ -85,7 +84,9 @@ public class Hand {
 
     private final Map<UUID, Integer> raiseToAmountsMap;
 
-    private final Blinds blinds;
+    private final int smallBlind;
+
+    private final int bigBlind;
 
     private final Set<UUID> playersToShowCards;
 
@@ -103,7 +104,7 @@ public class Hand {
             Set<UUID> playersStillInHand, List<HandEvaluation> handEvaluationList,
             HandDealerState handDealerState, Map<UUID, Integer> chipsInBack,
             Map<UUID, Integer> chipsInFrontMap, Map<UUID, Integer> callAmountsMap,
-            Map<UUID, Integer> raiseToAmountsMap, Blinds blinds,
+            Map<UUID, Integer> raiseToAmountsMap, int smallBlind, int bigBlind,
             Set<UUID> playersToShowCards) {
         this.gameId = gameId;
         this.tableId = tableId;
@@ -126,7 +127,8 @@ public class Hand {
         this.chipsInFrontMap = chipsInFrontMap;
         this.callAmountsMap = callAmountsMap;
         this.raiseToAmountsMap = raiseToAmountsMap;
-        this.blinds = blinds;
+        this.smallBlind = smallBlind;
+        this.bigBlind = bigBlind;
         this.playersToShowCards = playersToShowCards;
     }
 
@@ -146,7 +148,7 @@ public class Hand {
                 smallBlindPosition, bigBlindPosition, lastToActPlayerId, seatMap,
                 playerToPocketCardsMap, possibleSeatActionsMap, playersStillInHand,
                 handEvaluationList, handDealerState, chipsInBackMap, chipsInFrontMap,
-                callAmountsMap, raiseToAmountsMap, blinds, playersToShowCards);
+                callAmountsMap, raiseToAmountsMap, smallBlind, bigBlind, playersToShowCards);
         eventsCreated.add(handDealtEvent);
 
         UUID actionOnPlayerId = seatMap.get(Integer.valueOf(actionOnPosition));
@@ -162,15 +164,15 @@ public class Hand {
         UUID playerId = seatMap.get(Integer.valueOf(seatPosition));
 
         int chipsInFront = 0;
-        int callAmount = blinds.getBigBlind();
-        int raiseToAmount = blinds.getBigBlind() * 2;
+        int callAmount = bigBlind;
+        int raiseToAmount = bigBlind * 2;
 
         if (seatPosition == bigBlindPosition) {
-            chipsInFront = blinds.getBigBlind();
+            chipsInFront = bigBlind;
             callAmount = 0;
         } else if (seatPosition == smallBlindPosition) {
-            chipsInFront = blinds.getSmallBlind();
-            callAmount = blinds.getSmallBlind();
+            chipsInFront = smallBlind;
+            callAmount = smallBlind;
         }
 
         if (chipsInFront > chipsInBackMap.get(playerId).intValue()) {
@@ -423,7 +425,7 @@ public class Hand {
 
         possibleSeatActionsMap.get(playerId).clear();
         callAmountsMap.put(playerId, Integer.valueOf(0));
-        raiseToAmountsMap.put(playerId, Integer.valueOf(blinds.getBigBlind()));
+        raiseToAmountsMap.put(playerId, Integer.valueOf(bigBlind));
 
         chipsInFrontMap.put(playerId, Integer.valueOf(raiseToAmount));
 
@@ -578,13 +580,13 @@ public class Hand {
         playersStillInHand
                 .forEach(playerInHand -> {
                     callAmountsMap.put(playerInHand, Integer.valueOf(0));
-                    if (blinds.getBigBlind() > chipsInBackMap.get(playerInHand)
+                    if (bigBlind > chipsInBackMap.get(playerInHand)
                             .intValue()) {
                         raiseToAmountsMap.put(playerInHand,
                                 chipsInBackMap.get(playerInHand));
                     } else {
                         raiseToAmountsMap.put(playerInHand,
-                                Integer.valueOf(blinds.getBigBlind()));
+                                Integer.valueOf(bigBlind));
                     }
                 });
     }

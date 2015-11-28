@@ -9,7 +9,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import com.flexpoker.model.Blinds;
 import com.flexpoker.model.HandRanking;
 import com.flexpoker.model.card.Card;
 import com.flexpoker.model.card.CardRank;
@@ -24,7 +23,8 @@ public class TableTestUtils {
         Set<UUID> playerIds = new HashSet<>();
         Collections.addAll(playerIds, playerIdsArray);
 
-        Blinds blinds = new Blinds(10, 20);
+        int smallBlind = 10;
+        int bigBlind = 20;
         List<Card> shuffledDeckOfCards = new ArrayList<>();
         CardsUsedInHand cardsUsedInHand = DeckGenerator.createDeck();
 
@@ -44,7 +44,7 @@ public class TableTestUtils {
 
         Table table = new DefaultTableFactory().createNew(tableId, UUID.randomUUID(), 6);
         table.createNewTable(playerIds);
-        table.startNewHandForNewGame(blinds, shuffledDeckOfCards, cardsUsedInHand,
+        table.startNewHandForNewGame(smallBlind, bigBlind, shuffledDeckOfCards, cardsUsedInHand,
                 handEvaluations);
         return table;
     }

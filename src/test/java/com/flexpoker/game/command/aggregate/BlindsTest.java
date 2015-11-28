@@ -1,8 +1,10 @@
-package com.flexpoker.model;
+package com.flexpoker.game.command.aggregate;
 
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
+
+import com.flexpoker.game.command.aggregate.Blinds;
 
 public class BlindsTest {
 

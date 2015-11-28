@@ -13,7 +13,6 @@ import java.util.stream.Collectors;
 
 import com.flexpoker.exception.FlexPokerException;
 import com.flexpoker.framework.domain.AggregateRoot;
-import com.flexpoker.model.Blinds;
 import com.flexpoker.model.PlayerAction;
 import com.flexpoker.model.card.Card;
 import com.flexpoker.model.card.CardsUsedInHand;
@@ -165,7 +164,8 @@ public class Table extends AggregateRoot<TableEvent> {
                 event.getHandEvaluations(), event.getHandDealerState(),
                 event.getChipsInBack(), event.getChipsInFrontMap(),
                 event.getCallAmountsMap(), event.getRaiseToAmountsMap(),
-                event.getBlinds(), event.getPlayersToShowCardsMap());
+                event.getSmallBlind(), event.getBigBlind(),
+                event.getPlayersToShowCardsMap());
     }
 
     private void applyEvent(PlayerRaisedEvent event) {
@@ -259,19 +259,19 @@ public class Table extends AggregateRoot<TableEvent> {
         applyEvent(tableCreatedEvent);
     }
 
-    public void startNewHandForNewGame(Blinds blinds, List<Card> shuffledDeckOfCards,
-            CardsUsedInHand cardsUsedInHand,
+    public void startNewHandForNewGame(int smallBlind, int bigBlind,
+            List<Card> shuffledDeckOfCards, CardsUsedInHand cardsUsedInHand,
             Map<PocketCards, HandEvaluation> handEvaluations) {
         buttonOnPosition = assignButtonOnForNewGame();
         smallBlindPosition = assignSmallBlindForNewGame();
         bigBlindPosition = assignBigBlindForNewGame();
         int actionOnPosition = assignActionOnForNewHand();
 
-        performNewHandCommonLogic(blinds, shuffledDeckOfCards, cardsUsedInHand,
-                handEvaluations, actionOnPosition);
+        performNewHandCommonLogic(smallBlind, bigBlind, shuffledDeckOfCards,
+                cardsUsedInHand, handEvaluations, actionOnPosition);
     }
 
-    public void startNewHandForExistingTable(Blinds blinds,
+    public void startNewHandForExistingTable(int smallBlind, int bigBlind,
             List<Card> shuffledDeckOfCards, CardsUsedInHand cardsUsedInHand,
             Map<PocketCards, HandEvaluation> handEvaluations) {
         buttonOnPosition = assignButtonOnForNewHand();
@@ -279,8 +279,8 @@ public class Table extends AggregateRoot<TableEvent> {
         bigBlindPosition = assignBigBlindForNewHand();
         int actionOnPosition = assignActionOnForNewHand();
 
-        performNewHandCommonLogic(blinds, shuffledDeckOfCards, cardsUsedInHand,
-                handEvaluations, actionOnPosition);
+        performNewHandCommonLogic(smallBlind, bigBlind, shuffledDeckOfCards,
+                cardsUsedInHand, handEvaluations, actionOnPosition);
     }
 
     private int assignButtonOnForNewGame() {
@@ -334,9 +334,10 @@ public class Table extends AggregateRoot<TableEvent> {
         throw new IllegalStateException("unable to find next filled seat");
     }
 
-    private void performNewHandCommonLogic(Blinds blinds, List<Card> shuffledDeckOfCards,
-            CardsUsedInHand cardsUsedInHand,
-            Map<PocketCards, HandEvaluation> handEvaluations, int actionOnPosition) {
+    private void performNewHandCommonLogic(int smallBlind, int bigBlind,
+            List<Card> shuffledDeckOfCards, CardsUsedInHand cardsUsedInHand,
+            Map<PocketCards, HandEvaluation> handEvaluations,
+            int actionOnPosition) {
         CardsShuffledEvent cardsShuffledEvent = new CardsShuffledEvent(aggregateId,
                 ++aggregateVersion, gameId, shuffledDeckOfCards);
         addNewEvent(cardsShuffledEvent);
@@ -364,7 +365,7 @@ public class Table extends AggregateRoot<TableEvent> {
                 bigBlindPosition, null, playerToPocketCardsMap, possibleSeatActionsMap,
                 playersStillInHand, new ArrayList<>(handEvaluations.values()),
                 HandDealerState.NONE, chipsInBack, new HashMap<>(), new HashMap<>(),
-                new HashMap<>(), blinds, new HashSet<>());
+                new HashMap<>(), smallBlind, bigBlind, new HashSet<>());
         List<TableEvent> eventsCreated = hand.dealHand(++aggregateVersion,
                 actionOnPosition);
         eventsCreated.forEach(x -> addNewEvent(x));
