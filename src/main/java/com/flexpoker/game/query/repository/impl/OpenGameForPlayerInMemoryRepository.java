@@ -8,9 +8,9 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.springframework.stereotype.Repository;
 
+import com.flexpoker.game.query.dto.GameStage;
+import com.flexpoker.game.query.dto.OpenGameForUser;
 import com.flexpoker.game.query.repository.OpenGameForPlayerRepository;
-import com.flexpoker.model.GameStage;
-import com.flexpoker.model.OpenGameForUser;
 
 @Repository
 public class OpenGameForPlayerInMemoryRepository implements OpenGameForPlayerRepository {

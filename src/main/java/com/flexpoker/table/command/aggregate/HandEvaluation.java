@@ -1,7 +1,8 @@
-package com.flexpoker.model;
+package com.flexpoker.table.command.aggregate;
 
 import java.util.UUID;
 
+import com.flexpoker.model.HandRanking;
 import com.flexpoker.model.card.CardRank;
 
 public class HandEvaluation implements Comparable<HandEvaluation> {

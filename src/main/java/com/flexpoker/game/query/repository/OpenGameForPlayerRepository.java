@@ -3,8 +3,8 @@ package com.flexpoker.game.query.repository;
 import java.util.List;
 import java.util.UUID;
 
-import com.flexpoker.model.GameStage;
-import com.flexpoker.model.OpenGameForUser;
+import com.flexpoker.game.query.dto.GameStage;
+import com.flexpoker.game.query.dto.OpenGameForUser;
 
 public interface OpenGameForPlayerRepository {
 

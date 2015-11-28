@@ -1,4 +1,4 @@
-package com.flexpoker.model;
+package com.flexpoker.game.query.dto;
 
 
 public enum GameStage {

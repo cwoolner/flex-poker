@@ -5,7 +5,7 @@ import java.util.UUID;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.flexpoker.framework.event.BaseEvent;
-import com.flexpoker.model.HandDealerState;
+import com.flexpoker.table.command.aggregate.HandDealerState;
 import com.flexpoker.table.command.framework.TableEvent;
 import com.flexpoker.table.command.framework.TableEventType;
 

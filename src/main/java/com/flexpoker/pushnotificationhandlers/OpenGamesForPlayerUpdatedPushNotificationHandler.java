@@ -9,9 +9,9 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import com.flexpoker.framework.pushnotifier.PushNotificationHandler;
+import com.flexpoker.game.query.dto.OpenGameForUser;
 import com.flexpoker.game.query.repository.OpenGameForPlayerRepository;
 import com.flexpoker.login.query.repository.LoginRepository;
-import com.flexpoker.model.OpenGameForUser;
 import com.flexpoker.pushnotifications.OpenGamesForPlayerUpdatedPushNotification;
 import com.flexpoker.util.MessagingConstants;
 

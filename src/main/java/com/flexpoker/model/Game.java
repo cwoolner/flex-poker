@@ -11,6 +11,8 @@ import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 
+import com.flexpoker.game.query.dto.GameStage;
+
 public class Game {
 
     private final UUID id;

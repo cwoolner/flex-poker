@@ -9,13 +9,13 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.flexpoker.framework.event.BaseEvent;
 import com.flexpoker.model.Blinds;
-import com.flexpoker.model.HandDealerState;
-import com.flexpoker.model.HandEvaluation;
 import com.flexpoker.model.PlayerAction;
 import com.flexpoker.model.card.FlopCards;
 import com.flexpoker.model.card.PocketCards;
 import com.flexpoker.model.card.RiverCard;
 import com.flexpoker.model.card.TurnCard;
+import com.flexpoker.table.command.aggregate.HandDealerState;
+import com.flexpoker.table.command.aggregate.HandEvaluation;
 import com.flexpoker.table.command.framework.TableEvent;
 import com.flexpoker.table.command.framework.TableEventType;
 

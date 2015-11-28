@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.junit.Test;
 
+import com.flexpoker.table.command.aggregate.HandDealerState;
 import com.flexpoker.test.util.datageneration.DeckGenerator;
 
 public class HandTest {

@@ -19,8 +19,8 @@ import com.flexpoker.game.command.events.GameStartedEvent;
 import com.flexpoker.game.command.events.GameTablesCreatedAndPlayersAssociatedEvent;
 import com.flexpoker.game.command.events.NewHandIsClearedToStartEvent;
 import com.flexpoker.game.command.framework.GameEvent;
+import com.flexpoker.game.query.dto.GameStage;
 import com.flexpoker.model.Blinds;
-import com.flexpoker.model.GameStage;
 
 public class Game extends AggregateRoot<GameEvent> {
 

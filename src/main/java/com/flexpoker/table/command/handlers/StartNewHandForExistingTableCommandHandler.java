@@ -10,11 +10,11 @@ import org.springframework.stereotype.Component;
 
 import com.flexpoker.framework.command.CommandHandler;
 import com.flexpoker.framework.event.EventPublisher;
-import com.flexpoker.model.HandEvaluation;
 import com.flexpoker.model.HandRanking;
 import com.flexpoker.model.card.Card;
 import com.flexpoker.model.card.CardsUsedInHand;
 import com.flexpoker.model.card.PocketCards;
+import com.flexpoker.table.command.aggregate.HandEvaluation;
 import com.flexpoker.table.command.aggregate.Table;
 import com.flexpoker.table.command.commands.StartNewHandForExistingTableCommand;
 import com.flexpoker.table.command.factory.TableFactory;

@@ -10,7 +10,6 @@ import java.util.Set;
 import java.util.UUID;
 
 import com.flexpoker.model.Blinds;
-import com.flexpoker.model.HandEvaluation;
 import com.flexpoker.model.HandRanking;
 import com.flexpoker.model.card.Card;
 import com.flexpoker.model.card.CardRank;

@@ -12,7 +12,6 @@ import java.util.UUID;
 
 import org.junit.Test;
 
-import com.flexpoker.model.HandEvaluation;
 import com.flexpoker.model.HandRanking;
 import com.flexpoker.model.Pot;
 import com.flexpoker.model.card.CardRank;

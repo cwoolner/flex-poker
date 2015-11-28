@@ -10,6 +10,8 @@ import java.util.Set;
 import org.apache.commons.lang.builder.ToStringBuilder;
 
 import com.flexpoker.model.card.CardsUsedInHand;
+import com.flexpoker.table.command.aggregate.HandDealerState;
+import com.flexpoker.table.command.aggregate.HandEvaluation;
 
 public class Hand {
 

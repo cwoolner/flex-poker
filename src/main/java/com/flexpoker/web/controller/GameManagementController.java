@@ -16,10 +16,10 @@ import com.flexpoker.framework.command.CommandPublisher;
 import com.flexpoker.game.command.commands.CreateGameCommand;
 import com.flexpoker.game.command.commands.JoinGameCommand;
 import com.flexpoker.game.command.framework.GameCommandType;
+import com.flexpoker.game.query.dto.OpenGameForUser;
 import com.flexpoker.game.query.repository.GameListRepository;
 import com.flexpoker.game.query.repository.OpenGameForPlayerRepository;
 import com.flexpoker.login.query.repository.LoginRepository;
-import com.flexpoker.model.OpenGameForUser;
 import com.flexpoker.web.model.incoming.CreateGameDTO;
 import com.flexpoker.web.model.incoming.GameInListDTO;
 

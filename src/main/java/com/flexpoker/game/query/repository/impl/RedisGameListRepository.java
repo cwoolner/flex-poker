@@ -12,8 +12,8 @@ import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.stereotype.Repository;
 
+import com.flexpoker.game.query.dto.GameStage;
 import com.flexpoker.game.query.repository.GameListRepository;
-import com.flexpoker.model.GameStage;
 import com.flexpoker.web.model.incoming.GameInListDTO;
 
 @Profile("prod")

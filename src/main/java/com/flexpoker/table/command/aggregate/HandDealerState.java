@@ -1,4 +1,4 @@
-package com.flexpoker.model;
+package com.flexpoker.table.command.aggregate;
 
 /**
  * This enum represents the various states that a dealer goes through.  When a

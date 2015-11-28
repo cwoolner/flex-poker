@@ -10,6 +10,8 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import com.flexpoker.table.command.aggregate.HandEvaluation;
+
 public class Pot {
 
     private final UUID entityId;
