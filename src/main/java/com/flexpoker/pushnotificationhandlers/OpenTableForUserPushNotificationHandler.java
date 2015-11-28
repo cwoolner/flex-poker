@@ -1,16 +1,18 @@
 package com.flexpoker.pushnotificationhandlers;
 
+import java.util.UUID;
+
 import javax.inject.Inject;
 
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.flexpoker.framework.pushnotifier.PushNotificationHandler;
 import com.flexpoker.login.query.repository.LoginRepository;
 import com.flexpoker.pushnotifications.OpenTableForUserPushNotification;
 import com.flexpoker.util.MessagingConstants;
-import com.flexpoker.web.model.outgoing.OpenTableForUserDTO;
 
 @Component
 public class OpenTableForUserPushNotificationHandler implements
@@ -36,6 +38,21 @@ public class OpenTableForUserPushNotificationHandler implements
                 pushNotification.getTableId());
         messagingTemplate.convertAndSendToUser(username,
                 MessagingConstants.OPEN_TABLE_FOR_USER, dto);
+    }
+
+    private class OpenTableForUserDTO {
+
+        @JsonProperty
+        private final UUID gameId;
+
+        @JsonProperty
+        private final UUID tableId;
+
+        public OpenTableForUserDTO(UUID gameId, UUID tableId) {
+            this.gameId = gameId;
+            this.tableId = tableId;
+        }
+
     }
 
 }
