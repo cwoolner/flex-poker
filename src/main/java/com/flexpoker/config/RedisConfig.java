@@ -8,8 +8,8 @@ import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 
+import com.flexpoker.game.query.dto.GameInListDTO;
 import com.flexpoker.table.command.framework.TableEvent;
-import com.flexpoker.web.model.incoming.GameInListDTO;
 
 @Configuration
 public class RedisConfig {

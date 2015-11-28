@@ -9,10 +9,10 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import com.flexpoker.framework.pushnotifier.PushNotificationHandler;
+import com.flexpoker.game.query.dto.GameInListDTO;
 import com.flexpoker.game.query.repository.GameListRepository;
 import com.flexpoker.pushnotifications.GameListUpdatedPushNotification;
 import com.flexpoker.util.MessagingConstants;
-import com.flexpoker.web.model.incoming.GameInListDTO;
 
 @Component
 public class GameListUpdatedPushNotificationHandler implements

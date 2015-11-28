@@ -7,9 +7,9 @@ import java.util.UUID;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Repository;
 
+import com.flexpoker.game.query.dto.GameInListDTO;
 import com.flexpoker.game.query.dto.GameStage;
 import com.flexpoker.game.query.repository.GameListRepository;
-import com.flexpoker.web.model.incoming.GameInListDTO;
 
 @Profile("default")
 @Repository
