@@ -9,7 +9,6 @@ import java.util.UUID;
 
 import org.junit.Test;
 
-import com.flexpoker.dto.CommonCards;
 import com.flexpoker.model.HandRanking;
 import com.flexpoker.model.card.Card;
 import com.flexpoker.model.card.CardRank;
@@ -18,6 +17,7 @@ import com.flexpoker.model.card.FlopCards;
 import com.flexpoker.model.card.PocketCards;
 import com.flexpoker.model.card.RiverCard;
 import com.flexpoker.model.card.TurnCard;
+import com.flexpoker.table.command.aggregate.CommonCards;
 import com.flexpoker.table.command.aggregate.HandEvaluation;
 import com.flexpoker.table.command.service.DefaultHandEvaluatorService;
 

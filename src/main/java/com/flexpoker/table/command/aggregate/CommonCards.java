@@ -1,4 +1,4 @@
-package com.flexpoker.dto;
+package com.flexpoker.table.command.aggregate;
 
 import java.util.Arrays;
 import java.util.List;
