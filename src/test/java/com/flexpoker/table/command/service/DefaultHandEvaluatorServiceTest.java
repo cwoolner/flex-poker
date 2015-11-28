@@ -1,4 +1,4 @@
-package com.flexpoker.bso;
+package com.flexpoker.table.command.service;
 
 import static org.junit.Assert.assertEquals;
 
@@ -21,7 +21,7 @@ import com.flexpoker.model.card.TurnCard;
 import com.flexpoker.table.command.aggregate.HandEvaluation;
 import com.flexpoker.table.command.service.DefaultHandEvaluatorService;
 
-public class HandEvaluatorBsoImplTest {
+public class DefaultHandEvaluatorServiceTest {
 
     private DefaultHandEvaluatorService bso = new DefaultHandEvaluatorService();
 
