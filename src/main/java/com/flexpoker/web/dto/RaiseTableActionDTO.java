@@ -1,4 +1,4 @@
-package com.flexpoker.web.model.incoming;
+package com.flexpoker.web.dto;
 
 import java.util.UUID;
 
