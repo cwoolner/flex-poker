@@ -70,12 +70,6 @@ public class GameTest {
         assertEquals(GameTablesCreatedAndPlayersAssociatedEvent.class, game
                 .fetchNewEvents().get(3).getClass());
         assertEquals(GameStartedEvent.class, game.fetchNewEvents().get(4).getClass());
-
-        GameTablesCreatedAndPlayersAssociatedEvent gameStartedEvent = (GameTablesCreatedAndPlayersAssociatedEvent) game
-                .fetchNewEvents().get(3);
-        assertEquals(1, gameStartedEvent.getTableIdToPlayerIdsMap().size());
-        assertEquals(2, new ArrayList<>(gameStartedEvent.getTableIdToPlayerIdsMap()
-                .values()).get(0).size());
     }
 
     @Test(expected = FlexPokerException.class)
