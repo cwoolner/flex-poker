@@ -1,30 +1,26 @@
-package com.flexpoker.core.tablebalancer;
+package com.flexpoker.game.command.aggregate;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
-import com.flexpoker.config.Query;
-import com.flexpoker.core.api.tablebalancer.AreTablesBalancedQuery;
-import com.flexpoker.model.Game;
 import com.flexpoker.model.Seat;
 import com.flexpoker.model.Table;
+import com.flexpoker.table.command.framework.TableEvent;
 
-@Query
-public class AreTablesBalancedImplQuery implements AreTablesBalancedQuery {
+public class TableBalancer {
 
-    @Override
-    public boolean execute(Game game) {
-        List<Table> tables = game.getTables();
-        
-        Map<UUID, Integer> tableSizesMap = findTableSizes(tables);
+    private final Map<UUID, Set<UUID>> tableIdToPlayerIdsMap;
+    
+    public TableBalancer(Map<UUID, Set<UUID>> tableIdToPlayerIdsMap) {
+        this.tableIdToPlayerIdsMap = tableIdToPlayerIdsMap;
+    }
 
-        if (!isNumberOfTablesCorrect(tables, tableSizesMap, game.getMaxPlayersPerTable())) {
-            return false;
-        }
-
-        return arePlayersDistributedEvenly(tableSizesMap);
+    public List<TableEvent> balanceTables() {
+        // TODO Auto-generated method stub
+        return null;
     }
 
     private boolean isNumberOfTablesCorrect(List<Table> tables,
