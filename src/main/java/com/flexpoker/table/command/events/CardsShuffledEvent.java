@@ -1,5 +1,6 @@
 package com.flexpoker.table.command.events;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -34,7 +35,7 @@ public class CardsShuffledEvent extends BaseEvent<TableEventType> implements Tab
     }
 
     public List<Card> getShuffledDeck() {
-        return shuffledDeck;
+        return new ArrayList<>(shuffledDeck);
     }
 
 }

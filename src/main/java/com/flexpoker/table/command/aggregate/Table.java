@@ -164,7 +164,7 @@ public class Table extends AggregateRoot<TableEvent> {
                 event.getChipsInBack(), event.getChipsInFrontMap(),
                 event.getCallAmountsMap(), event.getRaiseToAmountsMap(),
                 event.getSmallBlind(), event.getBigBlind(),
-                event.getPlayersToShowCardsMap());
+                event.getPlayersToShowCards());
     }
 
     private void applyEvent(PlayerRaisedEvent event) {

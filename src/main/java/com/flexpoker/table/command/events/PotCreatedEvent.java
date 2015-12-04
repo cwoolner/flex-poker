@@ -1,5 +1,6 @@
 package com.flexpoker.table.command.events;
 
+import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
@@ -49,7 +50,7 @@ public class PotCreatedEvent extends BaseEvent<TableEventType> implements TableE
     }
 
     public Set<UUID> getPlayersInvolved() {
-        return playersInvolved;
+        return new HashSet<>(playersInvolved);
     }
 
 }

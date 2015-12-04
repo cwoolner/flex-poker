@@ -1,5 +1,6 @@
 package com.flexpoker.table.command.events;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
@@ -46,7 +47,7 @@ public class TableCreatedEvent extends BaseEvent<TableEventType> implements Tabl
     }
 
     public Map<Integer, UUID> getSeatPositionToPlayerMap() {
-        return seatPositionToPlayerMap;
+        return new HashMap<>(seatPositionToPlayerMap);
     }
 
     public int getStartingNumberOfChips() {

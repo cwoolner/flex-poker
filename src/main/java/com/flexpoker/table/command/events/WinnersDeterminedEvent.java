@@ -1,5 +1,7 @@
 package com.flexpoker.table.command.events;
 
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -48,11 +50,11 @@ public class WinnersDeterminedEvent extends BaseEvent<TableEventType> implements
     }
 
     public Set<UUID> getPlayersToShowCards() {
-        return playersToShowCards;
+        return new HashSet<>(playersToShowCards);
     }
 
     public Map<UUID, Integer> getPlayersToChipsWonMap() {
-        return playersToChipsWonMap;
+        return new HashMap<>(playersToChipsWonMap);
     }
 
 }

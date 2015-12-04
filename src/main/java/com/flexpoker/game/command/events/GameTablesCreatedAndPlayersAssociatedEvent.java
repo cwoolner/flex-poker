@@ -1,5 +1,6 @@
 package com.flexpoker.game.command.events;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -25,7 +26,7 @@ public class GameTablesCreatedAndPlayersAssociatedEvent extends BaseEvent<GameEv
     }
 
     public Map<UUID, Set<UUID>> getTableIdToPlayerIdsMap() {
-        return tableIdToPlayerIdsMap;
+        return new HashMap<>(tableIdToPlayerIdsMap);
     }
 
     public int getNumberOfPlayersPerTable() {

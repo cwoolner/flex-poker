@@ -1,5 +1,8 @@
 package com.flexpoker.table.command.events;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -64,7 +67,7 @@ public class HandDealtEvent extends BaseEvent<TableEventType> implements TableEv
 
     private final int bigBlind;
 
-    private final Set<UUID> playersToShowCardsMap;
+    private final Set<UUID> playersToShowCards;
 
     @JsonCreator
     public HandDealtEvent(
@@ -91,7 +94,7 @@ public class HandDealtEvent extends BaseEvent<TableEventType> implements TableEv
             @JsonProperty(value = "raiseToAmountsMap") Map<UUID, Integer> raiseToAmountsMap,
             @JsonProperty(value = "smallBlind") int smallBlind,
             @JsonProperty(value = "bigBlind") int bigBlind,
-            @JsonProperty(value = "playersToShowCardsMap") Set<UUID> playersToShowCardsMap) {
+            @JsonProperty(value = "playersToShowCardsMap") Set<UUID> playersToShowCards) {
         super(aggregateId, version, TYPE);
         this.gameId = gameId;
         this.handId = handId;
@@ -114,7 +117,7 @@ public class HandDealtEvent extends BaseEvent<TableEventType> implements TableEv
         this.raiseToAmountsMap = raiseToAmountsMap;
         this.smallBlind = smallBlind;
         this.bigBlind = bigBlind;
-        this.playersToShowCardsMap = playersToShowCardsMap;
+        this.playersToShowCards = playersToShowCards;
     }
 
     @Override
@@ -155,23 +158,23 @@ public class HandDealtEvent extends BaseEvent<TableEventType> implements TableEv
     }
 
     public Map<Integer, UUID> getSeatMap() {
-        return seatMap;
+        return new HashMap<>(seatMap);
     }
 
     public Map<UUID, PocketCards> getPlayerToPocketCardsMap() {
-        return playerToPocketCardsMap;
+        return new HashMap<>(playerToPocketCardsMap);
     }
 
     public Map<UUID, Set<PlayerAction>> getPossibleSeatActionsMap() {
-        return possibleSeatActionsMap;
+        return new HashMap<>(possibleSeatActionsMap);
     }
 
     public Set<UUID> getPlayersStillInHand() {
-        return playersStillInHand;
+        return new HashSet<>(playersStillInHand);
     }
 
     public List<HandEvaluation> getHandEvaluations() {
-        return handEvaluations;
+        return new ArrayList<>(handEvaluations);
     }
 
     public HandDealerState getHandDealerState() {
@@ -179,19 +182,19 @@ public class HandDealtEvent extends BaseEvent<TableEventType> implements TableEv
     }
 
     public Map<UUID, Integer> getChipsInBack() {
-        return chipsInBack;
+        return new HashMap<>(chipsInBack);
     }
 
     public Map<UUID, Integer> getChipsInFrontMap() {
-        return chipsInFrontMap;
+        return new HashMap<>(chipsInFrontMap);
     }
 
     public Map<UUID, Integer> getCallAmountsMap() {
-        return callAmountsMap;
+        return new HashMap<>(callAmountsMap);
     }
 
     public Map<UUID, Integer> getRaiseToAmountsMap() {
-        return raiseToAmountsMap;
+        return new HashMap<>(raiseToAmountsMap);
     }
 
     public int getSmallBlind() {
@@ -202,8 +205,8 @@ public class HandDealtEvent extends BaseEvent<TableEventType> implements TableEv
         return bigBlind;
     }
 
-    public Set<UUID> getPlayersToShowCardsMap() {
-        return playersToShowCardsMap;
+    public Set<UUID> getPlayersToShowCards() {
+        return new HashSet<>(playersToShowCards);
     }
 
 }

@@ -1,5 +1,6 @@
 package com.flexpoker.game.command.events;
 
+import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
@@ -24,7 +25,7 @@ public class GameStartedEvent extends BaseEvent<GameEventType> implements GameEv
     }
 
     public Set<UUID> getTableIds() {
-        return tableIds;
+        return new HashSet<>(tableIds);
     }
 
     public Blinds getBlinds() {
