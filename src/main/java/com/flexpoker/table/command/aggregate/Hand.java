@@ -566,17 +566,7 @@ public class Hand {
         playersInMap.forEach(x -> chipsInFrontMap.put(x, Integer.valueOf(0)));
     }
 
-    private void resetCallAmounts() {
-        Set<UUID> playersInMap = callAmountsMap.keySet();
-        playersInMap.forEach(x -> callAmountsMap.put(x, Integer.valueOf(0)));
-    }
-
-    private void resetRaiseTo() {
-        Set<UUID> playersInMap = raiseToAmountsMap.keySet();
-        playersInMap.forEach(x -> raiseToAmountsMap.put(x, Integer.valueOf(0)));
-    }
-
-    private void resetRaiseAmountsAfterRound() {
+    private void resetCallAndRaiseAmountsAfterRound() {
         playersStillInHand
                 .forEach(playerInHand -> {
                     callAmountsMap.put(playerInHand, Integer.valueOf(0));
@@ -744,7 +734,7 @@ public class Hand {
         handDealerState = event.getNextHandDealerState();
         originatingBettorPlayerId = null;
         resetChipsInFront();
-        resetRaiseAmountsAfterRound();
+        resetCallAndRaiseAmountsAfterRound();
         resetPossibleSeatActionsAfterRound();
     }
 
