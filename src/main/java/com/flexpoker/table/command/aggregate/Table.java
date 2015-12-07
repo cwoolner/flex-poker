@@ -57,11 +57,22 @@ public class Table extends AggregateRoot<TableEvent> {
 
     private Hand currentHand;
 
-    protected Table(UUID aggregateId, UUID gameId, Map<Integer, UUID> seatMap) {
+    protected Table(boolean creatingFromEvents, UUID aggregateId, UUID gameId,
+            Map<Integer, UUID> seatMap, int startingNumberOfChips) {
         this.aggregateId = aggregateId;
         this.gameId = gameId;
         this.seatMap = seatMap;
         this.chipsInBack = new HashMap<>();
+
+        seatMap.values().stream().filter(x -> x != null)
+                .forEach(x -> chipsInBack.put(x, startingNumberOfChips));
+
+        if (!creatingFromEvents) {
+            TableCreatedEvent tableCreatedEvent = new TableCreatedEvent(
+                    aggregateId, ++aggregateVersion, gameId, seatMap.size(),
+                    seatMap, startingNumberOfChips);
+            addNewEvent(tableCreatedEvent);
+        }
     }
 
     @Override
@@ -82,7 +93,6 @@ public class Table extends AggregateRoot<TableEvent> {
     private void applyCommonEvent(TableEvent event) {
         switch (event.getType()) {
         case TableCreated:
-            applyEvent((TableCreatedEvent) event);
             break;
         case CardsShuffled:
             break;
@@ -138,17 +148,6 @@ public class Table extends AggregateRoot<TableEvent> {
             throw new IllegalArgumentException("Event Type cannot be handled: "
                     + event.getType());
         }
-    }
-
-    private void applyEvent(TableCreatedEvent event) {
-        seatMap.putAll(event.getSeatPositionToPlayerMap());
-        event.getSeatPositionToPlayerMap()
-                .values()
-                .stream()
-                .filter(x -> x != null)
-                .forEach(
-                        x -> chipsInBack.put(x,
-                                Integer.valueOf(event.getStartingNumberOfChips())));
     }
 
     private void applyEvent(HandDealtEvent event) {
@@ -226,37 +225,6 @@ public class Table extends AggregateRoot<TableEvent> {
 
     private void applyEvent(@SuppressWarnings("unused") HandCompletedEvent event) {
         currentHand = null;
-    }
-
-    public void createNewTable(Set<UUID> playerIds) {
-        if (!seatMap.values().stream().allMatch(x -> x == null)) {
-            throw new FlexPokerException("seatMap already contains players");
-        }
-
-        if (playerIds.size() < 2) {
-            throw new FlexPokerException("must have at least two players");
-        }
-
-        if (playerIds.size() > seatMap.size()) {
-            throw new FlexPokerException("player list can't be larger than seatMap");
-        }
-
-        if (currentHand != null) {
-            throw new FlexPokerException(
-                    "can't create a table that already has a hand played");
-        }
-
-        Map<Integer, UUID> seatToPlayerMap = new HashMap<>();
-        // TODO: randomize the seat placement
-        List<UUID> playerIdsList = new ArrayList<>(playerIds);
-        for (int i = 0; i < playerIds.size(); i++) {
-            seatToPlayerMap.put(Integer.valueOf(i), playerIdsList.get(i));
-        }
-
-        TableCreatedEvent tableCreatedEvent = new TableCreatedEvent(aggregateId,
-                ++aggregateVersion, gameId, seatMap.size(), seatToPlayerMap, 1500);
-        addNewEvent(tableCreatedEvent);
-        applyEvent(tableCreatedEvent);
     }
 
     public void startNewHandForNewGame(int smallBlind, int bigBlind,

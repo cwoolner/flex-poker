@@ -11,6 +11,7 @@ import org.junit.Test;
 import org.springframework.security.authentication.encoding.ShaPasswordEncoder;
 
 import com.flexpoker.exception.FlexPokerException;
+import com.flexpoker.signup.command.commands.SignUpNewUserCommand;
 import com.flexpoker.signup.command.events.NewUserSignedUpEvent;
 import com.flexpoker.signup.command.events.SignedUpUserConfirmedEvent;
 import com.flexpoker.signup.command.framework.SignUpEvent;
@@ -35,8 +36,9 @@ public class SignUpUserTest {
 
     @Test
     public void testSignUpNewUserSuccess() {
-        SignUpUser signUpUser = signUpUserFactory.createNew();
-        signUpUser.signUpNewUser(VALID_EMAIL_ADDRESS, VALID_USERNAME, VALID_PASSWORD);
+        SignUpNewUserCommand command = new SignUpNewUserCommand(VALID_USERNAME,
+                VALID_EMAIL_ADDRESS, VALID_PASSWORD);
+        SignUpUser signUpUser = signUpUserFactory.createNew(command);
 
         assertEquals(1, signUpUser.fetchNewEvents().size());
         assertEquals(SignUpEventType.NewUserSignedUp, signUpUser.fetchNewEvents().get(0)
@@ -46,13 +48,6 @@ public class SignUpUserTest {
                 .fetchNewEvents().get(0);
         assertNotNull(newUserSignedUpEvent.getAggregateId());
         assertEquals(1, newUserSignedUpEvent.getVersion());
-    }
-
-    @Test(expected = IllegalStateException.class)
-    public void testSignUpNewUserFailByCallingMethodTwice() {
-        SignUpUser signUpUser = signUpUserFactory.createNew();
-        signUpUser.signUpNewUser(VALID_EMAIL_ADDRESS, VALID_USERNAME, VALID_PASSWORD);
-        signUpUser.signUpNewUser(VALID_EMAIL_ADDRESS, VALID_USERNAME, VALID_PASSWORD);
     }
 
     @Test
@@ -86,12 +81,6 @@ public class SignUpUserTest {
         SignUpUser signUpUser = signUpUserFactory.createFrom(events);
 
         signUpUser.confirmSignedUpUser(VALID_USERNAME, UUID.randomUUID());
-    }
-
-    @Test(expected = IllegalStateException.class)
-    public void testConfirmSignedUpUserFailedWhenNewUserSignUpNotOccurred() {
-        SignUpUser signUpUser = signUpUserFactory.createNew();
-        signUpUser.confirmSignedUpUser(VALID_USERNAME, VALID_SIGN_UP_CODE);
     }
 
     @Test(expected = IllegalStateException.class)

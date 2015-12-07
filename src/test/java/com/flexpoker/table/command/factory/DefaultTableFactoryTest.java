@@ -5,7 +5,9 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import org.junit.Before;
@@ -13,6 +15,7 @@ import org.junit.Test;
 
 import com.flexpoker.table.command.aggregate.DefaultTableFactory;
 import com.flexpoker.table.command.aggregate.Table;
+import com.flexpoker.table.command.commands.CreateTableCommand;
 import com.flexpoker.table.command.events.TableCreatedEvent;
 import com.flexpoker.table.command.framework.TableEvent;
 
@@ -27,8 +30,14 @@ public class DefaultTableFactoryTest {
 
     @Test
     public void testCreateNew() {
-        Table game = sut.createNew(UUID.randomUUID(), UUID.randomUUID(), 6);
-        assertNotNull(game);
+        Set<UUID> playerIds = new HashSet<>();
+        playerIds.add(UUID.randomUUID());
+        playerIds.add(UUID.randomUUID());
+
+        CreateTableCommand command = new CreateTableCommand(UUID.randomUUID(),
+                UUID.randomUUID(), playerIds, 6);
+        Table table = sut.createNew(command);
+        assertNotNull(table);
     }
 
     @Test

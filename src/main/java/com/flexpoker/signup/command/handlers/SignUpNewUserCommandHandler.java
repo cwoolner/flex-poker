@@ -34,9 +34,7 @@ public class SignUpNewUserCommandHandler implements CommandHandler<SignUpNewUser
     @Async
     @Override
     public void handle(SignUpNewUserCommand command) {
-        SignUpUser signUpUser = signUpUserFactory.createNew();
-        signUpUser.signUpNewUser(command.getEmailAddress(), command.getUsername(),
-                command.getPassword());
+        SignUpUser signUpUser = signUpUserFactory.createNew(command);
         signUpUser.fetchNewEvents().forEach(x -> signUpEventRepository.save(x));
         signUpUser.fetchNewEvents().forEach(x -> eventPublisher.publish(x));
     }

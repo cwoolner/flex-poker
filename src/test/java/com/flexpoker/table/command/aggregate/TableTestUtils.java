@@ -14,6 +14,7 @@ import com.flexpoker.model.card.Card;
 import com.flexpoker.model.card.CardRank;
 import com.flexpoker.model.card.CardsUsedInHand;
 import com.flexpoker.model.card.PocketCards;
+import com.flexpoker.table.command.commands.CreateTableCommand;
 import com.flexpoker.test.util.datageneration.CardGenerator;
 import com.flexpoker.test.util.datageneration.DeckGenerator;
 
@@ -42,8 +43,8 @@ public class TableTestUtils {
         handEvaluations.put(CardGenerator.createPocketCards1(), handEvaluation1);
         handEvaluations.put(CardGenerator.createPocketCards2(), handEvaluation2);
 
-        Table table = new DefaultTableFactory().createNew(tableId, UUID.randomUUID(), 6);
-        table.createNewTable(playerIds);
+        CreateTableCommand command = new CreateTableCommand(tableId, UUID.randomUUID(), playerIds, 6);
+        Table table = new DefaultTableFactory().createNew(command);
         table.startNewHandForNewGame(smallBlind, bigBlind, shuffledDeckOfCards, cardsUsedInHand,
                 handEvaluations);
         return table;

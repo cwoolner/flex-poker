@@ -34,9 +34,7 @@ public class CreateGameCommandHandler implements CommandHandler<CreateGameComman
     @Async
     @Override
     public void handle(CreateGameCommand command) {
-        Game game = gameFactory.createNew();
-        game.createNewGame(command.getGameName(), command.getNumberOfPlayers(),
-                command.getNumberOfPlayersPerTable(), command.getCreatedByPlayerId());
+        Game game = gameFactory.createNew(command);
         game.fetchNewEvents().forEach(x -> gameEventRepository.save(x));
         game.fetchNewEvents().forEach(x -> eventPublisher.publish(x));
     }

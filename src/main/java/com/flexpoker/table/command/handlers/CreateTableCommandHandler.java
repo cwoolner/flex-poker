@@ -34,9 +34,7 @@ public class CreateTableCommandHandler implements CommandHandler<CreateTableComm
     @Async
     @Override
     public void handle(CreateTableCommand command) {
-        Table table = tableFactory.createNew(command.getTableId(), command.getGameId(),
-                command.getNumberOfPlayersPerTable());
-        table.createNewTable(command.getPlayerIds());
+        Table table = tableFactory.createNew(command);
         table.fetchNewEvents().forEach(x -> tableEventRepository.save(x));
         table.fetchNewEvents().forEach(x -> eventPublisher.publish(x));
     }

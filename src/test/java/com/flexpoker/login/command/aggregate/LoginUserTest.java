@@ -7,6 +7,7 @@ import java.util.UUID;
 
 import org.junit.Test;
 
+import com.flexpoker.login.command.commands.CreateLoginUserCommand;
 import com.flexpoker.login.command.events.LoginUserCreatedEvent;
 import com.flexpoker.login.command.factory.LoginUserFactory;
 import com.flexpoker.login.command.framework.LoginEventType;
@@ -17,9 +18,9 @@ public class LoginUserTest {
 
     @Test
     public void testCreate() {
-        LoginUser loginUser = loginUserFactory.createNew(UUID.randomUUID(), "test",
-                "password");
-        loginUser.enableNewUser();
+        CreateLoginUserCommand command = new CreateLoginUserCommand(
+                UUID.randomUUID(), "test", "password");
+        LoginUser loginUser = loginUserFactory.createNew(command);
 
         assertEquals(1, loginUser.fetchNewEvents().size());
         assertEquals(LoginEventType.LoginUserCreated, loginUser.fetchNewEvents().get(0)
@@ -29,14 +30,6 @@ public class LoginUserTest {
                 .fetchNewEvents().get(0);
         assertNotNull(loginUserCreatedEvent.getAggregateId());
         assertEquals(1, loginUserCreatedEvent.getVersion());
-    }
-
-    @Test(expected = IllegalStateException.class)
-    public void testSignUpNewUserFailByCallingMethodTwice() {
-        LoginUser loginUser = loginUserFactory.createNew(UUID.randomUUID(), "test",
-                "password");
-        loginUser.enableNewUser();
-        loginUser.enableNewUser();
     }
 
 }

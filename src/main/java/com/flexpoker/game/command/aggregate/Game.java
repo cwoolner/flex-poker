@@ -31,18 +31,30 @@ public class Game extends AggregateRoot<GameEvent> {
 
     private final Set<UUID> registeredPlayerIds;
 
-    private int maxNumberOfPlayers;
+    private final int maxNumberOfPlayers;
 
-    private int numberOfPlayersPerTable;
+    private final int numberOfPlayersPerTable;
 
     private final Map<UUID, Set<UUID>> tableIdToPlayerIdsMap;
 
     private Blinds currentBlinds;
 
-    protected Game(UUID aggregateId) {
+    protected Game(boolean creatingFromEvents, UUID aggregateId,
+            String gameName, int maxNumberOfPlayers,
+            int numberOfPlayersPerTable, UUID createdById) {
         this.aggregateId = aggregateId;
+        this.maxNumberOfPlayers = maxNumberOfPlayers;
+        this.numberOfPlayersPerTable = numberOfPlayersPerTable;
+        gameStage = GameStage.REGISTERING;
         registeredPlayerIds = new HashSet<>();
         tableIdToPlayerIdsMap = new HashMap<>();
+
+        if (!creatingFromEvents) {
+            GameCreatedEvent gameCreatedEvent = new GameCreatedEvent(aggregateId,
+                    ++aggregateVersion, gameName, maxNumberOfPlayers,
+                    numberOfPlayersPerTable, createdById);
+            addNewEvent(gameCreatedEvent);
+        }
     }
 
     @Override
@@ -63,7 +75,6 @@ public class Game extends AggregateRoot<GameEvent> {
     private void applyCommonEvent(GameEvent event) {
         switch (event.getType()) {
         case GameCreated:
-            applyEvent((GameCreatedEvent) event);
             break;
         case GameJoined:
             applyEvent((GameJoinedEvent) event);
@@ -86,13 +97,6 @@ public class Game extends AggregateRoot<GameEvent> {
             throw new IllegalArgumentException("Event Type cannot be handled: "
                     + event.getType());
         }
-    }
-
-    private void applyEvent(GameCreatedEvent event) {
-        gameStage = GameStage.REGISTERING;
-        maxNumberOfPlayers = event.getNumberOfPlayers();
-        numberOfPlayersPerTable = event.getNumberOfPlayersPerTable();
-        addAppliedEvent(event);
     }
 
     private void applyEvent(GameJoinedEvent event) {
@@ -119,15 +123,6 @@ public class Game extends AggregateRoot<GameEvent> {
     private void applyEvent(GameFinishedEvent event) {
         gameStage = GameStage.FINISHED;
         addAppliedEvent(event);
-    }
-
-    public void createNewGame(String gameName, int maxNumberOfPlayers,
-            int numberOfPlayersPerTable, UUID createdByPlayerId) {
-        GameCreatedEvent gameCreatedEvent = new GameCreatedEvent(aggregateId,
-                ++aggregateVersion, gameName, maxNumberOfPlayers,
-                numberOfPlayersPerTable, createdByPlayerId);
-        addNewEvent(gameCreatedEvent);
-        applyEvent(gameCreatedEvent);
     }
 
     public void joinGame(UUID playerId) {

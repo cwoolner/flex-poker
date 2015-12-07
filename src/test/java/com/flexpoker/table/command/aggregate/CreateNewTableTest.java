@@ -10,6 +10,7 @@ import java.util.UUID;
 import org.junit.Test;
 
 import com.flexpoker.exception.FlexPokerException;
+import com.flexpoker.table.command.commands.CreateTableCommand;
 import com.flexpoker.table.command.framework.TableEvent;
 import com.flexpoker.table.command.framework.TableEventType;
 import com.flexpoker.test.util.CommonAssertions;
@@ -23,27 +24,14 @@ public class CreateNewTableTest {
         playerIds.add(UUID.randomUUID());
         playerIds.add(UUID.randomUUID());
 
-        Table table = new DefaultTableFactory().createNew(tableId, UUID.randomUUID(), 6);
-        table.createNewTable(playerIds);
-
+        CreateTableCommand command = new CreateTableCommand(tableId, UUID.randomUUID(), playerIds, 6);
+        Table table = new DefaultTableFactory().createNew(command);
         List<TableEvent> newEvents = table.fetchNewEvents();
 
         assertEquals(1, newEvents.size());
         assertEquals(TableEventType.TableCreated, newEvents.get(0).getType());
 
         CommonAssertions.verifyEventIdsAndVersionNumbers(tableId, newEvents);
-    }
-
-    @Test(expected = FlexPokerException.class)
-    public void testCantCallCreateNewTableTwice() {
-        UUID tableId = UUID.randomUUID();
-        Set<UUID> playerIds = new HashSet<>();
-        playerIds.add(UUID.randomUUID());
-        playerIds.add(UUID.randomUUID());
-
-        Table table = new DefaultTableFactory().createNew(tableId, UUID.randomUUID(), 6);
-        table.createNewTable(playerIds);
-        table.createNewTable(playerIds);
     }
 
     @Test(expected = FlexPokerException.class)
@@ -54,8 +42,8 @@ public class CreateNewTableTest {
         playerIds.add(UUID.randomUUID());
         playerIds.add(UUID.randomUUID());
 
-        Table table = new DefaultTableFactory().createNew(tableId, UUID.randomUUID(), 2);
-        table.createNewTable(playerIds);
+        CreateTableCommand command = new CreateTableCommand(tableId, UUID.randomUUID(), playerIds, 2);
+        new DefaultTableFactory().createNew(command);
     }
 
     @Test(expected = FlexPokerException.class)
@@ -64,8 +52,8 @@ public class CreateNewTableTest {
         Set<UUID> playerIds = new HashSet<>();
         playerIds.add(UUID.randomUUID());
 
-        Table table = new DefaultTableFactory().createNew(tableId, UUID.randomUUID(), 2);
-        table.createNewTable(playerIds);
+        CreateTableCommand command = new CreateTableCommand(tableId, UUID.randomUUID(), playerIds, 2);
+        new DefaultTableFactory().createNew(command);
     }
 
 }

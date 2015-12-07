@@ -6,8 +6,8 @@ import com.flexpoker.framework.event.BaseEvent;
 import com.flexpoker.signup.command.framework.SignUpEvent;
 import com.flexpoker.signup.command.framework.SignUpEventType;
 
-public class NewUserSignedUpEvent extends BaseEvent<SignUpEventType> implements
-        SignUpEvent {
+public class NewUserSignedUpEvent extends BaseEvent<SignUpEventType>
+        implements SignUpEvent {
 
     private static final SignUpEventType TYPE = SignUpEventType.NewUserSignedUp;
 
@@ -28,16 +28,20 @@ public class NewUserSignedUpEvent extends BaseEvent<SignUpEventType> implements
         this.encryptedPassword = encryptedPassword;
     }
 
+    public String getEmailAddress() {
+        return emailAddress;
+    }
+
     public String getUsername() {
         return username;
     }
 
-    public UUID getSignUpCode() {
-        return signUpCode;
-    }
-
     public String getEncryptedPassword() {
         return encryptedPassword;
+    }
+
+    public UUID getSignUpCode() {
+        return signUpCode;
     }
 
 }

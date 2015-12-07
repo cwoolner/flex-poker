@@ -35,9 +35,7 @@ public class CreateLoginUserCommandHandler implements
     @Async
     @Override
     public void handle(CreateLoginUserCommand command) {
-        LoginUser loginUser = loginUserFactory.createNew(command.getAggregateId(),
-                command.getUsername(), command.getEncryptedPassword());
-        loginUser.enableNewUser();
+        LoginUser loginUser = loginUserFactory.createNew(command);
         loginUser.fetchNewEvents().forEach(x -> loginEventRepository.save(x));
         loginUser.fetchNewEvents().forEach(x -> eventPublisher.publish(x));
     }

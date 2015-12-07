@@ -12,6 +12,7 @@ import org.junit.Test;
 
 import com.flexpoker.login.command.aggregate.DefaultLoginUserFactory;
 import com.flexpoker.login.command.aggregate.LoginUser;
+import com.flexpoker.login.command.commands.CreateLoginUserCommand;
 import com.flexpoker.login.command.events.LoginUserCreatedEvent;
 import com.flexpoker.login.command.framework.LoginEvent;
 
@@ -26,10 +27,9 @@ public class LoginUserFactoryTest {
 
     @Test
     public void testCreateNew() {
-        String username = "test";
-        String encryptedPassword = "encryptedPassword";
-        LoginUser loginUser = sut.createNew(UUID.randomUUID(), username,
-                encryptedPassword);
+        CreateLoginUserCommand command = new CreateLoginUserCommand(
+                UUID.randomUUID(), "test", "encryptedPassword");
+        LoginUser loginUser = sut.createNew(command);
         assertNotNull(loginUser);
     }
 

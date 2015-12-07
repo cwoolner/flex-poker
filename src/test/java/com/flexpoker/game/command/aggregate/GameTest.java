@@ -10,6 +10,7 @@ import java.util.UUID;
 import org.junit.Test;
 
 import com.flexpoker.exception.FlexPokerException;
+import com.flexpoker.game.command.commands.CreateGameCommand;
 import com.flexpoker.game.command.events.GameCreatedEvent;
 import com.flexpoker.game.command.events.GameMovedToStartingStageEvent;
 import com.flexpoker.game.command.events.GameStartedEvent;
@@ -24,8 +25,8 @@ public class GameTest {
 
     @Test
     public void testCreateNewGameSuccess() {
-        Game game = gameFactory.createNew();
-        game.createNewGame("test", 2, 2, UUID.randomUUID());
+        CreateGameCommand createGameCommand = new CreateGameCommand("test", 2, 2, UUID.randomUUID());
+        Game game = gameFactory.createNew(createGameCommand);
 
         assertEquals(1, game.fetchNewEvents().size());
         assertEquals(GameEventType.GameCreated, game.fetchNewEvents().get(0).getType());

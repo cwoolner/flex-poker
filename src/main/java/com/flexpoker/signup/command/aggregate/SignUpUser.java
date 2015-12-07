@@ -3,8 +3,6 @@ package com.flexpoker.signup.command.aggregate;
 import java.util.List;
 import java.util.UUID;
 
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-
 import com.flexpoker.exception.FlexPokerException;
 import com.flexpoker.framework.domain.AggregateRoot;
 import com.flexpoker.signup.command.events.NewUserSignedUpEvent;
@@ -25,8 +23,20 @@ public class SignUpUser extends AggregateRoot<SignUpEvent> {
 
     private String encryptedPassword;
 
-    protected SignUpUser(final UUID aggregateId) {
+    protected SignUpUser(boolean creatingFromEvents, UUID aggregateId,
+            UUID signUpCode, String emailAddress, String username,
+            String encryptedPassword) {
         this.aggregateId = aggregateId;
+        this.username = username;
+        this.encryptedPassword = encryptedPassword;
+        this.signUpCode = signUpCode;
+
+        if (!creatingFromEvents) {
+            NewUserSignedUpEvent newUserSignedUpEvent = new NewUserSignedUpEvent(
+                    aggregateId, ++aggregateVersion, signUpCode, emailAddress,
+                    username, encryptedPassword);
+            addNewEvent(newUserSignedUpEvent);
+        }
     }
 
     @Override
@@ -47,7 +57,6 @@ public class SignUpUser extends AggregateRoot<SignUpEvent> {
     private void applyCommonEvent(SignUpEvent event) {
         switch (event.getType()) {
         case NewUserSignedUp:
-            applyEvent((NewUserSignedUpEvent) event);
             break;
         case SignedUpUserConfirmed:
             applyEvent((SignedUpUserConfirmedEvent) event);
@@ -58,33 +67,9 @@ public class SignUpUser extends AggregateRoot<SignUpEvent> {
         }
     }
 
-    private void applyEvent(NewUserSignedUpEvent event) {
-        username = event.getUsername();
-        signUpCode = event.getSignUpCode();
-        encryptedPassword = event.getEncryptedPassword();
-        addAppliedEvent(event);
-    }
-
     private void applyEvent(SignedUpUserConfirmedEvent event) {
         confirmed = true;
         addAppliedEvent(event);
-    }
-
-    public void signUpNewUser(final String emailAddress, final String username,
-            final String password) {
-        if (this.username != null) {
-            throw new IllegalStateException("username should not be set");
-        }
-        if (this.confirmed) {
-            throw new IllegalStateException("confirmed should be false");
-        }
-
-        String encryptedPassword = new BCryptPasswordEncoder().encode(password);
-        UUID signUpCode = UUID.randomUUID();
-        NewUserSignedUpEvent newUserSignedUpEvent = new NewUserSignedUpEvent(aggregateId,
-                ++aggregateVersion, signUpCode, emailAddress, username, encryptedPassword);
-        addNewEvent(newUserSignedUpEvent);
-        applyEvent(newUserSignedUpEvent);
     }
 
     public void confirmSignedUpUser(final String username, final UUID signUpCode) {

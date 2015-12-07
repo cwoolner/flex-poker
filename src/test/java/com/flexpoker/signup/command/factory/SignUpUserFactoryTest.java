@@ -11,6 +11,7 @@ import org.junit.Test;
 
 import com.flexpoker.signup.command.aggregate.DefaultSignUpUserFactory;
 import com.flexpoker.signup.command.aggregate.SignUpUser;
+import com.flexpoker.signup.command.commands.SignUpNewUserCommand;
 import com.flexpoker.signup.command.events.NewUserSignedUpEvent;
 import com.flexpoker.signup.command.events.SignedUpUserConfirmedEvent;
 import com.flexpoker.signup.command.framework.SignUpEvent;
@@ -26,7 +27,9 @@ public class SignUpUserFactoryTest {
 
     @Test
     public void testCreateNew() {
-        SignUpUser signUpUser = sut.createNew();
+        SignUpNewUserCommand command = new SignUpNewUserCommand("test",
+                "test@test.com", "password");
+        SignUpUser signUpUser = sut.createNew(command);
         assertNotNull(signUpUser);
     }
 

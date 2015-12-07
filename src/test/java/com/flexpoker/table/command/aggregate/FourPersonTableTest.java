@@ -51,6 +51,9 @@ public class FourPersonTableTest {
         // check seat positions
         Map<Integer, UUID> seatPositionToPlayerIdMap = ((TableCreatedEvent) table
                 .fetchNewEvents().get(0)).getSeatPositionToPlayerMap();
+        seatPositionToPlayerIdMap = seatPositionToPlayerIdMap.entrySet()
+                .stream().filter(x -> x.getValue() != null)
+                .collect(Collectors.toMap(x -> x.getKey(), x -> x.getValue()));
 
         List<UUID> player1MatchList = seatPositionToPlayerIdMap.values().stream()
                 .filter(x -> x.equals(player1Id)).collect(Collectors.toList());
