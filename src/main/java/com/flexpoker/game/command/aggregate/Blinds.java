@@ -27,7 +27,7 @@ public class Blinds {
         if (smallBlind < 1) {
             throw new IllegalArgumentException("Small blind must be greater than 0.");
         }
-        if (bigBlind < 1) {
+        if (bigBlind < 2) {
             throw new IllegalArgumentException("Big blind must be greater than 0.");
         }
         if (bigBlind != smallBlind * 2) {

@@ -4,8 +4,6 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-import com.flexpoker.game.command.aggregate.Blinds;
-
 public class BlindsTest {
 
     @Test
@@ -16,10 +14,23 @@ public class BlindsTest {
     }
 
     @Test
+    public void testLowNormalSuccess() {
+        Blinds blinds = new Blinds(1, 2);
+        assertEquals(1, blinds.getSmallBlind());
+        assertEquals(2, blinds.getBigBlind());
+    }
+
+    @Test
     public void testMaxValueSuccess() {
         Blinds blinds = new Blinds(Integer.MAX_VALUE / 2, Integer.MAX_VALUE - 1);
         assertEquals(Integer.MAX_VALUE / 2, blinds.getSmallBlind());
         assertEquals(Integer.MAX_VALUE - 1, blinds.getBigBlind());
+    }
+
+    @SuppressWarnings("unused")
+    @Test(expected = IllegalArgumentException.class)
+    public void testBigIsDoubleSmallFail() {
+        new Blinds(10, 19);
     }
 
     @SuppressWarnings("unused")
