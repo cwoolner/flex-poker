@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.flexpoker.framework.command.CommandPublisher;
+import com.flexpoker.framework.command.CommandSender;
 import com.flexpoker.signup.command.commands.ConfirmSignUpUserEmailCommand;
 import com.flexpoker.signup.command.commands.SignUpNewUserCommand;
 import com.flexpoker.signup.command.framework.SignUpCommandType;
@@ -19,14 +19,14 @@ import com.flexpoker.signup.query.repository.SignUpRepository;
 @Controller
 public class SignUpController {
 
-    private final CommandPublisher<SignUpCommandType> commandPublisher;
+    private final CommandSender<SignUpCommandType> commandSender;
 
     private final SignUpRepository signUpCodeRepository;
 
     @Inject
-    public SignUpController(CommandPublisher<SignUpCommandType> commandPublisher,
+    public SignUpController(CommandSender<SignUpCommandType> commandSender,
             SignUpRepository signUpCodeRepository) {
-        this.commandPublisher = commandPublisher;
+        this.commandSender = commandSender;
         this.signUpCodeRepository = signUpCodeRepository;
     }
 
@@ -45,7 +45,7 @@ public class SignUpController {
         } else {
             SignUpNewUserCommand command = new SignUpNewUserCommand(username,
                     emailAddress, password);
-            commandPublisher.publish(command);
+            commandSender.send(command);
             modelAndView.setViewName("sign-up-step1-success");
             modelAndView.addObject("email", emailAddress);
         }
@@ -80,7 +80,7 @@ public class SignUpController {
         } else {
             ConfirmSignUpUserEmailCommand command = new ConfirmSignUpUserEmailCommand(
                     aggregateId, username, signUpCode);
-            commandPublisher.publish(command);
+            commandSender.send(command);
             modelAndView.setViewName("sign-up-step2-success");
             modelAndView.addObject("username", username);
         }

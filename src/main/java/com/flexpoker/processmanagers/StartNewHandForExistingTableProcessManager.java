@@ -5,7 +5,7 @@ import javax.inject.Inject;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
-import com.flexpoker.framework.command.CommandPublisher;
+import com.flexpoker.framework.command.CommandSender;
 import com.flexpoker.framework.processmanager.ProcessManager;
 import com.flexpoker.game.command.events.NewHandIsClearedToStartEvent;
 import com.flexpoker.table.command.commands.StartNewHandForExistingTableCommand;
@@ -15,12 +15,12 @@ import com.flexpoker.table.command.framework.TableCommandType;
 public class StartNewHandForExistingTableProcessManager implements
         ProcessManager<NewHandIsClearedToStartEvent> {
 
-    private final CommandPublisher<TableCommandType> tableCommandPublisher;
+    private final CommandSender<TableCommandType> tableCommandSender;
 
     @Inject
     public StartNewHandForExistingTableProcessManager(
-            CommandPublisher<TableCommandType> tableCommandPublisher) {
-        this.tableCommandPublisher = tableCommandPublisher;
+            CommandSender<TableCommandType> tableCommandSender) {
+        this.tableCommandSender = tableCommandSender;
     }
 
     @Async
@@ -30,6 +30,6 @@ public class StartNewHandForExistingTableProcessManager implements
                 event.getTableId(), event.getAggregateId(),
                 event.getBlinds().getSmallBlind(),
                 event.getBlinds().getBigBlind());
-        tableCommandPublisher.publish(command);
+        tableCommandSender.send(command);
     }
 }

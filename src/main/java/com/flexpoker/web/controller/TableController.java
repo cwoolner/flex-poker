@@ -10,7 +10,7 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.annotation.SubscribeMapping;
 import org.springframework.stereotype.Controller;
 
-import com.flexpoker.framework.command.CommandPublisher;
+import com.flexpoker.framework.command.CommandSender;
 import com.flexpoker.login.query.repository.LoginRepository;
 import com.flexpoker.table.command.commands.CallCommand;
 import com.flexpoker.table.command.commands.CheckCommand;
@@ -25,16 +25,16 @@ import com.flexpoker.web.model.outgoing.TableDTO;
 @Controller
 public class TableController {
 
-    private final CommandPublisher<TableCommandType> commandPublisher;
+    private final CommandSender<TableCommandType> commandSender;
 
     private final LoginRepository loginRepository;
 
     private final TableRepository tableRepository;
 
     @Inject
-    public TableController(CommandPublisher<TableCommandType> commandPublisher,
+    public TableController(CommandSender<TableCommandType> commandSender,
             LoginRepository loginRepository, TableRepository tableRepository) {
-        this.commandPublisher = commandPublisher;
+        this.commandSender = commandSender;
         this.loginRepository = loginRepository;
         this.tableRepository = tableRepository;
     }
@@ -48,28 +48,28 @@ public class TableController {
     @MessageMapping(value = "/app/check")
     public void check(DefaultTableActionDTO model, Principal principal) {
         UUID playerId = loginRepository.fetchAggregateIdByUsername(principal.getName());
-        commandPublisher.publish(new CheckCommand(model.getTableId(), model.getGameId(),
+        commandSender.send(new CheckCommand(model.getTableId(), model.getGameId(),
                 playerId));
     }
 
     @MessageMapping(value = "/app/fold")
     public void fold(DefaultTableActionDTO model, Principal principal) {
         UUID playerId = loginRepository.fetchAggregateIdByUsername(principal.getName());
-        commandPublisher.publish(new FoldCommand(model.getTableId(), model.getGameId(),
+        commandSender.send(new FoldCommand(model.getTableId(), model.getGameId(),
                 playerId));
     }
 
     @MessageMapping(value = "/app/call")
     public void call(DefaultTableActionDTO model, Principal principal) {
         UUID playerId = loginRepository.fetchAggregateIdByUsername(principal.getName());
-        commandPublisher.publish(new CallCommand(model.getTableId(), model.getTableId(),
+        commandSender.send(new CallCommand(model.getTableId(), model.getTableId(),
                 playerId));
     }
 
     @MessageMapping(value = "/app/raise")
     public void raise(RaiseTableActionDTO model, Principal principal) {
         UUID playerId = loginRepository.fetchAggregateIdByUsername(principal.getName());
-        commandPublisher.publish(new RaiseCommand(model.getTableId(), model.getGameId(),
+        commandSender.send(new RaiseCommand(model.getTableId(), model.getGameId(),
                 playerId, model.getRaiseToAmount()));
     }
 

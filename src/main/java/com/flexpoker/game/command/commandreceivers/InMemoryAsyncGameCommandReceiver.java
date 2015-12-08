@@ -1,20 +1,21 @@
-package com.flexpoker.game.command.publish;
+package com.flexpoker.game.command.commandreceivers;
 
 import javax.inject.Inject;
 
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import com.flexpoker.framework.command.Command;
 import com.flexpoker.framework.command.CommandHandler;
-import com.flexpoker.framework.command.CommandPublisher;
+import com.flexpoker.framework.command.CommandReceiver;
 import com.flexpoker.game.command.commands.AttemptToStartNewHandCommand;
 import com.flexpoker.game.command.commands.CreateGameCommand;
 import com.flexpoker.game.command.commands.JoinGameCommand;
 import com.flexpoker.game.command.framework.GameCommandType;
 
-@Component
-public class InMemoryAsyncGameCommandPublisher implements
-        CommandPublisher<GameCommandType> {
+@Component("gameCommandReceiver")
+public class InMemoryAsyncGameCommandReceiver implements
+        CommandReceiver<GameCommandType> {
 
     private final CommandHandler<CreateGameCommand> createGameCommandHandler;
 
@@ -23,7 +24,7 @@ public class InMemoryAsyncGameCommandPublisher implements
     private final CommandHandler<AttemptToStartNewHandCommand> attemptToStartNewHandCommandHandler;
 
     @Inject
-    public InMemoryAsyncGameCommandPublisher(
+    public InMemoryAsyncGameCommandReceiver(
             CommandHandler<CreateGameCommand> createGameCommandHandler,
             CommandHandler<JoinGameCommand> joinGameCommandHandler,
             CommandHandler<AttemptToStartNewHandCommand> attemptToStartNewHandCommandHandler) {
@@ -32,8 +33,9 @@ public class InMemoryAsyncGameCommandPublisher implements
         this.attemptToStartNewHandCommandHandler = attemptToStartNewHandCommandHandler;
     }
 
+    @Async
     @Override
-    public void publish(Command<GameCommandType> command) {
+    public void receive(Command<GameCommandType> command) {
         switch (command.getType()) {
         case CreateGame:
             createGameCommandHandler.handle((CreateGameCommand) command);

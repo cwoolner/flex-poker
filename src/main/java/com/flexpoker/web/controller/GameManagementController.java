@@ -12,7 +12,7 @@ import org.springframework.messaging.simp.annotation.SendToUser;
 import org.springframework.messaging.simp.annotation.SubscribeMapping;
 import org.springframework.stereotype.Controller;
 
-import com.flexpoker.framework.command.CommandPublisher;
+import com.flexpoker.framework.command.CommandSender;
 import com.flexpoker.game.command.commands.CreateGameCommand;
 import com.flexpoker.game.command.commands.JoinGameCommand;
 import com.flexpoker.game.command.framework.GameCommandType;
@@ -28,7 +28,7 @@ public class GameManagementController {
 
     private final OpenGameForPlayerRepository openGameForUserRepository;
 
-    private final CommandPublisher<GameCommandType> commandPublisher;
+    private final CommandSender<GameCommandType> commandSender;
 
     private final LoginRepository loginRepository;
 
@@ -37,10 +37,10 @@ public class GameManagementController {
     @Inject
     public GameManagementController(
             OpenGameForPlayerRepository openGameForUserRepository,
-            CommandPublisher<GameCommandType> commandPublisher,
+            CommandSender<GameCommandType> commandSender,
             LoginRepository loginRepository, GameListRepository gameRepository) {
         this.openGameForUserRepository = openGameForUserRepository;
-        this.commandPublisher = commandPublisher;
+        this.commandSender = commandSender;
         this.loginRepository = loginRepository;
         this.gameRepository = gameRepository;
     }
@@ -61,14 +61,14 @@ public class GameManagementController {
         UUID playerId = loginRepository.fetchAggregateIdByUsername(principal.getName());
         CreateGameCommand command = new CreateGameCommand(model.getName(),
                 model.getPlayers(), model.getPlayersPerTable(), playerId);
-        commandPublisher.publish(command);
+        commandSender.send(command);
     }
 
     @MessageMapping(value = "/app/joingame")
     public void joinGame(UUID gameId, Principal principal) {
         UUID playerId = loginRepository.fetchAggregateIdByUsername(principal.getName());
         JoinGameCommand command = new JoinGameCommand(gameId, playerId);
-        commandPublisher.publish(command);
+        commandSender.send(command);
     }
 
     @MessageExceptionHandler

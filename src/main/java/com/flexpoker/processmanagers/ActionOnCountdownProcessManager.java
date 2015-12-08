@@ -11,7 +11,7 @@ import javax.inject.Inject;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
-import com.flexpoker.framework.command.CommandPublisher;
+import com.flexpoker.framework.command.CommandSender;
 import com.flexpoker.framework.processmanager.ProcessManager;
 import com.flexpoker.table.command.commands.ExpireActionOnTimerCommand;
 import com.flexpoker.table.command.events.ActionOnChangedEvent;
@@ -21,14 +21,14 @@ import com.flexpoker.table.command.framework.TableCommandType;
 public class ActionOnCountdownProcessManager implements
         ProcessManager<ActionOnChangedEvent> {
 
-    private final CommandPublisher<TableCommandType> tableCommandPublisher;
+    private final CommandSender<TableCommandType> tableCommandSender;
 
     private final Map<UUID, Timer> actionOnPlayerTimerMap;
 
     @Inject
     public ActionOnCountdownProcessManager(
-            CommandPublisher<TableCommandType> tableCommandPublisher) {
-        this.tableCommandPublisher = tableCommandPublisher;
+            CommandSender<TableCommandType> tableCommandSender) {
+        this.tableCommandSender = tableCommandSender;
         this.actionOnPlayerTimerMap = new HashMap<>();
     }
 
@@ -48,7 +48,7 @@ public class ActionOnCountdownProcessManager implements
     }
 
     private void addNewActionOnTimer(ActionOnChangedEvent event) {
-        final CommandPublisher<TableCommandType> localTableCommandPublisher = tableCommandPublisher;
+        final CommandSender<TableCommandType> localTableCommandSender = tableCommandSender;
         final Timer actionOnTimer = new Timer();
         final TimerTask timerTask = new TimerTask() {
             @Override
@@ -56,7 +56,7 @@ public class ActionOnCountdownProcessManager implements
                 ExpireActionOnTimerCommand command = new ExpireActionOnTimerCommand(
                         event.getAggregateId(), event.getGameId(), event.getHandId(),
                         event.getPlayerId());
-                localTableCommandPublisher.publish(command);
+                localTableCommandSender.send(command);
             }
         };
         actionOnTimer.schedule(timerTask, 20000);

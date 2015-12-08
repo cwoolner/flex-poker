@@ -190,10 +190,8 @@ public class InMemoryAsyncTableEventSubscriber implements EventSubscriber<TableE
     }
 
     private void incrementNextEventVersion(Event<TableEventType> event) {
-        Integer currentEventVersion = nextExpectedEventVersion
-                .get(event.getAggregateId());
-        Integer nextEventVersion = Integer.valueOf(currentEventVersion.intValue() + 1);
-        nextExpectedEventVersion.put(event.getAggregateId(), nextEventVersion);
+        nextExpectedEventVersion.compute(event.getAggregateId(),
+                (eventId, eventVersion) -> eventVersion + 1);
     }
 
     private void handleAnyPreviouslyUnhandledEvents(Event<TableEventType> event) {

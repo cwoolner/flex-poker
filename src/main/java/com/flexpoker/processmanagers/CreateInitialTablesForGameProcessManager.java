@@ -8,7 +8,7 @@ import javax.inject.Inject;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
-import com.flexpoker.framework.command.CommandPublisher;
+import com.flexpoker.framework.command.CommandSender;
 import com.flexpoker.framework.processmanager.ProcessManager;
 import com.flexpoker.game.command.events.GameTablesCreatedAndPlayersAssociatedEvent;
 import com.flexpoker.table.command.commands.CreateTableCommand;
@@ -18,12 +18,12 @@ import com.flexpoker.table.command.framework.TableCommandType;
 public class CreateInitialTablesForGameProcessManager implements
         ProcessManager<GameTablesCreatedAndPlayersAssociatedEvent> {
 
-    private final CommandPublisher<TableCommandType> tableCommandPublisher;
+    private final CommandSender<TableCommandType> tableCommandSender;
 
     @Inject
     public CreateInitialTablesForGameProcessManager(
-            CommandPublisher<TableCommandType> tableCommandPublisher) {
-        this.tableCommandPublisher = tableCommandPublisher;
+            CommandSender<TableCommandType> tableCommandSender) {
+        this.tableCommandSender = tableCommandSender;
     }
 
     @Async
@@ -34,7 +34,7 @@ public class CreateInitialTablesForGameProcessManager implements
                     event.getAggregateId(),
                     event.getTableIdToPlayerIdsMap().get(tableId),
                     event.getNumberOfPlayersPerTable());
-            tableCommandPublisher.publish(command);
+            tableCommandSender.send(command);
         };
         event.getTableIdToPlayerIdsMap().keySet().forEach(tableIdConsumer);
     }

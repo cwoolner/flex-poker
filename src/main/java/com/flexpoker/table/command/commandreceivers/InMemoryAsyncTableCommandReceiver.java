@@ -1,12 +1,13 @@
-package com.flexpoker.table.command.commandsubscribers;
+package com.flexpoker.table.command.commandreceivers;
 
 import javax.inject.Inject;
 
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import com.flexpoker.framework.command.Command;
 import com.flexpoker.framework.command.CommandHandler;
-import com.flexpoker.framework.command.CommandSubscriber;
+import com.flexpoker.framework.command.CommandReceiver;
 import com.flexpoker.table.command.commands.CallCommand;
 import com.flexpoker.table.command.commands.CheckCommand;
 import com.flexpoker.table.command.commands.CreateTableCommand;
@@ -17,9 +18,9 @@ import com.flexpoker.table.command.commands.StartNewHandForExistingTableCommand;
 import com.flexpoker.table.command.commands.StartNewHandForNewGameCommand;
 import com.flexpoker.table.command.framework.TableCommandType;
 
-@Component
-public class InMemoryAsyncTableCommandSubscriber implements
-        CommandSubscriber<TableCommandType> {
+@Component("tableCommandReceiver")
+public class InMemoryAsyncTableCommandReceiver implements
+        CommandReceiver<TableCommandType> {
 
     private final CommandHandler<CreateTableCommand> createTableCommandHandler;
 
@@ -38,7 +39,7 @@ public class InMemoryAsyncTableCommandSubscriber implements
     private final CommandHandler<ExpireActionOnTimerCommand> expireActionOnTimerCommandHandler;
 
     @Inject
-    public InMemoryAsyncTableCommandSubscriber(
+    public InMemoryAsyncTableCommandReceiver(
             CommandHandler<CreateTableCommand> createTableCommandHandler,
             CommandHandler<StartNewHandForNewGameCommand> startNewHandForNewGameCommandHandler,
             CommandHandler<StartNewHandForExistingTableCommand> startNewHandForExistingTableCommandHandler,
@@ -57,6 +58,7 @@ public class InMemoryAsyncTableCommandSubscriber implements
         this.expireActionOnTimerCommandHandler = expireActionOnTimerCommandHandler;
     }
 
+    @Async
     @Override
     public void receive(Command<TableCommandType> command) {
         switch (command.getType()) {

@@ -8,7 +8,7 @@ import javax.inject.Inject;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
-import com.flexpoker.framework.command.CommandPublisher;
+import com.flexpoker.framework.command.CommandSender;
 import com.flexpoker.framework.processmanager.ProcessManager;
 import com.flexpoker.game.command.events.GameStartedEvent;
 import com.flexpoker.table.command.commands.StartNewHandForNewGameCommand;
@@ -17,12 +17,12 @@ import com.flexpoker.table.command.framework.TableCommandType;
 @Component
 public class StartFirstHandProcessManager implements ProcessManager<GameStartedEvent> {
 
-    private final CommandPublisher<TableCommandType> tableCommandPublisher;
+    private final CommandSender<TableCommandType> tableCommandSender;
 
     @Inject
     public StartFirstHandProcessManager(
-            CommandPublisher<TableCommandType> tableCommandPublisher) {
-        this.tableCommandPublisher = tableCommandPublisher;
+            CommandSender<TableCommandType> tableCommandSender) {
+        this.tableCommandSender = tableCommandSender;
     }
 
     @Async
@@ -33,7 +33,7 @@ public class StartFirstHandProcessManager implements ProcessManager<GameStartedE
                     tableId, event.getAggregateId(),
                     event.getBlinds().getSmallBlind(),
                     event.getBlinds().getBigBlind());
-            tableCommandPublisher.publish(startNewHandForNewGameCommand);
+            tableCommandSender.send(startNewHandForNewGameCommand);
         };
         event.getTableIds().forEach(startFirstHandConsumer);
     }
