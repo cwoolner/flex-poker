@@ -338,8 +338,11 @@ public class Hand {
 
         HandDealerState nextHandDealerState = playersStillInHand.size() == 1 ? HandDealerState.COMPLETE
                 : HandDealerState.values()[handDealerState.ordinal() + 1];
-        tableEvents.add(new RoundCompletedEvent(tableId, aggregateVersion
-                + tableEvents.size(), gameId, entityId, nextHandDealerState));
+
+        RoundCompletedEvent roundCompletedEvent = new RoundCompletedEvent(tableId, aggregateVersion
+                + tableEvents.size(), gameId, entityId, nextHandDealerState);
+        tableEvents.add(roundCompletedEvent);
+        applyEvent(roundCompletedEvent);
 
         return tableEvents;
     }
@@ -483,55 +486,42 @@ public class Hand {
                 .filter(x -> x.intValue() != 0).distinct().collect(Collectors.toList());
         distinctChipsInFrontAmountsList.sort(null);
 
-        distinctChipsInFrontAmountsList
-                .forEach(chipsPerLevel -> {
-                    Optional<Pot> openPotOptional = pots.stream().filter(x -> x.isOpen())
-                            .findAny();
+        distinctChipsInFrontAmountsList.forEach(chipsPerLevel -> {
+            Optional<Pot> openPotOptional = pots.stream()
+                    .filter(x -> x.isOpen()).findAny();
 
-                    Pot openPot;
+            UUID openPotId = openPotOptional.isPresent()
+                    ? openPotOptional.get().getId() : UUID.randomUUID();
 
-                    if (openPotOptional.isPresent()) {
-                        openPot = openPotOptional.get();
-                    } else {
-                        openPot = new Pot(UUID.randomUUID(),
-                                handEvaluationList
-                                        .stream()
-                                        .filter(x -> playersStillInHand.contains(x
-                                                .getPlayerId()))
-                                        .collect(Collectors.toSet()));
-                        PotCreatedEvent potCreatedEvent = new PotCreatedEvent(tableId,
-                                aggregateVersion, gameId, entityId, openPot.getId(),
-                                playersStillInHand
-                                        .stream()
-                                        .filter(x -> chipsInFrontMap.getOrDefault(x,
-                                                Integer.valueOf(0)).intValue() > 0)
-                                        .collect(Collectors.toSet()));
-                        newPotEvents.add(potCreatedEvent);
-                        applyEvent(potCreatedEvent);
+            if (!openPotOptional.isPresent()) {
+                PotCreatedEvent potCreatedEvent = new PotCreatedEvent(tableId,
+                        aggregateVersion, gameId, entityId, openPotId,
+                        playersStillInHand.stream().filter(x ->
+                            chipsInFrontMap.getOrDefault(x, 0) > 0)
+                        .collect(Collectors.toSet()));
+                newPotEvents.add(potCreatedEvent);
+                applyEvent(potCreatedEvent);
+            }
+
+            PotAmountIncreasedEvent potAmountIncreasedEvent = new PotAmountIncreasedEvent(
+                    tableId, aggregateVersion + newPotEvents.size(), gameId,
+                    entityId, openPotId, chipsPerLevel.intValue());
+            newPotEvents.add(potAmountIncreasedEvent);
+            applyEvent(potAmountIncreasedEvent);
+
+            seatMap.values().forEach(playerInSeat -> {
+                if (chipsInFrontMap.getOrDefault(playerInSeat, 0) > 0) {
+                    if (playerIsAllIn(playerInSeat)) {
+                        PotClosedEvent potClosedEvent = new PotClosedEvent(
+                                tableId, aggregateVersion, gameId, entityId,
+                                openPotId);
+                        newPotEvents.add(potClosedEvent);
+                        applyEvent(potClosedEvent);
                     }
+                }
+            });
+        });
 
-                    PotAmountIncreasedEvent potAmountIncreasedEvent = new PotAmountIncreasedEvent(
-                            tableId, aggregateVersion + newPotEvents.size(), gameId,
-                            entityId, openPot.getId(), chipsPerLevel.intValue());
-                    newPotEvents.add(potAmountIncreasedEvent);
-                    applyEvent(potAmountIncreasedEvent);
-
-                    seatMap.values()
-                            .forEach(
-                                    playerInSeat -> {
-                                        if (chipsInFrontMap.getOrDefault(playerInSeat,
-                                                Integer.valueOf(0)).intValue() > 0) {
-
-                                            if (playerIsAllIn(playerInSeat)) {
-                                                PotClosedEvent potClosedEvent = new PotClosedEvent(
-                                                        tableId, aggregateVersion,
-                                                        gameId, entityId, openPot.getId());
-                                                newPotEvents.add(potClosedEvent);
-                                                applyEvent(potClosedEvent);
-                                            }
-                                        }
-                                    });
-                });
         return newPotEvents;
     }
 

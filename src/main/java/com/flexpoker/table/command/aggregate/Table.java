@@ -425,7 +425,6 @@ public class Table extends AggregateRoot<TableEvent> {
         List<TableEvent> endOfRoundEvents = currentHand
                 .handlePotAndRoundCompleted(++aggregateVersion);
         endOfRoundEvents.forEach(x -> addNewEvent(x));
-        applyAllNewEvents(endOfRoundEvents);
         aggregateVersion += endOfRoundEvents.size() - 1;
     }
 
