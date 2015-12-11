@@ -47,13 +47,6 @@ public class SignUpUser extends AggregateRoot<SignUpEvent> {
         }
     }
 
-    @Override
-    public void applyAllNewEvents(List<SignUpEvent> events) {
-        for (SignUpEvent event : events) {
-            applyCommonEvent(event);
-        }
-    }
-
     private void applyCommonEvent(SignUpEvent event) {
         switch (event.getType()) {
         case NewUserSignedUp:
@@ -65,6 +58,7 @@ public class SignUpUser extends AggregateRoot<SignUpEvent> {
             throw new IllegalArgumentException("Event Type cannot be handled: "
                     + event.getType());
         }
+        addAppliedEvent(event);
     }
 
     private void applyEvent(SignedUpUserConfirmedEvent event) {

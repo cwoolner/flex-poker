@@ -24,8 +24,10 @@ public abstract class AggregateRoot<T extends Event<? extends EventType>> {
         return new ArrayList<>(newEvents);
     }
 
-    public abstract void applyAllHistoricalEvents(List<T> events);
+    public List<T> fetchAppliedEvents() {
+        return new ArrayList<>(appliedEvents);
+    }
 
-    public abstract void applyAllNewEvents(List<T> events);
+    public abstract void applyAllHistoricalEvents(List<T> events);
 
 }

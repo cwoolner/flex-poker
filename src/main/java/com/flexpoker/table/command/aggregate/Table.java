@@ -83,8 +83,7 @@ public class Table extends AggregateRoot<TableEvent> {
         });
     }
 
-    @Override
-    public void applyAllNewEvents(List<TableEvent> events) {
+    private void applyAllNewEvents(List<TableEvent> events) {
         events.forEach(x -> {
             applyCommonEvent(x);
         });
@@ -148,6 +147,7 @@ public class Table extends AggregateRoot<TableEvent> {
             throw new IllegalArgumentException("Event Type cannot be handled: "
                     + event.getType());
         }
+        addAppliedEvent(event);
     }
 
     private void applyEvent(HandDealtEvent event) {

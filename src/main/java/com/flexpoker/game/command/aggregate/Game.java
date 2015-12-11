@@ -65,13 +65,6 @@ public class Game extends AggregateRoot<GameEvent> {
         }
     }
 
-    @Override
-    public void applyAllNewEvents(List<GameEvent> events) {
-        for (GameEvent event : events) {
-            applyCommonEvent(event);
-        }
-    }
-
     private void applyCommonEvent(GameEvent event) {
         switch (event.getType()) {
         case GameCreated:
@@ -97,6 +90,7 @@ public class Game extends AggregateRoot<GameEvent> {
             throw new IllegalArgumentException("Event Type cannot be handled: "
                     + event.getType());
         }
+        addAppliedEvent(event);
     }
 
     private void applyEvent(GameJoinedEvent event) {

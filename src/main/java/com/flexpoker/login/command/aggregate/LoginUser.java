@@ -29,13 +29,6 @@ public class LoginUser extends AggregateRoot<LoginEvent> {
         }
     }
 
-    @Override
-    public void applyAllNewEvents(List<LoginEvent> events) {
-        for (LoginEvent event : events) {
-            applyCommonEvent(event);
-        }
-    }
-
     private void applyCommonEvent(LoginEvent event) {
         switch (event.getType()) {
         case LoginUserCreated:
@@ -44,6 +37,7 @@ public class LoginUser extends AggregateRoot<LoginEvent> {
             throw new IllegalArgumentException(
                     "Event Type cannot be handled: " + event.getType());
         }
+        addAppliedEvent(event);
     }
 
 }
