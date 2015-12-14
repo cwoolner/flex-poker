@@ -1,5 +1,6 @@
 package com.flexpoker.signup.command.factory;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -31,6 +32,8 @@ public class SignUpUserFactoryTest {
                 "test@test.com", "password");
         SignUpUser signUpUser = sut.createNew(command);
         assertNotNull(signUpUser);
+        assertFalse(signUpUser.fetchAppliedEvents().isEmpty());
+        assertFalse(signUpUser.fetchNewEvents().isEmpty());
     }
 
     @Test
@@ -40,6 +43,7 @@ public class SignUpUserFactoryTest {
         events.add(new SignedUpUserConfirmedEvent(null, 2, null, null));
         SignUpUser signUpUser = sut.createFrom(events);
         assertNotNull(signUpUser);
+        assertFalse(signUpUser.fetchAppliedEvents().isEmpty());
         assertTrue(signUpUser.fetchNewEvents().isEmpty());
     }
 

@@ -28,6 +28,7 @@ public class GameTest {
         CreateGameCommand createGameCommand = new CreateGameCommand("test", 2, 2, UUID.randomUUID());
         Game game = gameFactory.createNew(createGameCommand);
 
+        assertEquals(1, game.fetchAppliedEvents().size());
         assertEquals(1, game.fetchNewEvents().size());
         assertEquals(GameEventType.GameCreated, game.fetchNewEvents().get(0).getType());
 
@@ -46,6 +47,7 @@ public class GameTest {
         Game game = gameFactory.createFrom(events);
         game.joinGame(UUID.randomUUID());
 
+        assertEquals(2, game.fetchAppliedEvents().size());
         assertEquals(1, game.fetchNewEvents().size());
         assertEquals(2, game.fetchNewEvents().get(0).getVersion());
     }
@@ -60,6 +62,7 @@ public class GameTest {
         game.joinGame(UUID.randomUUID());
         game.joinGame(UUID.randomUUID());
 
+        assertEquals(6, game.fetchAppliedEvents().size());
         assertEquals(5, game.fetchNewEvents().size());
         assertEquals(2, game.fetchNewEvents().get(0).getVersion());
         assertEquals(3, game.fetchNewEvents().get(1).getVersion());

@@ -1,5 +1,6 @@
 package com.flexpoker.game.command.factory;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -31,6 +32,8 @@ public class GameFactoryTest {
                 5, UUID.randomUUID());
         Game game = sut.createNew(createGameCommand);
         assertNotNull(game);
+        assertFalse(game.fetchAppliedEvents().isEmpty());
+        assertFalse(game.fetchNewEvents().isEmpty());
     }
 
     @Test
@@ -39,6 +42,7 @@ public class GameFactoryTest {
         events.add(new GameCreatedEvent(null, 1, null, 0, 0, null));
         Game game = sut.createFrom(events);
         assertNotNull(game);
+        assertFalse(game.fetchAppliedEvents().isEmpty());
         assertTrue(game.fetchNewEvents().isEmpty());
     }
 

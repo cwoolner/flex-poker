@@ -40,6 +40,7 @@ public class SignUpUserTest {
                 VALID_EMAIL_ADDRESS, VALID_PASSWORD);
         SignUpUser signUpUser = signUpUserFactory.createNew(command);
 
+        assertEquals(1, signUpUser.fetchAppliedEvents().size());
         assertEquals(1, signUpUser.fetchNewEvents().size());
         assertEquals(SignUpEventType.NewUserSignedUp, signUpUser.fetchNewEvents().get(0)
                 .getType());
@@ -59,6 +60,7 @@ public class SignUpUserTest {
 
         signUpUser.confirmSignedUpUser(VALID_USERNAME, VALID_SIGN_UP_CODE);
 
+        assertEquals(2, signUpUser.fetchAppliedEvents().size());
         assertEquals(1, signUpUser.fetchNewEvents().size());
         assertEquals(2, signUpUser.fetchNewEvents().get(0).getVersion());
     }

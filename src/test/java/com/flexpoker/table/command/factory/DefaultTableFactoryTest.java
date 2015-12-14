@@ -1,5 +1,6 @@
 package com.flexpoker.table.command.factory;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -38,6 +39,8 @@ public class DefaultTableFactoryTest {
                 UUID.randomUUID(), playerIds, 6);
         Table table = sut.createNew(command);
         assertNotNull(table);
+        assertFalse(table.fetchAppliedEvents().isEmpty());
+        assertFalse(table.fetchNewEvents().isEmpty());
     }
 
     @Test
@@ -47,6 +50,7 @@ public class DefaultTableFactoryTest {
                 1500));
         Table table = sut.createFrom(events);
         assertNotNull(table);
+        assertFalse(table.fetchAppliedEvents().isEmpty());
         assertTrue(table.fetchNewEvents().isEmpty());
     }
 

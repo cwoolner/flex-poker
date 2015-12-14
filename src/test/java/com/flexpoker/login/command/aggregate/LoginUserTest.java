@@ -22,6 +22,7 @@ public class LoginUserTest {
                 UUID.randomUUID(), "test", "password");
         LoginUser loginUser = loginUserFactory.createNew(command);
 
+        assertEquals(1, loginUser.fetchAppliedEvents().size());
         assertEquals(1, loginUser.fetchNewEvents().size());
         assertEquals(LoginEventType.LoginUserCreated, loginUser.fetchNewEvents().get(0)
                 .getType());

@@ -30,6 +30,7 @@ public class CreateNewTableTest {
         Table table = new DefaultTableFactory().createNew(command);
         List<TableEvent> newEvents = table.fetchNewEvents();
 
+        assertEquals(1, table.fetchAppliedEvents().size());
         assertEquals(1, newEvents.size());
         assertEquals(TableEventType.TableCreated, newEvents.get(0).getType());
 
