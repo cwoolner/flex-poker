@@ -18,6 +18,7 @@ public class LoginUser extends AggregateRoot<LoginEvent> {
                     aggregateId, ++aggregateVersion, username,
                     encryptedPassword);
             addNewEvent(loginUserCreatedEvent);
+            applyCommonEvent(loginUserCreatedEvent);
         }
     }
 

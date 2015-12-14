@@ -36,6 +36,7 @@ public class SignUpUser extends AggregateRoot<SignUpEvent> {
                     aggregateId, ++aggregateVersion, signUpCode, emailAddress,
                     username, encryptedPassword);
             addNewEvent(newUserSignedUpEvent);
+            applyCommonEvent(newUserSignedUpEvent);
         }
     }
 
@@ -63,7 +64,6 @@ public class SignUpUser extends AggregateRoot<SignUpEvent> {
 
     private void applyEvent(SignedUpUserConfirmedEvent event) {
         confirmed = true;
-        addAppliedEvent(event);
     }
 
     public void confirmSignedUpUser(final String username, final UUID signUpCode) {
@@ -84,7 +84,7 @@ public class SignUpUser extends AggregateRoot<SignUpEvent> {
         SignedUpUserConfirmedEvent signedUpUserConfirmedEvent = new SignedUpUserConfirmedEvent(
                 aggregateId, ++aggregateVersion, username, encryptedPassword);
         addNewEvent(signedUpUserConfirmedEvent);
-        applyEvent(signedUpUserConfirmedEvent);
+        applyCommonEvent(signedUpUserConfirmedEvent);
     }
 
 }

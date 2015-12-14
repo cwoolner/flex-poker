@@ -1,7 +1,6 @@
 package com.flexpoker.table.command.aggregate;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -72,6 +71,7 @@ public class Table extends AggregateRoot<TableEvent> {
                     aggregateId, ++aggregateVersion, gameId, seatMap.size(),
                     seatMap, startingNumberOfChips);
             addNewEvent(tableCreatedEvent);
+            applyCommonEvent(tableCreatedEvent);
         }
     }
 
@@ -79,12 +79,6 @@ public class Table extends AggregateRoot<TableEvent> {
     public void applyAllHistoricalEvents(List<TableEvent> events) {
         events.forEach(x -> {
             aggregateVersion++;
-            applyCommonEvent(x);
-        });
-    }
-
-    private void applyAllNewEvents(List<TableEvent> events) {
-        events.forEach(x -> {
             applyCommonEvent(x);
         });
     }
@@ -336,8 +330,10 @@ public class Table extends AggregateRoot<TableEvent> {
                 new HashMap<>(), smallBlind, bigBlind, new HashSet<>());
         List<TableEvent> eventsCreated = hand.dealHand(++aggregateVersion,
                 actionOnPosition);
-        eventsCreated.forEach(x -> addNewEvent(x));
-        applyAllNewEvents(eventsCreated);
+        eventsCreated.forEach(x -> {
+            addNewEvent(x);
+            applyCommonEvent(x);
+        });
 
         aggregateVersion += eventsCreated.size() - 1;
     }
@@ -352,7 +348,7 @@ public class Table extends AggregateRoot<TableEvent> {
         PlayerCheckedEvent playerCheckedEvent = currentHand.check(playerId,
                 ++aggregateVersion);
         addNewEvent(playerCheckedEvent);
-        applyEvent(playerCheckedEvent);
+        applyCommonEvent(playerCheckedEvent);
 
         handleEndOfRound();
     }
@@ -363,7 +359,7 @@ public class Table extends AggregateRoot<TableEvent> {
         PlayerCalledEvent playerCalledEvent = currentHand.call(playerId,
                 ++aggregateVersion);
         addNewEvent(playerCalledEvent);
-        applyEvent(playerCalledEvent);
+        applyCommonEvent(playerCalledEvent);
 
         handleEndOfRound();
     }
@@ -374,7 +370,7 @@ public class Table extends AggregateRoot<TableEvent> {
         PlayerFoldedEvent playerFoldedEvent = currentHand.fold(playerId,
                 ++aggregateVersion);
         addNewEvent(playerFoldedEvent);
-        applyEvent(playerFoldedEvent);
+        applyCommonEvent(playerFoldedEvent);
 
         handleEndOfRound();
     }
@@ -385,7 +381,7 @@ public class Table extends AggregateRoot<TableEvent> {
         PlayerRaisedEvent playerRaisedEvent = currentHand.raise(playerId,
                 ++aggregateVersion, raiseToAmount);
         addNewEvent(playerRaisedEvent);
-        applyEvent(playerRaisedEvent);
+        applyCommonEvent(playerRaisedEvent);
 
         changeActionOnIfAppropriate();
     }
@@ -402,7 +398,7 @@ public class Table extends AggregateRoot<TableEvent> {
         TableEvent forcedActionOnExpiredEvent = currentHand.expireActionOn(playerId,
                 ++aggregateVersion);
         addNewEvent(forcedActionOnExpiredEvent);
-        applyAllNewEvents(Arrays.asList(forcedActionOnExpiredEvent));
+        applyCommonEvent(forcedActionOnExpiredEvent);
 
         handleEndOfRound();
     }
@@ -431,8 +427,10 @@ public class Table extends AggregateRoot<TableEvent> {
     private void changeActionOnIfAppropriate() {
         List<TableEvent> actionOnChangedEvents = currentHand
                 .changeActionOn(++aggregateVersion);
-        actionOnChangedEvents.forEach(x -> addNewEvent(x));
-        applyAllNewEvents(actionOnChangedEvents);
+        actionOnChangedEvents.forEach(x -> {
+            addNewEvent(x);
+            applyCommonEvent(x);
+        });
         aggregateVersion += actionOnChangedEvents.size() - 1;
     }
 
@@ -440,7 +438,7 @@ public class Table extends AggregateRoot<TableEvent> {
         currentHand.dealCommonCardsIfAppropriate(aggregateVersion + 1).ifPresent(
                 event -> {
                     addNewEvent(event);
-                    applyAllNewEvents(Arrays.asList(event));
+                    applyCommonEvent(event);
                     aggregateVersion++;
                 });
     }
@@ -449,7 +447,7 @@ public class Table extends AggregateRoot<TableEvent> {
         currentHand.determineWinnersIfAppropriate(aggregateVersion + 1).ifPresent(
                 event -> {
                     addNewEvent(event);
-                    applyAllNewEvents(Arrays.asList(event));
+                    applyCommonEvent(event);
                     aggregateVersion++;
                 });
     }
@@ -457,7 +455,7 @@ public class Table extends AggregateRoot<TableEvent> {
     private void finishHandIfAppropriate() {
         currentHand.finishHandIfAppropriate(aggregateVersion + 1).ifPresent(event -> {
             addNewEvent(event);
-            applyAllNewEvents(Arrays.asList(event));
+            applyCommonEvent(event);
             aggregateVersion++;
         });
     }

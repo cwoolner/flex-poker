@@ -54,6 +54,7 @@ public class Game extends AggregateRoot<GameEvent> {
                     ++aggregateVersion, gameName, maxNumberOfPlayers,
                     numberOfPlayersPerTable, createdById);
             addNewEvent(gameCreatedEvent);
+            applyCommonEvent(gameCreatedEvent);
         }
     }
 
@@ -95,28 +96,23 @@ public class Game extends AggregateRoot<GameEvent> {
 
     private void applyEvent(GameJoinedEvent event) {
         registeredPlayerIds.add(event.getPlayerId());
-        addAppliedEvent(event);
     }
 
-    private void applyEvent(GameMovedToStartingStageEvent event) {
+    private void applyEvent(@SuppressWarnings("unused") GameMovedToStartingStageEvent event) {
         gameStage = GameStage.STARTING;
-        addAppliedEvent(event);
     }
 
     private void applyEvent(GameTablesCreatedAndPlayersAssociatedEvent event) {
         tableIdToPlayerIdsMap.putAll(event.getTableIdToPlayerIdsMap());
-        addAppliedEvent(event);
     }
 
     private void applyEvent(GameStartedEvent event) {
         currentBlinds = event.getBlinds();
         gameStage = GameStage.INPROGRESS;
-        addAppliedEvent(event);
     }
 
-    private void applyEvent(GameFinishedEvent event) {
+    private void applyEvent(@SuppressWarnings("unused") GameFinishedEvent event) {
         gameStage = GameStage.FINISHED;
-        addAppliedEvent(event);
     }
 
     public void joinGame(UUID playerId) {
@@ -158,7 +154,7 @@ public class Game extends AggregateRoot<GameEvent> {
         GameJoinedEvent event = new GameJoinedEvent(aggregateId, ++aggregateVersion,
                 playerId);
         addNewEvent(event);
-        applyEvent(event);
+        applyCommonEvent(event);
     }
 
     private void createGameMovedToStartingStageEvent() {
@@ -169,7 +165,7 @@ public class Game extends AggregateRoot<GameEvent> {
         GameMovedToStartingStageEvent event = new GameMovedToStartingStageEvent(
                 aggregateId, ++aggregateVersion);
         addNewEvent(event);
-        applyEvent(event);
+        applyCommonEvent(event);
     }
 
     private void createGameTablesCreatedAndPlayersAssociatedEvent() {
@@ -183,7 +179,7 @@ public class Game extends AggregateRoot<GameEvent> {
                 aggregateId, ++aggregateVersion, tableIdToPlayerIdsMap,
                 numberOfPlayersPerTable);
         addNewEvent(event);
-        applyEvent(event);
+        applyCommonEvent(event);
     }
 
     private void createTableToPlayerMap() {
@@ -226,7 +222,7 @@ public class Game extends AggregateRoot<GameEvent> {
         GameStartedEvent event = new GameStartedEvent(aggregateId, ++aggregateVersion,
                 tableIdToPlayerIdsMap.keySet(), new Blinds(10, 20));
         addNewEvent(event);
-        applyEvent(event);
+        applyCommonEvent(event);
     }
 
 }
