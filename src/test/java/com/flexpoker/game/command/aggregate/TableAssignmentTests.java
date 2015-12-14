@@ -1,24 +1,23 @@
 package com.flexpoker.game.command.aggregate;
 
-import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import org.junit.Test;
 
 import com.flexpoker.game.command.events.GameCreatedEvent;
 import com.flexpoker.game.command.events.GameTablesCreatedAndPlayersAssociatedEvent;
-import com.flexpoker.game.command.factory.GameFactory;
 import com.flexpoker.game.command.framework.GameEvent;
 
 public class TableAssignmentTests {
-
-    private final GameFactory gameFactory = new DefaultGameFactory();
 
     @Test
     public void testTwoPlayersOneTable() {
@@ -116,41 +115,36 @@ public class TableAssignmentTests {
         events.add(new GameCreatedEvent(UUID.randomUUID(), 1, "test",
                 numberOfPlayers, numberOfPlayersPerTable, UUID.randomUUID()));
 
-        Game game = gameFactory.createFrom(events);
+        Game game = new DefaultGameFactory().createFrom(events);
 
-        for (int i = 0; i < numberOfPlayers; i++) {
-            game.joinGame(UUID.randomUUID());
-        }
+        Stream.iterate(1, e -> e + 1)
+                .limit(numberOfPlayers)
+                .forEach(x -> game.joinGame(UUID.randomUUID()));
 
         return game;
     }
 
-    private void verifyTableDistribution(Game game, int... playersPerTable) {
-        int numberOfTables = playersPerTable.length;
+    private void verifyTableDistribution(Game game, int... expectedPlayersPerTable) {
+        int expectedNumberOfTables = expectedPlayersPerTable.length;
         int totalNumberOfEvents = game.fetchNewEvents().size();
 
         // this event will change locations depending on the number of players,
         // but it should be the 2nd to last every time
         GameTablesCreatedAndPlayersAssociatedEvent gameTablesCreatedAndPlayersAssociatedEvent = (GameTablesCreatedAndPlayersAssociatedEvent) game
                 .fetchNewEvents().get(totalNumberOfEvents - 2);
+        Map<UUID, Set<UUID>> tableIdToPlayerIdsMap = gameTablesCreatedAndPlayersAssociatedEvent
+                .getTableIdToPlayerIdsMap();
 
-        int actualNumberOfTables = gameTablesCreatedAndPlayersAssociatedEvent
-                .getTableIdToPlayerIdsMap().size();
-        assertEquals(numberOfTables, actualNumberOfTables);
+        List<Integer> playerSizes = tableIdToPlayerIdsMap.values().stream()
+                .map(x -> x.size())
+                .sorted()
+                .collect(Collectors.toList());
+        List<Integer> playersPerTableList = IntStream.of(expectedPlayersPerTable)
+                .boxed()
+                .collect(Collectors.toList());
 
-        int[] actualNumberOfPlayersAtEachTable = new int[actualNumberOfTables];
-
-        List<Set<UUID>> playersForEachTable = new ArrayList<>(
-                gameTablesCreatedAndPlayersAssociatedEvent
-                        .getTableIdToPlayerIdsMap().values());
-
-        for (int i = 0; i < actualNumberOfTables; i++) {
-            actualNumberOfPlayersAtEachTable[i] = playersForEachTable.get(i)
-                    .size();
-        }
-
-        Arrays.sort(actualNumberOfPlayersAtEachTable);
-        assertArrayEquals(playersPerTable, actualNumberOfPlayersAtEachTable);
+        assertEquals(expectedNumberOfTables, tableIdToPlayerIdsMap.size());
+        assertEquals(playerSizes, playersPerTableList);
     }
 
 }
