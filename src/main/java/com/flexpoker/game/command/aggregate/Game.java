@@ -179,7 +179,7 @@ public class Game extends AggregateRoot<GameEvent> {
             throw new FlexPokerException(
                     "tableToPlayerIdsMap should be empty when initializing the tables");
         }
-        createTableToPlayerMap();
+        Map<UUID, Set<UUID>> tableIdToPlayerIdsMap = createTableToPlayerMap();
 
         GameTablesCreatedAndPlayersAssociatedEvent event = new GameTablesCreatedAndPlayersAssociatedEvent(
                 aggregateId, ++aggregateVersion, tableIdToPlayerIdsMap,
@@ -188,9 +188,11 @@ public class Game extends AggregateRoot<GameEvent> {
         applyCommonEvent(event);
     }
 
-    private void createTableToPlayerMap() {
+    private Map<UUID, Set<UUID>> createTableToPlayerMap() {
         List<UUID> randomizedListOfPlayerIds = new ArrayList<>(registeredPlayerIds);
         Collections.shuffle(randomizedListOfPlayerIds);
+
+        Map<UUID, Set<UUID>> tableIdToPlayerIdsMap = new HashMap<>();
 
         int numberOfTablesToCreate = determineNumberOfTablesToCreate();
         Stream.iterate(0, e -> e)
@@ -206,6 +208,8 @@ public class Game extends AggregateRoot<GameEvent> {
                     tableIdToPlayerIdsMap.get(tableIdList.get(tableIndex))
                             .add(randomizedListOfPlayerIds.get(x));
                 });
+
+        return tableIdToPlayerIdsMap;
     }
 
     private int determineNumberOfTablesToCreate() {
