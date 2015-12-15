@@ -17,7 +17,7 @@ import com.flexpoker.game.command.events.GameCreatedEvent;
 import com.flexpoker.game.command.events.GameTablesCreatedAndPlayersAssociatedEvent;
 import com.flexpoker.game.command.framework.GameEvent;
 
-public class TableAssignmentTests {
+public class TableAssignmentTest {
 
     @Test
     public void testTwoPlayersOneTable() {
