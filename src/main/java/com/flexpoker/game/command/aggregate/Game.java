@@ -128,10 +128,15 @@ public class Game extends AggregateRoot<GameEvent> {
 
     public void attemptToStartNewHand(UUID tableId) {
         // TODO: check for imbalanced tables and such
+        if (gameStage != GameStage.INPROGRESS) {
+            throw new FlexPokerException("the game must be INPROGRESS if trying"
+                    + "to start a new hand");
+        }
+
         NewHandIsClearedToStartEvent event = new NewHandIsClearedToStartEvent(
                 aggregateId, ++aggregateVersion, tableId, currentBlinds);
         addNewEvent(event);
-        // TOOD: might want to do something for apply, not sure yet
+        applyCommonEvent(event);
     }
 
     public void increaseBlinds() {
@@ -219,6 +224,16 @@ public class Game extends AggregateRoot<GameEvent> {
     }
 
     private void createGameStartedEvent() {
+        if (gameStage != GameStage.STARTING) {
+            throw new FlexPokerException(
+                    "to move to STARTED, the game stage must be STARTING");
+        }
+
+        if (tableIdToPlayerIdsMap.isEmpty()) {
+            throw new FlexPokerException(
+                    "tableToPlayerIdsMap should be filled at this point");
+        }
+
         GameStartedEvent event = new GameStartedEvent(aggregateId, ++aggregateVersion,
                 tableIdToPlayerIdsMap.keySet(), new Blinds(10, 20));
         addNewEvent(event);
