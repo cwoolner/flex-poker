@@ -15,18 +15,15 @@ import com.flexpoker.game.command.events.GameCreatedEvent;
 import com.flexpoker.game.command.events.GameMovedToStartingStageEvent;
 import com.flexpoker.game.command.events.GameStartedEvent;
 import com.flexpoker.game.command.events.GameTablesCreatedAndPlayersAssociatedEvent;
-import com.flexpoker.game.command.factory.GameFactory;
 import com.flexpoker.game.command.framework.GameEvent;
 import com.flexpoker.game.command.framework.GameEventType;
 
 public class GameTest {
 
-    private final GameFactory gameFactory = new DefaultGameFactory();
-
     @Test
     public void testCreateNewGameSuccess() {
         CreateGameCommand createGameCommand = new CreateGameCommand("test", 2, 2, UUID.randomUUID());
-        Game game = gameFactory.createNew(createGameCommand);
+        Game game = new DefaultGameFactory().createNew(createGameCommand);
 
         assertEquals(1, game.fetchAppliedEvents().size());
         assertEquals(1, game.fetchNewEvents().size());
@@ -44,7 +41,7 @@ public class GameTest {
         events.add(new GameCreatedEvent(UUID.randomUUID(), 1, "test", 2, 2, UUID
                 .randomUUID()));
 
-        Game game = gameFactory.createFrom(events);
+        Game game = new DefaultGameFactory().createFrom(events);
         game.joinGame(UUID.randomUUID());
 
         assertEquals(2, game.fetchAppliedEvents().size());
@@ -58,7 +55,7 @@ public class GameTest {
         events.add(new GameCreatedEvent(UUID.randomUUID(), 1, "test", 2, 2, UUID
                 .randomUUID()));
 
-        Game game = gameFactory.createFrom(events);
+        Game game = new DefaultGameFactory().createFrom(events);
         game.joinGame(UUID.randomUUID());
         game.joinGame(UUID.randomUUID());
 
@@ -84,7 +81,7 @@ public class GameTest {
 
         UUID playerId = UUID.randomUUID();
 
-        Game game = gameFactory.createFrom(events);
+        Game game = new DefaultGameFactory().createFrom(events);
         game.joinGame(playerId);
         game.joinGame(playerId);
     }
@@ -95,7 +92,7 @@ public class GameTest {
         events.add(new GameCreatedEvent(UUID.randomUUID(), 1, "test", 2, 2, UUID
                 .randomUUID()));
 
-        Game game = gameFactory.createFrom(events);
+        Game game = new DefaultGameFactory().createFrom(events);
         game.joinGame(UUID.randomUUID());
         game.joinGame(UUID.randomUUID());
         game.joinGame(UUID.randomUUID());
