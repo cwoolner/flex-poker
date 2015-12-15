@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Stream;
 
 import com.flexpoker.exception.FlexPokerException;
 import com.flexpoker.framework.domain.AggregateRoot;
@@ -192,23 +193,19 @@ public class Game extends AggregateRoot<GameEvent> {
         Collections.shuffle(randomizedListOfPlayerIds);
 
         int numberOfTablesToCreate = determineNumberOfTablesToCreate();
-        for (int i = 0; i < numberOfTablesToCreate; i++) {
-            tableIdToPlayerIdsMap.put(UUID.randomUUID(), new HashSet<>());
-        }
+        Stream.iterate(0, e -> e)
+                .limit(numberOfTablesToCreate)
+                .forEach(x -> tableIdToPlayerIdsMap.put(UUID.randomUUID(), new HashSet<>()));
 
         List<UUID> tableIdList = new ArrayList<>(tableIdToPlayerIdsMap.keySet());
 
-        for (int i = 0; i < registeredPlayerIds.size();) {
-            for (int j = 0; j < numberOfTablesToCreate; j++) {
-                if (i == registeredPlayerIds.size()) {
-                    break;
-                }
-
-                tableIdToPlayerIdsMap.get(tableIdList.get(j)).add(
-                        randomizedListOfPlayerIds.get(i));
-                i++;
-            }
-        }
+        Stream.iterate(0, e -> e + 1)
+                .limit(randomizedListOfPlayerIds.size())
+                .forEach(x -> {
+                    int tableIndex = x % tableIdList.size();
+                    tableIdToPlayerIdsMap.get(tableIdList.get(tableIndex))
+                            .add(randomizedListOfPlayerIds.get(x));
+                });
     }
 
     private int determineNumberOfTablesToCreate() {
