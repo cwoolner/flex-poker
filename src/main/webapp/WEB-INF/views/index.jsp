@@ -15,6 +15,7 @@
   System.import('resources/scripts/main.js');
 </script>
 
+<link rel="shortcut icon" href="/resources/img/favicon.png" />
 <link rel="stylesheet" type="text/css" href="/resources/css/main.css" />
 <link rel="import" href="/resources/fp-chat/chat.html" />
 <link rel="import" href="/resources/fp-gamelist/gamelist.html" />

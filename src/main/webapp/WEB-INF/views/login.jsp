@@ -4,6 +4,9 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta http-equiv="pragma" content="no-cache" />
+
+<link rel="shortcut icon" href="/resources/img/favicon.png" />
+
 <title>Login Page</title>
 </head>
 <body>
