@@ -44,15 +44,18 @@ public class Game extends AggregateRoot<GameEvent> {
 
     private final BlindSchedule blindSchedule;
 
+    private final TableBalancer tableBalancer;
+
     protected Game(boolean creatingFromEvents, UUID aggregateId,
-            String gameName, int maxNumberOfPlayers,
-            int numberOfPlayersPerTable, UUID createdById,
-            BlindSchedule blindSchedule) {
+            String gameName, int maxNumberOfPlayers, int numberOfPlayersPerTable,
+            UUID createdById, GameStage gameStage, BlindSchedule blindSchedule,
+            TableBalancer tableBalancer) {
         this.aggregateId = aggregateId;
         this.maxNumberOfPlayers = maxNumberOfPlayers;
         this.numberOfPlayersPerTable = numberOfPlayersPerTable;
         this.blindSchedule = blindSchedule;
-        gameStage = GameStage.REGISTERING;
+        this.tableBalancer = tableBalancer;
+        this.gameStage = gameStage;
         registeredPlayerIds = new HashSet<>();
         tableIdToPlayerIdsMap = new HashMap<>();
 

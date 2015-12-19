@@ -9,6 +9,7 @@ import com.flexpoker.game.command.commands.CreateGameCommand;
 import com.flexpoker.game.command.events.GameCreatedEvent;
 import com.flexpoker.game.command.factory.GameFactory;
 import com.flexpoker.game.command.framework.GameEvent;
+import com.flexpoker.game.query.dto.GameStage;
 
 @Component
 public class DefaultGameFactory implements GameFactory {
@@ -41,8 +42,11 @@ public class DefaultGameFactory implements GameFactory {
             int numberOfPlayersPerTable, UUID createdById,
             int numberOfMinutesBetweenBlindLevels) {
         BlindSchedule blindSchedule = new BlindSchedule(numberOfMinutesBetweenBlindLevels);
+        TableBalancer tableBalancer = new TableBalancer(
+                numberOfPlayersPerTable);
         return new Game(creatingFromEvents, aggregateId, gameName,
-                maxNumberOfPlayers, numberOfPlayersPerTable, createdById, blindSchedule);
+                maxNumberOfPlayers, numberOfPlayersPerTable, createdById,
+                GameStage.REGISTERING, blindSchedule, tableBalancer);
     }
 
 }

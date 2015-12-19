@@ -1,5 +1,6 @@
 package com.flexpoker.game.command.aggregate;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,15 +13,15 @@ import com.flexpoker.table.command.framework.TableEvent;
 
 public class TableBalancer {
 
-    private final Map<UUID, Set<UUID>> tableIdToPlayerIdsMap;
+    private final int maxPlayersPerTable;
     
-    public TableBalancer(Map<UUID, Set<UUID>> tableIdToPlayerIdsMap) {
-        this.tableIdToPlayerIdsMap = tableIdToPlayerIdsMap;
+    public TableBalancer(int maxPlayersPerTable) {
+        this.maxPlayersPerTable = maxPlayersPerTable;
     }
 
-    public List<TableEvent> balanceTables() {
+    public List<TableEvent> balanceTables(Map<UUID, Set<UUID>> tableIdToPlayerIdsMap) {
         // TODO Auto-generated method stub
-        return null;
+        return new ArrayList<>();
     }
 
     private boolean isNumberOfTablesCorrect(List<Table> tables,
