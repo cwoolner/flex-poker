@@ -4,11 +4,8 @@ import java.util.UUID;
 
 import com.flexpoker.framework.event.BaseEvent;
 import com.flexpoker.game.command.framework.GameEvent;
-import com.flexpoker.game.command.framework.GameEventType;
 
-public class GameCreatedEvent extends BaseEvent<GameEventType> implements GameEvent {
-
-    private static final GameEventType TYPE = GameEventType.GameCreated;
+public class GameCreatedEvent extends BaseEvent implements GameEvent {
 
     private final String gameName;
 
@@ -20,7 +17,7 @@ public class GameCreatedEvent extends BaseEvent<GameEventType> implements GameEv
 
     public GameCreatedEvent(UUID aggregateId, int version, String gameName,
             int numberOfPlayers, int numberOfPlayersPerTable, UUID createdByPlayerId) {
-        super(aggregateId, version, TYPE);
+        super(aggregateId, version);
         this.gameName = gameName;
         this.numberOfPlayers = numberOfPlayers;
         this.numberOfPlayersPerTable = numberOfPlayersPerTable;

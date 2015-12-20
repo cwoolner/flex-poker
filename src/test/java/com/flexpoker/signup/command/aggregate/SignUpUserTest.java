@@ -15,7 +15,6 @@ import com.flexpoker.signup.command.commands.SignUpNewUserCommand;
 import com.flexpoker.signup.command.events.NewUserSignedUpEvent;
 import com.flexpoker.signup.command.events.SignedUpUserConfirmedEvent;
 import com.flexpoker.signup.command.framework.SignUpEvent;
-import com.flexpoker.signup.command.framework.SignUpEventType;
 
 public class SignUpUserTest {
 
@@ -42,8 +41,8 @@ public class SignUpUserTest {
 
         assertEquals(1, signUpUser.fetchAppliedEvents().size());
         assertEquals(1, signUpUser.fetchNewEvents().size());
-        assertEquals(SignUpEventType.NewUserSignedUp, signUpUser.fetchNewEvents().get(0)
-                .getType());
+        assertEquals(NewUserSignedUpEvent.class,
+                signUpUser.fetchNewEvents().get(0).getClass());
 
         NewUserSignedUpEvent newUserSignedUpEvent = (NewUserSignedUpEvent) signUpUser
                 .fetchNewEvents().get(0);

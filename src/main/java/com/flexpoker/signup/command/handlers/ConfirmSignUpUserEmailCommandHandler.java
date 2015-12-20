@@ -13,7 +13,6 @@ import com.flexpoker.signup.command.aggregate.SignUpUser;
 import com.flexpoker.signup.command.commands.ConfirmSignUpUserEmailCommand;
 import com.flexpoker.signup.command.factory.SignUpUserFactory;
 import com.flexpoker.signup.command.framework.SignUpEvent;
-import com.flexpoker.signup.command.framework.SignUpEventType;
 import com.flexpoker.signup.command.repository.SignUpEventRepository;
 
 @Component
@@ -22,13 +21,13 @@ public class ConfirmSignUpUserEmailCommandHandler implements
 
     private final SignUpUserFactory signUpUserFactory;
 
-    private final EventPublisher<SignUpEventType> eventPublisher;
+    private final EventPublisher<SignUpEvent> eventPublisher;
 
     private final SignUpEventRepository signUpEventRepository;
 
     @Inject
     public ConfirmSignUpUserEmailCommandHandler(SignUpUserFactory signUpUserFactory,
-            EventPublisher<SignUpEventType> eventPublisher,
+            EventPublisher<SignUpEvent> eventPublisher,
             SignUpEventRepository signUpEventRepository) {
         this.signUpUserFactory = signUpUserFactory;
         this.eventPublisher = eventPublisher;

@@ -1,15 +1,5 @@
 package com.flexpoker.table.command.aggregate.singlehand.fourplayer;
 
-import static com.flexpoker.table.command.framework.TableEventType.ActionOnChanged;
-import static com.flexpoker.table.command.framework.TableEventType.CardsShuffled;
-import static com.flexpoker.table.command.framework.TableEventType.HandCompleted;
-import static com.flexpoker.table.command.framework.TableEventType.HandDealtEvent;
-import static com.flexpoker.table.command.framework.TableEventType.PlayerFolded;
-import static com.flexpoker.table.command.framework.TableEventType.PotAmountIncreased;
-import static com.flexpoker.table.command.framework.TableEventType.PotCreated;
-import static com.flexpoker.table.command.framework.TableEventType.RoundCompleted;
-import static com.flexpoker.table.command.framework.TableEventType.TableCreated;
-import static com.flexpoker.table.command.framework.TableEventType.WinnersDetermined;
 import static com.flexpoker.test.util.CommonAssertions.verifyEventIdsAndVersionNumbers;
 import static com.flexpoker.test.util.CommonAssertions.verifyNumberOfEventsAndEntireOrderByType;
 
@@ -21,6 +11,15 @@ import org.junit.Test;
 import com.flexpoker.table.command.aggregate.Table;
 import com.flexpoker.table.command.aggregate.testhelpers.TableTestUtils;
 import com.flexpoker.table.command.events.ActionOnChangedEvent;
+import com.flexpoker.table.command.events.CardsShuffledEvent;
+import com.flexpoker.table.command.events.HandCompletedEvent;
+import com.flexpoker.table.command.events.HandDealtEvent;
+import com.flexpoker.table.command.events.PlayerFoldedEvent;
+import com.flexpoker.table.command.events.PotAmountIncreasedEvent;
+import com.flexpoker.table.command.events.PotCreatedEvent;
+import com.flexpoker.table.command.events.RoundCompletedEvent;
+import com.flexpoker.table.command.events.TableCreatedEvent;
+import com.flexpoker.table.command.events.WinnersDeterminedEvent;
 import com.flexpoker.table.command.framework.TableEvent;
 
 public class FourPlayerThreeFoldsDueToTimeoutTest {
@@ -52,11 +51,15 @@ public class FourPlayerThreeFoldsDueToTimeoutTest {
                 smallBlindActionOnChangedEvent.getPlayerId());
         List<TableEvent> newEvents = table.fetchNewEvents();
 
-        verifyNumberOfEventsAndEntireOrderByType(newEvents, TableCreated, CardsShuffled,
-                HandDealtEvent, ActionOnChanged, PlayerFolded, ActionOnChanged,
-                PlayerFolded, ActionOnChanged, PlayerFolded, PotCreated,
-                PotAmountIncreased, PotAmountIncreased, RoundCompleted,
-                WinnersDetermined, HandCompleted);
+        verifyNumberOfEventsAndEntireOrderByType(newEvents,
+                TableCreatedEvent.class, CardsShuffledEvent.class,
+                HandDealtEvent.class, ActionOnChangedEvent.class,
+                PlayerFoldedEvent.class, ActionOnChangedEvent.class,
+                PlayerFoldedEvent.class, ActionOnChangedEvent.class,
+                PlayerFoldedEvent.class, PotCreatedEvent.class,
+                PotAmountIncreasedEvent.class, PotAmountIncreasedEvent.class,
+                RoundCompletedEvent.class, WinnersDeterminedEvent.class,
+                HandCompletedEvent.class);
         verifyEventIdsAndVersionNumbers(tableId, newEvents);
     }
 

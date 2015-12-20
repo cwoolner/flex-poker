@@ -9,9 +9,7 @@ import org.apache.commons.lang.builder.ToStringBuilder;
  * Base class used to handle some standard methods and fields so that the
  * subclasses can just be specific to what they need.
  */
-public abstract class BaseEvent<T extends EventType> implements Event<T> {
-
-    private final T type;
+public abstract class BaseEvent implements Event {
 
     private final UUID aggregateId;
 
@@ -19,16 +17,10 @@ public abstract class BaseEvent<T extends EventType> implements Event<T> {
 
     private final Instant time;
 
-    public BaseEvent(UUID aggregateId, int version, T type) {
+    public BaseEvent(UUID aggregateId, int version) {
         this.aggregateId = aggregateId;
         this.version = version;
-        this.type = type;
         this.time = Instant.now();
-    }
-
-    @Override
-    public T getType() {
-        return type;
     }
 
     @Override

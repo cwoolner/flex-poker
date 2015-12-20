@@ -7,11 +7,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.flexpoker.framework.event.BaseEvent;
 import com.flexpoker.table.command.aggregate.HandDealerState;
 import com.flexpoker.table.command.framework.TableEvent;
-import com.flexpoker.table.command.framework.TableEventType;
 
-public class RoundCompletedEvent extends BaseEvent<TableEventType> implements TableEvent {
-
-    private static final TableEventType TYPE = TableEventType.RoundCompleted;
+public class RoundCompletedEvent extends BaseEvent implements TableEvent {
 
     private final UUID gameId;
 
@@ -25,7 +22,7 @@ public class RoundCompletedEvent extends BaseEvent<TableEventType> implements Ta
             @JsonProperty(value = "gameId") UUID gameId,
             @JsonProperty(value = "handId") UUID handId,
             @JsonProperty(value = "handDealerState") HandDealerState nextHandDealerState) {
-        super(aggregateId, version, TYPE);
+        super(aggregateId, version);
         this.gameId = gameId;
         this.handId = handId;
         this.nextHandDealerState = nextHandDealerState;

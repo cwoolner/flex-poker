@@ -11,6 +11,7 @@ import java.util.UUID;
 import java.util.stream.Stream;
 
 import com.flexpoker.exception.FlexPokerException;
+import com.flexpoker.framework.command.EventApplier;
 import com.flexpoker.framework.domain.AggregateRoot;
 import com.flexpoker.game.command.events.GameCreatedEvent;
 import com.flexpoker.game.command.events.GameFinishedEvent;
@@ -27,6 +28,8 @@ public class Game extends AggregateRoot<GameEvent> {
     private final UUID aggregateId;
 
     private int aggregateVersion;
+
+    private final Map<Class<? extends GameEvent>, EventApplier<? super GameEvent>> methodTable;
 
     private GameStage gameStage;
 
@@ -50,6 +53,9 @@ public class Game extends AggregateRoot<GameEvent> {
         registeredPlayerIds = new HashSet<>();
         tableIdToPlayerIdsMap = new HashMap<>();
 
+        methodTable = new HashMap<>();
+        populateMethodTable();
+
         if (!creatingFromEvents) {
             GameCreatedEvent gameCreatedEvent = new GameCreatedEvent(aggregateId,
                     ++aggregateVersion, gameName, maxNumberOfPlayers,
@@ -67,53 +73,28 @@ public class Game extends AggregateRoot<GameEvent> {
         }
     }
 
+    private void populateMethodTable() {
+        methodTable.put(GameCreatedEvent.class, x -> {});
+        methodTable.put(GameJoinedEvent.class, x -> registeredPlayerIds
+                .add(((GameJoinedEvent) x).getPlayerId()));
+        methodTable.put(GameMovedToStartingStageEvent.class,
+                x -> gameStage = GameStage.STARTING);
+        methodTable.put(GameStartedEvent.class, x -> {
+            currentBlinds = ((GameStartedEvent) x).getBlinds();
+            gameStage = GameStage.INPROGRESS;
+        });
+        methodTable.put(GameTablesCreatedAndPlayersAssociatedEvent.class,
+                x -> tableIdToPlayerIdsMap
+                        .putAll(((GameTablesCreatedAndPlayersAssociatedEvent) x)
+                                .getTableIdToPlayerIdsMap()));
+        methodTable.put(GameFinishedEvent.class,
+                x -> gameStage = GameStage.FINISHED);
+        methodTable.put(NewHandIsClearedToStartEvent.class, x -> {});
+    }
+
     private void applyCommonEvent(GameEvent event) {
-        switch (event.getType()) {
-        case GameCreated:
-            break;
-        case GameJoined:
-            applyEvent((GameJoinedEvent) event);
-            break;
-        case GameMovedToStartingStage:
-            applyEvent((GameMovedToStartingStageEvent) event);
-            break;
-        case GameStarted:
-            applyEvent((GameStartedEvent) event);
-            break;
-        case GameTablesCreatedAndPlayersAssociated:
-            applyEvent((GameTablesCreatedAndPlayersAssociatedEvent) event);
-            break;
-        case GameFinished:
-            applyEvent((GameFinishedEvent) event);
-            break;
-        case NewHandIsClearedToStart:
-            break;
-        default:
-            throw new IllegalArgumentException("Event Type cannot be handled: "
-                    + event.getType());
-        }
+        methodTable.get(event.getClass()).applyEvent(event);
         addAppliedEvent(event);
-    }
-
-    private void applyEvent(GameJoinedEvent event) {
-        registeredPlayerIds.add(event.getPlayerId());
-    }
-
-    private void applyEvent(@SuppressWarnings("unused") GameMovedToStartingStageEvent event) {
-        gameStage = GameStage.STARTING;
-    }
-
-    private void applyEvent(GameTablesCreatedAndPlayersAssociatedEvent event) {
-        tableIdToPlayerIdsMap.putAll(event.getTableIdToPlayerIdsMap());
-    }
-
-    private void applyEvent(GameStartedEvent event) {
-        currentBlinds = event.getBlinds();
-        gameStage = GameStage.INPROGRESS;
-    }
-
-    private void applyEvent(@SuppressWarnings("unused") GameFinishedEvent event) {
-        gameStage = GameStage.FINISHED;
     }
 
     public void joinGame(UUID playerId) {

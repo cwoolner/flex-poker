@@ -13,8 +13,8 @@ import com.flexpoker.exception.FlexPokerException;
 import com.flexpoker.table.command.aggregate.DefaultTableFactory;
 import com.flexpoker.table.command.aggregate.Table;
 import com.flexpoker.table.command.commands.CreateTableCommand;
+import com.flexpoker.table.command.events.TableCreatedEvent;
 import com.flexpoker.table.command.framework.TableEvent;
-import com.flexpoker.table.command.framework.TableEventType;
 import com.flexpoker.test.util.CommonAssertions;
 
 public class CreateNewTableTest {
@@ -32,7 +32,7 @@ public class CreateNewTableTest {
 
         assertEquals(1, table.fetchAppliedEvents().size());
         assertEquals(1, newEvents.size());
-        assertEquals(TableEventType.TableCreated, newEvents.get(0).getType());
+        assertEquals(TableCreatedEvent.class, newEvents.get(0).getClass());
 
         CommonAssertions.verifyEventIdsAndVersionNumbers(tableId, newEvents);
     }

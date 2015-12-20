@@ -1,20 +1,5 @@
 package com.flexpoker.table.command.aggregate.singlehand.twoplayer;
 
-import static com.flexpoker.table.command.framework.TableEventType.ActionOnChanged;
-import static com.flexpoker.table.command.framework.TableEventType.CardsShuffled;
-import static com.flexpoker.table.command.framework.TableEventType.FlopCardsDealt;
-import static com.flexpoker.table.command.framework.TableEventType.HandCompleted;
-import static com.flexpoker.table.command.framework.TableEventType.HandDealtEvent;
-import static com.flexpoker.table.command.framework.TableEventType.LastToActChanged;
-import static com.flexpoker.table.command.framework.TableEventType.PlayerCalled;
-import static com.flexpoker.table.command.framework.TableEventType.PlayerChecked;
-import static com.flexpoker.table.command.framework.TableEventType.PotAmountIncreased;
-import static com.flexpoker.table.command.framework.TableEventType.PotCreated;
-import static com.flexpoker.table.command.framework.TableEventType.RiverCardDealt;
-import static com.flexpoker.table.command.framework.TableEventType.RoundCompleted;
-import static com.flexpoker.table.command.framework.TableEventType.TableCreated;
-import static com.flexpoker.table.command.framework.TableEventType.TurnCardDealt;
-import static com.flexpoker.table.command.framework.TableEventType.WinnersDetermined;
 import static com.flexpoker.test.util.CommonAssertions.verifyEventIdsAndVersionNumbers;
 import static com.flexpoker.test.util.CommonAssertions.verifyNumberOfEventsAndEntireOrderByType;
 
@@ -26,6 +11,20 @@ import org.junit.Test;
 import com.flexpoker.table.command.aggregate.Table;
 import com.flexpoker.table.command.aggregate.testhelpers.TableTestUtils;
 import com.flexpoker.table.command.events.ActionOnChangedEvent;
+import com.flexpoker.table.command.events.CardsShuffledEvent;
+import com.flexpoker.table.command.events.FlopCardsDealtEvent;
+import com.flexpoker.table.command.events.HandCompletedEvent;
+import com.flexpoker.table.command.events.HandDealtEvent;
+import com.flexpoker.table.command.events.LastToActChangedEvent;
+import com.flexpoker.table.command.events.PlayerCalledEvent;
+import com.flexpoker.table.command.events.PlayerCheckedEvent;
+import com.flexpoker.table.command.events.PotAmountIncreasedEvent;
+import com.flexpoker.table.command.events.PotCreatedEvent;
+import com.flexpoker.table.command.events.RiverCardDealtEvent;
+import com.flexpoker.table.command.events.RoundCompletedEvent;
+import com.flexpoker.table.command.events.TableCreatedEvent;
+import com.flexpoker.table.command.events.TurnCardDealtEvent;
+import com.flexpoker.table.command.events.WinnersDeterminedEvent;
 import com.flexpoker.table.command.framework.TableEvent;
 
 public class TwoPlayerSmallBlindCallAndChecksUntilTheEndTest {
@@ -63,26 +62,30 @@ public class TwoPlayerSmallBlindCallAndChecksUntilTheEndTest {
 
         verifyNumberOfEventsAndEntireOrderByType(
                 newEvents,
-                TableCreated,
-                CardsShuffled,
-                HandDealtEvent,
-                ActionOnChanged,
+                TableCreatedEvent.class,
+                CardsShuffledEvent.class,
+                HandDealtEvent.class,
+                ActionOnChangedEvent.class,
                 // pre-flop
-                PlayerCalled, ActionOnChanged, PlayerChecked, PotCreated,
-                PotAmountIncreased, PotAmountIncreased, RoundCompleted,
-                ActionOnChanged,
-                LastToActChanged,
-                FlopCardsDealt,
+                PlayerCalledEvent.class, ActionOnChangedEvent.class,
+                PlayerCheckedEvent.class, PotCreatedEvent.class,
+                PotAmountIncreasedEvent.class, PotAmountIncreasedEvent.class,
+                RoundCompletedEvent.class, ActionOnChangedEvent.class,
+                LastToActChangedEvent.class, FlopCardsDealtEvent.class,
                 // post-flop
-                PlayerChecked, ActionOnChanged, PlayerChecked, RoundCompleted,
-                ActionOnChanged, LastToActChanged,
-                TurnCardDealt,
+                PlayerCheckedEvent.class, ActionOnChangedEvent.class,
+                PlayerCheckedEvent.class, RoundCompletedEvent.class,
+                ActionOnChangedEvent.class, LastToActChangedEvent.class,
+                TurnCardDealtEvent.class,
                 // post-turn
-                PlayerChecked, ActionOnChanged, PlayerChecked, RoundCompleted,
-                ActionOnChanged, LastToActChanged, RiverCardDealt,
+                PlayerCheckedEvent.class, ActionOnChangedEvent.class,
+                PlayerCheckedEvent.class, RoundCompletedEvent.class,
+                ActionOnChangedEvent.class, LastToActChangedEvent.class,
+                RiverCardDealtEvent.class,
                 // post-river
-                PlayerChecked, ActionOnChanged, PlayerChecked, RoundCompleted,
-                WinnersDetermined, HandCompleted);
+                PlayerCheckedEvent.class, ActionOnChangedEvent.class,
+                PlayerCheckedEvent.class, RoundCompletedEvent.class,
+                WinnersDeterminedEvent.class, HandCompletedEvent.class);
         verifyEventIdsAndVersionNumbers(tableId, newEvents);
     }
 

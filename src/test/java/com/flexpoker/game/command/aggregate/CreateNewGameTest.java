@@ -9,7 +9,6 @@ import org.junit.Test;
 
 import com.flexpoker.game.command.commands.CreateGameCommand;
 import com.flexpoker.game.command.events.GameCreatedEvent;
-import com.flexpoker.game.command.framework.GameEventType;
 
 public class CreateNewGameTest {
 
@@ -21,8 +20,8 @@ public class CreateNewGameTest {
 
         assertEquals(1, game.fetchAppliedEvents().size());
         assertEquals(1, game.fetchNewEvents().size());
-        assertEquals(GameEventType.GameCreated,
-                game.fetchNewEvents().get(0).getType());
+        assertEquals(GameCreatedEvent.class,
+                game.fetchNewEvents().get(0).getClass());
 
         GameCreatedEvent gameCreatedEvent = (GameCreatedEvent) game
                 .fetchNewEvents().get(0);

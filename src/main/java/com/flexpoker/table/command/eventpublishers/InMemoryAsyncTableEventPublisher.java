@@ -4,18 +4,17 @@ import javax.inject.Inject;
 
 import org.springframework.stereotype.Component;
 
-import com.flexpoker.framework.event.Event;
 import com.flexpoker.framework.event.EventPublisher;
 import com.flexpoker.framework.event.EventSubscriber;
 import com.flexpoker.framework.processmanager.ProcessManager;
 import com.flexpoker.table.command.events.ActionOnChangedEvent;
 import com.flexpoker.table.command.events.HandCompletedEvent;
-import com.flexpoker.table.command.framework.TableEventType;
+import com.flexpoker.table.command.framework.TableEvent;
 
 @Component
-public class InMemoryAsyncTableEventPublisher implements EventPublisher<TableEventType> {
+public class InMemoryAsyncTableEventPublisher implements EventPublisher<TableEvent> {
 
-    private final EventSubscriber<TableEventType> tableEventSubscriber;
+    private final EventSubscriber<TableEvent> tableEventSubscriber;
 
     private final ProcessManager<ActionOnChangedEvent> actionOnCountdownProcessManager;
 
@@ -23,7 +22,7 @@ public class InMemoryAsyncTableEventPublisher implements EventPublisher<TableEve
 
     @Inject
     public InMemoryAsyncTableEventPublisher(
-            EventSubscriber<TableEventType> tableEventSubscriber,
+            EventSubscriber<TableEvent> tableEventSubscriber,
             ProcessManager<ActionOnChangedEvent> actionOnCountdownProcessManager,
             ProcessManager<HandCompletedEvent> attemptToStartNewHandForExistingTableProcessManager) {
         this.tableEventSubscriber = tableEventSubscriber;
@@ -32,12 +31,12 @@ public class InMemoryAsyncTableEventPublisher implements EventPublisher<TableEve
     }
 
     @Override
-    public void publish(Event<TableEventType> event) {
+    public void publish(TableEvent event) {
         tableEventSubscriber.receive(event);
 
-        if (event.getType() == TableEventType.ActionOnChanged) {
+        if (event.getClass() == ActionOnChangedEvent.class) {
             actionOnCountdownProcessManager.handle((ActionOnChangedEvent) event);
-        } else if (event.getType() == TableEventType.HandCompleted) {
+        } else if (event.getClass() == HandCompletedEvent.class) {
             attemptToStartNewHandForExistingTableProcessManager
                     .handle((HandCompletedEvent) event);
         }

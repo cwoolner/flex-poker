@@ -12,7 +12,6 @@ import javax.inject.Inject;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
-import com.flexpoker.framework.event.Event;
 import com.flexpoker.framework.event.EventHandler;
 import com.flexpoker.framework.event.EventSubscriber;
 import com.flexpoker.table.command.events.ActionOnChangedEvent;
@@ -29,12 +28,12 @@ import com.flexpoker.table.command.events.RiverCardDealtEvent;
 import com.flexpoker.table.command.events.TableCreatedEvent;
 import com.flexpoker.table.command.events.TurnCardDealtEvent;
 import com.flexpoker.table.command.events.WinnersDeterminedEvent;
-import com.flexpoker.table.command.framework.TableEventType;
+import com.flexpoker.table.command.framework.TableEvent;
 
 @Component
-public class InMemoryAsyncTableEventSubscriber implements EventSubscriber<TableEventType> {
+public class InMemoryAsyncTableEventSubscriber implements EventSubscriber<TableEvent> {
 
-    private final Map<UUID, List<Event<TableEventType>>> listOfTableEventsNeededToProcess;
+    private final Map<UUID, List<TableEvent>> listOfTableEventsNeededToProcess;
 
     private final Map<UUID, Integer> nextExpectedEventVersion;
 
@@ -102,7 +101,7 @@ public class InMemoryAsyncTableEventSubscriber implements EventSubscriber<TableE
 
     @Async
     @Override
-    public void receive(Event<TableEventType> event) {
+    public void receive(TableEvent event) {
         listOfTableEventsNeededToProcess.putIfAbsent(event.getAggregateId(),
                 new CopyOnWriteArrayList<>());
         nextExpectedEventVersion.putIfAbsent(event.getAggregateId(), Integer.valueOf(1));
@@ -114,88 +113,62 @@ public class InMemoryAsyncTableEventSubscriber implements EventSubscriber<TableE
         }
     }
 
-    private void handleEventAndRunAnyOthers(Event<TableEventType> event) {
+    private void handleEventAndRunAnyOthers(TableEvent event) {
         handleEvent(event);
         removeEventFromUnhandleList(event);
         incrementNextEventVersion(event);
         handleAnyPreviouslyUnhandledEvents(event);
     }
 
-    private boolean isExpectedEvent(Event<TableEventType> event) {
+    private boolean isExpectedEvent(TableEvent event) {
         int expectedEventVersion = nextExpectedEventVersion.get(event.getAggregateId())
                 .intValue();
         return expectedEventVersion == event.getVersion();
     }
 
-    private void handleEvent(Event<TableEventType> event) {
-        switch (event.getType()) {
-        case TableCreated:
+    private void handleEvent(TableEvent event) {
+        if (event.getClass() == TableCreatedEvent.class) {
             tableCreatedEventHandler.handle((TableCreatedEvent) event);
-            break;
-        case CardsShuffled:
-            break;
-        case HandDealtEvent:
+        } else if (event.getClass() == HandDealtEvent.class) {
             handDealtEventHandler.handle((HandDealtEvent) event);
-            break;
-        case PlayerCalled:
+        } else if (event.getClass() == PlayerCalledEvent.class) {
             playerCalledEventHandler.handle((PlayerCalledEvent) event);
-            break;
-        case PlayerChecked:
+        } else if (event.getClass() == PlayerCheckedEvent.class) {
             playerCheckedEventHandler.handle((PlayerCheckedEvent) event);
-            break;
-        case PlayerFolded:
+        } else if (event.getClass() == PlayerFoldedEvent.class) {
             playerFoldedEventHandler.handle((PlayerFoldedEvent) event);
-            break;
-        case PlayerRaised:
+        } else if (event.getClass() == PlayerRaisedEvent.class) {
             playerRaisedEventHandler.handle((PlayerRaisedEvent) event);
-            break;
-        case FlopCardsDealt:
+        } else if (event.getClass() == FlopCardsDealtEvent.class) {
             flopCardsDealtEventHandler.handle((FlopCardsDealtEvent) event);
-            break;
-        case TurnCardDealt:
+        } else if (event.getClass() == TurnCardDealtEvent.class) {
             turnCardDealtEventHandler.handle((TurnCardDealtEvent) event);
-            break;
-        case RiverCardDealt:
+        } else if (event.getClass() == RiverCardDealtEvent.class) {
             riverCardDealtEventHandler.handle((RiverCardDealtEvent) event);
-            break;
-        case ActionOnChanged:
+        } else if (event.getClass() == ActionOnChangedEvent.class) {
             actionOnChangedEventHandler.handle((ActionOnChangedEvent) event);
-            break;
-        case LastToActChanged:
-            break;
-        case PotAmountIncreased:
+        } else if (event.getClass() == PotAmountIncreasedEvent.class) {
             potAmountIncreasedEventHandler.handle((PotAmountIncreasedEvent) event);
-            break;
-        case PotClosed:
+        } else if (event.getClass() == PotClosedEvent.class) {
             potClosedEventHandler.handle((PotClosedEvent) event);
-            break;
-        case PotCreated:
+        } else if (event.getClass() == PotCreatedEvent.class) {
             potCreatedEventHandler.handle((PotCreatedEvent) event);
-            break;
-        case RoundCompleted:
-            break;
-        case WinnersDetermined:
+        } else if (event.getClass() == WinnersDeterminedEvent.class) {
             winnersDeterminedEventHandler.handle((WinnersDeterminedEvent) event);
-            break;
-        case HandCompleted:
-            break;
-        default:
-            throw new IllegalArgumentException("Event Type cannot be handled: "
-                    + event.getType());
         }
     }
 
-    private void removeEventFromUnhandleList(Event<TableEventType> event) {
+    private void removeEventFromUnhandleList(TableEvent event) {
         listOfTableEventsNeededToProcess.get(event.getAggregateId()).remove(event);
     }
 
-    private void incrementNextEventVersion(Event<TableEventType> event) {
+    private void incrementNextEventVersion(TableEvent event) {
         nextExpectedEventVersion.compute(event.getAggregateId(),
                 (eventId, eventVersion) -> eventVersion + 1);
     }
 
-    private void handleAnyPreviouslyUnhandledEvents(Event<TableEventType> event) {
-        List<Event<TableEventType>> unHandledEvents = new ArrayList<>(
+    private void handleAnyPreviouslyUnhandledEvents(TableEvent event) {
+        List<TableEvent> unHandledEvents = new ArrayList<>(
                 listOfTableEventsNeededToProcess.get(event.getAggregateId()));
 
         unHandledEvents.forEach(previouslyUnRunEvent -> {

@@ -4,9 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.flexpoker.framework.event.Event;
-import com.flexpoker.framework.event.EventType;
 
-public abstract class AggregateRoot<T extends Event<? extends EventType>> {
+public abstract class AggregateRoot<T extends Event> {
 
     private final List<T> newEvents = new ArrayList<>();
 

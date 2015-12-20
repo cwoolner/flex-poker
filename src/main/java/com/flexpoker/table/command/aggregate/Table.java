@@ -11,6 +11,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import com.flexpoker.exception.FlexPokerException;
+import com.flexpoker.framework.command.EventApplier;
 import com.flexpoker.framework.domain.AggregateRoot;
 import com.flexpoker.model.PlayerAction;
 import com.flexpoker.model.card.Card;
@@ -42,6 +43,8 @@ public class Table extends AggregateRoot<TableEvent> {
 
     private int aggregateVersion;
 
+    private final Map<Class<? extends TableEvent>, EventApplier<? super TableEvent>> methodTable;
+
     private final UUID gameId;
 
     private final Map<Integer, UUID> seatMap;
@@ -66,6 +69,9 @@ public class Table extends AggregateRoot<TableEvent> {
         seatMap.values().stream().filter(x -> x != null)
                 .forEach(x -> chipsInBack.put(x, startingNumberOfChips));
 
+        methodTable = new HashMap<>();
+        populateMethodTable();
+
         if (!creatingFromEvents) {
             TableCreatedEvent tableCreatedEvent = new TableCreatedEvent(
                     aggregateId, ++aggregateVersion, gameId, seatMap.size(),
@@ -83,68 +89,33 @@ public class Table extends AggregateRoot<TableEvent> {
         });
     }
 
+    private void populateMethodTable() {
+        methodTable.put(TableCreatedEvent.class, x -> {});
+        methodTable.put(CardsShuffledEvent.class, x -> {});
+        methodTable.put(HandDealtEvent.class, x -> applyHandDealtEvent((HandDealtEvent) x));
+        methodTable.put(PlayerCalledEvent.class, x -> currentHand.applyEvent((PlayerCalledEvent) x));
+        methodTable.put(PlayerCheckedEvent.class, x -> currentHand.applyEvent((PlayerCheckedEvent) x));
+        methodTable.put(PlayerFoldedEvent.class, x -> currentHand.applyEvent((PlayerFoldedEvent) x));
+        methodTable.put(PlayerRaisedEvent.class, x -> currentHand.applyEvent((PlayerRaisedEvent) x));
+        methodTable.put(FlopCardsDealtEvent.class, x -> currentHand.applyEvent((FlopCardsDealtEvent) x));
+        methodTable.put(TurnCardDealtEvent.class, x -> currentHand.applyEvent((TurnCardDealtEvent) x));
+        methodTable.put(RiverCardDealtEvent.class, x -> currentHand.applyEvent((RiverCardDealtEvent) x));
+        methodTable.put(PotAmountIncreasedEvent.class, x -> currentHand.applyEvent((PotAmountIncreasedEvent) x));
+        methodTable.put(PotClosedEvent.class, x -> currentHand.applyEvent((PotClosedEvent) x));
+        methodTable.put(PotCreatedEvent.class, x -> currentHand.applyEvent((PotCreatedEvent) x));
+        methodTable.put(RoundCompletedEvent.class, x -> currentHand.applyEvent((RoundCompletedEvent) x));
+        methodTable.put(ActionOnChangedEvent.class, x -> currentHand.applyEvent((ActionOnChangedEvent) x));
+        methodTable.put(LastToActChangedEvent.class, x -> currentHand.applyEvent((LastToActChangedEvent) x));
+        methodTable.put(WinnersDeterminedEvent.class, x -> currentHand.applyEvent((WinnersDeterminedEvent) x));
+        methodTable.put(HandCompletedEvent.class, x -> currentHand = null);
+    }
+
     private void applyCommonEvent(TableEvent event) {
-        switch (event.getType()) {
-        case TableCreated:
-            break;
-        case CardsShuffled:
-            break;
-        case HandDealtEvent:
-            applyEvent((HandDealtEvent) event);
-            break;
-        case PlayerCalled:
-            applyEvent((PlayerCalledEvent) event);
-            break;
-        case PlayerChecked:
-            applyEvent((PlayerCheckedEvent) event);
-            break;
-        case PlayerFolded:
-            applyEvent((PlayerFoldedEvent) event);
-            break;
-        case PlayerRaised:
-            applyEvent((PlayerRaisedEvent) event);
-            break;
-        case FlopCardsDealt:
-            applyEvent((FlopCardsDealtEvent) event);
-            break;
-        case TurnCardDealt:
-            applyEvent((TurnCardDealtEvent) event);
-            break;
-        case RiverCardDealt:
-            applyEvent((RiverCardDealtEvent) event);
-            break;
-        case PotAmountIncreased:
-            applyEvent((PotAmountIncreasedEvent) event);
-            break;
-        case PotClosed:
-            applyEvent((PotClosedEvent) event);
-            break;
-        case PotCreated:
-            applyEvent((PotCreatedEvent) event);
-            break;
-        case RoundCompleted:
-            applyEvent((RoundCompletedEvent) event);
-            break;
-        case ActionOnChanged:
-            applyEvent((ActionOnChangedEvent) event);
-            break;
-        case LastToActChanged:
-            applyEvent((LastToActChangedEvent) event);
-            break;
-        case WinnersDetermined:
-            applyEvent((WinnersDeterminedEvent) event);
-            break;
-        case HandCompleted:
-            applyEvent((HandCompletedEvent) event);
-            break;
-        default:
-            throw new IllegalArgumentException("Event Type cannot be handled: "
-                    + event.getType());
-        }
+        methodTable.get(event.getClass()).applyEvent(event);
         addAppliedEvent(event);
     }
 
-    private void applyEvent(HandDealtEvent event) {
+    private void applyHandDealtEvent(HandDealtEvent event) {
         buttonOnPosition = event.getButtonOnPosition();
         smallBlindPosition = event.getSmallBlindPosition();
         bigBlindPosition = event.getBigBlindPosition();
@@ -159,66 +130,6 @@ public class Table extends AggregateRoot<TableEvent> {
                 event.getCallAmountsMap(), event.getRaiseToAmountsMap(),
                 event.getSmallBlind(), event.getBigBlind(),
                 event.getPlayersToShowCards());
-    }
-
-    private void applyEvent(PlayerRaisedEvent event) {
-        currentHand.applyEvent(event);
-    }
-
-    private void applyEvent(PlayerFoldedEvent event) {
-        currentHand.applyEvent(event);
-    }
-
-    private void applyEvent(PlayerCheckedEvent event) {
-        currentHand.applyEvent(event);
-    }
-
-    private void applyEvent(PlayerCalledEvent event) {
-        currentHand.applyEvent(event);
-    }
-
-    private void applyEvent(ActionOnChangedEvent event) {
-        currentHand.applyEvent(event);
-    }
-
-    private void applyEvent(LastToActChangedEvent event) {
-        currentHand.applyEvent(event);
-    }
-
-    private void applyEvent(RiverCardDealtEvent event) {
-        currentHand.applyEvent(event);
-    }
-
-    private void applyEvent(TurnCardDealtEvent event) {
-        currentHand.applyEvent(event);
-    }
-
-    private void applyEvent(FlopCardsDealtEvent event) {
-        currentHand.applyEvent(event);
-    }
-
-    private void applyEvent(PotAmountIncreasedEvent event) {
-        currentHand.applyEvent(event);
-    }
-
-    private void applyEvent(PotClosedEvent event) {
-        currentHand.applyEvent(event);
-    }
-
-    private void applyEvent(PotCreatedEvent event) {
-        currentHand.applyEvent(event);
-    }
-
-    private void applyEvent(RoundCompletedEvent event) {
-        currentHand.applyEvent(event);
-    }
-
-    private void applyEvent(WinnersDeterminedEvent event) {
-        currentHand.applyEvent(event);
-    }
-
-    private void applyEvent(@SuppressWarnings("unused") HandCompletedEvent event) {
-        currentHand = null;
     }
 
     public void startNewHandForNewGame(int smallBlind, int bigBlind,

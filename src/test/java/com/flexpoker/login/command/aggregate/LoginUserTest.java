@@ -10,7 +10,6 @@ import org.junit.Test;
 import com.flexpoker.login.command.commands.CreateLoginUserCommand;
 import com.flexpoker.login.command.events.LoginUserCreatedEvent;
 import com.flexpoker.login.command.factory.LoginUserFactory;
-import com.flexpoker.login.command.framework.LoginEventType;
 
 public class LoginUserTest {
 
@@ -24,8 +23,8 @@ public class LoginUserTest {
 
         assertEquals(1, loginUser.fetchAppliedEvents().size());
         assertEquals(1, loginUser.fetchNewEvents().size());
-        assertEquals(LoginEventType.LoginUserCreated, loginUser.fetchNewEvents().get(0)
-                .getType());
+        assertEquals(LoginUserCreatedEvent.class,
+                loginUser.fetchNewEvents().get(0).getClass());
 
         LoginUserCreatedEvent loginUserCreatedEvent = (LoginUserCreatedEvent) loginUser
                 .fetchNewEvents().get(0);

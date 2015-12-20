@@ -19,11 +19,8 @@ import com.flexpoker.model.card.TurnCard;
 import com.flexpoker.table.command.aggregate.HandDealerState;
 import com.flexpoker.table.command.aggregate.HandEvaluation;
 import com.flexpoker.table.command.framework.TableEvent;
-import com.flexpoker.table.command.framework.TableEventType;
 
-public class HandDealtEvent extends BaseEvent<TableEventType> implements TableEvent {
-
-    private static final TableEventType TYPE = TableEventType.HandDealtEvent;
+public class HandDealtEvent extends BaseEvent implements TableEvent {
 
     private final UUID gameId;
 
@@ -95,7 +92,7 @@ public class HandDealtEvent extends BaseEvent<TableEventType> implements TableEv
             @JsonProperty(value = "smallBlind") int smallBlind,
             @JsonProperty(value = "bigBlind") int bigBlind,
             @JsonProperty(value = "playersToShowCardsMap") Set<UUID> playersToShowCards) {
-        super(aggregateId, version, TYPE);
+        super(aggregateId, version);
         this.gameId = gameId;
         this.handId = handId;
         this.flopCards = flopCards;

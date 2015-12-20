@@ -1,9 +1,12 @@
 package com.flexpoker.signup.command.aggregate;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import com.flexpoker.exception.FlexPokerException;
+import com.flexpoker.framework.command.EventApplier;
 import com.flexpoker.framework.domain.AggregateRoot;
 import com.flexpoker.signup.command.events.NewUserSignedUpEvent;
 import com.flexpoker.signup.command.events.SignedUpUserConfirmedEvent;
@@ -14,6 +17,8 @@ public class SignUpUser extends AggregateRoot<SignUpEvent> {
     private final UUID aggregateId;
 
     private int aggregateVersion;
+
+    private final Map<Class<? extends SignUpEvent>, EventApplier<SignUpEvent>> methodTable;
 
     private String username;
 
@@ -30,6 +35,9 @@ public class SignUpUser extends AggregateRoot<SignUpEvent> {
         this.username = username;
         this.encryptedPassword = encryptedPassword;
         this.signUpCode = signUpCode;
+
+        methodTable = new HashMap<>();
+        populateMethodTable();
 
         if (!creatingFromEvents) {
             NewUserSignedUpEvent newUserSignedUpEvent = new NewUserSignedUpEvent(
@@ -48,22 +56,14 @@ public class SignUpUser extends AggregateRoot<SignUpEvent> {
         }
     }
 
-    private void applyCommonEvent(SignUpEvent event) {
-        switch (event.getType()) {
-        case NewUserSignedUp:
-            break;
-        case SignedUpUserConfirmed:
-            applyEvent((SignedUpUserConfirmedEvent) event);
-            break;
-        default:
-            throw new IllegalArgumentException("Event Type cannot be handled: "
-                    + event.getType());
-        }
-        addAppliedEvent(event);
+    private void populateMethodTable() {
+        methodTable.put(NewUserSignedUpEvent.class, x -> {});
+        methodTable.put(SignedUpUserConfirmedEvent.class, x -> confirmed = true);
     }
 
-    private void applyEvent(SignedUpUserConfirmedEvent event) {
-        confirmed = true;
+    private void applyCommonEvent(SignUpEvent event) {
+        methodTable.get(event.getClass()).applyEvent(event);
+        addAppliedEvent(event);
     }
 
     public void confirmSignedUpUser(final String username, final UUID signUpCode) {

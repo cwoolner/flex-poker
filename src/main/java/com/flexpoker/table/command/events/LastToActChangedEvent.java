@@ -6,12 +6,9 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.flexpoker.framework.event.BaseEvent;
 import com.flexpoker.table.command.framework.TableEvent;
-import com.flexpoker.table.command.framework.TableEventType;
 
-public class LastToActChangedEvent extends BaseEvent<TableEventType> implements
+public class LastToActChangedEvent extends BaseEvent implements
         TableEvent {
-
-    private static final TableEventType TYPE = TableEventType.LastToActChanged;
 
     private final UUID gameId;
 
@@ -25,7 +22,7 @@ public class LastToActChangedEvent extends BaseEvent<TableEventType> implements
             @JsonProperty(value = "gameId") UUID gameId,
             @JsonProperty(value = "handId") UUID handId,
             @JsonProperty(value = "playerId") UUID playerId) {
-        super(aggregateId, version, TYPE);
+        super(aggregateId, version);
         this.gameId = gameId;
         this.handId = handId;
         this.playerId = playerId;

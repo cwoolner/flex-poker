@@ -12,16 +12,15 @@ import javax.inject.Inject;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
-import com.flexpoker.framework.event.Event;
 import com.flexpoker.framework.event.EventHandler;
 import com.flexpoker.framework.event.EventSubscriber;
 import com.flexpoker.login.command.events.LoginUserCreatedEvent;
-import com.flexpoker.login.command.framework.LoginEventType;
+import com.flexpoker.login.command.framework.LoginEvent;
 
 @Component
-public class InMemoryAsyncLoginEventSubscriber implements EventSubscriber<LoginEventType> {
+public class InMemoryAsyncLoginEventSubscriber implements EventSubscriber<LoginEvent> {
 
-    private final Map<UUID, List<Event<LoginEventType>>> listOfLoginEventsNeededToProcess;
+    private final Map<UUID, List<LoginEvent>> listOfLoginEventsNeededToProcess;
 
     private final Map<UUID, Integer> nextExpectedEventVersion;
 
@@ -37,7 +36,7 @@ public class InMemoryAsyncLoginEventSubscriber implements EventSubscriber<LoginE
 
     @Async
     @Override
-    public void receive(Event<LoginEventType> event) {
+    public void receive(LoginEvent event) {
         listOfLoginEventsNeededToProcess.putIfAbsent(event.getAggregateId(),
                 new CopyOnWriteArrayList<>());
         nextExpectedEventVersion.putIfAbsent(event.getAggregateId(), Integer.valueOf(1));
@@ -49,41 +48,36 @@ public class InMemoryAsyncLoginEventSubscriber implements EventSubscriber<LoginE
         }
     }
 
-    private void handleEventAndRunAnyOthers(Event<LoginEventType> event) {
+    private void handleEventAndRunAnyOthers(LoginEvent event) {
         handleEvent(event);
         removeEventFromUnhandleList(event);
         incrementNextEventVersion(event);
         handleAnyPreviouslyUnhandledEvents(event);
     }
 
-    private boolean isExpectedEvent(Event<LoginEventType> event) {
+    private boolean isExpectedEvent(LoginEvent event) {
         int expectedEventVersion = nextExpectedEventVersion.get(event.getAggregateId())
                 .intValue();
         return expectedEventVersion == event.getVersion();
     }
 
-    private void handleEvent(Event<LoginEventType> event) {
-        switch (event.getType()) {
-        case LoginUserCreated:
+    private void handleEvent(LoginEvent event) {
+        if (event.getClass() == LoginUserCreatedEvent.class) {
             loginUserCreatedEventHandler.handle((LoginUserCreatedEvent) event);
-            break;
-        default:
-            throw new IllegalArgumentException("Event Type cannot be handled: "
-                    + event.getType());
         }
     }
 
-    private void removeEventFromUnhandleList(Event<LoginEventType> event) {
+    private void removeEventFromUnhandleList(LoginEvent event) {
         listOfLoginEventsNeededToProcess.get(event.getAggregateId()).remove(event);
     }
 
-    private void incrementNextEventVersion(Event<LoginEventType> event) {
+    private void incrementNextEventVersion(LoginEvent event) {
         nextExpectedEventVersion.compute(event.getAggregateId(),
                 (eventId, eventVersion) -> eventVersion + 1);
     }
 
-    private void handleAnyPreviouslyUnhandledEvents(Event<LoginEventType> event) {
-        List<Event<LoginEventType>> unHandledEvents = new ArrayList<>(
+    private void handleAnyPreviouslyUnhandledEvents(LoginEvent event) {
+        List<LoginEvent> unHandledEvents = new ArrayList<>(
                 listOfLoginEventsNeededToProcess.get(event.getAggregateId()));
 
         unHandledEvents.forEach(previouslyUnRunEvent -> {

@@ -8,11 +8,8 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.flexpoker.framework.event.BaseEvent;
 import com.flexpoker.table.command.framework.TableEvent;
-import com.flexpoker.table.command.framework.TableEventType;
 
-public class TableCreatedEvent extends BaseEvent<TableEventType> implements TableEvent {
-
-    private static final TableEventType TYPE = TableEventType.TableCreated;
+public class TableCreatedEvent extends BaseEvent implements TableEvent {
 
     private final UUID gameId;
 
@@ -30,7 +27,7 @@ public class TableCreatedEvent extends BaseEvent<TableEventType> implements Tabl
             @JsonProperty(value = "numberOfPlayersPerTable") int numberOfPlayersPerTable,
             @JsonProperty(value = "seatPositionToPlayerMap") Map<Integer, UUID> seatPositionToPlayerMap,
             @JsonProperty(value = "startingNumberOfChips") int startingNumberOfChips) {
-        super(aggregateId, version, TYPE);
+        super(aggregateId, version);
         this.gameId = gameId;
         this.numberOfPlayersPerTable = numberOfPlayersPerTable;
         this.seatPositionToPlayerMap = seatPositionToPlayerMap;

@@ -4,12 +4,9 @@ import java.util.UUID;
 
 import com.flexpoker.framework.event.BaseEvent;
 import com.flexpoker.signup.command.framework.SignUpEvent;
-import com.flexpoker.signup.command.framework.SignUpEventType;
 
-public class SignedUpUserConfirmedEvent extends BaseEvent<SignUpEventType> implements
+public class SignedUpUserConfirmedEvent extends BaseEvent implements
         SignUpEvent {
-
-    private static final SignUpEventType TYPE = SignUpEventType.SignedUpUserConfirmed;
 
     private final String username;
 
@@ -17,7 +14,7 @@ public class SignedUpUserConfirmedEvent extends BaseEvent<SignUpEventType> imple
 
     public SignedUpUserConfirmedEvent(UUID aggregateId, int version, String username,
             String encryptedPassword) {
-        super(aggregateId, version, TYPE);
+        super(aggregateId, version);
         this.username = username;
         this.encryptedPassword = encryptedPassword;
     }

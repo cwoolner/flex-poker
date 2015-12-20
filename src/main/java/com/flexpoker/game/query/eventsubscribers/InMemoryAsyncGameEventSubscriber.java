@@ -14,20 +14,19 @@ import javax.inject.Inject;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
-import com.flexpoker.framework.event.Event;
 import com.flexpoker.framework.event.EventHandler;
 import com.flexpoker.framework.event.EventSubscriber;
 import com.flexpoker.game.command.events.GameCreatedEvent;
 import com.flexpoker.game.command.events.GameJoinedEvent;
 import com.flexpoker.game.command.events.GameMovedToStartingStageEvent;
 import com.flexpoker.game.command.events.GameStartedEvent;
-import com.flexpoker.game.command.framework.GameEventType;
+import com.flexpoker.game.command.framework.GameEvent;
 
 @Component
 public class InMemoryAsyncGameEventSubscriber
-        implements EventSubscriber<GameEventType> {
+        implements EventSubscriber<GameEvent> {
 
-    private final Map<UUID, List<Event<GameEventType>>> listOfGameEventsNeededToProcess;
+    private final Map<UUID, List<GameEvent>> listOfGameEventsNeededToProcess;
 
     private final Map<UUID, Integer> nextExpectedEventVersion;
 
@@ -55,7 +54,7 @@ public class InMemoryAsyncGameEventSubscriber
 
     @Async
     @Override
-    public void receive(Event<GameEventType> event) {
+    public void receive(GameEvent event) {
         listOfGameEventsNeededToProcess.putIfAbsent(event.getAggregateId(),
                 new CopyOnWriteArrayList<>());
         nextExpectedEventVersion.putIfAbsent(event.getAggregateId(),
@@ -69,34 +68,28 @@ public class InMemoryAsyncGameEventSubscriber
         }
     }
 
-    private void handleEventAndRunAnyOthers(Event<GameEventType> event) {
+    private void handleEventAndRunAnyOthers(GameEvent event) {
         handleEvent(event);
         removeEventFromUnhandleList(event);
         incrementNextEventVersion(event);
         handleAnyPreviouslyUnhandledEvents(event);
     }
 
-    private boolean isExpectedEvent(Event<GameEventType> event) {
+    private boolean isExpectedEvent(GameEvent event) {
         int expectedEventVersion = nextExpectedEventVersion
                 .get(event.getAggregateId()).intValue();
         return expectedEventVersion == event.getVersion();
     }
 
-    private void handleEvent(Event<GameEventType> event) {
-        switch (event.getType()) {
-        case GameCreated:
+    private void handleEvent(GameEvent event) {
+        if (event.getClass() == GameCreatedEvent.class) {
             gameCreatedEventHandler.handle((GameCreatedEvent) event);
-            break;
-        case GameJoined:
+        } else if (event.getClass() == GameJoinedEvent.class) {
             gameJoinedEventHandler.handle((GameJoinedEvent) event);
-            break;
-        case GameMovedToStartingStage:
+        } else if (event.getClass() == GameMovedToStartingStageEvent.class) {
             gameMovedToStartingStageEventHandler
                     .handle((GameMovedToStartingStageEvent) event);
-            break;
-        case GameTablesCreatedAndPlayersAssociated:
-            break;
-        case GameStarted:
+        } else if (event.getClass() == GameStartedEvent.class) {
             final EventHandler<GameStartedEvent> localGameStartedEventHandler = this.gameStartedEventHandler;
             final Timer timer = new Timer();
             final TimerTask timerTask = new TimerTask() {
@@ -107,30 +100,21 @@ public class InMemoryAsyncGameEventSubscriber
                 }
             };
             timer.schedule(timerTask, 10000);
-            break;
-        case GameFinished:
-            break;
-        case NewHandIsClearedToStart:
-            break;
-        default:
-            throw new IllegalArgumentException(
-                    "Event Type cannot be handled: " + event.getType());
         }
     }
 
-    private void removeEventFromUnhandleList(Event<GameEventType> event) {
+    private void removeEventFromUnhandleList(GameEvent event) {
         listOfGameEventsNeededToProcess.get(event.getAggregateId())
                 .remove(event);
     }
 
-    private void incrementNextEventVersion(Event<GameEventType> event) {
+    private void incrementNextEventVersion(GameEvent event) {
         nextExpectedEventVersion.compute(event.getAggregateId(),
                 (eventId, eventVersion) -> eventVersion + 1);
     }
 
-    private void handleAnyPreviouslyUnhandledEvents(
-            Event<GameEventType> event) {
-        List<Event<GameEventType>> unHandledEvents = new ArrayList<>(
+    private void handleAnyPreviouslyUnhandledEvents(GameEvent event) {
+        List<GameEvent> unHandledEvents = new ArrayList<>(
                 listOfGameEventsNeededToProcess.get(event.getAggregateId()));
 
         unHandledEvents.forEach(previouslyUnRunEvent -> {

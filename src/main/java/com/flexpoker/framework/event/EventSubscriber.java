@@ -1,7 +1,7 @@
 package com.flexpoker.framework.event;
 
-public interface EventSubscriber<T extends EventType> {
+public interface EventSubscriber<T extends Event> {
 
-    void receive(Event<T> event);
+    void receive(T event);
 
 }

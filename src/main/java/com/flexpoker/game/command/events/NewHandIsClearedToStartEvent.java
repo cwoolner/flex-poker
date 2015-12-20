@@ -5,12 +5,9 @@ import java.util.UUID;
 import com.flexpoker.framework.event.BaseEvent;
 import com.flexpoker.game.command.aggregate.Blinds;
 import com.flexpoker.game.command.framework.GameEvent;
-import com.flexpoker.game.command.framework.GameEventType;
 
-public class NewHandIsClearedToStartEvent extends BaseEvent<GameEventType> implements
+public class NewHandIsClearedToStartEvent extends BaseEvent implements
         GameEvent {
-
-    private static final GameEventType TYPE = GameEventType.NewHandIsClearedToStart;
 
     private final UUID tableId;
 
@@ -18,7 +15,7 @@ public class NewHandIsClearedToStartEvent extends BaseEvent<GameEventType> imple
 
     public NewHandIsClearedToStartEvent(UUID aggregateId, int version, UUID tableId,
             Blinds blinds) {
-        super(aggregateId, version, TYPE);
+        super(aggregateId, version);
         this.tableId = tableId;
         this.blinds = blinds;
     }

@@ -13,7 +13,6 @@ import com.flexpoker.table.command.aggregate.Table;
 import com.flexpoker.table.command.commands.CheckCommand;
 import com.flexpoker.table.command.factory.TableFactory;
 import com.flexpoker.table.command.framework.TableEvent;
-import com.flexpoker.table.command.framework.TableEventType;
 import com.flexpoker.table.command.repository.TableEventRepository;
 
 @Component
@@ -21,13 +20,13 @@ public class CheckCommandHandler implements CommandHandler<CheckCommand> {
 
     private final TableFactory tableFactory;
 
-    private final EventPublisher<TableEventType> eventPublisher;
+    private final EventPublisher<TableEvent> eventPublisher;
 
     private final TableEventRepository tableEventRepository;
 
     @Inject
     public CheckCommandHandler(TableFactory tableFactory,
-            EventPublisher<TableEventType> eventPublisher,
+            EventPublisher<TableEvent> eventPublisher,
             TableEventRepository tableEventRepository) {
         this.tableFactory = tableFactory;
         this.eventPublisher = eventPublisher;

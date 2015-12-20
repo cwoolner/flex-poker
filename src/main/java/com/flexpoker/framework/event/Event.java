@@ -3,11 +3,9 @@ package com.flexpoker.framework.event;
 import java.time.Instant;
 import java.util.UUID;
 
-public interface Event<T extends EventType> {
+public interface Event {
 
     UUID getAggregateId();
-
-    T getType();
 
     int getVersion();
 

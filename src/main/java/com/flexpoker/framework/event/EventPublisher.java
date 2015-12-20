@@ -1,8 +1,8 @@
 package com.flexpoker.framework.event;
 
 
-public interface EventPublisher<T extends EventType> {
+public interface EventPublisher<T extends Event> {
 
-    void publish(Event<T> event);
+    void publish(T event);
 
 }

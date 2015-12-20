@@ -9,11 +9,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.flexpoker.framework.event.BaseEvent;
 import com.flexpoker.model.card.Card;
 import com.flexpoker.table.command.framework.TableEvent;
-import com.flexpoker.table.command.framework.TableEventType;
 
-public class CardsShuffledEvent extends BaseEvent<TableEventType> implements TableEvent {
-
-    private static final TableEventType TYPE = TableEventType.CardsShuffled;
+public class CardsShuffledEvent extends BaseEvent implements TableEvent {
 
     private final UUID gameId;
 
@@ -24,7 +21,7 @@ public class CardsShuffledEvent extends BaseEvent<TableEventType> implements Tab
             @JsonProperty(value = "version") int version,
             @JsonProperty(value = "gameId") UUID gameId,
             @JsonProperty(value = "shuffledDeck") List<Card> shuffledDeck) {
-        super(aggregateId, version, TYPE);
+        super(aggregateId, version);
         this.gameId = gameId;
         this.shuffledDeck = shuffledDeck;
     }

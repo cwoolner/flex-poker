@@ -13,7 +13,6 @@ import com.flexpoker.game.command.aggregate.Game;
 import com.flexpoker.game.command.commands.JoinGameCommand;
 import com.flexpoker.game.command.factory.GameFactory;
 import com.flexpoker.game.command.framework.GameEvent;
-import com.flexpoker.game.command.framework.GameEventType;
 import com.flexpoker.game.command.repository.GameEventRepository;
 
 @Component
@@ -21,13 +20,13 @@ public class JoinGameCommandHandler implements CommandHandler<JoinGameCommand> {
 
     private final GameFactory gameFactory;
 
-    private final EventPublisher<GameEventType> eventPublisher;
+    private final EventPublisher<GameEvent> eventPublisher;
 
     private final GameEventRepository gameEventRepository;
 
     @Inject
     public JoinGameCommandHandler(GameFactory gameFactory,
-            EventPublisher<GameEventType> eventPublisher,
+            EventPublisher<GameEvent> eventPublisher,
             GameEventRepository gameEventRepository) {
         this.gameFactory = gameFactory;
         this.eventPublisher = eventPublisher;

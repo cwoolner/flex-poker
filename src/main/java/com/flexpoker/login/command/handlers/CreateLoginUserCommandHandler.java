@@ -10,7 +10,7 @@ import com.flexpoker.framework.event.EventPublisher;
 import com.flexpoker.login.command.aggregate.LoginUser;
 import com.flexpoker.login.command.commands.CreateLoginUserCommand;
 import com.flexpoker.login.command.factory.LoginUserFactory;
-import com.flexpoker.login.command.framework.LoginEventType;
+import com.flexpoker.login.command.framework.LoginEvent;
 import com.flexpoker.login.command.repository.LoginEventRepository;
 
 @Component
@@ -19,13 +19,13 @@ public class CreateLoginUserCommandHandler implements
 
     private final LoginUserFactory loginUserFactory;
 
-    private final EventPublisher<LoginEventType> eventPublisher;
+    private final EventPublisher<LoginEvent> eventPublisher;
 
     private final LoginEventRepository loginEventRepository;
 
     @Inject
     public CreateLoginUserCommandHandler(LoginUserFactory loginUserFactory,
-            EventPublisher<LoginEventType> eventPublisher,
+            EventPublisher<LoginEvent> eventPublisher,
             LoginEventRepository loginEventRepository) {
         this.loginUserFactory = loginUserFactory;
         this.eventPublisher = eventPublisher;

@@ -12,18 +12,17 @@ import javax.inject.Inject;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
-import com.flexpoker.framework.event.Event;
 import com.flexpoker.framework.event.EventHandler;
 import com.flexpoker.framework.event.EventSubscriber;
 import com.flexpoker.signup.command.events.NewUserSignedUpEvent;
 import com.flexpoker.signup.command.events.SignedUpUserConfirmedEvent;
-import com.flexpoker.signup.command.framework.SignUpEventType;
+import com.flexpoker.signup.command.framework.SignUpEvent;
 
 @Component
 public class InMemoryAsyncSignupEventSubscriber
-        implements EventSubscriber<SignUpEventType> {
+        implements EventSubscriber<SignUpEvent> {
 
-    private final Map<UUID, List<Event<SignUpEventType>>> listOfEventsNeededToProcess;
+    private final Map<UUID, List<SignUpEvent>> listOfEventsNeededToProcess;
 
     private final Map<UUID, Integer> nextExpectedEventVersion;
 
@@ -43,7 +42,7 @@ public class InMemoryAsyncSignupEventSubscriber
 
     @Async
     @Override
-    public void receive(Event<SignUpEventType> event) {
+    public void receive(SignUpEvent event) {
         listOfEventsNeededToProcess.putIfAbsent(event.getAggregateId(),
                 new CopyOnWriteArrayList<>());
         nextExpectedEventVersion.putIfAbsent(event.getAggregateId(),
@@ -56,46 +55,40 @@ public class InMemoryAsyncSignupEventSubscriber
         }
     }
 
-    private void handleEventAndRunAnyOthers(Event<SignUpEventType> event) {
+    private void handleEventAndRunAnyOthers(SignUpEvent event) {
         handleEvent(event);
         removeEventFromUnhandleList(event);
         incrementNextEventVersion(event);
         handleAnyPreviouslyUnhandledEvents(event);
     }
 
-    private boolean isExpectedEvent(Event<SignUpEventType> event) {
+    private boolean isExpectedEvent(SignUpEvent event) {
         int expectedEventVersion = nextExpectedEventVersion
                 .get(event.getAggregateId()).intValue();
         return expectedEventVersion == event.getVersion();
     }
 
-    private void handleEvent(Event<SignUpEventType> event) {
-        switch (event.getType()) {
-        case NewUserSignedUp:
+    private void handleEvent(SignUpEvent event) {
+        if (event.getClass() == NewUserSignedUpEvent.class) {
             newUserSignedUpEventHandler.handle((NewUserSignedUpEvent) event);
-            break;
-        case SignedUpUserConfirmed:
+        } else if (event.getClass() == SignedUpUserConfirmedEvent.class) {
             signedUpUserConfirmedEventHandler
                     .handle((SignedUpUserConfirmedEvent) event);
-            break;
-        default:
-            throw new IllegalArgumentException(
-                    "Event Type cannot be handled: " + event.getType());
         }
     }
 
-    private void removeEventFromUnhandleList(Event<SignUpEventType> event) {
+    private void removeEventFromUnhandleList(SignUpEvent event) {
         listOfEventsNeededToProcess.get(event.getAggregateId()).remove(event);
     }
 
-    private void incrementNextEventVersion(Event<SignUpEventType> event) {
+    private void incrementNextEventVersion(SignUpEvent event) {
         nextExpectedEventVersion.compute(event.getAggregateId(),
                 (eventId, eventVersion) -> eventVersion + 1);
     }
 
     private void handleAnyPreviouslyUnhandledEvents(
-            Event<SignUpEventType> event) {
-        List<Event<SignUpEventType>> unHandledEvents = new ArrayList<>(
+            SignUpEvent event) {
+        List<SignUpEvent> unHandledEvents = new ArrayList<>(
                 listOfEventsNeededToProcess.get(event.getAggregateId()));
 
         unHandledEvents.forEach(previouslyUnRunEvent -> {

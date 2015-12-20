@@ -7,11 +7,8 @@ import java.util.UUID;
 import com.flexpoker.framework.event.BaseEvent;
 import com.flexpoker.game.command.aggregate.Blinds;
 import com.flexpoker.game.command.framework.GameEvent;
-import com.flexpoker.game.command.framework.GameEventType;
 
-public class GameStartedEvent extends BaseEvent<GameEventType> implements GameEvent {
-
-    private static final GameEventType TYPE = GameEventType.GameStarted;
+public class GameStartedEvent extends BaseEvent implements GameEvent {
 
     private final Set<UUID> tableIds;
 
@@ -19,7 +16,7 @@ public class GameStartedEvent extends BaseEvent<GameEventType> implements GameEv
 
     public GameStartedEvent(UUID aggregateId, int version, Set<UUID> tableIds,
             Blinds blinds) {
-        super(aggregateId, version, TYPE);
+        super(aggregateId, version);
         this.tableIds = tableIds;
         this.blinds = blinds;
     }

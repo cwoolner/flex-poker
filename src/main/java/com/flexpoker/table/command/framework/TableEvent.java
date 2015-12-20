@@ -44,7 +44,7 @@ import com.flexpoker.table.command.events.WinnersDeterminedEvent;
         @JsonSubTypes.Type(value = TableCreatedEvent.class, name = "TableCreated"),
         @JsonSubTypes.Type(value = TurnCardDealtEvent.class, name = "TurnCardDealt"),
         @JsonSubTypes.Type(value = WinnersDeterminedEvent.class, name = "WinnersDetermined") })
-public interface TableEvent extends Event<TableEventType> {
+public interface TableEvent extends Event {
 
     UUID getGameId();
 

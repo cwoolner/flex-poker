@@ -4,12 +4,9 @@ import java.util.UUID;
 
 import com.flexpoker.framework.event.BaseEvent;
 import com.flexpoker.login.command.framework.LoginEvent;
-import com.flexpoker.login.command.framework.LoginEventType;
 
-public class LoginUserCreatedEvent extends BaseEvent<LoginEventType> implements
+public class LoginUserCreatedEvent extends BaseEvent implements
         LoginEvent {
-
-    private static final LoginEventType TYPE = LoginEventType.LoginUserCreated;
 
     private final String username;
 
@@ -17,7 +14,7 @@ public class LoginUserCreatedEvent extends BaseEvent<LoginEventType> implements
 
     public LoginUserCreatedEvent(UUID aggregateId, int version, String username,
             String encryptedPassword) {
-        super(aggregateId, version, TYPE);
+        super(aggregateId, version);
         this.username = username;
         this.encryptedPassword = encryptedPassword;
     }

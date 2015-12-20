@@ -19,7 +19,6 @@ import com.flexpoker.table.command.aggregate.Table;
 import com.flexpoker.table.command.commands.StartNewHandForExistingTableCommand;
 import com.flexpoker.table.command.factory.TableFactory;
 import com.flexpoker.table.command.framework.TableEvent;
-import com.flexpoker.table.command.framework.TableEventType;
 import com.flexpoker.table.command.repository.TableEventRepository;
 import com.flexpoker.table.command.service.CardService;
 import com.flexpoker.table.command.service.HandEvaluatorService;
@@ -30,7 +29,7 @@ public class StartNewHandForExistingTableCommandHandler implements
 
     private final TableFactory tableFactory;
 
-    private final EventPublisher<TableEventType> eventPublisher;
+    private final EventPublisher<TableEvent> eventPublisher;
 
     private final TableEventRepository tableEventRepository;
 
@@ -40,7 +39,7 @@ public class StartNewHandForExistingTableCommandHandler implements
 
     @Inject
     public StartNewHandForExistingTableCommandHandler(TableFactory tableFactory,
-            EventPublisher<TableEventType> eventPublisher,
+            EventPublisher<TableEvent> eventPublisher,
             TableEventRepository tableEventRepository, CardService cardService,
             HandEvaluatorService handEvaluatorService) {
         this.tableFactory = tableFactory;
