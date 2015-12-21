@@ -12,14 +12,14 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * to be more closely associated with the Game domain and is independent from
  * the Table domain.
  */
-public class Blinds {
+public class BlindAmounts {
 
     private final int smallBlind;
 
     private final int bigBlind;
 
     @JsonCreator
-    public Blinds(@JsonProperty(value = "smallBlind") final int smallBlind,
+    public BlindAmounts(@JsonProperty(value = "smallBlind") final int smallBlind,
             @JsonProperty(value = "bigBlind") final int bigBlind) {
         if (smallBlind > Integer.MAX_VALUE / 2) {
             throw new IllegalArgumentException("Small blind can't be that large.");

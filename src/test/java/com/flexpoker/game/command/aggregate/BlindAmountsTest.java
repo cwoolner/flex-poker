@@ -4,25 +4,25 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-public class BlindsTest {
+public class BlindAmountsTest {
 
     @Test
     public void testNormalSuccess() {
-        Blinds blinds = new Blinds(10, 20);
+        BlindAmounts blinds = new BlindAmounts(10, 20);
         assertEquals(10, blinds.getSmallBlind());
         assertEquals(20, blinds.getBigBlind());
     }
 
     @Test
     public void testLowNormalSuccess() {
-        Blinds blinds = new Blinds(1, 2);
+        BlindAmounts blinds = new BlindAmounts(1, 2);
         assertEquals(1, blinds.getSmallBlind());
         assertEquals(2, blinds.getBigBlind());
     }
 
     @Test
     public void testMaxValueSuccess() {
-        Blinds blinds = new Blinds(Integer.MAX_VALUE / 2, Integer.MAX_VALUE - 1);
+        BlindAmounts blinds = new BlindAmounts(Integer.MAX_VALUE / 2, Integer.MAX_VALUE - 1);
         assertEquals(Integer.MAX_VALUE / 2, blinds.getSmallBlind());
         assertEquals(Integer.MAX_VALUE - 1, blinds.getBigBlind());
     }
@@ -30,37 +30,37 @@ public class BlindsTest {
     @SuppressWarnings("unused")
     @Test(expected = IllegalArgumentException.class)
     public void testBigIsDoubleSmallFail() {
-        new Blinds(10, 19);
+        new BlindAmounts(10, 19);
     }
 
     @SuppressWarnings("unused")
     @Test(expected = IllegalArgumentException.class)
     public void testSmallBlindTooLarge() {
-        new Blinds((Integer.MAX_VALUE / 2) + 1, Integer.MAX_VALUE);
+        new BlindAmounts((Integer.MAX_VALUE / 2) + 1, Integer.MAX_VALUE);
     }
 
     @SuppressWarnings("unused")
     @Test(expected = IllegalArgumentException.class)
     public void testSmallBlindCannotBeZero() {
-        new Blinds(0, 1);
+        new BlindAmounts(0, 1);
     }
 
     @SuppressWarnings("unused")
     @Test(expected = IllegalArgumentException.class)
     public void testBigBlindCannotBeZero() {
-        new Blinds(1, 0);
+        new BlindAmounts(1, 0);
     }
 
     @SuppressWarnings("unused")
     @Test(expected = IllegalArgumentException.class)
     public void testSmallBlindTooSmall() {
-        new Blinds(-1, 0);
+        new BlindAmounts(-1, 0);
     }
 
     @SuppressWarnings("unused")
     @Test(expected = IllegalArgumentException.class)
     public void testLargeBlindTooSmall() {
-        new Blinds(0, -1);
+        new BlindAmounts(0, -1);
     }
 
 }

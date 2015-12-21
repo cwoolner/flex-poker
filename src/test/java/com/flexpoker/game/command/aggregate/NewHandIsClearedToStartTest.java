@@ -34,7 +34,7 @@ public class NewHandIsClearedToStartTest {
         events.add(new GameJoinedEvent(gameId, 3, UUID.randomUUID()));
         events.add(new GameMovedToStartingStageEvent(gameId, 4));
         events.add(new GameTablesCreatedAndPlayersAssociatedEvent(gameId, 5, tableIdToPlayerIdsMap, 2));
-        events.add(new GameStartedEvent(gameId, 6, tableIds, new Blinds(10, 20)));
+        events.add(new GameStartedEvent(gameId, 6, tableIds, new BlindAmounts(10, 20)));
 
         Game game = new DefaultGameFactory().createFrom(events);
 

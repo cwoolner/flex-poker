@@ -5,17 +5,17 @@ import java.util.Set;
 import java.util.UUID;
 
 import com.flexpoker.framework.event.BaseEvent;
-import com.flexpoker.game.command.aggregate.Blinds;
+import com.flexpoker.game.command.aggregate.BlindAmounts;
 import com.flexpoker.game.command.framework.GameEvent;
 
 public class GameStartedEvent extends BaseEvent implements GameEvent {
 
     private final Set<UUID> tableIds;
 
-    private final Blinds blinds;
+    private final BlindAmounts blinds;
 
     public GameStartedEvent(UUID aggregateId, int version, Set<UUID> tableIds,
-            Blinds blinds) {
+            BlindAmounts blinds) {
         super(aggregateId, version);
         this.tableIds = tableIds;
         this.blinds = blinds;
@@ -25,7 +25,7 @@ public class GameStartedEvent extends BaseEvent implements GameEvent {
         return new HashSet<>(tableIds);
     }
 
-    public Blinds getBlinds() {
+    public BlindAmounts getBlinds() {
         return blinds;
     }
 

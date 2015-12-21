@@ -41,7 +41,7 @@ public class Game extends AggregateRoot<GameEvent> {
 
     private final Map<UUID, Set<UUID>> tableIdToPlayerIdsMap;
 
-    private Blinds currentBlinds;
+    private BlindAmounts currentBlinds;
 
     protected Game(boolean creatingFromEvents, UUID aggregateId,
             String gameName, int maxNumberOfPlayers,
@@ -217,7 +217,7 @@ public class Game extends AggregateRoot<GameEvent> {
         }
 
         GameStartedEvent event = new GameStartedEvent(aggregateId, ++aggregateVersion,
-                tableIdToPlayerIdsMap.keySet(), new Blinds(10, 20));
+                tableIdToPlayerIdsMap.keySet(), new BlindAmounts(10, 20));
         addNewEvent(event);
         applyCommonEvent(event);
     }

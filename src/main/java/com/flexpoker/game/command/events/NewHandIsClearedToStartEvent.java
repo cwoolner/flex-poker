@@ -3,7 +3,7 @@ package com.flexpoker.game.command.events;
 import java.util.UUID;
 
 import com.flexpoker.framework.event.BaseEvent;
-import com.flexpoker.game.command.aggregate.Blinds;
+import com.flexpoker.game.command.aggregate.BlindAmounts;
 import com.flexpoker.game.command.framework.GameEvent;
 
 public class NewHandIsClearedToStartEvent extends BaseEvent implements
@@ -11,10 +11,10 @@ public class NewHandIsClearedToStartEvent extends BaseEvent implements
 
     private final UUID tableId;
 
-    private final Blinds blinds;
+    private final BlindAmounts blinds;
 
     public NewHandIsClearedToStartEvent(UUID aggregateId, int version, UUID tableId,
-            Blinds blinds) {
+            BlindAmounts blinds) {
         super(aggregateId, version);
         this.tableId = tableId;
         this.blinds = blinds;
@@ -24,7 +24,7 @@ public class NewHandIsClearedToStartEvent extends BaseEvent implements
         return tableId;
     }
 
-    public Blinds getBlinds() {
+    public BlindAmounts getBlinds() {
         return blinds;
     }
 

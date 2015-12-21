@@ -11,7 +11,7 @@ import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 
-import com.flexpoker.game.command.aggregate.Blinds;
+import com.flexpoker.game.command.aggregate.BlindAmounts;
 import com.flexpoker.game.query.dto.GameStage;
 
 public class Game {
@@ -42,7 +42,7 @@ public class Game {
 
     private GameStage gameStage;
 
-    private Blinds currentBlinds;
+    private BlindAmounts currentBlinds;
 
     private final List<Table> tables;
 
@@ -50,7 +50,7 @@ public class Game {
 
     public Game(String name, Date startTime, User createdByUser, Date createdOn,
             int totalPlayers, int maxPlayersPerTable, boolean allowRebuys) {
-        currentBlinds = new Blinds(10, 20);
+        currentBlinds = new BlindAmounts(10, 20);
         tables = new ArrayList<>();
         userGameStatuses = new HashSet<>();
         id = UUID.randomUUID();
@@ -136,7 +136,7 @@ public class Game {
         return maxPlayersPerTable;
     }
 
-    public Blinds getCurrentBlinds() {
+    public BlindAmounts getCurrentBlinds() {
         return currentBlinds;
     }
 
