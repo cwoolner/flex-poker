@@ -2,37 +2,37 @@ package com.flexpoker.game.query.dto;
 
 import java.util.UUID;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class GameInListDTO {
 
-    @JsonProperty
     private final UUID id;
 
-    @JsonProperty
     private final String name;
 
-    @JsonProperty
     private final String stage;
 
-    @JsonProperty
     private final int numberOfRegisteredPlayers;
 
-    @JsonProperty
     private final int maxNumberOfPlayers;
 
-    @JsonProperty
     private final int maxPlayersPerTable;
 
-    @JsonProperty
     private final String createdBy;
 
-    @JsonProperty
     private final String createdOn;
 
-    public GameInListDTO(UUID id, String name, String stage,
-            int numberOfRegisteredPlayers, int maxNumberOfPlayers,
-            int maxPlayersPerTable, String createdBy, String createdOn) {
+    @JsonCreator
+    public GameInListDTO(
+            @JsonProperty(value = "id") UUID id,
+            @JsonProperty(value = "name") String name,
+            @JsonProperty(value = "stage") String stage,
+            @JsonProperty(value = "numberOfRegisteredPlayers") int numberOfRegisteredPlayers,
+            @JsonProperty(value = "maxNumberOfPlayers") int maxNumberOfPlayers,
+            @JsonProperty(value = "maxPlayersPerTable") int maxPlayersPerTable,
+            @JsonProperty(value = "createdBy") String createdBy,
+            @JsonProperty(value = "createdOn") String createdOn) {
         this.id = id;
         this.name = name;
         this.stage = stage;
