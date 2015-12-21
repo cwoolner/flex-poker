@@ -15,7 +15,7 @@ public class CreateNewGameTest {
     @Test
     public void testCreateNewGameSuccess() {
         CreateGameCommand createGameCommand = new CreateGameCommand("test", 2,
-                2, UUID.randomUUID());
+                2, UUID.randomUUID(), 10);
         Game game = new DefaultGameFactory().createNew(createGameCommand);
 
         assertEquals(1, game.fetchAppliedEvents().size());

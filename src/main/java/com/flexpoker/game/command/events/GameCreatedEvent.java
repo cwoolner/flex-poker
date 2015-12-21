@@ -15,13 +15,17 @@ public class GameCreatedEvent extends BaseEvent implements GameEvent {
 
     private final UUID createdByPlayerId;
 
+    private final int numberOfMinutesBetweenBlindLevels;
+
     public GameCreatedEvent(UUID aggregateId, int version, String gameName,
-            int numberOfPlayers, int numberOfPlayersPerTable, UUID createdByPlayerId) {
+            int numberOfPlayers, int numberOfPlayersPerTable, UUID createdByPlayerId,
+            int numberOfMinutesBetweenBlindLevels) {
         super(aggregateId, version);
         this.gameName = gameName;
         this.numberOfPlayers = numberOfPlayers;
         this.numberOfPlayersPerTable = numberOfPlayersPerTable;
         this.createdByPlayerId = createdByPlayerId;
+        this.numberOfMinutesBetweenBlindLevels = numberOfMinutesBetweenBlindLevels;
     }
 
     public String getGameName() {
@@ -38,6 +42,10 @@ public class GameCreatedEvent extends BaseEvent implements GameEvent {
 
     public UUID getCreatedByPlayerId() {
         return createdByPlayerId;
+    }
+
+    public int getNumberOfMinutesBetweenBlindLevels() {
+        return numberOfMinutesBetweenBlindLevels;
     }
 
 }

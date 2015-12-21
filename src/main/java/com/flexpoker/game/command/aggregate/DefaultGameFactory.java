@@ -19,7 +19,8 @@ public class DefaultGameFactory implements GameFactory {
         return createGame(false, aggregateId, command.getGameName(),
                 command.getNumberOfPlayers(),
                 command.getNumberOfPlayersPerTable(),
-                command.getCreatedByPlayerId());
+                command.getCreatedByPlayerId(),
+                command.getNumberOfMinutesBetweenBlindLevels());
     }
 
     @Override
@@ -29,16 +30,19 @@ public class DefaultGameFactory implements GameFactory {
                 gameCreatedEvent.getGameName(),
                 gameCreatedEvent.getNumberOfPlayers(),
                 gameCreatedEvent.getNumberOfPlayersPerTable(),
-                gameCreatedEvent.getCreatedByPlayerId());
+                gameCreatedEvent.getCreatedByPlayerId(),
+                gameCreatedEvent.getNumberOfMinutesBetweenBlindLevels());
         game.applyAllHistoricalEvents(events);
         return game;
     }
 
     private Game createGame(boolean creatingFromEvents, UUID aggregateId,
             String gameName, int maxNumberOfPlayers,
-            int numberOfPlayersPerTable, UUID createdById) {
+            int numberOfPlayersPerTable, UUID createdById,
+            int numberOfMinutesBetweenBlindLevels) {
+        BlindSchedule blindSchedule = new BlindSchedule(numberOfMinutesBetweenBlindLevels);
         return new Game(creatingFromEvents, aggregateId, gameName,
-                maxNumberOfPlayers, numberOfPlayersPerTable, createdById);
+                maxNumberOfPlayers, numberOfPlayersPerTable, createdById, blindSchedule);
     }
 
 }

@@ -58,6 +58,10 @@
                     <label>Players per table:</label> <input name="playersPerTable" />
                     <span class="error" />
                 </div>
+                <div>
+                    <label>Blind increment (minutes):</label> <input name="numberOfMinutesBetweenBlindLevels" />
+                    <span class="error" />
+                </div>
                 <input type="submit" value="Create" />
             </form>
         </div>
@@ -93,6 +97,7 @@
             let nameElement = createGameForm.querySelector('input[name=name]');
             let playersElement = createGameForm.querySelector('input[name=players]');
             let playersPerTableElement = createGameForm.querySelector('input[name=playersPerTable]');
+            let numberOfMinutesBetweenBlindLevelsElement = createGameForm.querySelector('input[name=numberOfMinutesBetweenBlindLevels]');
 
             createGameForm.addEventListener('submit', function(evt) {
                 evt.preventDefault();
@@ -119,6 +124,13 @@
                     valid = false;
                 }
 
+                if (numberOfMinutesBetweenBlindLevelsElement.value.trim()) {
+                    numberOfMinutesBetweenBlindLevelsElement.nextElementSibling.innerHTML = '';
+                } else {
+                    numberOfMinutesBetweenBlindLevelsElement.nextElementSibling.innerHTML = 'Required!';
+                    valid = false;
+                }
+
                 if (!valid) {
                     return false;
                 }
@@ -127,7 +139,8 @@
                     detail: {
                         name: nameElement.value.trim(),
                         players: playersElement.value.trim(),
-                        playersPerTable: playersPerTableElement.value.trim()
+                        playersPerTable: playersPerTableElement.value.trim(),
+                        numberOfMinutesBetweenBlindLevels: numberOfMinutesBetweenBlindLevelsElement.value.trim()
                     },
                     bubbles: true
                 });
@@ -154,6 +167,12 @@
                 }
             });
 
+            numberOfMinutesBetweenBlindLevelsElement.addEventListener('keypress', function(evt) {
+                if (!(evt.which >= 48 && evt.which <= 57)) {
+                    evt.preventDefault();
+                }
+            });
+
             this.createShadowRoot().appendChild(templateNode);
         };
 
@@ -162,9 +181,11 @@
             dialog.querySelector('input[name=name]').value = '';
             dialog.querySelector('input[name=players]').value = '';
             dialog.querySelector('input[name=playersPerTable]').value = '';
+            dialog.querySelector('input[name=numberOfMinutesBetweenBlindLevels]').value = '';
             dialog.querySelector('input[name=name]').nextElementSibling.innerHTML = '';
             dialog.querySelector('input[name=players]').nextElementSibling.innerHTML = '';
             dialog.querySelector('input[name=playersPerTable]').nextElementSibling.innerHTML = '';
+            dialog.querySelector('input[name=numberOfMinutesBetweenBlindLevels]').nextElementSibling.innerHTML = '';
 
             dialog.className = 'show-dialog';
             dialog.querySelector('input[name=name]').focus();

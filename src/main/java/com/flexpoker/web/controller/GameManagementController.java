@@ -60,7 +60,8 @@ public class GameManagementController {
     public void createGame(CreateGameDTO model, Principal principal) {
         UUID playerId = loginRepository.fetchAggregateIdByUsername(principal.getName());
         CreateGameCommand command = new CreateGameCommand(model.getName(),
-                model.getPlayers(), model.getPlayersPerTable(), playerId);
+                model.getPlayers(), model.getPlayersPerTable(), playerId,
+                model.getNumberOfMinutesBetweenBlindLevels());
         commandSender.send(command);
     }
 

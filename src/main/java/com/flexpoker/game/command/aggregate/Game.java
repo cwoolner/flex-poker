@@ -41,14 +41,16 @@ public class Game extends AggregateRoot<GameEvent> {
 
     private final Map<UUID, Set<UUID>> tableIdToPlayerIdsMap;
 
-    private BlindAmounts currentBlinds;
+    private final BlindSchedule blindSchedule;
 
     protected Game(boolean creatingFromEvents, UUID aggregateId,
             String gameName, int maxNumberOfPlayers,
-            int numberOfPlayersPerTable, UUID createdById) {
+            int numberOfPlayersPerTable, UUID createdById,
+            BlindSchedule blindSchedule) {
         this.aggregateId = aggregateId;
         this.maxNumberOfPlayers = maxNumberOfPlayers;
         this.numberOfPlayersPerTable = numberOfPlayersPerTable;
+        this.blindSchedule = blindSchedule;
         gameStage = GameStage.REGISTERING;
         registeredPlayerIds = new HashSet<>();
         tableIdToPlayerIdsMap = new HashMap<>();
@@ -59,7 +61,8 @@ public class Game extends AggregateRoot<GameEvent> {
         if (!creatingFromEvents) {
             GameCreatedEvent gameCreatedEvent = new GameCreatedEvent(aggregateId,
                     ++aggregateVersion, gameName, maxNumberOfPlayers,
-                    numberOfPlayersPerTable, createdById);
+                    numberOfPlayersPerTable, createdById,
+                    blindSchedule.getNumberOfMinutesBetweenLevels());
             addNewEvent(gameCreatedEvent);
             applyCommonEvent(gameCreatedEvent);
         }
@@ -77,18 +80,13 @@ public class Game extends AggregateRoot<GameEvent> {
         methodTable.put(GameCreatedEvent.class, x -> {});
         methodTable.put(GameJoinedEvent.class, x -> registeredPlayerIds
                 .add(((GameJoinedEvent) x).getPlayerId()));
-        methodTable.put(GameMovedToStartingStageEvent.class,
-                x -> gameStage = GameStage.STARTING);
-        methodTable.put(GameStartedEvent.class, x -> {
-            currentBlinds = ((GameStartedEvent) x).getBlinds();
-            gameStage = GameStage.INPROGRESS;
-        });
+        methodTable.put(GameMovedToStartingStageEvent.class, x -> gameStage = GameStage.STARTING);
+        methodTable.put(GameStartedEvent.class, x -> gameStage = GameStage.INPROGRESS);
         methodTable.put(GameTablesCreatedAndPlayersAssociatedEvent.class,
                 x -> tableIdToPlayerIdsMap
                         .putAll(((GameTablesCreatedAndPlayersAssociatedEvent) x)
                                 .getTableIdToPlayerIdsMap()));
-        methodTable.put(GameFinishedEvent.class,
-                x -> gameStage = GameStage.FINISHED);
+        methodTable.put(GameFinishedEvent.class, x -> gameStage = GameStage.FINISHED);
         methodTable.put(NewHandIsClearedToStartEvent.class, x -> {});
     }
 
@@ -116,7 +114,8 @@ public class Game extends AggregateRoot<GameEvent> {
         }
 
         NewHandIsClearedToStartEvent event = new NewHandIsClearedToStartEvent(
-                aggregateId, ++aggregateVersion, tableId, currentBlinds);
+                aggregateId, ++aggregateVersion, tableId,
+                blindSchedule.getCurrentBlindAmounts());
         addNewEvent(event);
         applyCommonEvent(event);
     }
@@ -217,7 +216,7 @@ public class Game extends AggregateRoot<GameEvent> {
         }
 
         GameStartedEvent event = new GameStartedEvent(aggregateId, ++aggregateVersion,
-                tableIdToPlayerIdsMap.keySet(), new BlindAmounts(10, 20));
+                tableIdToPlayerIdsMap.keySet(), blindSchedule.getCurrentBlindAmounts());
         addNewEvent(event);
         applyCommonEvent(event);
     }

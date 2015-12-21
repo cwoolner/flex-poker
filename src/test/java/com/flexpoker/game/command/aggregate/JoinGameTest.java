@@ -21,7 +21,7 @@ public class JoinGameTest {
     public void testJoinGameSuccessFirstPlayerJoins() {
         List<GameEvent> events = new ArrayList<>();
         events.add(new GameCreatedEvent(UUID.randomUUID(), 1, "test", 2, 2,
-                UUID.randomUUID()));
+                UUID.randomUUID(), 10));
 
         Game game = new DefaultGameFactory().createFrom(events);
         game.joinGame(UUID.randomUUID());
@@ -35,7 +35,7 @@ public class JoinGameTest {
     public void testJoinGameSuccessGameStarting() {
         List<GameEvent> events = new ArrayList<>();
         events.add(new GameCreatedEvent(UUID.randomUUID(), 1, "test", 2, 2,
-                UUID.randomUUID()));
+                UUID.randomUUID(), 10));
 
         Game game = new DefaultGameFactory().createFrom(events);
         game.joinGame(UUID.randomUUID());
@@ -60,7 +60,7 @@ public class JoinGameTest {
     public void testJoinGameAttemptToJoinTwice() {
         List<GameEvent> events = new ArrayList<>();
         events.add(new GameCreatedEvent(UUID.randomUUID(), 1, "test", 2, 2,
-                UUID.randomUUID()));
+                UUID.randomUUID(), 10));
 
         UUID playerId = UUID.randomUUID();
 
@@ -73,7 +73,7 @@ public class JoinGameTest {
     public void testJoinGameAttemptToJoinMoreThanMax() {
         List<GameEvent> events = new ArrayList<>();
         events.add(new GameCreatedEvent(UUID.randomUUID(), 1, "test", 2, 2,
-                UUID.randomUUID()));
+                UUID.randomUUID(), 10));
 
         Game game = new DefaultGameFactory().createFrom(events);
         game.joinGame(UUID.randomUUID());

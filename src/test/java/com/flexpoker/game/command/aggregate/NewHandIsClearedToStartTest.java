@@ -29,7 +29,7 @@ public class NewHandIsClearedToStartTest {
 
         List<GameEvent> events = new ArrayList<>();
         events.add(new GameCreatedEvent(gameId, 1, "test", 2, 2,
-                UUID.randomUUID()));
+                UUID.randomUUID(), 10));
         events.add(new GameJoinedEvent(gameId, 2, UUID.randomUUID()));
         events.add(new GameJoinedEvent(gameId, 3, UUID.randomUUID()));
         events.add(new GameMovedToStartingStageEvent(gameId, 4));

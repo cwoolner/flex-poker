@@ -29,7 +29,7 @@ public class TableAssignmentTest {
         for (int i = 0; i < 1000; i++) {
             List<GameEvent> events = new ArrayList<>();
             events.add(new GameCreatedEvent(UUID.randomUUID(), 1, "test", 4, 2,
-                    UUID.randomUUID()));
+                    UUID.randomUUID(), 10));
 
             Game game = new DefaultGameFactory().createFrom(events);
 
@@ -163,7 +163,7 @@ public class TableAssignmentTest {
             int numberOfPlayersPerTable) {
         List<GameEvent> events = new ArrayList<>();
         events.add(new GameCreatedEvent(UUID.randomUUID(), 1, "test",
-                numberOfPlayers, numberOfPlayersPerTable, UUID.randomUUID()));
+                numberOfPlayers, numberOfPlayersPerTable, UUID.randomUUID(), 10));
 
         Game game = new DefaultGameFactory().createFrom(events);
 
