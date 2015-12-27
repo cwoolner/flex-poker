@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 
 import com.flexpoker.framework.command.CommandSender;
 import com.flexpoker.framework.processmanager.ProcessManager;
+import com.flexpoker.game.command.aggregate.BlindAmounts;
 import com.flexpoker.game.command.events.GameStartedEvent;
 import com.flexpoker.table.command.commands.StartNewHandForNewGameCommand;
 import com.flexpoker.table.command.framework.TableCommandType;
@@ -28,11 +29,12 @@ public class StartFirstHandProcessManager implements ProcessManager<GameStartedE
     @Async
     @Override
     public void handle(GameStartedEvent event) {
+        BlindAmounts blindAmounts = event.getBlindSchedule().getCurrentBlindAmounts();
+
         Consumer<UUID> startFirstHandConsumer = (UUID tableId) -> {
             StartNewHandForNewGameCommand startNewHandForNewGameCommand = new StartNewHandForNewGameCommand(
                     tableId, event.getAggregateId(),
-                    event.getBlinds().getSmallBlind(),
-                    event.getBlinds().getBigBlind());
+                    blindAmounts.getSmallBlind(), blindAmounts.getBigBlind());
             tableCommandSender.send(startNewHandForNewGameCommand);
         };
         event.getTableIds().forEach(startFirstHandConsumer);

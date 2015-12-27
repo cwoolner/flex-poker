@@ -4,6 +4,6 @@ import com.flexpoker.framework.command.CommandType;
 
 public enum GameCommandType implements CommandType {
 
-    CreateGame, JoinGame, AttemptToStartNewHand
+    CreateGame, JoinGame, AttemptToStartNewHand, IncrementBlinds
 
 }

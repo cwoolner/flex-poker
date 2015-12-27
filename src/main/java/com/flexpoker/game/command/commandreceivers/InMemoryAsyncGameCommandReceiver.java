@@ -10,6 +10,7 @@ import com.flexpoker.framework.command.CommandHandler;
 import com.flexpoker.framework.command.CommandReceiver;
 import com.flexpoker.game.command.commands.AttemptToStartNewHandCommand;
 import com.flexpoker.game.command.commands.CreateGameCommand;
+import com.flexpoker.game.command.commands.IncrementBlindsCommand;
 import com.flexpoker.game.command.commands.JoinGameCommand;
 import com.flexpoker.game.command.framework.GameCommandType;
 
@@ -23,14 +24,18 @@ public class InMemoryAsyncGameCommandReceiver implements
 
     private final CommandHandler<AttemptToStartNewHandCommand> attemptToStartNewHandCommandHandler;
 
+    private final CommandHandler<IncrementBlindsCommand> incrementBlindsCommandHandler;
+
     @Inject
     public InMemoryAsyncGameCommandReceiver(
             CommandHandler<CreateGameCommand> createGameCommandHandler,
             CommandHandler<JoinGameCommand> joinGameCommandHandler,
-            CommandHandler<AttemptToStartNewHandCommand> attemptToStartNewHandCommandHandler) {
+            CommandHandler<AttemptToStartNewHandCommand> attemptToStartNewHandCommandHandler,
+            CommandHandler<IncrementBlindsCommand> incrementBlindsCommandHandler) {
         this.createGameCommandHandler = createGameCommandHandler;
         this.joinGameCommandHandler = joinGameCommandHandler;
         this.attemptToStartNewHandCommandHandler = attemptToStartNewHandCommandHandler;
+        this.incrementBlindsCommandHandler = incrementBlindsCommandHandler;
     }
 
     @Async
@@ -46,6 +51,9 @@ public class InMemoryAsyncGameCommandReceiver implements
         case AttemptToStartNewHand:
             attemptToStartNewHandCommandHandler
                     .handle((AttemptToStartNewHandCommand) command);
+            break;
+        case IncrementBlinds:
+            incrementBlindsCommandHandler.handle((IncrementBlindsCommand) command);
             break;
         default:
             throw new IllegalArgumentException("Command Type cannot be handled: "

@@ -16,8 +16,7 @@ import com.flexpoker.game.command.events.NewHandIsClearedToStartEvent;
 import com.flexpoker.game.command.framework.GameEvent;
 
 @Component
-public class InMemoryAsyncGameEventPublisher
-        implements EventPublisher<GameEvent> {
+public class InMemoryAsyncGameEventPublisher implements EventPublisher<GameEvent> {
 
     private final EventSubscriber<GameEvent> gameEventSubscriber;
 
@@ -27,16 +26,20 @@ public class InMemoryAsyncGameEventPublisher
 
     private final ProcessManager<NewHandIsClearedToStartEvent> startNewHandForExistingTableProcessManager;
 
+    private final ProcessManager<GameStartedEvent> incrementBlindsCountdownProcessManager;
+
     @Inject
     public InMemoryAsyncGameEventPublisher(
             EventSubscriber<GameEvent> gameEventSubscriber,
             ProcessManager<GameTablesCreatedAndPlayersAssociatedEvent> createInitialTablesForGameProcessManager,
             ProcessManager<GameStartedEvent> startFirstHandProcessManager,
-            ProcessManager<NewHandIsClearedToStartEvent> startNewHandForExistingTableProcessManager) {
+            ProcessManager<NewHandIsClearedToStartEvent> startNewHandForExistingTableProcessManager,
+            ProcessManager<GameStartedEvent> incrementBlindsCountdownProcessManager) {
         this.gameEventSubscriber = gameEventSubscriber;
         this.createInitialTablesForGameProcessManager = createInitialTablesForGameProcessManager;
         this.startFirstHandProcessManager = startFirstHandProcessManager;
         this.startNewHandForExistingTableProcessManager = startNewHandForExistingTableProcessManager;
+        this.incrementBlindsCountdownProcessManager = incrementBlindsCountdownProcessManager;
     }
 
     @Override
@@ -58,6 +61,8 @@ public class InMemoryAsyncGameEventPublisher
                 }
             };
             timer.schedule(timerTask, 10000);
+
+            incrementBlindsCountdownProcessManager.handle((GameStartedEvent) event);
         } else if (event.getClass() == NewHandIsClearedToStartEvent.class) {
             startNewHandForExistingTableProcessManager
                     .handle((NewHandIsClearedToStartEvent) event);
