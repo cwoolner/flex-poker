@@ -1,6 +1,8 @@
 package com.flexpoker.game.command.aggregate;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
@@ -19,6 +21,7 @@ public class BlindScheduleTest {
     public void testIncrement() {
         BlindSchedule blindSchedule = new BlindSchedule(10);
         blindSchedule.incrementLevel();
+        assertFalse(blindSchedule.isMaxLevel());
         assertEquals(2, blindSchedule.getCurrentLevel());
         assertEquals(20, blindSchedule.getCurrentBlindAmounts().getSmallBlind());
         assertEquals(40, blindSchedule.getCurrentBlindAmounts().getBigBlind());
@@ -31,6 +34,7 @@ public class BlindScheduleTest {
         blindSchedule.incrementLevel();
         blindSchedule.incrementLevel();
         blindSchedule.incrementLevel();
+        assertTrue(blindSchedule.isMaxLevel());
         assertEquals(5, blindSchedule.getCurrentLevel());
 
         blindSchedule.incrementLevel();

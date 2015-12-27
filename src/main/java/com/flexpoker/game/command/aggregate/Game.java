@@ -13,6 +13,7 @@ import java.util.stream.Stream;
 import com.flexpoker.exception.FlexPokerException;
 import com.flexpoker.framework.command.EventApplier;
 import com.flexpoker.framework.domain.AggregateRoot;
+import com.flexpoker.game.command.events.BlindsIncreasedEvent;
 import com.flexpoker.game.command.events.GameCreatedEvent;
 import com.flexpoker.game.command.events.GameFinishedEvent;
 import com.flexpoker.game.command.events.GameJoinedEvent;
@@ -88,6 +89,7 @@ public class Game extends AggregateRoot<GameEvent> {
                                 .getTableIdToPlayerIdsMap()));
         methodTable.put(GameFinishedEvent.class, x -> gameStage = GameStage.FINISHED);
         methodTable.put(NewHandIsClearedToStartEvent.class, x -> {});
+        methodTable.put(BlindsIncreasedEvent.class, x -> blindSchedule.incrementLevel());
     }
 
     private void applyCommonEvent(GameEvent event) {
@@ -121,7 +123,16 @@ public class Game extends AggregateRoot<GameEvent> {
     }
 
     public void increaseBlinds() {
-        // TODO: implement
+        if (gameStage != GameStage.INPROGRESS) {
+            throw new FlexPokerException(
+                    "cannot increase blinds if the game isn't in progress");
+        }
+
+        if (!blindSchedule.isMaxLevel()) {
+            BlindsIncreasedEvent event = new BlindsIncreasedEvent(aggregateId, ++aggregateVersion);
+            addNewEvent(event);
+            applyCommonEvent(event);
+        }
     }
 
     private void createJoinGameEvent(UUID playerId) {

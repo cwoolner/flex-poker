@@ -45,4 +45,8 @@ public class BlindSchedule {
         }
     }
 
+    public boolean isMaxLevel() {
+        return currentLevel == maxLevel;
+    }
+
 }
