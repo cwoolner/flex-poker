@@ -6,11 +6,11 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta http-equiv="pragma" content="no-cache" />
 
-<script type="text/javascript" src="<c:url value='/resources/js/libs/sockjs.js' />"></script>
-<script type="text/javascript" src="<c:url value='/resources/js/libs/stomp.min.js' />"></script>
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.0.3/sockjs.min.js"></script>
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
 <script type="text/javascript" src="<c:url value='/resources/js/libs/bundle.js' />"></script>
 
-<link rel="stylesheet" type="text/css" href="<c:url value='/resources/css/dist/bundle.css' />" />
+<link rel="stylesheet" type="text/css" href="/resources/css/main.css" />
 
 <link rel="import" href="/resources/fp-chat/chat.html" />
 <link rel="import" href="/resources/fp-gamelist/gamelist.html" />
