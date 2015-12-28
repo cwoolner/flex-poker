@@ -18,8 +18,8 @@ import com.flexpoker.signup.command.events.NewUserSignedUpEvent;
 import com.flexpoker.signup.command.events.SignedUpUserConfirmedEvent;
 import com.flexpoker.signup.command.framework.SignUpEvent;
 
-@Component
-public class InMemoryAsyncSignupEventSubscriber
+@Component("signUpEventSubscriber")
+public class InMemoryAsyncSignUpEventSubscriber
         implements EventSubscriber<SignUpEvent> {
 
     private final Map<UUID, List<SignUpEvent>> listOfEventsNeededToProcess;
@@ -31,7 +31,7 @@ public class InMemoryAsyncSignupEventSubscriber
     private final EventHandler<SignedUpUserConfirmedEvent> signedUpUserConfirmedEventHandler;
 
     @Inject
-    public InMemoryAsyncSignupEventSubscriber(
+    public InMemoryAsyncSignUpEventSubscriber(
             EventHandler<NewUserSignedUpEvent> newUserSignedUpEventHandler,
             EventHandler<SignedUpUserConfirmedEvent> signedUpUserConfirmedEventHandler) {
         listOfEventsNeededToProcess = new ConcurrentHashMap<>();

@@ -17,7 +17,7 @@ import com.flexpoker.framework.event.EventSubscriber;
 import com.flexpoker.login.command.events.LoginUserCreatedEvent;
 import com.flexpoker.login.command.framework.LoginEvent;
 
-@Component
+@Component("loginEventSubscriber")
 public class InMemoryAsyncLoginEventSubscriber implements EventSubscriber<LoginEvent> {
 
     private final Map<UUID, List<LoginEvent>> listOfLoginEventsNeededToProcess;

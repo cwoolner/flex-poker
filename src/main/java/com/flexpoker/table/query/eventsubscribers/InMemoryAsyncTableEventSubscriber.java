@@ -30,7 +30,7 @@ import com.flexpoker.table.command.events.TurnCardDealtEvent;
 import com.flexpoker.table.command.events.WinnersDeterminedEvent;
 import com.flexpoker.table.command.framework.TableEvent;
 
-@Component
+@Component("tableEventSubscriber")
 public class InMemoryAsyncTableEventSubscriber implements EventSubscriber<TableEvent> {
 
     private final Map<UUID, List<TableEvent>> listOfTableEventsNeededToProcess;

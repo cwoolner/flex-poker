@@ -2,7 +2,6 @@ package com.flexpoker.web.commandsenders;
 
 import javax.inject.Inject;
 
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
@@ -20,7 +19,6 @@ public class InMemoryAsyncGameCommandSender
     @Lazy
     @Inject
     public InMemoryAsyncGameCommandSender(
-            @Qualifier("gameCommandReceiver")
             CommandReceiver<GameCommandType> gameCommandReceiver) {
         this.gameCommandReceiver = gameCommandReceiver;
     }

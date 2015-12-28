@@ -22,7 +22,7 @@ import com.flexpoker.game.command.events.GameMovedToStartingStageEvent;
 import com.flexpoker.game.command.events.GameStartedEvent;
 import com.flexpoker.game.command.framework.GameEvent;
 
-@Component
+@Component("gameEventSubscriber")
 public class InMemoryAsyncGameEventSubscriber
         implements EventSubscriber<GameEvent> {
 
@@ -42,13 +42,13 @@ public class InMemoryAsyncGameEventSubscriber
     public InMemoryAsyncGameEventSubscriber(
             EventHandler<GameCreatedEvent> gameCreatedEventHandler,
             EventHandler<GameJoinedEvent> gameJoinedEventHandler,
-            EventHandler<GameMovedToStartingStageEvent> gameMovedToStartingStageEvent,
+            EventHandler<GameMovedToStartingStageEvent> gameMovedToStartingStageEventHandler,
             EventHandler<GameStartedEvent> gameStartedEventHandler) {
         listOfGameEventsNeededToProcess = new ConcurrentHashMap<>();
         nextExpectedEventVersion = new ConcurrentHashMap<>();
         this.gameCreatedEventHandler = gameCreatedEventHandler;
         this.gameJoinedEventHandler = gameJoinedEventHandler;
-        this.gameMovedToStartingStageEventHandler = gameMovedToStartingStageEvent;
+        this.gameMovedToStartingStageEventHandler = gameMovedToStartingStageEventHandler;
         this.gameStartedEventHandler = gameStartedEventHandler;
     }
 
