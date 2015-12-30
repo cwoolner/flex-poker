@@ -20,6 +20,7 @@ public class InMemorySignUpRepository implements SignUpRepository {
     public InMemorySignUpRepository() {
         usernameSet = new HashSet<>();
         signUpCodeMap = new HashMap<>();
+        addDefaultSignUps();
     }
 
     @Override
@@ -52,6 +53,20 @@ public class InMemorySignUpRepository implements SignUpRepository {
     @Override
     public void storeNewlyConfirmedUsername(String username) {
         usernameSet.add(username);
+    }
+
+    @Override
+    public UUID findSignUpCodeByUsername(String username) {
+        return signUpCodeMap.entrySet().stream()
+                .filter(x -> x.getValue().containsKey(username))
+                .findAny().get().getKey();
+    }
+
+    private void addDefaultSignUps() {
+        storeNewlyConfirmedUsername("player1");
+        storeNewlyConfirmedUsername("player2");
+        storeNewlyConfirmedUsername("player3");
+        storeNewlyConfirmedUsername("player4");
     }
 
 }

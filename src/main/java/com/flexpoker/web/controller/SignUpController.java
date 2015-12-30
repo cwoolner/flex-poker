@@ -37,28 +37,36 @@ public class SignUpController {
 
     @RequestMapping(value = "/sign-up", method = RequestMethod.POST)
     public ModelAndView signUpStep1Post(String username, String emailAddress,
-            String password, ModelAndView modelAndView) {
+            String password) {
         boolean usernameExists = signUpCodeRepository.usernameExists(username);
 
         if (usernameExists) {
-            // TODO: show error for existing username
-        } else {
-            SignUpNewUserCommand command = new SignUpNewUserCommand(username,
-                    emailAddress, password);
-            commandSender.send(command);
-            modelAndView.setViewName("sign-up-step1-success");
-            modelAndView.addObject("email", emailAddress);
+            ModelAndView modelAndView = new ModelAndView("sign-up-step1");
+            modelAndView.addObject("error", "Username already exists");
+            return modelAndView;
         }
 
+        SignUpNewUserCommand command = new SignUpNewUserCommand(username,
+                emailAddress, password);
+        commandSender.send(command);
+
+        ModelAndView modelAndView = new ModelAndView("sign-up-step1-success");
+        modelAndView.setViewName("sign-up-step1-success");
+        modelAndView.addObject("email", emailAddress);
+        // TODO: remove this once emails can be sent
+        modelAndView.addObject("username", username);
         return modelAndView;
     }
 
     @RequestMapping(value = "/sign-up-confirm", method = RequestMethod.GET)
-    public ModelAndView signUpStep2Get(@RequestParam UUID signUpCode,
-            ModelAndView modelAndView) {
+    public ModelAndView signUpStep2Get(@RequestParam String username) {
+
+        // TODO: signUpCode should be sent in once email works, username is temporary
+        UUID signUpCode = signUpCodeRepository.findSignUpCodeByUsername(username);
+
         boolean signUpCodeExists = signUpCodeRepository.signUpCodeExists(signUpCode);
 
-        modelAndView.setViewName("sign-up-step2");
+        ModelAndView modelAndView = new ModelAndView("sign-up-step2");
 
         if (signUpCodeExists) {
             modelAndView.addObject("signUpCode", signUpCode);

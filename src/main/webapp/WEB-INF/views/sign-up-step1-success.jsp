@@ -8,7 +8,10 @@
 </head>
 <body>
 
-<p>Email sent to <c:out value="${email}" /></p>
+<p>Email sent to <c:out value="${email}" /> (TODO: not working yet)</p>
+
+<c:url value="/sign-up-confirm?username=${username}" var="signUpConfirmUrl" />
+<p><a href="${signUpConfirmUrl}">Click here to confirm</a></p>
 
 </body>
 </html>

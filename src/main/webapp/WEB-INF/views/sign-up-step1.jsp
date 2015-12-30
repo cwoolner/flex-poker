@@ -12,6 +12,10 @@
 
 <form action="<c:url value='sign-up' />" method='POST'>
 
+<c:if test="${not empty error}">
+   <p style="color:red">Error: ${error}</p>
+</c:if>
+
   <div>
     <label>User:</label> <input type="text" name="username" />
   </div>

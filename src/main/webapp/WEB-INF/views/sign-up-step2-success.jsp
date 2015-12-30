@@ -10,5 +10,8 @@
 
 <p>Success!</p>
 
+<c:url value="/login" var="loginUrl" />
+<p><a href="${loginUrl}">Go to Login</a></p>
+
 </body>
 </html>

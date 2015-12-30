@@ -10,6 +10,8 @@ public interface SignUpRepository {
 
     UUID findAggregateIdByUsernameAndSignUpCode(String username, UUID signUpCode);
 
+    UUID findSignUpCodeByUsername(String username);
+
     void storeSignUpInformation(UUID aggregateId, String username, UUID signupCode);
 
     void storeNewlyConfirmedUsername(String username);

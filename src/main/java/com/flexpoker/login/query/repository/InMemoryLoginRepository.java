@@ -18,16 +18,28 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class InMemoryLoginRepository implements LoginRepository {
 
-    private final Map<String, UserDetails> loginUserMap;
+    private static final Map<String, UserDetails> loginUserMap;
 
-    private final Map<String, UUID> loginIdMap;
+    private static final Map<String, UUID> loginIdMap;
 
-    private final Map<UUID, String> aggregateIdUsernameMap;
+    private static final Map<UUID, String> aggregateIdUsernameMap;
 
-    public InMemoryLoginRepository() {
+    /**
+     * NOTE: Because this class is used by Spring Security, it is instantiated
+     * in two different contexts. This means that the previous Map instance
+     * variables were created twice. When the app stored a new player, it stored
+     * it into a different Map than the one read by Spring Security, so InMemory
+     * login was broken. Changing these to static fixes that issue. Not a huge
+     * deal since a separate persistence store will be used when deploying the
+     * system for real.
+     */
+    static {
         loginUserMap = new HashMap<>();
         loginIdMap = new HashMap<>();
         aggregateIdUsernameMap = new HashMap<>();
+    }
+
+    public InMemoryLoginRepository() {
         addDefaultUsers();
     }
 
