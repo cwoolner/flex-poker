@@ -42,10 +42,10 @@ NOTE: Since the app uses in-memory persistence, the entire state of the app is e
 * Joining a game
 * Call, check, fold
 * Time-out and countdown timer for check/fold
+* Timed blind increment
 
 ##Not done
 
-* Timed blind increment
 * Extremely ugly
 * No sounds
 * Sign-up/registration (w/ email)
