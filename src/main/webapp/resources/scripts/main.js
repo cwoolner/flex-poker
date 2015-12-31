@@ -1,4 +1,3 @@
-require('babel/polyfill');
 import handleRoutes from './router/router';
 import webSocketService from './webSocketService';
 
