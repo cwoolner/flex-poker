@@ -6,12 +6,16 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta http-equiv="pragma" content="no-cache" />
 
-<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.0.3/sockjs.min.js"></script>
-<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
-<script type="text/javascript" src="<c:url value='/resources/js/libs/bundle.js' />"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.0.3/sockjs.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/babel-core/4.7.16/browser.js"></script>
+<script src="/resources/scripts/es6-module-loader-dev.js"></script>
+<script>
+  System.transpiler = 'babel';
+  System.import('resources/scripts/main.js');
+</script>
 
 <link rel="stylesheet" type="text/css" href="/resources/css/main.css" />
-
 <link rel="import" href="/resources/fp-chat/chat.html" />
 <link rel="import" href="/resources/fp-gamelist/gamelist.html" />
 <link rel="import" href="/resources/fp-seat/seat.html" />

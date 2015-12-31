@@ -40,45 +40,45 @@
             let template = localDocument.querySelector('#fp-main-tabs').content;
             let templateNode = document.importNode(template, true);
 
-            webSocketService.registerSubscription('/user/queue/errors', function(message) {
-                alert("Error " + message.body);
-                window.tryingToJoinGameId = null;
-            });
-
-            let self = this;
-            webSocketService.registerSubscription('/app/opengamesforuser', function(message) {
-                displayGameTabs.call(self, message);
-            });
-
-            webSocketService.registerSubscription('/user/queue/opengamesforuser', function(message) {
-                displayGameTabs.call(self, message);
-                if (window.tryingToJoinGameId != null) {
-                    window.location.hash = `/game/${window.tryingToJoinGameId}`;
+            System.import('/resources/scripts/webSocketService.js').then(m => {
+                m.default.registerSubscription('/user/queue/errors', message => {
+                    alert("Error " + message.body);
                     window.tryingToJoinGameId = null;
-                }
-            });
-
-            webSocketService.registerSubscription('/user/queue/opentable', function(message) {
-                let openTable = JSON.parse(message.body);
-                window.location.hash = `/game/${openTable.gameId}/table/${openTable.tableId}`;
-            });
-
-            webSocketService.registerSubscription('/user/queue/personaltablestatus', function(message) {
-                alert(JSON.parse(message.body));
-            });
-
-            webSocketService.registerSubscription('/user/queue/pocketcards', function(message) {
-                let parsedData = JSON.parse(message.body);
-                let pocketCards = {
-                    cardId1: parsedData.cardId1,
-                    cardId2: parsedData.cardId2
-                };
-
-                let pocketCardsReceivedEvent = new CustomEvent(`pocketCardsReceived-${parsedData.tableId}`, {
-                    detail: pocketCards,
-                    bubbles: true
                 });
-                self.dispatchEvent(pocketCardsReceivedEvent);
+
+                m.default.registerSubscription('/app/opengamesforuser',
+                    message => displayGameTabs.call(this, message));
+
+                m.default.registerSubscription('/user/queue/opengamesforuser', message => {
+                    displayGameTabs.call(this, message);
+                    if (window.tryingToJoinGameId != null) {
+                        window.location.hash = `/game/${window.tryingToJoinGameId}`;
+                        window.tryingToJoinGameId = null;
+                    }
+                });
+
+                m.default.registerSubscription('/user/queue/opentable', message => {
+                    const openTable = JSON.parse(message.body);
+                    window.location.hash = `/game/${openTable.gameId}/table/${openTable.tableId}`;
+                });
+
+                m.default.registerSubscription('/user/queue/personaltablestatus', message => {
+                    alert(JSON.parse(message.body));
+                });
+
+                m.default.registerSubscription('/user/queue/pocketcards', message => {
+                    const parsedData = JSON.parse(message.body);
+                    const pocketCards = {
+                        cardId1: parsedData.cardId1,
+                        cardId2: parsedData.cardId2
+                    };
+
+                    const pocketCardsReceivedEvent = new CustomEvent(`pocketCardsReceived-${parsedData.tableId}`, {
+                        detail: pocketCards,
+                        bubbles: true
+                    });
+                    this.dispatchEvent(pocketCardsReceivedEvent);
+                });
             });
 
             this.createShadowRoot().appendChild(templateNode);

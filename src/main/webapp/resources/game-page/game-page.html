@@ -31,8 +31,10 @@
                 self.shadowRoot.querySelector('fp-chat').displayChat(message.body);
             };
 
-            webSocketService.registerSubscription(`/topic/chat/game/${gameId}/user`, displayChat);
-            webSocketService.registerSubscription(`/topic/chat/game/${gameId}/system`, displayChat);
+            System.import('/resources/scripts/webSocketService.js').then(m => {
+                m.default.registerSubscription(`/topic/chat/game/${gameId}/user`, displayChat);
+                m.default.registerSubscription(`/topic/chat/game/${gameId}/system`, displayChat);
+            });
 
             this.shadowRoot.querySelector('.game-chat').addEventListener('chat-msg-entered', function(evt) {
                 sendChat(evt.detail, gameId);
@@ -48,7 +50,9 @@
             tableId: null
         };
 
-        webSocketService.send('/app/sendchatmessage', gameMessage);
+        System.import('/resources/scripts/webSocketService.js').then(m => {
+            m.default.send('/app/sendchatmessage', gameMessage);
+        });
     }
 
     document.registerElement('game-page', {

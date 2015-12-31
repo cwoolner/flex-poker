@@ -1,4 +1,4 @@
-import logout from '../logout/logout';
+import logout from '../logout/logout.js';
 
 class Router {
 

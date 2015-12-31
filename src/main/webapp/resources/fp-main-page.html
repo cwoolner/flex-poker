@@ -24,49 +24,50 @@
             let template = localDocument.querySelector('#fp-main-page').content;
             let templateNode = document.importNode(template, true);
 
-            let self = this;
-            let displayChat = function(message) {
-                self.shadowRoot.querySelector('fp-chat').displayChat(message.body);
-            };
+            System.import('/resources/scripts/webSocketService.js').then(m => {
+                m.default.registerSubscription('/topic/chat/global/user', displayChat.bind(this));
+                m.default.registerSubscription('/topic/chat/global/system', displayChat.bind(this));
 
-            webSocketService.registerSubscription('/topic/chat/global/user', displayChat);
-            webSocketService.registerSubscription('/topic/chat/global/system', displayChat);
-
-            webSocketService.registerSubscription('/topic/availabletournaments', function(message) {
-                self.shadowRoot.querySelector('fp-gamelist').displayGames(JSON.parse(message.body));
+                m.default.registerSubscription('/topic/availabletournaments', message => {
+                    this.shadowRoot.querySelector('fp-gamelist').displayGames(JSON.parse(message.body));
+                });
             });
 
-            templateNode.querySelector('#create-game-button').addEventListener('click', function(evt) {
-                self.shadowRoot.querySelector('fp-create-game-dialog').showDialog();
+            templateNode.querySelector('#create-game-button').addEventListener('click', evt => {
+                this.shadowRoot.querySelector('fp-create-game-dialog').showDialog();
             });
 
-            templateNode.querySelector('.global-chat').addEventListener('chat-msg-entered', function(evt) {
-                var globalMessage = {
+            templateNode.querySelector('.global-chat').addEventListener('chat-msg-entered', evt => {
+                const globalMessage = {
                     message: evt.detail,
                     receiverUsernames: null,
                     gameId: null,
                     tableId: null
                 };
 
-                webSocketService.send('/app/sendchatmessage', globalMessage);
+                System.import('/resources/scripts/webSocketService.js').then(m => m.default.send('/app/sendchatmessage', globalMessage));
             });
 
-            templateNode.querySelector('fp-gamelist').addEventListener('game-open-selected', function(evt) {
-                window.tryingToJoinGameId = evt.detail;
-                let joinGameDialog = self.shadowRoot.querySelector('fp-join-game-dialog');
-                joinGameDialog.showDialog(evt.detail);
+            templateNode.querySelector('fp-gamelist').addEventListener('game-open-selected', evt => {
+                const gameId = evt.detail;
+                window.tryingToJoinGameId = gameId;
+                this.shadowRoot.querySelector('fp-join-game-dialog').showDialog(gameId);
             });
 
-            templateNode.querySelector('fp-create-game-dialog').addEventListener('create-game-submitted', function(evt) {
-                webSocketService.send('/app/creategame', evt.detail);
+            templateNode.querySelector('fp-create-game-dialog').addEventListener('create-game-submitted', evt => {
+                System.import('/resources/scripts/webSocketService.js').then(m => m.default.send('/app/creategame', evt.detail));
             });
 
-            templateNode.querySelector('fp-join-game-dialog').addEventListener('join-game-submitted', function(evt) {
-                webSocketService.send('/app/joingame', evt.detail);
+            templateNode.querySelector('fp-join-game-dialog').addEventListener('join-game-submitted', evt => {
+                System.import('/resources/scripts/webSocketService.js').then(m => m.default.send('/app/joingame', evt.detail));
             });
 
             this.createShadowRoot().appendChild(templateNode);
         };
+
+        function displayChat(message) {
+            this.shadowRoot.querySelector('fp-chat').displayChat(message.body);
+        }
 
         document.registerElement('fp-main-page', {
             prototype: element

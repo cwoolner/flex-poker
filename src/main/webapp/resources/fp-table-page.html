@@ -73,22 +73,21 @@
                 let tableId = newValue;
                 this.shadowRoot.querySelector('#tableId').innerHTML = tableId;
 
-                let self = this;
-                let displayChat = function(message) {
-                    self.shadowRoot.querySelector('fp-chat').displayChat(message.body);
-                };
-
-                webSocketService.registerSubscription(`/topic/game/${gameId}/table/${tableId}`, receiveTableUpdate.bind(self));
-                webSocketService.registerSubscription(`/topic/chat/game/${gameId}/table/${tableId}/user`, displayChat);
-                webSocketService.registerSubscription(`/topic/chat/game/${gameId}/table/${tableId}/system`, displayChat);
+                System.import('/resources/scripts/webSocketService.js').then(m => {
+                    m.default.registerSubscription(`/topic/game/${gameId}/table/${tableId}`, receiveTableUpdate.bind(this));
+                    m.default.registerSubscription(`/topic/chat/game/${gameId}/table/${tableId}/user`, displayChat.bind(this));
+                    m.default.registerSubscription(`/topic/chat/game/${gameId}/table/${tableId}/system`, displayChat.bind(this));
+                });
 
                 this.shadowRoot.querySelector('.table-chat').addEventListener('chat-msg-entered', function(evt) {
                     sendChat(evt.detail, gameId, tableId);
                 });
 
-                document.querySelector('fp-main-tabs').addEventListener(`pocketCardsReceived-${tableId}`, function(evt) {
-                    self.shadowRoot.querySelector('#my-left-card').src = cardData[evt.detail.cardId1];
-                    self.shadowRoot.querySelector('#my-right-card').src = cardData[evt.detail.cardId2];
+                document.querySelector('fp-main-tabs').addEventListener(`pocketCardsReceived-${tableId}`, evt => {
+                    System.import('/resources/scripts/cardData.js').then(m => {
+                        this.shadowRoot.querySelector('#my-left-card').src = m.default[evt.detail.cardId1];
+                        this.shadowRoot.querySelector('#my-right-card').src = m.default[evt.detail.cardId2];
+                    });
                 });
 
                 let checkButton = this.shadowRoot.querySelector('#check-button');
@@ -96,12 +95,16 @@
                 let raiseButton = this.shadowRoot.querySelector('#raise-button');
                 let foldButton = this.shadowRoot.querySelector('#fold-button');
 
-                checkButton.addEventListener('click', function(evt) { check(gameId, tableId); });
-                callButton.addEventListener('click', function(evt) { call(gameId, tableId); });
-                raiseButton.addEventListener('click', function(evt) { raise(gameId, tableId, 0); });
-                foldButton.addEventListener('click', function(evt) { fold(gameId, tableId); });
+                checkButton.addEventListener('click', evt => check(gameId, tableId));
+                callButton.addEventListener('click', evt => call(gameId, tableId));
+                raiseButton.addEventListener('click', evt => raise(gameId, tableId, 0));
+                foldButton.addEventListener('click', evt => fold(gameId, tableId));
             }
         };
+
+        function displayChat(message) {
+            this.shadowRoot.querySelector('fp-chat').displayChat(message.body);
+        }
 
         function sendChat(message, gameId, tableId) {
             let tableMessage = {
@@ -111,30 +114,38 @@
                 tableId: tableId
             };
 
-            webSocketService.send('/app/sendchatmessage', tableMessage);
+            System.import('/resources/scripts/webSocketService.js').then(m => {
+                m.default.send('/app/sendchatmessage', tableMessage);
+            });
         }
 
         function check(gameId, tableId) {
-            webSocketService.send('/app/check', {gameId: gameId, tableId: tableId});
+            System.import('/resources/scripts/webSocketService.js').then(m => {
+                m.default.send('/app/check', {gameId: gameId, tableId: tableId});
+            });
         };
 
         function call(gameId, tableId) {
-            webSocketService.send('/app/call', {gameId: gameId, tableId: tableId});
+            System.import('/resources/scripts/webSocketService.js').then(m => {
+                m.default.send('/app/call', {gameId: gameId, tableId: tableId});
+            });
         };
 
         function raise(gameId, tableId, raiseToAmount) {
-            webSocketService.send('/app/raise', {gameId: gameId, tableId: tableId, raiseToAmount: raiseToAmount});
+            System.import('/resources/scripts/webSocketService.js').then(m => {
+                m.default.send('/app/raise', {gameId: gameId, tableId: tableId, raiseToAmount: raiseToAmount});
+            });
         };
 
         function fold(gameId, tableId) {
-            webSocketService.send('/app/fold', {gameId: gameId, tableId: tableId});
+            System.import('/resources/scripts/webSocketService.js').then(m => {
+                m.default.send('/app/fold', {gameId: gameId, tableId: tableId});
+            });
         };
 
         function receiveTableUpdate(message) {
-            let self = this;
-
             let table = JSON.parse(message.body);
-            self.shadowRoot.querySelector('#total-pot').innerHTML = table.totalPot;
+            this.shadowRoot.querySelector('#total-pot').innerHTML = table.totalPot;
 
             let username = document.querySelector('.username').innerHTML;
 
@@ -159,7 +170,7 @@
                 seatElement.toggleMySeat(seat === mySeat);
             });
 
-            let pokerActionsArea = self.shadowRoot.querySelector('.poker-actions');
+            let pokerActionsArea = this.shadowRoot.querySelector('.poker-actions');
 
             [].slice.call(pokerActionsArea.children).forEach(function(pokerActionElement) {
                 pokerActionElement.className += ' display-none ';
@@ -176,45 +187,45 @@
 
                 if (pokerActions.actionOn) {
                     if (pokerActions.check) {
-                        let checkButton = self.shadowRoot.querySelector('#check-button');
+                        let checkButton = this.shadowRoot.querySelector('#check-button');
                         checkButton.className = checkButton.className.replace(/display-none/g, '').trim();
                     }
 
                     if (pokerActions.call) {
-                        let callButton = self.shadowRoot.querySelector('#call-button');
+                        let callButton = this.shadowRoot.querySelector('#call-button');
                         callButton.className = callButton.className.replace(/display-none/g, '').trim();
                     }
 
                     if (pokerActions.raise) {
-                        let raiseButton = self.shadowRoot.querySelector('#raise-button');
+                        let raiseButton = this.shadowRoot.querySelector('#raise-button');
                         raiseButton.className = raiseButton.className.replace(/display-none/g, '').trim();
                     }
 
                     if (pokerActions.fold) {
-                        let foldButton = self.shadowRoot.querySelector('#fold-button');
+                        let foldButton = this.shadowRoot.querySelector('#fold-button');
                         foldButton.className = foldButton.className.replace(/display-none/g, '').trim();
                     }
                 } else {
                     if (pokerActions.check) {
-                        let checkCheckbox = self.shadowRoot.querySelector('#check-checkbox');
+                        let checkCheckbox = this.shadowRoot.querySelector('#check-checkbox');
                         checkCheckbox.className = checkCheckbox.className.replace(/display-none/g, '').trim();
                         checkCheckbox.nextSibling.className = checkCheckbox.nextSibling.className.replace(/display-none/g, '').trim();
                     }
 
                     if (pokerActions.call) {
-                        let callCheckbox = self.shadowRoot.querySelector('#call-checkbox');
+                        let callCheckbox = this.shadowRoot.querySelector('#call-checkbox');
                         callCheckbox.className = callCheckbox.className.replace(/display-none/g, '').trim();
                         callCheckbox.nextSibling.className = callCheckbox.nextSibling.className.replace(/display-none/g, '').trim();
                     }
 
                     if (pokerActions.raise) {
-                        let raiseCheckbox = self.shadowRoot.querySelector('#raise-checkbox');
+                        let raiseCheckbox = this.shadowRoot.querySelector('#raise-checkbox');
                         raiseCheckbox.className = raiseCheckbox.className.replace(/display-none/g, '').trim();
                         raiseCheckbox.nextSibling.className = raiseCheckbox.nextSibling.className.replace(/display-none/g, '').trim();
                     }
 
                     if (pokerActions.fold) {
-                        let foldCheckbox = self.shadowRoot.querySelector('#fold-checkbox');
+                        let foldCheckbox = this.shadowRoot.querySelector('#fold-checkbox');
                         foldCheckbox.className = foldCheckbox.className.replace(/display-none/g, '').trim();
                         foldCheckbox.nextSibling.className = foldCheckbox.nextSibling.className.replace(/display-none/g, '').trim();
                     }
@@ -222,7 +233,7 @@
 
             }
 
-            let commonCardsArea = self.shadowRoot.querySelector('.common-cards-area');
+            let commonCardsArea = this.shadowRoot.querySelector('.common-cards-area');
 
             while (commonCardsArea.firstChild) {
                 commonCardsArea.removeChild(commonCardsArea.firstChild);
@@ -231,7 +242,10 @@
             table.visibleCommonCards.forEach(function(commonCard) {
                 let card = document.createElement('img');
                 card.className = 'common-card';
-                card.src = cardData[commonCard.id];
+
+                System.import('/resources/scripts/cardData.js').then(m => {
+                    card.src = m.default[commonCard.id];
+                });
 
                 let cardContainer = document.createElement('span');
                 cardContainer.appendChild(card);
