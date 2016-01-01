@@ -17,7 +17,7 @@ class Router {
             return;
         }
 
-        if (hash.startsWith('#/logout')) {
+        if (hash.match('#/?logout')) {
             logout();
             return;
         }
