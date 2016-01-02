@@ -78,21 +78,22 @@ public class SignUpController {
     }
 
     @RequestMapping(value = "/sign-up-confirm", method = RequestMethod.POST)
-    public ModelAndView signUpStep2Post(String username, @RequestParam UUID signUpCode,
-            ModelAndView modelAndView) {
+    public ModelAndView signUpStep2Post(String username, @RequestParam UUID signUpCode) {
         UUID aggregateId = signUpCodeRepository.findAggregateIdByUsernameAndSignUpCode(
                 username, signUpCode);
 
         if (aggregateId == null) {
-            // TODO: show error for invalid sign-up code/username combo
-        } else {
-            ConfirmSignUpUserEmailCommand command = new ConfirmSignUpUserEmailCommand(
-                    aggregateId, username, signUpCode);
-            commandSender.send(command);
-            modelAndView.setViewName("sign-up-step2-success");
-            modelAndView.addObject("username", username);
+            ModelAndView modelAndView = new ModelAndView("sign-up-step2");
+            modelAndView.addObject("signUpCode", signUpCode);
+            modelAndView.addObject("error", "Invalid username and sign up code combination");
+            return modelAndView;
         }
 
+        ConfirmSignUpUserEmailCommand command = new ConfirmSignUpUserEmailCommand(
+                aggregateId, username, signUpCode);
+        commandSender.send(command);
+        ModelAndView modelAndView = new ModelAndView("sign-up-step2-success");
+        modelAndView.addObject("username", username);
         return modelAndView;
     }
 

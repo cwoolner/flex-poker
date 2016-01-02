@@ -7,10 +7,14 @@
 </head>
 <body>
 
-<p>Email sent to <c:out value="${email}" /> (TODO: not working yet)</p>
+<div class="container">
+  <h3 class="text-center">Confirm your sign up</h3>
 
-<c:url value="/sign-up-confirm?username=${username}" var="signUpConfirmUrl" />
-<p><a href="${signUpConfirmUrl}">Click here to confirm</a></p>
+  <p class="text-center">Email sent to <c:out value="${email}" /> (TODO: not working yet)</p>
+
+  <c:url value="/sign-up-confirm?username=${username}" var="signUpConfirmUrl" />
+  <p class="text-center"><a href="${signUpConfirmUrl}">Click here to confirm</a></p>
+</div>
 
 </body>
 </html>

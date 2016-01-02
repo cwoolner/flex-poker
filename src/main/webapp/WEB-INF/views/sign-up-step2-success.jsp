@@ -7,10 +7,12 @@
 </head>
 <body>
 
-<p>Success!</p>
+<div class="container">
+  <h3 class="text-center">Confirmed!</h3>
 
-<c:url value="/login" var="loginUrl" />
-<p><a href="${loginUrl}">Go to Login</a></p>
+  <c:url value="/login" var="loginUrl" />
+  <p class="text-center"><a href="${loginUrl}">Go to Login</a></p>
+</div>
 
 </body>
 </html>

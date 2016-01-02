@@ -7,31 +7,21 @@
 </head>
 <body>
 
-<h3>Sign Up</h3>
-
-<form action="<c:url value='sign-up' />" method='POST'>
-
-<c:if test="${not empty error}">
-   <p style="color:red">Error: ${error}</p>
-</c:if>
-
-  <div>
-    <label>User:</label> <input type="text" name="username" />
-  </div>
-  <div>
-    <label>Password:</label> <input type="password" name="password" />
-  </div>
-  <div>
-    <label>Email:</label> <input type="text" name="emailAddress" />
-  </div>
-
-  <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
-
-  <div>
-    <input name="submit" type="submit" value="Sign Up" />
-  </div>
-
-</form>
+<div class="container">
+  <form class="standard-form" action="<c:url value='sign-up' />" method='POST'>
+    <h3>Sign Up</h3>
+    <c:if test="${error != null}">
+      <p class=" error-message">${error}</p>
+    </c:if>
+    <input type="text" name="username" class="form-control" placeholder="Username" required autofocus />
+    <input type="password" name="password" class="form-control" placeholder="Password" required />
+    <input type="email" name="emailAddress" class="form-control" placeholder="Email" required />
+    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+    <div class="row-top-buffer">
+      <input name="submit" type="submit" class="btn btn-lg btn-primary btn-block" value="Sign Up" />
+    </div>
+  </form>
+</div>
 
 </body>
 </html>

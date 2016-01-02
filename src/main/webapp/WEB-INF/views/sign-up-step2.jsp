@@ -7,21 +7,20 @@
 </head>
 <body>
 
-<form action="<c:url value='sign-up-confirm' />" method='POST'>
-
-  <input type="hidden" name="signUpCode" value="${signUpCode}" />
-
-  <div>
-    <label>User:</label> <input type="text" name="username" />
-  </div>
-
-  <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
-
-  <div>
-    <input name="submit" type="submit" value="Confirm Sign Up" />
-  </div>
-
-</form>
+<div class="container">
+  <form class="standard-form" action="<c:url value='sign-up-confirm' />" method='POST'>
+    <h3>Sign Up</h3>
+    <c:if test="${error != null}">
+      <p class=" error-message">${error}</p>
+    </c:if>
+    <input type="text" name="username" class="form-control" placeholder="Username" required autofocus />
+    <input type="hidden" name="signUpCode" value="${signUpCode}" />
+    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+    <div class="row-top-buffer">
+      <input name="submit" type="submit" class="btn btn-lg btn-primary btn-block" value="Confirm Sign Up" />
+    </div>
+  </form>
+</div>
 
 </body>
 </html>
