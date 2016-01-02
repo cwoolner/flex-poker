@@ -79,7 +79,7 @@
                     m.default.registerSubscription(`/topic/chat/game/${gameId}/table/${tableId}/system`, displayChat.bind(this));
                 });
 
-                this.shadowRoot.querySelector('.table-chat').addEventListener('chat-msg-entered', function(evt) {
+                this.shadowRoot.querySelector('.table-chat').addEventListener('chat-msg-entered', evt => {
                     sendChat(evt.detail, gameId, tableId);
                 });
 
@@ -149,32 +149,28 @@
 
             let username = document.querySelector('.username').innerHTML;
 
-            let mySeat = table.seats.find(function(element) {
-                return element.name === username;
-            });
+            let mySeat = table.seats.find(element => element.name === username);
             let seatHolder = this.shadowRoot.querySelector('.seat-holder');
 
             if (!seatHolder.hasChildNodes()) {
-                table.seats.forEach(function(seat) {
+                table.seats.forEach(seat => {
                     let seatElement = document.createElement('fp-seat');
                     seatElement.dataset.position = seat.position;
                     seatHolder.appendChild(seatElement);
                 });
             }
 
-            table.seats.forEach(function(seat) {
-                let seatElement = [].slice.call(seatHolder.children).find(function(element) {
-                    return element.dataset.position === seat.position.toString();
-                });
+            table.seats.forEach(seat => {
+                let seatElement = [].slice.call(seatHolder.children)
+                    .find(element => element.dataset.position === seat.position.toString());
                 seatElement.populateSeatInfo(seat);
                 seatElement.toggleMySeat(seat === mySeat);
             });
 
             let pokerActionsArea = this.shadowRoot.querySelector('.poker-actions');
 
-            [].slice.call(pokerActionsArea.children).forEach(function(pokerActionElement) {
-                pokerActionElement.className += ' display-none ';
-            });
+            [].slice.call(pokerActionsArea.children).forEach(
+                pokerActionElement => pokerActionElement.className += ' display-none ');
 
             if (mySeat) {
                 var pokerActions = {
@@ -239,7 +235,7 @@
                 commonCardsArea.removeChild(commonCardsArea.firstChild);
             }
 
-            table.visibleCommonCards.forEach(function(commonCard) {
+            table.visibleCommonCards.forEach(commonCard => {
                 let card = document.createElement('img');
                 card.className = 'common-card';
 

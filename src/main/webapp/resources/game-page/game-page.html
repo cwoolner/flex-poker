@@ -26,21 +26,19 @@
             let gameId = newValue;
             this.shadowRoot.querySelector('#gameId').innerHTML = gameId;
 
-            let self = this;
-            let displayChat = function(message) {
-                self.shadowRoot.querySelector('fp-chat').displayChat(message.body);
-            };
-
             System.import('/resources/scripts/webSocketService.js').then(m => {
-                m.default.registerSubscription(`/topic/chat/game/${gameId}/user`, displayChat);
-                m.default.registerSubscription(`/topic/chat/game/${gameId}/system`, displayChat);
+                m.default.registerSubscription(`/topic/chat/game/${gameId}/user`, displayChat.bind(this));
+                m.default.registerSubscription(`/topic/chat/game/${gameId}/system`, displayChat.bind(this));
             });
 
-            this.shadowRoot.querySelector('.game-chat').addEventListener('chat-msg-entered', function(evt) {
-                sendChat(evt.detail, gameId);
-            });
+            this.shadowRoot.querySelector('.game-chat').addEventListener('chat-msg-entered',
+                evt => sendChat(evt.detail, gameId));
         }
     };
+
+    function displayChat(message) {
+        this.shadowRoot.querySelector('fp-chat').displayChat(message.body);
+    }
 
     function sendChat(message, gameId) {
         let gameMessage = {

@@ -44,9 +44,9 @@
 
         let chatForm = templateNode.querySelector('#chat-form');
 
-        chatForm.addEventListener('submit', function(evt) {
+        chatForm.addEventListener('submit', evt => {
             evt.preventDefault();
-            let messageTxtBox = this[0];
+            let messageTxtBox = this.shadowRoot.querySelector('#chat-message');
             if (messageTxtBox.value) {
                 let chatMsgEnteredEvt = new CustomEvent('chat-msg-entered', {
                     detail: messageTxtBox.value,

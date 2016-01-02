@@ -91,7 +91,7 @@
                 container.removeChild(container.lastChild);
             }
 
-            JSON.parse(message.body).forEach(function(openGame) {
+            JSON.parse(message.body).forEach(openGame => {
                 let gameAnchor = document.createElement('a');
                 gameAnchor.innerHTML = openGame.name;
                 gameAnchor.href = `#/game/${openGame.gameId}`;

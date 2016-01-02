@@ -81,17 +81,11 @@
             let templateNode = document.importNode(template, true);
             templateNode.querySelector('div').className = 'display-none';
 
-            let self = this;
-
             let closeButton = templateNode.querySelector('.close');
-            closeButton.addEventListener('click', function(evt) {
-                self.hideDialog();
-            });
+            closeButton.addEventListener('click', evt => this.hideDialog());
 
             let overlay = templateNode.querySelector('.overlay');
-            overlay.addEventListener('click', function(evt) {
-                self.hideDialog();
-            });
+            overlay.addEventListener('click', evt => this.hideDialog());
 
             let createGameForm = templateNode.querySelector('#create-game-form');
             let nameElement = createGameForm.querySelector('input[name=name]');
@@ -99,7 +93,7 @@
             let playersPerTableElement = createGameForm.querySelector('input[name=playersPerTable]');
             let numberOfMinutesBetweenBlindLevelsElement = createGameForm.querySelector('input[name=numberOfMinutesBetweenBlindLevels]');
 
-            createGameForm.addEventListener('submit', function(evt) {
+            createGameForm.addEventListener('submit', evt => {
                 evt.preventDefault();
                 let valid = true;
 
@@ -145,29 +139,28 @@
                     bubbles: true
                 });
                 createGameForm.dispatchEvent(createGameSubmittedEvt);
-                self.hideDialog();
+                this.hideDialog();
             });
 
-            createGameForm.addEventListener('keydown', function(evt) {
+            createGameForm.addEventListener('keydown', evt => {
                 if (evt.keyCode === 27) {
-                    self.hideDialog();
+                    this.hideDialog();
                 }
             });
 
-
-            playersElement.addEventListener('keypress', function(evt) {
+            playersElement.addEventListener('keypress', evt => {
                 if (!(evt.which >= 48 && evt.which <= 57)) {
                     evt.preventDefault();
                 }
             });
 
-            playersPerTableElement.addEventListener('keypress', function(evt) {
+            playersPerTableElement.addEventListener('keypress', evt => {
                 if (!(evt.which >= 48 && evt.which <= 57)) {
                     evt.preventDefault();
                 }
             });
 
-            numberOfMinutesBetweenBlindLevelsElement.addEventListener('keypress', function(evt) {
+            numberOfMinutesBetweenBlindLevelsElement.addEventListener('keypress', evt => {
                 if (!(evt.which >= 48 && evt.which <= 57)) {
                     evt.preventDefault();
                 }

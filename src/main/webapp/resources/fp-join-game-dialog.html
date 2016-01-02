@@ -76,21 +76,15 @@
             let outermostContainer = templateNode.querySelector('div');
             outermostContainer.className = 'display-none';
 
-            let self = this;
-
             let closeButton = templateNode.querySelector('.close');
-            closeButton.addEventListener('click', function(evt) {
-                self.hideDialog();
-            });
+            closeButton.addEventListener('click', evt => this.hideDialog());
 
             let overlay = templateNode.querySelector('.overlay');
-            overlay.addEventListener('click', function(evt) {
-                self.hideDialog();
-            });
+            overlay.addEventListener('click', evt => this.hideDialog());
 
             let joinGameForm = templateNode.querySelector('#join-game-form');
 
-            joinGameForm.addEventListener('submit', function(evt) {
+            joinGameForm.addEventListener('submit', evt => {
                 evt.preventDefault();
 
                 let joinGameEventSubmitted = new CustomEvent('join-game-submitted', {
@@ -98,7 +92,7 @@
                     bubbles: true
                 });
                 joinGameForm.dispatchEvent(joinGameEventSubmitted);
-                self.hideDialog();
+                this.hideDialog();
             });
 
             this.createShadowRoot().appendChild(templateNode);
