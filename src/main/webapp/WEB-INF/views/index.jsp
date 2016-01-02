@@ -11,9 +11,10 @@
 <script src="//cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/babel-core/4.7.16/browser.js"></script>
 <script src="/resources/scripts/es6-module-loader-dev.js"></script>
-<script>
+<script defer>
   System.transpiler = 'babel';
-  System.import('resources/scripts/main.js');
+  System.import('resources/scripts/main.js').then(
+      x => window.dispatchEvent(new Event('hashchange')));
 </script>
 
 <link rel="import" href="/resources/fp-chat/chat.html" />
