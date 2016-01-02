@@ -15,6 +15,9 @@
   <div>
     <label>User:</label> <input type="text" name="username" />
   </div>
+
+  <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+
   <div>
     <input name="submit" type="submit" value="Login" />
   </div>
