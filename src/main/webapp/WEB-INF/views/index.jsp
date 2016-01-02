@@ -3,26 +3,19 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta http-equiv="pragma" content="no-cache" />
 <meta name="_csrf" content="${_csrf.token}" />
 <meta name="_csrf_header" content="${_csrf.headerName}" />
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<jsp:include page="common-header-tags.jsp"></jsp:include>
 
 <script src="//cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.0.3/sockjs.min.js"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/babel-core/4.7.16/browser.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/js/bootstrap.min.js"></script>
 <script src="/resources/scripts/es6-module-loader-dev.js"></script>
 <script>
   System.transpiler = 'babel';
   System.import('resources/scripts/main.js');
 </script>
 
-<link rel="shortcut icon" href="/resources/img/favicon.png" />
-<link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/css/bootstrap.min.css" />
-<link rel="stylesheet" type="text/css" href="/resources/css/main.css" />
 <link rel="import" href="/resources/fp-chat/chat.html" />
 <link rel="import" href="/resources/fp-gamelist/gamelist.html" />
 <link rel="import" href="/resources/fp-seat/seat.html" />

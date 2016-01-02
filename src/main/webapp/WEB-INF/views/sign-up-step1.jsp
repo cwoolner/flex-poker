@@ -2,13 +2,12 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta http-equiv="pragma" content="no-cache" />
-<title>Signup Page</title>
+<jsp:include page="common-header-tags.jsp"></jsp:include>
+<title>Sign Up</title>
 </head>
 <body>
 
-<h3>Signup</h3>
+<h3>Sign Up</h3>
 
 <form action="<c:url value='sign-up' />" method='POST'>
 
@@ -29,7 +28,7 @@
   <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
 
   <div>
-    <input name="submit" type="submit" value="Login" />
+    <input name="submit" type="submit" value="Sign Up" />
   </div>
 
 </form>

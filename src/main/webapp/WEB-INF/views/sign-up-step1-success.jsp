@@ -2,9 +2,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta http-equiv="pragma" content="no-cache" />
-<title>Signup Success</title>
+<jsp:include page="common-header-tags.jsp"></jsp:include>
+<title>Sign Up</title>
 </head>
 <body>
 
