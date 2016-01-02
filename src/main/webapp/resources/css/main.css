@@ -2,7 +2,11 @@
 	color: #ff0000;
 }
 
-.form-signin {
+.row-top-buffer {
+	margin-top: 20px;
+}
+
+.standard-form {
 	max-width: 350px;
 	margin: 0 auto;
 }
