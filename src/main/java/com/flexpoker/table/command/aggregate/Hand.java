@@ -13,7 +13,6 @@ import java.util.stream.Collectors;
 
 import com.flexpoker.exception.FlexPokerException;
 import com.flexpoker.model.PlayerAction;
-import com.flexpoker.model.Pot;
 import com.flexpoker.model.card.FlopCards;
 import com.flexpoker.model.card.PocketCards;
 import com.flexpoker.model.card.RiverCard;

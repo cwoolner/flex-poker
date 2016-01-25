@@ -1,4 +1,4 @@
-package com.flexpoker.model;
+package com.flexpoker.table.command.aggregate.pot;
 
 import java.util.ArrayList;
 import java.util.Collections;

@@ -12,6 +12,7 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 import com.flexpoker.model.card.CardsUsedInHand;
 import com.flexpoker.table.command.aggregate.HandDealerState;
 import com.flexpoker.table.command.aggregate.HandEvaluation;
+import com.flexpoker.table.command.aggregate.pot.Pot;
 
 public class Hand {
 

@@ -1,4 +1,4 @@
-package com.flexpoker.table.command.aggregate.pots;
+package com.flexpoker.table.command.aggregate.pot;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -13,9 +13,9 @@ import java.util.UUID;
 import org.junit.Test;
 
 import com.flexpoker.model.HandRanking;
-import com.flexpoker.model.Pot;
 import com.flexpoker.model.card.CardRank;
 import com.flexpoker.table.command.aggregate.HandEvaluation;
+import com.flexpoker.table.command.aggregate.pot.Pot;
 
 public class PotTest {
 
