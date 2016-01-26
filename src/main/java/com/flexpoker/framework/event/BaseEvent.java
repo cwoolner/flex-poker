@@ -3,7 +3,7 @@ package com.flexpoker.framework.event;
 import java.time.Instant;
 import java.util.UUID;
 
-import org.apache.commons.lang.builder.ToStringBuilder;
+import com.flexpoker.util.StringUtils;
 
 /**
  * Base class used to handle some standard methods and fields so that the
@@ -40,7 +40,7 @@ public abstract class BaseEvent implements Event {
 
     @Override
     public String toString() {
-        return ToStringBuilder.reflectionToString(this);
+        return StringUtils.allFieldsToString(this);
     }
 
 }
