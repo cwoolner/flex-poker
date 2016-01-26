@@ -64,8 +64,6 @@ public class HandDealtEvent extends BaseEvent implements TableEvent {
 
     private final int bigBlind;
 
-    private final Set<UUID> playersToShowCards;
-
     @JsonCreator
     public HandDealtEvent(
             @JsonProperty(value = "aggregateId") UUID aggregateId,
@@ -90,8 +88,7 @@ public class HandDealtEvent extends BaseEvent implements TableEvent {
             @JsonProperty(value = "callAmountsMap") Map<UUID, Integer> callAmountsMap,
             @JsonProperty(value = "raiseToAmountsMap") Map<UUID, Integer> raiseToAmountsMap,
             @JsonProperty(value = "smallBlind") int smallBlind,
-            @JsonProperty(value = "bigBlind") int bigBlind,
-            @JsonProperty(value = "playersToShowCardsMap") Set<UUID> playersToShowCards) {
+            @JsonProperty(value = "bigBlind") int bigBlind) {
         super(aggregateId, version);
         this.gameId = gameId;
         this.handId = handId;
@@ -114,7 +111,6 @@ public class HandDealtEvent extends BaseEvent implements TableEvent {
         this.raiseToAmountsMap = raiseToAmountsMap;
         this.smallBlind = smallBlind;
         this.bigBlind = bigBlind;
-        this.playersToShowCards = playersToShowCards;
     }
 
     @Override
@@ -200,10 +196,6 @@ public class HandDealtEvent extends BaseEvent implements TableEvent {
 
     public int getBigBlind() {
         return bigBlind;
-    }
-
-    public Set<UUID> getPlayersToShowCards() {
-        return new HashSet<>(playersToShowCards);
     }
 
 }

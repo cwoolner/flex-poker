@@ -103,8 +103,7 @@ public class Hand {
             Set<UUID> playersStillInHand, List<HandEvaluation> handEvaluationList,
             HandDealerState handDealerState, Map<UUID, Integer> chipsInBack,
             Map<UUID, Integer> chipsInFrontMap, Map<UUID, Integer> callAmountsMap,
-            Map<UUID, Integer> raiseToAmountsMap, int smallBlind, int bigBlind,
-            Set<UUID> playersToShowCards) {
+            Map<UUID, Integer> raiseToAmountsMap, int smallBlind, int bigBlind) {
         this.gameId = gameId;
         this.tableId = tableId;
         this.entityId = entityId;
@@ -128,7 +127,7 @@ public class Hand {
         this.raiseToAmountsMap = raiseToAmountsMap;
         this.smallBlind = smallBlind;
         this.bigBlind = bigBlind;
-        this.playersToShowCards = playersToShowCards;
+        this.playersToShowCards = new HashSet<>();
     }
 
     public List<TableEvent> dealHand(int aggregateVersion, int actionOnPosition) {
@@ -147,7 +146,7 @@ public class Hand {
                 smallBlindPosition, bigBlindPosition, lastToActPlayerId, seatMap,
                 playerToPocketCardsMap, possibleSeatActionsMap, playersStillInHand,
                 handEvaluationList, handDealerState, chipsInBackMap, chipsInFrontMap,
-                callAmountsMap, raiseToAmountsMap, smallBlind, bigBlind, playersToShowCards);
+                callAmountsMap, raiseToAmountsMap, smallBlind, bigBlind);
         eventsCreated.add(handDealtEvent);
 
         UUID actionOnPlayerId = seatMap.get(Integer.valueOf(actionOnPosition));

@@ -128,8 +128,7 @@ public class Table extends AggregateRoot<TableEvent> {
                 event.getHandEvaluations(), event.getHandDealerState(),
                 event.getChipsInBack(), event.getChipsInFrontMap(),
                 event.getCallAmountsMap(), event.getRaiseToAmountsMap(),
-                event.getSmallBlind(), event.getBigBlind(),
-                event.getPlayersToShowCards());
+                event.getSmallBlind(), event.getBigBlind());
     }
 
     public void startNewHandForNewGame(int smallBlind, int bigBlind,
@@ -238,7 +237,7 @@ public class Table extends AggregateRoot<TableEvent> {
                 bigBlindPosition, null, playerToPocketCardsMap, possibleSeatActionsMap,
                 playersStillInHand, new ArrayList<>(handEvaluations.values()),
                 HandDealerState.NONE, chipsInBack, new HashMap<>(), new HashMap<>(),
-                new HashMap<>(), smallBlind, bigBlind, new HashSet<>());
+                new HashMap<>(), smallBlind, bigBlind);
         List<TableEvent> eventsCreated = hand.dealHand(++aggregateVersion,
                 actionOnPosition);
         eventsCreated.forEach(x -> {
