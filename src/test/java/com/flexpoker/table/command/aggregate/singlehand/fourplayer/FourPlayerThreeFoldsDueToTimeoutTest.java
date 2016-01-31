@@ -36,27 +36,27 @@ public class FourPlayerThreeFoldsDueToTimeoutTest {
                 player3Id, player4Id);
 
         ActionOnChangedEvent rightOfButtonActionOnChangedEvent = (ActionOnChangedEvent) table
-                .fetchNewEvents().get(3);
+                .fetchNewEvents().get(4);
         table.expireActionOn(rightOfButtonActionOnChangedEvent.getHandId(),
                 rightOfButtonActionOnChangedEvent.getPlayerId());
 
         ActionOnChangedEvent buttonActionOnChangedEvent = (ActionOnChangedEvent) table
-                .fetchNewEvents().get(5);
+                .fetchNewEvents().get(6);
         table.expireActionOn(buttonActionOnChangedEvent.getHandId(),
                 buttonActionOnChangedEvent.getPlayerId());
 
         ActionOnChangedEvent smallBlindActionOnChangedEvent = (ActionOnChangedEvent) table
-                .fetchNewEvents().get(7);
+                .fetchNewEvents().get(8);
         table.expireActionOn(smallBlindActionOnChangedEvent.getHandId(),
                 smallBlindActionOnChangedEvent.getPlayerId());
         List<TableEvent> newEvents = table.fetchNewEvents();
 
         verifyNumberOfEventsAndEntireOrderByType(newEvents,
                 TableCreatedEvent.class, CardsShuffledEvent.class,
-                HandDealtEvent.class, ActionOnChangedEvent.class,
-                PlayerFoldedEvent.class, ActionOnChangedEvent.class,
-                PlayerFoldedEvent.class, ActionOnChangedEvent.class,
-                PlayerFoldedEvent.class, PotCreatedEvent.class,
+                HandDealtEvent.class, PotCreatedEvent.class,
+                ActionOnChangedEvent.class, PlayerFoldedEvent.class,
+                ActionOnChangedEvent.class, PlayerFoldedEvent.class,
+                ActionOnChangedEvent.class, PlayerFoldedEvent.class,
                 PotAmountIncreasedEvent.class, PotAmountIncreasedEvent.class,
                 RoundCompletedEvent.class, WinnersDeterminedEvent.class,
                 HandCompletedEvent.class);

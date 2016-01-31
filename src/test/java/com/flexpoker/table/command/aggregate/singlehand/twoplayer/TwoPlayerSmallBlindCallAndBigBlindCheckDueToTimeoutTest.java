@@ -38,11 +38,11 @@ public class TwoPlayerSmallBlindCallAndBigBlindCheckDueToTimeoutTest {
 
         // use the info in action on event to simulate the expire
         UUID smallBlindAndButtonPlayerId = ((ActionOnChangedEvent) table.fetchNewEvents()
-                .get(3)).getPlayerId();
+                .get(4)).getPlayerId();
         table.call(smallBlindAndButtonPlayerId);
 
         ActionOnChangedEvent actionOnChangedEvent = (ActionOnChangedEvent) table
-                .fetchNewEvents().get(5);
+                .fetchNewEvents().get(6);
         UUID bigBlindPlayerId = actionOnChangedEvent.getPlayerId();
         table.expireActionOn(actionOnChangedEvent.getHandId(), bigBlindPlayerId);
 
@@ -65,10 +65,11 @@ public class TwoPlayerSmallBlindCallAndBigBlindCheckDueToTimeoutTest {
                 TableCreatedEvent.class,
                 CardsShuffledEvent.class,
                 HandDealtEvent.class,
+                PotCreatedEvent.class,
                 ActionOnChangedEvent.class,
                 // pre-flop
                 PlayerCalledEvent.class, ActionOnChangedEvent.class,
-                PlayerCheckedEvent.class, PotCreatedEvent.class,
+                PlayerCheckedEvent.class,
                 PotAmountIncreasedEvent.class, PotAmountIncreasedEvent.class,
                 RoundCompletedEvent.class, ActionOnChangedEvent.class,
                 LastToActChangedEvent.class, FlopCardsDealtEvent.class,

@@ -149,10 +149,14 @@ public class Hand {
                 callAmountsMap, raiseToAmountsMap, smallBlind, bigBlind);
         eventsCreated.add(handDealtEvent);
 
+        // creat an initial empty pot for the table
+        eventsCreated.add(new PotCreatedEvent(tableId, aggregateVersion + 1,
+                gameId, entityId, UUID.randomUUID(), playersStillInHand));
+
         UUID actionOnPlayerId = seatMap.get(Integer.valueOf(actionOnPosition));
 
         ActionOnChangedEvent actionOnChangedEvent = new ActionOnChangedEvent(tableId,
-                aggregateVersion + 1, gameId, entityId, actionOnPlayerId);
+                aggregateVersion + 2, gameId, entityId, actionOnPlayerId);
         eventsCreated.add(actionOnChangedEvent);
 
         return eventsCreated;

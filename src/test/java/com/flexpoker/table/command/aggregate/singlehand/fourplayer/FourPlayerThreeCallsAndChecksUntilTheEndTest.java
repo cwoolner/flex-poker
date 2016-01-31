@@ -41,18 +41,18 @@ public class FourPlayerThreeCallsAndChecksUntilTheEndTest {
                 player3Id, player4Id);
 
         UUID rightOfButtonOnPlayerId = ((ActionOnChangedEvent) table.fetchNewEvents()
-                .get(3)).getPlayerId();
+                .get(4)).getPlayerId();
         table.call(rightOfButtonOnPlayerId);
 
-        UUID buttonOnPlayerId = ((ActionOnChangedEvent) table.fetchNewEvents().get(5))
+        UUID buttonOnPlayerId = ((ActionOnChangedEvent) table.fetchNewEvents().get(6))
                 .getPlayerId();
         table.call(buttonOnPlayerId);
 
-        UUID smallBlindPlayerId = ((ActionOnChangedEvent) table.fetchNewEvents().get(7))
+        UUID smallBlindPlayerId = ((ActionOnChangedEvent) table.fetchNewEvents().get(8))
                 .getPlayerId();
         table.call(smallBlindPlayerId);
 
-        UUID bigBlindPlayerId = ((ActionOnChangedEvent) table.fetchNewEvents().get(9))
+        UUID bigBlindPlayerId = ((ActionOnChangedEvent) table.fetchNewEvents().get(10))
                 .getPlayerId();
         table.check(bigBlindPlayerId);
 
@@ -81,12 +81,13 @@ public class FourPlayerThreeCallsAndChecksUntilTheEndTest {
                 TableCreatedEvent.class,
                 CardsShuffledEvent.class,
                 HandDealtEvent.class,
+                PotCreatedEvent.class,
                 ActionOnChangedEvent.class,
                 // pre-flop
                 PlayerCalledEvent.class, ActionOnChangedEvent.class,
                 PlayerCalledEvent.class, ActionOnChangedEvent.class,
                 PlayerCalledEvent.class, ActionOnChangedEvent.class,
-                PlayerCheckedEvent.class, PotCreatedEvent.class,
+                PlayerCheckedEvent.class,
                 PotAmountIncreasedEvent.class,
                 PotAmountIncreasedEvent.class,
                 RoundCompletedEvent.class,

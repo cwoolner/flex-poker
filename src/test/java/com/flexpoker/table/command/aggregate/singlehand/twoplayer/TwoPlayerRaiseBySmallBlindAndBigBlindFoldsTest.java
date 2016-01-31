@@ -36,10 +36,10 @@ public class TwoPlayerRaiseBySmallBlindAndBigBlindFoldsTest {
         // use the info in action on event to determine who the small
         // blind/button is on
         UUID smallBlindAndButtonPlayerId = ((ActionOnChangedEvent) table.fetchNewEvents()
-                .get(3)).getPlayerId();
+                .get(4)).getPlayerId();
         table.raise(smallBlindAndButtonPlayerId, 40);
 
-        UUID bigBlindPlayerId = ((ActionOnChangedEvent) table.fetchNewEvents().get(5))
+        UUID bigBlindPlayerId = ((ActionOnChangedEvent) table.fetchNewEvents().get(6))
                 .getPlayerId();
         table.fold(bigBlindPlayerId);
 
@@ -47,10 +47,10 @@ public class TwoPlayerRaiseBySmallBlindAndBigBlindFoldsTest {
 
         verifyNumberOfEventsAndEntireOrderByType(newEvents,
                 TableCreatedEvent.class, CardsShuffledEvent.class,
-                HandDealtEvent.class, ActionOnChangedEvent.class,
-                PlayerRaisedEvent.class, ActionOnChangedEvent.class,
-                LastToActChangedEvent.class, PlayerFoldedEvent.class,
-                PotCreatedEvent.class, PotAmountIncreasedEvent.class,
+                HandDealtEvent.class, PotCreatedEvent.class,
+                ActionOnChangedEvent.class, PlayerRaisedEvent.class,
+                ActionOnChangedEvent.class, LastToActChangedEvent.class,
+                PlayerFoldedEvent.class, PotAmountIncreasedEvent.class,
                 PotAmountIncreasedEvent.class, RoundCompletedEvent.class,
                 WinnersDeterminedEvent.class, HandCompletedEvent.class);
         verifyEventIdsAndVersionNumbers(tableId, newEvents);

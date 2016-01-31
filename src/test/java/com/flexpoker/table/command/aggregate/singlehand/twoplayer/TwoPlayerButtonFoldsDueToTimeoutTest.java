@@ -41,14 +41,14 @@ public class TwoPlayerButtonFoldsDueToTimeoutTest {
 
         // use the info in action on event to simulate the expire
         ActionOnChangedEvent actionOnChangedEvent = (ActionOnChangedEvent) table
-                .fetchNewEvents().get(3);
+                .fetchNewEvents().get(4);
         table.expireActionOn(actionOnChangedEvent.getHandId(),
                 actionOnChangedEvent.getPlayerId());
 
         List<TableEvent> newEvents = table.fetchNewEvents();
         TableCreatedEvent tableCreatedEvent = (TableCreatedEvent) newEvents.get(0);
         HandDealtEvent handDealtEvent = (HandDealtEvent) newEvents.get(2);
-        PotCreatedEvent potCreatedEvent = (PotCreatedEvent) newEvents.get(5);
+        PotCreatedEvent potCreatedEvent = (PotCreatedEvent) newEvents.get(3);
         PotAmountIncreasedEvent smallBlindPotAmountIncreasedEvent = (PotAmountIncreasedEvent) newEvents.get(6);
         PotAmountIncreasedEvent bigBlindPotAmountIncreasedEvent = (PotAmountIncreasedEvent) newEvents.get(7);
         RoundCompletedEvent roundCompletedEvent = (RoundCompletedEvent) newEvents.get(8);
@@ -66,11 +66,12 @@ public class TwoPlayerButtonFoldsDueToTimeoutTest {
         assertEquals(20, handDealtEvent.getChipsInFrontMap().get(bigBlindPlayerId).intValue());
         assertEquals(HandDealerState.POCKET_CARDS_DEALT, handDealtEvent.getHandDealerState());
 
-        assertEquals(1, potCreatedEvent.getPlayersInvolved().size());
+        assertEquals(2, potCreatedEvent.getPlayersInvolved().size());
+        assertTrue(potCreatedEvent.getPlayersInvolved().contains(buttonPlayerId));
         assertTrue(potCreatedEvent.getPlayersInvolved().contains(bigBlindPlayerId));
 
-        assertEquals(10, smallBlindPotAmountIncreasedEvent.getAmountIncreased());
-        assertEquals(20, bigBlindPotAmountIncreasedEvent.getAmountIncreased());
+        assertEquals(20, smallBlindPotAmountIncreasedEvent.getAmountIncreased());
+        assertEquals(10, bigBlindPotAmountIncreasedEvent.getAmountIncreased());
 
         assertEquals(HandDealerState.COMPLETE, roundCompletedEvent.getNextHandDealerState());
 
@@ -84,8 +85,8 @@ public class TwoPlayerButtonFoldsDueToTimeoutTest {
 
         verifyNumberOfEventsAndEntireOrderByType(newEvents,
                 TableCreatedEvent.class, CardsShuffledEvent.class,
-                HandDealtEvent.class, ActionOnChangedEvent.class,
-                PlayerFoldedEvent.class, PotCreatedEvent.class,
+                HandDealtEvent.class, PotCreatedEvent.class,
+                ActionOnChangedEvent.class, PlayerFoldedEvent.class,
                 PotAmountIncreasedEvent.class, PotAmountIncreasedEvent.class,
                 RoundCompletedEvent.class, WinnersDeterminedEvent.class,
                 HandCompletedEvent.class);

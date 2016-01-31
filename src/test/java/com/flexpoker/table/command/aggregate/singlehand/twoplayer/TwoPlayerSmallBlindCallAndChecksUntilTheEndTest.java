@@ -39,10 +39,10 @@ public class TwoPlayerSmallBlindCallAndChecksUntilTheEndTest {
         // use the info in action on event to get the player id of the small
         // blind
         UUID smallBlindAndButtonPlayerId = ((ActionOnChangedEvent) table.fetchNewEvents()
-                .get(3)).getPlayerId();
+                .get(4)).getPlayerId();
         table.call(smallBlindAndButtonPlayerId);
 
-        UUID bigBlindPlayerId = ((ActionOnChangedEvent) table.fetchNewEvents().get(5))
+        UUID bigBlindPlayerId = ((ActionOnChangedEvent) table.fetchNewEvents().get(6))
                 .getPlayerId();
         table.check(bigBlindPlayerId);
 
@@ -65,10 +65,11 @@ public class TwoPlayerSmallBlindCallAndChecksUntilTheEndTest {
                 TableCreatedEvent.class,
                 CardsShuffledEvent.class,
                 HandDealtEvent.class,
+                PotCreatedEvent.class,
                 ActionOnChangedEvent.class,
                 // pre-flop
                 PlayerCalledEvent.class, ActionOnChangedEvent.class,
-                PlayerCheckedEvent.class, PotCreatedEvent.class,
+                PlayerCheckedEvent.class,
                 PotAmountIncreasedEvent.class, PotAmountIncreasedEvent.class,
                 RoundCompletedEvent.class, ActionOnChangedEvent.class,
                 LastToActChangedEvent.class, FlopCardsDealtEvent.class,
