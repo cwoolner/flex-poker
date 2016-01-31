@@ -1,15 +1,15 @@
 package com.flexpoker.table.command.aggregate.pot;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import com.flexpoker.exception.FlexPokerException;
 import com.flexpoker.table.command.aggregate.HandEvaluation;
 
 public class Pot {
@@ -33,7 +33,6 @@ public class Pot {
                 .collect(Collectors.toSet());
         chipsForPlayerToWin = new HashMap<>();
         open = true;
-        recalculateWinners();
     }
 
     public UUID getId() {
@@ -50,11 +49,17 @@ public class Pot {
     }
 
     public void addChips(int chips) {
+        if (!open) {
+            throw new FlexPokerException("cannot add chips to a closed pot");
+        }
         amount += chips;
         recalculateWinners();
     }
 
     public void removePlayer(UUID playerId) {
+        if (!open) {
+            throw new FlexPokerException("cannot remove player from a closed pot");
+        }
         playersInvolved.remove(playerId);
         handEvaluations.removeIf(x -> x.getPlayerId().equals(playerId));
         recalculateWinners();
@@ -68,22 +73,14 @@ public class Pot {
         open = false;
     }
 
-    // TODO: make this package visibility after the class is moved
-    public boolean idMatches(UUID potId) {
-        return entityId.equals(potId);
-    }
-
     private void recalculateWinners() {
-        List<HandEvaluation> sortedHandEvaluations = new ArrayList<>(handEvaluations);
-        Collections.sort(sortedHandEvaluations);
-        Collections.reverse(sortedHandEvaluations);
-
-        List<HandEvaluation> relevantHandEvaluationsForPot = sortedHandEvaluations
-                .stream().filter(x -> playersInvolved.contains(x.getPlayerId()))
+        List<HandEvaluation> relevantHandEvaluationsForPot = handEvaluations.stream()
+                .filter(x -> playersInvolved.contains(x.getPlayerId()))
+                .sorted((x, y) -> y.compareTo(x))
                 .collect(Collectors.toList());
 
         HandEvaluation topAssignedHand = null;
-        Set<UUID> winners = new HashSet<>();
+        List<UUID> winners = new ArrayList<>();
 
         for (HandEvaluation handEvaluation : relevantHandEvaluationsForPot) {
             if (topAssignedHand == null || topAssignedHand.compareTo(handEvaluation) == 0) {
@@ -98,17 +95,13 @@ public class Pot {
 
         chipsForPlayerToWin.clear();
 
-        winners.forEach(x -> {
-            chipsForPlayerToWin.put(x, Integer.valueOf(baseNumberOfChips));
-        });
+        winners.forEach(x -> chipsForPlayerToWin.put(x, baseNumberOfChips));
 
-        if (bonusChips > 0) {
-            // TODO: randomize this (or maybe being in a Set is good enough)
-            UUID winnerOfBonusChips = winners.stream().findFirst().get();
-            chipsForPlayerToWin.put(
-                    winnerOfBonusChips,
-                    Integer.valueOf(chipsForPlayerToWin.get(winnerOfBonusChips)
-                            .intValue() + bonusChips));
+        if (bonusChips >= 1) {
+            int randomNumber = new Random(System.currentTimeMillis())
+                    .nextInt(winners.size());
+            chipsForPlayerToWin.compute(winners.get(randomNumber),
+                    (playerId, chips) -> chips + bonusChips);
         }
 
     }

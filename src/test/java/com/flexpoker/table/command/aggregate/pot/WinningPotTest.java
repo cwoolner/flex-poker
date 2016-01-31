@@ -15,9 +15,8 @@ import org.junit.Test;
 import com.flexpoker.model.HandRanking;
 import com.flexpoker.model.card.CardRank;
 import com.flexpoker.table.command.aggregate.HandEvaluation;
-import com.flexpoker.table.command.aggregate.pot.Pot;
 
-public class PotTest {
+public class WinningPotTest {
 
     @Test
     public void testBasicTwoPersonPotHasSingleWinner() {
@@ -70,11 +69,6 @@ public class PotTest {
         handEvaluation3.setHandRanking(HandRanking.STRAIGHT);
         handEvaluation3.setPrimaryCardRank(CardRank.KING);
 
-        List<HandEvaluation> winningHands = new ArrayList<>();
-        winningHands.add(handEvaluation1);
-        winningHands.add(handEvaluation2);
-        winningHands.add(handEvaluation3);
-
         Pot pot = new Pot(UUID.randomUUID(), new HashSet<>(Arrays.asList(handEvaluation1,
                 handEvaluation2, handEvaluation3)));
         pot.addChips(60);
@@ -105,11 +99,6 @@ public class PotTest {
         handEvaluation3.setPlayerId(player3);
         handEvaluation3.setHandRanking(HandRanking.STRAIGHT);
         handEvaluation3.setPrimaryCardRank(CardRank.KING);
-
-        List<HandEvaluation> winningHands = new ArrayList<>();
-        winningHands.add(handEvaluation1);
-        winningHands.add(handEvaluation2);
-        winningHands.add(handEvaluation3);
 
         Pot pot = new Pot(UUID.randomUUID(), new HashSet<>(Arrays.asList(handEvaluation1,
                 handEvaluation2, handEvaluation3)));
@@ -150,11 +139,6 @@ public class PotTest {
         handEvaluation3.setPlayerId(player3);
         handEvaluation3.setHandRanking(HandRanking.STRAIGHT);
         handEvaluation3.setPrimaryCardRank(CardRank.KING);
-
-        List<HandEvaluation> winningHands = new ArrayList<>();
-        winningHands.add(handEvaluation1);
-        winningHands.add(handEvaluation2);
-        winningHands.add(handEvaluation3);
 
         Pot pot = new Pot(UUID.randomUUID(), new HashSet<>(Arrays.asList(handEvaluation1,
                 handEvaluation2, handEvaluation3)));
