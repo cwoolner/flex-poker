@@ -2,14 +2,12 @@ package com.flexpoker.table.command.aggregate;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import com.flexpoker.exception.FlexPokerException;
 import com.flexpoker.model.PlayerAction;
@@ -17,6 +15,7 @@ import com.flexpoker.model.card.FlopCards;
 import com.flexpoker.model.card.PocketCards;
 import com.flexpoker.model.card.RiverCard;
 import com.flexpoker.model.card.TurnCard;
+import com.flexpoker.table.command.aggregate.pot.PotHandler;
 import com.flexpoker.table.command.events.ActionOnChangedEvent;
 import com.flexpoker.table.command.events.FlopCardsDealtEvent;
 import com.flexpoker.table.command.events.HandCompletedEvent;
@@ -71,8 +70,6 @@ public class Hand {
 
     private final List<HandEvaluation> handEvaluationList;
 
-    private final Set<Pot> pots;
-
     private final Set<UUID> playersStillInHand;
 
     private final Map<UUID, Integer> chipsInBackMap;
@@ -94,6 +91,8 @@ public class Hand {
     private boolean turnDealt;
 
     private boolean riverDealt;
+
+    private final PotHandler potHandler;
 
     public Hand(UUID gameId, UUID tableId, UUID entityId, Map<Integer, UUID> seatMap,
             FlopCards flopCards, TurnCard turnCard, RiverCard riverCard,
@@ -119,7 +118,6 @@ public class Hand {
         this.handEvaluationList = handEvaluationList;
         this.possibleSeatActionsMap = possibleSeatActionsMap;
         this.playersStillInHand = playersStillInHand;
-        this.pots = new HashSet<>();
         this.handDealerState = handDealerState;
         this.chipsInBackMap = chipsInBack;
         this.chipsInFrontMap = chipsInFrontMap;
@@ -128,6 +126,8 @@ public class Hand {
         this.smallBlind = smallBlind;
         this.bigBlind = bigBlind;
         this.playersToShowCards = new HashSet<>();
+        this.potHandler = new PotHandler(gameId, tableId, entityId,
+                handEvaluationList);
     }
 
     public List<TableEvent> dealHand(int aggregateVersion, int actionOnPosition) {
@@ -336,7 +336,8 @@ public class Hand {
         }
 
         List<TableEvent> tableEvents = new ArrayList<>();
-        tableEvents.addAll(calculatePots(aggregateVersion));
+        tableEvents.addAll(potHandler.calculatePots(aggregateVersion,
+                chipsInFrontMap, chipsInBackMap, playersStillInHand));
 
         HandDealerState nextHandDealerState = playersStillInHand.size() == 1 ? HandDealerState.COMPLETE
                 : HandDealerState.values()[handDealerState.ordinal() + 1];
@@ -406,7 +407,7 @@ public class Hand {
     void applyEvent(PlayerFoldedEvent event) {
         UUID playerId = event.getPlayerId();
         playersStillInHand.remove(playerId);
-        pots.forEach(x -> x.removePlayer(playerId));
+        potHandler.removePlayerFromAllPots(playerId);
         possibleSeatActionsMap.get(playerId).clear();
         callAmountsMap.put(playerId, Integer.valueOf(0));
         raiseToAmountsMap.put(playerId, Integer.valueOf(0));
@@ -459,76 +460,6 @@ public class Hand {
 
     void applyEvent(@SuppressWarnings("unused") RiverCardDealtEvent event) {
         riverDealt = true;
-    }
-
-    /**
-     * The general approach to calculating pots is as follows:
-     * 
-     * 1. Discover all of the distinct numbers of chips in front of each player.
-     * For example, if everyone has 30 chips in front, 30 would be the only
-     * number in the distinct set. If two players had 10 and one person had 20,
-     * then 10 and 20 would be in the set.
-     * 
-     * 2. Loop through each chip count, starting with the smallest, and shave
-     * off the number of chips from each stack in front of each player, and
-     * place them into an open pot.
-     * 
-     * 3. If an open pot does not exist, create a new one.
-     * 
-     * 4. If it's determined that a player is all-in, then the pot for that
-     * player's all-in should be closed. Multiple closed pots can exist, but
-     * only one open pot should ever exist at any given time.
-     * 
-     * @param aggregateVersion
-     */
-    private List<TableEvent> calculatePots(int aggregateVersion) {
-        List<TableEvent> newPotEvents = new ArrayList<>();
-
-        List<Integer> distinctChipsInFrontAmountsList = chipsInFrontMap.values().stream()
-                .filter(x -> x.intValue() != 0).distinct().collect(Collectors.toList());
-        distinctChipsInFrontAmountsList.sort(null);
-
-        distinctChipsInFrontAmountsList.forEach(chipsPerLevel -> {
-            Optional<Pot> openPotOptional = pots.stream()
-                    .filter(x -> x.isOpen()).findAny();
-
-            UUID openPotId = openPotOptional.isPresent()
-                    ? openPotOptional.get().getId() : UUID.randomUUID();
-
-            if (!openPotOptional.isPresent()) {
-                PotCreatedEvent potCreatedEvent = new PotCreatedEvent(tableId,
-                        aggregateVersion, gameId, entityId, openPotId,
-                        playersStillInHand.stream().filter(x ->
-                            chipsInFrontMap.getOrDefault(x, 0) > 0)
-                        .collect(Collectors.toSet()));
-                newPotEvents.add(potCreatedEvent);
-                applyEvent(potCreatedEvent);
-            }
-
-            PotAmountIncreasedEvent potAmountIncreasedEvent = new PotAmountIncreasedEvent(
-                    tableId, aggregateVersion + newPotEvents.size(), gameId,
-                    entityId, openPotId, chipsPerLevel.intValue());
-            newPotEvents.add(potAmountIncreasedEvent);
-            applyEvent(potAmountIncreasedEvent);
-
-            seatMap.values().forEach(playerInSeat -> {
-                if (chipsInFrontMap.getOrDefault(playerInSeat, 0) > 0) {
-                    if (playerIsAllIn(playerInSeat)) {
-                        PotClosedEvent potClosedEvent = new PotClosedEvent(
-                                tableId, aggregateVersion, gameId, entityId,
-                                openPotId);
-                        newPotEvents.add(potClosedEvent);
-                        applyEvent(potClosedEvent);
-                    }
-                }
-            });
-        });
-
-        return newPotEvents;
-    }
-
-    private boolean playerIsAllIn(UUID playerInSeat) {
-        return chipsInBackMap.getOrDefault(playerInSeat, Integer.valueOf(0)).intValue() == 0;
     }
 
     private UUID findActionOnPlayerIdForNewRound() {
@@ -601,23 +532,10 @@ public class Hand {
 
     Optional<WinnersDeterminedEvent> determineWinnersIfAppropriate(int aggregateVersion) {
         if (handDealerState == HandDealerState.COMPLETE) {
-            Set<UUID> playersToShowCards = new HashSet<>();
-            Map<UUID, Integer> playersToChipsWonMap = new HashMap<>();
-
-            pots.forEach(pot -> {
-                playersStillInHand.forEach(playerInHand -> {
-                    int numberOfChipsWonForPlayer = pot.getChipsWon(playerInHand);
-                    playersToChipsWonMap.put(playerInHand,
-                            Integer.valueOf(numberOfChipsWonForPlayer));
-
-                    if (pot.forcePlayerToShowCards(playerInHand)) {
-                        playersToShowCards.add(playerInHand);
-                    }
-                });
-            });
-
+            Set<UUID> playersRequiredToShowCards = potHandler.fetchPlayersRequriedToShowCards(playersStillInHand);
+            Map<UUID, Integer> playersToChipsWonMap = potHandler.fetchChipsWon(playersStillInHand);
             return Optional.of(new WinnersDeterminedEvent(tableId, aggregateVersion,
-                    gameId, entityId, playersToShowCards, playersToChipsWonMap));
+                    gameId, entityId, playersRequiredToShowCards, playersToChipsWonMap));
         }
 
         return Optional.empty();
@@ -704,22 +622,17 @@ public class Hand {
     }
 
     void applyEvent(PotAmountIncreasedEvent event) {
-        Pot pot = fetchPotById(event.getPotId());
-        pot.addChips(event.getAmountIncreased());
+        potHandler.addToPot(event.getPotId(), event.getAmountIncreased());
         playersStillInHand.forEach(x -> subtractFromChipsInFront(x,
                 event.getAmountIncreased()));
     }
 
     void applyEvent(PotClosedEvent event) {
-        Pot pot = fetchPotById(event.getPotId());
-        pot.closePot();
+        potHandler.closePot(event.getPotId());
     }
 
     void applyEvent(PotCreatedEvent event) {
-        Set<HandEvaluation> handEvaluationsOfPlayersInPot = handEvaluationList.stream()
-                .filter(x -> event.getPlayersInvolved().contains(x.getPlayerId()))
-                .collect(Collectors.toSet());
-        pots.add(new Pot(event.getPotId(), handEvaluationsOfPlayersInPot));
+        potHandler.addNewPot(event.getPotId(), event.getPlayersInvolved());
     }
 
     void applyEvent(RoundCompletedEvent event) {
@@ -735,10 +648,6 @@ public class Hand {
         event.getPlayersToChipsWonMap().forEach((playerId, chips) -> {
             addToChipsInBack(playerId, chips.intValue());
         });
-    }
-
-    private Pot fetchPotById(UUID potId) {
-        return pots.stream().filter(x -> x.idMatches(potId)).findAny().get();
     }
 
 }
