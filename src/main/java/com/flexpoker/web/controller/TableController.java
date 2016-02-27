@@ -18,7 +18,9 @@ import com.flexpoker.table.command.commands.FoldCommand;
 import com.flexpoker.table.command.commands.RaiseCommand;
 import com.flexpoker.table.command.framework.TableCommandType;
 import com.flexpoker.table.query.repository.TableRepository;
-import com.flexpoker.web.dto.incoming.DefaultTableActionDTO;
+import com.flexpoker.web.dto.incoming.CallTableActionDTO;
+import com.flexpoker.web.dto.incoming.CheckTableActionDTO;
+import com.flexpoker.web.dto.incoming.FoldTableActionDTO;
 import com.flexpoker.web.dto.incoming.RaiseTableActionDTO;
 import com.flexpoker.web.model.outgoing.TableDTO;
 
@@ -46,21 +48,21 @@ public class TableController {
     }
 
     @MessageMapping(value = "/app/check")
-    public void check(DefaultTableActionDTO model, Principal principal) {
+    public void check(CheckTableActionDTO model, Principal principal) {
         UUID playerId = loginRepository.fetchAggregateIdByUsername(principal.getName());
         commandSender.send(new CheckCommand(model.getTableId(), model.getGameId(),
                 playerId));
     }
 
     @MessageMapping(value = "/app/fold")
-    public void fold(DefaultTableActionDTO model, Principal principal) {
+    public void fold(FoldTableActionDTO model, Principal principal) {
         UUID playerId = loginRepository.fetchAggregateIdByUsername(principal.getName());
         commandSender.send(new FoldCommand(model.getTableId(), model.getGameId(),
                 playerId));
     }
 
     @MessageMapping(value = "/app/call")
-    public void call(DefaultTableActionDTO model, Principal principal) {
+    public void call(CallTableActionDTO model, Principal principal) {
         UUID playerId = loginRepository.fetchAggregateIdByUsername(principal.getName());
         commandSender.send(new CallCommand(model.getTableId(), model.getTableId(),
                 playerId));

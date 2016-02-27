@@ -5,14 +5,15 @@ import java.util.UUID;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class DefaultTableActionDTO {
+public class CallTableActionDTO {
 
     private final UUID gameId;
 
     private final UUID tableId;
 
     @JsonCreator
-    public DefaultTableActionDTO(@JsonProperty(value = "gameId") UUID gameId,
+    public CallTableActionDTO(
+            @JsonProperty(value = "gameId") UUID gameId,
             @JsonProperty(value = "tableId") UUID tableId) {
         this.gameId = gameId;
         this.tableId = tableId;

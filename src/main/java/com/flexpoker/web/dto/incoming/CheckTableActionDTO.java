@@ -5,22 +5,18 @@ import java.util.UUID;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class RaiseTableActionDTO {
+public class CheckTableActionDTO {
 
     private final UUID gameId;
 
     private final UUID tableId;
 
-    private final int raiseToAmount;
-
     @JsonCreator
-    public RaiseTableActionDTO(
+    public CheckTableActionDTO(
             @JsonProperty(value = "gameId") UUID gameId,
-            @JsonProperty(value = "tableId") UUID tableId,
-            @JsonProperty(value = "raiseToAmount") int raiseToAmount) {
+            @JsonProperty(value = "tableId") UUID tableId) {
         this.gameId = gameId;
         this.tableId = tableId;
-        this.raiseToAmount = raiseToAmount;
     }
 
     public UUID getGameId() {
@@ -29,10 +25,6 @@ public class RaiseTableActionDTO {
 
     public UUID getTableId() {
         return tableId;
-    }
-
-    public int getRaiseToAmount() {
-        return raiseToAmount;
     }
 
 }
