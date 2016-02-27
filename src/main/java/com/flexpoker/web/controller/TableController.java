@@ -18,8 +18,8 @@ import com.flexpoker.table.command.commands.FoldCommand;
 import com.flexpoker.table.command.commands.RaiseCommand;
 import com.flexpoker.table.command.framework.TableCommandType;
 import com.flexpoker.table.query.repository.TableRepository;
-import com.flexpoker.web.dto.DefaultTableActionDTO;
-import com.flexpoker.web.dto.RaiseTableActionDTO;
+import com.flexpoker.web.dto.incoming.DefaultTableActionDTO;
+import com.flexpoker.web.dto.incoming.RaiseTableActionDTO;
 import com.flexpoker.web.model.outgoing.TableDTO;
 
 @Controller

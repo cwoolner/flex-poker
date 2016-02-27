@@ -1,4 +1,4 @@
-package com.flexpoker.web.dto;
+package com.flexpoker.web.dto.incoming;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
