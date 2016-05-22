@@ -1,5 +1,6 @@
 import React from 'react';
 import webSocketService from '../common/webSocketService';
+import MainTabs from './MainTabs';
 
 export default React.createClass({
 
@@ -45,6 +46,7 @@ export default React.createClass({
   render() {
     return (
       <div>
+        <MainTabs />
         <button onClick={this.openCreateGameModal}>Create Game</button>
         <fp-gamelist></fp-gamelist>
         <fp-chat class="global-chat"></fp-chat>

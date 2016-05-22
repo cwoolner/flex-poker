@@ -8,10 +8,10 @@ function handleRoutes() {
         let mainPageElement = document.createElement('fp-main-page');
 
         // NOTE: probably leaks memory since no handlers are cleaned
-        while (viewArea.firstChild) {
-            viewArea.removeChild(viewArea.firstChild);
-        }
-        viewArea.appendChild(mainPageElement);
+        // while (viewArea.firstChild) {
+            // viewArea.removeChild(viewArea.firstChild);
+        // }
+        // viewArea.appendChild(mainPageElement);
         return;
     }
 

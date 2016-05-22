@@ -10,3 +10,23 @@
 	max-width: 350px;
 	margin: 0 auto;
 }
+
+.game-tab-container li {
+  width: 100px;
+}
+
+.game-tab-registering {
+  background-color: #FFFFFF;
+}
+
+.game-tab-starting {
+  background-color: #0000FF;
+}
+
+.game-tab-inprogress {
+  background-color: #00FF00;
+}
+
+.game-tab-finished {
+  background-color: #FF0000;
+}
