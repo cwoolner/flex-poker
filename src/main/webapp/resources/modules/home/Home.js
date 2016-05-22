@@ -2,12 +2,15 @@ import React from 'react';
 import webSocketService from '../common/webSocketService';
 import MainTabs from './MainTabs';
 import CreateGameDialog from '../game/CreateGameDialog';
+import JoinGameDialog from '../game/JoinGameDialog';
 
 export default React.createClass({
 
   getInitialState() {
     return {
-      createGameDialogOpen: false
+      createGameDialogOpen: false,
+      joinGameDialogOpen: false,
+      joinGameId: null
     }
   },
 
@@ -33,24 +36,40 @@ export default React.createClass({
     document.querySelector('fp-gamelist').addEventListener('game-open-selected', evt => {
       const gameId = evt.detail;
       window.tryingToJoinGameId = gameId;
-      document.querySelector('fp-join-game-dialog').showDialog(gameId);
-    });
-
-    document.querySelector('fp-join-game-dialog').addEventListener('join-game-submitted', evt => {
-      webSocketService.send('/app/joingame', evt.detail);
+      this.openJoinGameModal(gameId);
     });
 
   },
 
   openCreateGameModal() {
     this.setState({
-      createGameDialogOpen: true
+      createGameDialogOpen: true,
+      joinGameDialogOpen: this.state.joinGameDialogOpen,
+      joinGameId: null
+    });
+  },
+
+  openJoinGameModal(gameId) {
+    this.setState({
+      createGameDialogOpen: this.state.createGameDialogOpen,
+      joinGameDialogOpen: true,
+      joinGameId: gameId
     });
   },
 
   hideCreateGameDialog() {
     this.setState({
-      createGameDialogOpen: false
+      createGameDialogOpen: false,
+      joinGameDialogOpen: this.state.joinGameDialogOpen,
+      joinGameId: null
+    });
+  },
+
+  hideJoinGameDialog() {
+    this.setState({
+      createGameDialogOpen: this.state.createGameDialogOpen,
+      joinGameDialogOpen: false,
+      joinGameId: null
     });
   },
 
@@ -64,7 +83,10 @@ export default React.createClass({
         <CreateGameDialog
           hideDialog={this.hideCreateGameDialog}
           className={this.state.createGameDialogOpen ? '' : 'hidden'} />
-        <fp-join-game-dialog></fp-join-game-dialog>
+        <JoinGameDialog
+          hideDialog={this.hideJoinGameDialog}
+          className={this.state.joinGameDialogOpen ? '' : 'hidden'}
+          gameId={this.state.joinGameId} />
       </div>
     )
   }

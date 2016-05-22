@@ -16,7 +16,6 @@
 <link rel="import" href="/resources/modules/game/gamelist.html" />
 <link rel="import" href="/resources/modules/table/seat.html" />
 <link rel="import" href="/resources/modules/game/game-page.html" />
-<link rel="import" href="/resources/modules/game/fp-join-game-dialog.html" />
 <link rel="import" href="/resources/modules/table/fp-table-page.html" />
 
 <title>Home</title>
