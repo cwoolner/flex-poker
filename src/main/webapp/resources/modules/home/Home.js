@@ -1,8 +1,15 @@
 import React from 'react';
 import webSocketService from '../common/webSocketService';
 import MainTabs from './MainTabs';
+import CreateGameDialog from '../game/CreateGameDialog';
 
 export default React.createClass({
+
+  getInitialState() {
+    return {
+      createGameDialogOpen: false
+    }
+  },
 
   componentDidMount() {
     webSocketService.registerSubscription('/topic/chat/global/user', displayChat.bind(this));
@@ -29,10 +36,6 @@ export default React.createClass({
       document.querySelector('fp-join-game-dialog').showDialog(gameId);
     });
 
-    document.querySelector('fp-create-game-dialog').addEventListener('create-game-submitted', evt => {
-      webSocketService.send('/app/creategame', evt.detail);
-    });
-
     document.querySelector('fp-join-game-dialog').addEventListener('join-game-submitted', evt => {
       webSocketService.send('/app/joingame', evt.detail);
     });
@@ -40,7 +43,15 @@ export default React.createClass({
   },
 
   openCreateGameModal() {
-    document.querySelector('fp-create-game-dialog').showDialog();
+    this.setState({
+      createGameDialogOpen: true
+    });
+  },
+
+  hideCreateGameDialog() {
+    this.setState({
+      createGameDialogOpen: false
+    });
   },
 
   render() {
@@ -50,7 +61,9 @@ export default React.createClass({
         <button onClick={this.openCreateGameModal}>Create Game</button>
         <fp-gamelist></fp-gamelist>
         <fp-chat class="global-chat"></fp-chat>
-        <fp-create-game-dialog></fp-create-game-dialog>
+        <CreateGameDialog
+          hideDialog={this.hideCreateGameDialog}
+          className={this.state.createGameDialogOpen ? '' : 'hidden'} />
         <fp-join-game-dialog></fp-join-game-dialog>
       </div>
     )
