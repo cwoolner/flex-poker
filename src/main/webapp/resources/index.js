@@ -10,6 +10,8 @@ webSocketService.registerSubscription('/user/topic/chat/personal/system', messag
 
 window.onhashchange = handleRoutes;
 
+window.dispatchEvent(new Event('hashchange'));
+
 render((
   <Router history={browserHistory}>
     <Route path="/" component={Home}>

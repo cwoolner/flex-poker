@@ -9,14 +9,7 @@
 
 <script src="//cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.0.3/sockjs.min.js"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.34/browser.min.js"></script>
-<script src="//rawgit.com/ModuleLoader/es6-module-loader/v0.17.10/dist/es6-module-loader-dev.js"></script>
 
-<script defer>
-  System.transpiler = 'babel';
-  System.import('resources/index.js').then(
-      x => window.dispatchEvent(new Event('hashchange')));
-</script>
 <script src="/resources/bundle.js" defer></script>
 
 <link rel="import" href="/resources/modules/common/chat.html" />
