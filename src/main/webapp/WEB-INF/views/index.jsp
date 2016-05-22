@@ -18,7 +18,6 @@
 <link rel="import" href="/resources/modules/game/game-page.html" />
 <link rel="import" href="/resources/modules/game/fp-create-game-dialog.html" />
 <link rel="import" href="/resources/modules/game/fp-join-game-dialog.html" />
-<link rel="import" href="/resources/modules/home/fp-main-page.html" />
 <link rel="import" href="/resources/modules/home/fp-main-tabs.html" />
 <link rel="import" href="/resources/modules/table/fp-table-page.html" />
 
@@ -27,15 +26,13 @@
 
 <body>
 
-<div id="app"></div>
-
 <p>Logged in as: <span class="username"><sec:authentication property="principal.username" /></span></p>
 
 <p><a href="/#logout">Logout</a></p>
 
 <fp-main-tabs></fp-main-tabs>
 
-<div id="view-area"></div>
+<div id="app"></div>
 
 </body>
 </html>
