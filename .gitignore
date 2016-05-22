@@ -6,4 +6,5 @@ log.out
 .idea/
 dump.rdb
 output/
-
+node_modules/
+src/main/webapp/resources/bundle.js

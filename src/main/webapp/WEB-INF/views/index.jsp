@@ -17,6 +17,7 @@
   System.import('resources/scripts/main.js').then(
       x => window.dispatchEvent(new Event('hashchange')));
 </script>
+<script src="/resources/bundle.js" defer></script>
 
 <link rel="import" href="/resources/fp-chat/chat.html" />
 <link rel="import" href="/resources/fp-gamelist/gamelist.html" />
@@ -32,6 +33,8 @@
 </head>
 
 <body>
+
+<div id="app"></div>
 
 <p>Logged in as: <span class="username"><sec:authentication property="principal.username" /></span></p>
 
