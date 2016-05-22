@@ -14,20 +14,20 @@
 
 <script defer>
   System.transpiler = 'babel';
-  System.import('resources/scripts/main.js').then(
+  System.import('resources/index.js').then(
       x => window.dispatchEvent(new Event('hashchange')));
 </script>
 <script src="/resources/bundle.js" defer></script>
 
-<link rel="import" href="/resources/fp-chat/chat.html" />
-<link rel="import" href="/resources/fp-gamelist/gamelist.html" />
-<link rel="import" href="/resources/fp-seat/seat.html" />
-<link rel="import" href="/resources/game-page/game-page.html" />
-<link rel="import" href="/resources/fp-create-game-dialog.html" />
-<link rel="import" href="/resources/fp-join-game-dialog.html" />
-<link rel="import" href="/resources/fp-main-page.html" />
-<link rel="import" href="/resources/fp-main-tabs.html" />
-<link rel="import" href="/resources/fp-table-page.html" />
+<link rel="import" href="/resources/modules/common/chat.html" />
+<link rel="import" href="/resources/modules/game/gamelist.html" />
+<link rel="import" href="/resources/modules/table/seat.html" />
+<link rel="import" href="/resources/modules/game/game-page.html" />
+<link rel="import" href="/resources/modules/game/fp-create-game-dialog.html" />
+<link rel="import" href="/resources/modules/game/fp-join-game-dialog.html" />
+<link rel="import" href="/resources/modules/home/fp-main-page.html" />
+<link rel="import" href="/resources/modules/home/fp-main-tabs.html" />
+<link rel="import" href="/resources/modules/table/fp-table-page.html" />
 
 <title>Home</title>
 </head>

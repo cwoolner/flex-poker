@@ -26,7 +26,7 @@
             let gameId = newValue;
             this.shadowRoot.querySelector('#gameId').innerHTML = gameId;
 
-            System.import('/resources/scripts/webSocketService.js').then(m => {
+            System.import('/resources/modules/common/webSocketService.js').then(m => {
                 m.default.registerSubscription(`/topic/chat/game/${gameId}/user`, displayChat.bind(this));
                 m.default.registerSubscription(`/topic/chat/game/${gameId}/system`, displayChat.bind(this));
             });
@@ -48,7 +48,7 @@
             tableId: null
         };
 
-        System.import('/resources/scripts/webSocketService.js').then(m => {
+        System.import('/resources/modules/common/webSocketService.js').then(m => {
             m.default.send('/app/sendchatmessage', gameMessage);
         });
     }

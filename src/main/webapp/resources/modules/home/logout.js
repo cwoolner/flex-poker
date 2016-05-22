@@ -1,4 +1,4 @@
-import webSocketService from '../webSocketService.js';
+import webSocketService from '../common/webSocketService';
 
 function logout() {
     webSocketService.disconnect();

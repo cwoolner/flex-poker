@@ -1,4 +1,4 @@
-import logout from '../logout/logout.js';
+import logout from './modules/home/logout';
 
 function handleRoutes() {
     let hash = location.hash;

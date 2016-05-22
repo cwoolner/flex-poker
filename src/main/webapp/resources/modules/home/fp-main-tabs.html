@@ -40,7 +40,7 @@
             let template = localDocument.querySelector('#fp-main-tabs').content;
             let templateNode = document.importNode(template, true);
 
-            System.import('/resources/scripts/webSocketService.js').then(m => {
+            System.import('/resources/modules/common/webSocketService.js').then(m => {
                 m.default.registerSubscription('/user/queue/errors', message => {
                     alert("Error " + message.body);
                     window.tryingToJoinGameId = null;

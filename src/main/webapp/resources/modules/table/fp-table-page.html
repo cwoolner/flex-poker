@@ -73,7 +73,7 @@
                 let tableId = newValue;
                 this.shadowRoot.querySelector('#tableId').innerHTML = tableId;
 
-                System.import('/resources/scripts/webSocketService.js').then(m => {
+                System.import('/resources/modules/common/webSocketService.js').then(m => {
                     m.default.registerSubscription(`/topic/game/${gameId}/table/${tableId}`, receiveTableUpdate.bind(this));
                     m.default.registerSubscription(`/topic/chat/game/${gameId}/table/${tableId}/user`, displayChat.bind(this));
                     m.default.registerSubscription(`/topic/chat/game/${gameId}/table/${tableId}/system`, displayChat.bind(this));
@@ -84,7 +84,7 @@
                 });
 
                 document.querySelector('fp-main-tabs').addEventListener(`pocketCardsReceived-${tableId}`, evt => {
-                    System.import('/resources/scripts/cardData.js').then(m => {
+                    System.import('/resources/modules/table/cardData.js').then(m => {
                         this.shadowRoot.querySelector('#my-left-card').src = m.default[evt.detail.cardId1];
                         this.shadowRoot.querySelector('#my-right-card').src = m.default[evt.detail.cardId2];
                     });
@@ -114,31 +114,31 @@
                 tableId: tableId
             };
 
-            System.import('/resources/scripts/webSocketService.js').then(m => {
+            System.import('/resources/modules/common/webSocketService.js').then(m => {
                 m.default.send('/app/sendchatmessage', tableMessage);
             });
         }
 
         function check(gameId, tableId) {
-            System.import('/resources/scripts/webSocketService.js').then(m => {
+            System.import('/resources/modules/common/webSocketService.js').then(m => {
                 m.default.send('/app/check', {gameId: gameId, tableId: tableId});
             });
         };
 
         function call(gameId, tableId) {
-            System.import('/resources/scripts/webSocketService.js').then(m => {
+            System.import('/resources/modules/common/webSocketService.js').then(m => {
                 m.default.send('/app/call', {gameId: gameId, tableId: tableId});
             });
         };
 
         function raise(gameId, tableId, raiseToAmount) {
-            System.import('/resources/scripts/webSocketService.js').then(m => {
+            System.import('/resources/modules/common/webSocketService.js').then(m => {
                 m.default.send('/app/raise', {gameId: gameId, tableId: tableId, raiseToAmount: raiseToAmount});
             });
         };
 
         function fold(gameId, tableId) {
-            System.import('/resources/scripts/webSocketService.js').then(m => {
+            System.import('/resources/modules/common/webSocketService.js').then(m => {
                 m.default.send('/app/fold', {gameId: gameId, tableId: tableId});
             });
         };
@@ -239,7 +239,7 @@
                 let card = document.createElement('img');
                 card.className = 'common-card';
 
-                System.import('/resources/scripts/cardData.js').then(m => {
+                System.import('/resources/modules/table/cardData.js').then(m => {
                     card.src = m.default[commonCard.id];
                 });
 
