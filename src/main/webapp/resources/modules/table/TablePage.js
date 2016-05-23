@@ -1,6 +1,7 @@
 import React from 'react';
 import webSocketService from '../common/webSocketService';
 import cardData from './cardData';
+import CommonCards from './CommonCards';
 
 export default React.createClass({
 
@@ -44,15 +45,7 @@ export default React.createClass({
 
         <div className={"poker-table"}>
           <div id="total-pot">{this.state.totalPot}</div>
-          <div class="common-cards-area">
-            {
-              this.state.visibleCommonCards.map((commonCard, index) => {
-                <span key={index}>
-                  <img className={'common-card'} src={cardData[commonCard.id]} />
-                </span>
-              })
-            }
-          </div>
+          <CommonCards visibleCommonCards={this.state.visibleCommonCards} />
           <div class="seat-holder"></div>
         </div>
 
