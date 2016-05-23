@@ -23,8 +23,6 @@
 
 <p>Logged in as: <span class="username"><sec:authentication property="principal.username" /></span></p>
 
-<p><a href="/#logout">Logout</a></p>
-
 <div id="app"></div>
 
 </body>
