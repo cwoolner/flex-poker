@@ -5,6 +5,7 @@ import CommonCards from './CommonCards';
 import MyCards from './MyCards';
 import Seat from './Seat';
 import PokerActions from './PokerActions';
+import Chat from '../common/Chat';
 import _ from 'lodash';
 
 export default React.createClass({
@@ -26,10 +27,6 @@ export default React.createClass({
     webSocketService.registerSubscription(`/topic/game/${gameId}/table/${tableId}`, receiveTableUpdate.bind(this));
     webSocketService.registerSubscription(`/topic/chat/game/${gameId}/table/${tableId}/user`, displayChat.bind(this));
     webSocketService.registerSubscription(`/topic/chat/game/${gameId}/table/${tableId}/system`, displayChat.bind(this));
-
-    document.querySelector('.table-chat').addEventListener('chat-msg-entered', evt => {
-      sendChat(evt.detail, gameId, tableId);
-    });
 
     document.addEventListener(`pocketCardsReceived-${tableId}`, evt => {
       this.setState({
@@ -76,7 +73,7 @@ export default React.createClass({
                 raiseTo={mySeat.raiseTo} />
         }
 
-        <fp-chat class="table-chat"></fp-chat>
+        <Chat ref="tableChat" sendChat={sendChat.bind(this, this.props.params.gameId, this.props.params.tableId)} />
       </div>
     )
   }
@@ -84,10 +81,10 @@ export default React.createClass({
 })
 
 function displayChat(message) {
-  document.querySelector('fp-chat').displayChat(message.body);
+  this.refs.tableChat.displayChat(message.body);
 }
 
-function sendChat(message, gameId, tableId) {
+function sendChat(gameId, tableId, message) {
   const tableMessage = {
     message: message,
     receiverUsernames: null,

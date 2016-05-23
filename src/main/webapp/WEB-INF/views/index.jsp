@@ -12,8 +12,6 @@
 
 <script src="/resources/bundle.js" defer></script>
 
-<link rel="import" href="/resources/modules/common/chat.html" />
-
 <title>Home</title>
 </head>
 

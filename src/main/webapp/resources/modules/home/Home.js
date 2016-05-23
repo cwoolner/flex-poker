@@ -4,6 +4,7 @@ import MainTabs from './MainTabs';
 import CreateGameDialog from '../game/CreateGameDialog';
 import JoinGameDialog from '../game/JoinGameDialog';
 import GameList from '../game/GameList';
+import Chat from '../common/Chat';
 import { Link } from 'react-router';
 
 export default React.createClass({
@@ -28,17 +29,6 @@ export default React.createClass({
         joinGameId: this.state.joinGameId,
         openGameList: JSON.parse(message.body)
       });
-    });
-
-    document.querySelector('.global-chat').addEventListener('chat-msg-entered', evt => {
-      const globalMessage = {
-          message: evt.detail,
-          receiverUsernames: null,
-          gameId: null,
-          tableId: null
-      };
-
-      webSocketService.send('/app/sendchatmessage', globalMessage);
     });
 
   },
@@ -94,7 +84,7 @@ export default React.createClass({
           gameList={this.state.openGameList}
           gameOpenedCallback={this.gameOpened}
           className={'game-list'} />
-        <fp-chat class="global-chat"></fp-chat>
+        <Chat ref="globalChat" sendChat={sendGlobalChat} />
         <CreateGameDialog
           hideDialog={this.hideCreateGameDialog}
           className={this.state.createGameDialogOpen ? '' : 'hidden'} />
@@ -108,5 +98,16 @@ export default React.createClass({
 });
 
 function displayChat(message) {
-  document.querySelector('fp-chat').displayChat(message.body);
+  this.refs.globalChat.displayChat(message.body);
+}
+
+function sendGlobalChat(message) {
+  const globalMessage = {
+    message,
+    receiverUsernames: null,
+    gameId: null,
+    tableId: null
+  };
+
+  webSocketService.send('/app/sendchatmessage', globalMessage);
 }

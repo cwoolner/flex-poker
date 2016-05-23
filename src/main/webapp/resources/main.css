@@ -108,3 +108,13 @@ div[data-still-in-hand='true'] {
 div[data-still-in-hand='false'] {
   color: #FF00FF;
 }
+
+.chat-area textarea {
+  height: 100px;
+  width: 100%;
+  background-color: white;
+}
+
+.chat-area input[type=text] {
+  width: 100%;
+}
