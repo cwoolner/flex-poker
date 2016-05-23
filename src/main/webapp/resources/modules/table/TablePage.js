@@ -2,6 +2,7 @@ import React from 'react';
 import webSocketService from '../common/webSocketService';
 import cardData from './cardData';
 import CommonCards from './CommonCards';
+import MyCards from './MyCards';
 
 export default React.createClass({
 
@@ -44,15 +45,12 @@ export default React.createClass({
         <p>{this.props.params.tableId}</p>
 
         <div className={"poker-table"}>
-          <div id="total-pot">{this.state.totalPot}</div>
+          <div>{this.state.totalPot}</div>
           <CommonCards visibleCommonCards={this.state.visibleCommonCards} />
           <div class="seat-holder"></div>
         </div>
 
-        <div>
-          <img class="my-cards" src={this.state.myLeftCard} />
-          <img class="my-cards" src={this.state.myRightCard} />
-        </div>
+        <MyCards myLeftCard={this.state.myLeftCard} myRightCard={this.state.myRightCard} />
 
         <div class="poker-actions">
           <button id="check-button" onClick={evt => check(this.props.params.gameId, this.props.params.tableId)}>Check</button>
