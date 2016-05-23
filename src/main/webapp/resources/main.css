@@ -70,3 +70,7 @@
   font-weight: bold;
   font-family: 'arial', 'sans-serif';
 }
+
+.game-list {
+  margin-top: 10px;
+}

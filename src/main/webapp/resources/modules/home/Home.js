@@ -3,6 +3,7 @@ import webSocketService from '../common/webSocketService';
 import MainTabs from './MainTabs';
 import CreateGameDialog from '../game/CreateGameDialog';
 import JoinGameDialog from '../game/JoinGameDialog';
+import GameList from '../game/GameList';
 
 export default React.createClass({
 
@@ -10,7 +11,8 @@ export default React.createClass({
     return {
       createGameDialogOpen: false,
       joinGameDialogOpen: false,
-      joinGameId: null
+      joinGameId: null,
+      openGameList: []
     }
   },
 
@@ -19,7 +21,12 @@ export default React.createClass({
     webSocketService.registerSubscription('/topic/chat/global/system', displayChat.bind(this));
 
     webSocketService.registerSubscription('/topic/availabletournaments', message => {
-      document.querySelector('fp-gamelist').displayGames(JSON.parse(message.body));
+      this.setState({
+        createGameDialogOpen: this.state.createGameDialogOpen,
+        joinGameDialogOpen: this.state.joinGameDialogOpen,
+        joinGameId: this.state.joinGameId,
+        openGameList: JSON.parse(message.body)
+      });
     });
 
     document.querySelector('.global-chat').addEventListener('chat-msg-entered', evt => {
@@ -33,19 +40,19 @@ export default React.createClass({
       webSocketService.send('/app/sendchatmessage', globalMessage);
     });
 
-    document.querySelector('fp-gamelist').addEventListener('game-open-selected', evt => {
-      const gameId = evt.detail;
-      window.tryingToJoinGameId = gameId;
-      this.openJoinGameModal(gameId);
-    });
+  },
 
+  gameOpened(gameId) {
+    window.tryingToJoinGameId = gameId;
+    this.openJoinGameModal(gameId);
   },
 
   openCreateGameModal() {
     this.setState({
       createGameDialogOpen: true,
       joinGameDialogOpen: this.state.joinGameDialogOpen,
-      joinGameId: null
+      joinGameId: null,
+      openGameList: this.state.openGameList
     });
   },
 
@@ -53,7 +60,8 @@ export default React.createClass({
     this.setState({
       createGameDialogOpen: this.state.createGameDialogOpen,
       joinGameDialogOpen: true,
-      joinGameId: gameId
+      joinGameId: gameId,
+      openGameList: this.state.openGameList
     });
   },
 
@@ -61,7 +69,8 @@ export default React.createClass({
     this.setState({
       createGameDialogOpen: false,
       joinGameDialogOpen: this.state.joinGameDialogOpen,
-      joinGameId: null
+      joinGameId: null,
+      openGameList: this.state.openGameList
     });
   },
 
@@ -69,7 +78,8 @@ export default React.createClass({
     this.setState({
       createGameDialogOpen: this.state.createGameDialogOpen,
       joinGameDialogOpen: false,
-      joinGameId: null
+      joinGameId: null,
+      openGameList: this.state.openGameList
     });
   },
 
@@ -77,8 +87,11 @@ export default React.createClass({
     return (
       <div>
         <MainTabs />
-        <button onClick={this.openCreateGameModal}>Create Game</button>
-        <fp-gamelist></fp-gamelist>
+        <button className={'btn'} onClick={this.openCreateGameModal}>Create Game</button>
+        <GameList
+          gameList={this.state.openGameList}
+          gameOpenedCallback={this.gameOpened}
+          className={'game-list'} />
         <fp-chat class="global-chat"></fp-chat>
         <CreateGameDialog
           hideDialog={this.hideCreateGameDialog}
