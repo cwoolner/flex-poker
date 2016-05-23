@@ -1,5 +1,6 @@
 import React from 'react';
 import webSocketService from '../common/webSocketService';
+import { hashHistory } from 'react-router';
 
 export default React.createClass({
 
@@ -15,7 +16,7 @@ export default React.createClass({
     webSocketService.registerSubscription('/user/queue/opengamesforuser', message => {
       displayGameTabs.call(this, message);
       if (window.tryingToJoinGameId != null) {
-        window.location.hash = `/game/${window.tryingToJoinGameId}`;
+        hashHistory.push(`/game/${window.tryingToJoinGameId}`);
         window.tryingToJoinGameId = null;
       }
     });

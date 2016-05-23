@@ -14,7 +14,6 @@
 
 <link rel="import" href="/resources/modules/common/chat.html" />
 <link rel="import" href="/resources/modules/table/seat.html" />
-<link rel="import" href="/resources/modules/game/game-page.html" />
 <link rel="import" href="/resources/modules/table/fp-table-page.html" />
 
 <title>Home</title>
