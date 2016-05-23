@@ -41,7 +41,7 @@ export default React.createClass({
         detail: pocketCards,
         bubbles: true
       });
-      this.dispatchEvent(pocketCardsReceivedEvent);
+      document.dispatchEvent(pocketCardsReceivedEvent);
     });
 
   },

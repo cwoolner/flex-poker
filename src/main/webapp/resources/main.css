@@ -88,3 +88,23 @@
   width: 100px;
   height: 100px;
 }
+
+.my-seat {
+  box-shadow: inset 0 0 1em gold;
+}
+
+div[data-action-on='true'] {
+  background-color: #00FF00;
+}
+
+div[data-action-on='false'] {
+  background-color: #FF0000;
+}
+
+div[data-still-in-hand='true'] {
+  color: #0000FF;
+}
+
+div[data-still-in-hand='false'] {
+  color: #FF00FF;
+}

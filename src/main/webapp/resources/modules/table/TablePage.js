@@ -3,6 +3,7 @@ import webSocketService from '../common/webSocketService';
 import cardData from './cardData';
 import CommonCards from './CommonCards';
 import MyCards from './MyCards';
+import Seat from './Seat';
 
 export default React.createClass({
 
@@ -11,7 +12,8 @@ export default React.createClass({
       myLeftCard: null,
       myRightCard: null,
       totalPot: 0,
-      visibleCommonCards: []
+      visibleCommonCards: [],
+      seats: []
     }
   },
 
@@ -32,13 +34,16 @@ export default React.createClass({
         myLeftCard: cardData[evt.detail.cardId1],
         myRightCard: cardData[evt.detail.cardId2],
         totalPot: this.state.totalPot,
-        visibleCommonCards: this.state.visibleCommonCards
+        visibleCommonCards: this.state.visibleCommonCards,
+        seats: this.state.seats
       })
     });
 
   },
 
   render() {
+    const username = document.querySelector('.username').innerHTML;
+
     return (
       <div>
         <p>{this.props.params.gameId}</p>
@@ -47,7 +52,13 @@ export default React.createClass({
         <div className={"poker-table"}>
           <div>{this.state.totalPot}</div>
           <CommonCards visibleCommonCards={this.state.visibleCommonCards} />
-          <div class="seat-holder"></div>
+          <div className={"seat-holder"}>
+            {
+              this.state.seats.map((seat, index) =>
+                <Seat seat={seat} loggedInUsername={username} key={index} />
+              )
+            }
+          </div>
         </div>
 
         <MyCards myLeftCard={this.state.myLeftCard} myRightCard={this.state.myRightCard} />
@@ -108,30 +119,11 @@ function receiveTableUpdate(message) {
     myLeftCard: this.state.myLeftCard,
     myRightCard: this.state.myRightCard,
     totalPot: table.totalPot,
-    visibleCommonCards: table.visibleCommonCards
+    visibleCommonCards: table.visibleCommonCards,
+    seats: table.seats
   });
 
 /*
-  let username = document.querySelector('.username').innerHTML;
-
-  let mySeat = table.seats.find(element => element.name === username);
-  let seatHolder = this.shadowRoot.querySelector('.seat-holder');
-
-  if (!seatHolder.hasChildNodes()) {
-    table.seats.forEach(seat => {
-      let seatElement = document.createElement('fp-seat');
-      seatElement.dataset.position = seat.position;
-      seatHolder.appendChild(seatElement);
-    });
-  }
-
-  table.seats.forEach(seat => {
-    let seatElement = [].slice.call(seatHolder.children)
-      .find(element => element.dataset.position === seat.position.toString());
-    seatElement.populateSeatInfo(seat);
-    seatElement.toggleMySeat(seat === mySeat);
-  });
-
   let pokerActionsArea = this.shadowRoot.querySelector('.poker-actions');
 
   [].slice.call(pokerActionsArea.children).forEach(
