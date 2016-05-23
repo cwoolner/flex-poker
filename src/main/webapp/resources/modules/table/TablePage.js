@@ -4,6 +4,8 @@ import cardData from './cardData';
 import CommonCards from './CommonCards';
 import MyCards from './MyCards';
 import Seat from './Seat';
+import PokerActions from './PokerActions';
+import _ from 'lodash';
 
 export default React.createClass({
 
@@ -43,6 +45,7 @@ export default React.createClass({
 
   render() {
     const username = document.querySelector('.username').innerHTML;
+    const mySeat = this.state.seats.find(seat => seat.name === username);
 
     return (
       <div>
@@ -55,24 +58,23 @@ export default React.createClass({
           <div className={"seat-holder"}>
             {
               this.state.seats.map((seat, index) =>
-                <Seat seat={seat} loggedInUsername={username} key={index} />
+                <Seat seat={seat} mySeat={seat === mySeat} key={index} />
               )
             }
           </div>
         </div>
 
         <MyCards myLeftCard={this.state.myLeftCard} myRightCard={this.state.myRightCard} />
-
-        <div class="poker-actions">
-          <button id="check-button" onClick={evt => check(this.props.params.gameId, this.props.params.tableId)}>Check</button>
-          <button id="call-button" onClick={evt => call(this.props.params.gameId, this.props.params.tableId)}>Call</button>
-          <button id="raise-button" onClick={evt => raise(this.props.params.gameId, this.props.params.tableId, 0)}>Raise</button>
-          <button id="fold-button" onClick={evt => fold(this.props.params.gameId, this.props.params.tableId)}>Fold</button>
-          <input type="checkbox" id="check-checkbox" /><label for="check-checkbox">Check</label>
-          <input type="checkbox" id="call-checkbox" /><label for="call-checkbox">Call</label>
-          <input type="checkbox" id="raise-checkbox" /><label for="raise-checkbox">Raise</label>
-          <input type="checkbox" id="fold-checkbox" /><label for="fold-checkbox">Fold</label>
-        </div>
+        {
+          _.isNil(mySeat)
+            ? null
+            : <PokerActions
+                gameId={this.props.params.gameId}
+                tableId={this.props.params.tableId}
+                actionOn={mySeat.actionOn}
+                callAmount={mySeat.callAmount}
+                raiseTo={mySeat.raiseTo} />
+        }
 
         <fp-chat class="table-chat"></fp-chat>
       </div>
@@ -96,22 +98,6 @@ function sendChat(message, gameId, tableId) {
   webSocketService.send('/app/sendchatmessage', tableMessage);
 }
 
-function check(gameId, tableId) {
-  webSocketService.send('/app/check', {gameId: gameId, tableId: tableId});
-}
-
-function call(gameId, tableId) {
-  webSocketService.send('/app/call', {gameId: gameId, tableId: tableId});
-}
-
-function raise(gameId, tableId, raiseToAmount) {
-  webSocketService.send('/app/raise', {gameId: gameId, tableId: tableId, raiseToAmount: raiseToAmount});
-}
-
-function fold(gameId, tableId) {
-  webSocketService.send('/app/fold', {gameId: gameId, tableId: tableId});
-}
-
 function receiveTableUpdate(message) {
   let table = JSON.parse(message.body);
 
@@ -123,67 +109,4 @@ function receiveTableUpdate(message) {
     seats: table.seats
   });
 
-/*
-  let pokerActionsArea = this.shadowRoot.querySelector('.poker-actions');
-
-  [].slice.call(pokerActionsArea.children).forEach(
-    pokerActionElement => pokerActionElement.className += ' display-none ');
-
-  if (mySeat) {
-    var pokerActions = {
-      actionOn: mySeat.actionOn,
-      check: mySeat.callAmount === 0,
-      fold: mySeat.callAmount !== 0,
-      call: mySeat.callAmount !== 0,
-      raise: mySeat.raiseTo !== 0
-    };
-
-    if (pokerActions.actionOn) {
-      if (pokerActions.check) {
-        let checkButton = this.shadowRoot.querySelector('#check-button');
-        checkButton.className = checkButton.className.replace(/display-none/g, '').trim();
-      }
-
-      if (pokerActions.call) {
-        let callButton = this.shadowRoot.querySelector('#call-button');
-        callButton.className = callButton.className.replace(/display-none/g, '').trim();
-      }
-
-      if (pokerActions.raise) {
-        let raiseButton = this.shadowRoot.querySelector('#raise-button');
-        raiseButton.className = raiseButton.className.replace(/display-none/g, '').trim();
-      }
-
-      if (pokerActions.fold) {
-        let foldButton = this.shadowRoot.querySelector('#fold-button');
-        foldButton.className = foldButton.className.replace(/display-none/g, '').trim();
-      }
-    } else {
-      if (pokerActions.check) {
-        let checkCheckbox = this.shadowRoot.querySelector('#check-checkbox');
-        checkCheckbox.className = checkCheckbox.className.replace(/display-none/g, '').trim();
-        checkCheckbox.nextSibling.className = checkCheckbox.nextSibling.className.replace(/display-none/g, '').trim();
-      }
-
-      if (pokerActions.call) {
-        let callCheckbox = this.shadowRoot.querySelector('#call-checkbox');
-        callCheckbox.className = callCheckbox.className.replace(/display-none/g, '').trim();
-        callCheckbox.nextSibling.className = callCheckbox.nextSibling.className.replace(/display-none/g, '').trim();
-      }
-
-      if (pokerActions.raise) {
-        let raiseCheckbox = this.shadowRoot.querySelector('#raise-checkbox');
-        raiseCheckbox.className = raiseCheckbox.className.replace(/display-none/g, '').trim();
-        raiseCheckbox.nextSibling.className = raiseCheckbox.nextSibling.className.replace(/display-none/g, '').trim();
-      }
-
-      if (pokerActions.fold) {
-        let foldCheckbox = this.shadowRoot.querySelector('#fold-checkbox');
-        foldCheckbox.className = foldCheckbox.className.replace(/display-none/g, '').trim();
-        foldCheckbox.nextSibling.className = foldCheckbox.nextSibling.className.replace(/display-none/g, '').trim();
-      }
-    }
-
-  }
-*/
 }

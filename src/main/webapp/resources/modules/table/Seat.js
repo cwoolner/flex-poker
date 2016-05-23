@@ -2,7 +2,7 @@ import React from 'react';
 
 export default (props) => {
   return (
-    <div className={props.seat.name === props.loggedInUsername ? 'my-seat' : ''}
+    <div className={props.mySeat ? 'my-seat' : ''}
       data-action-on={props.seat.actionOn}
       data-still-in-hand={props.seat.stillInHand}
       data-position={props.seat.position}>
