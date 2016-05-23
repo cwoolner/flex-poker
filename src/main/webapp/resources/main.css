@@ -74,3 +74,17 @@
 .game-list {
   margin-top: 10px;
 }
+
+.poker-table {
+  background: url(/resources/img/Table.svg) no-repeat;
+}
+
+.my-cards {
+  width: 100px;
+  height: 100px;
+}
+
+.common-card {
+  width: 100px;
+  height: 100px;
+}

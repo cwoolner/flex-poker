@@ -13,8 +13,6 @@
 <script src="/resources/bundle.js" defer></script>
 
 <link rel="import" href="/resources/modules/common/chat.html" />
-<link rel="import" href="/resources/modules/table/seat.html" />
-<link rel="import" href="/resources/modules/table/fp-table-page.html" />
 
 <title>Home</title>
 </head>
