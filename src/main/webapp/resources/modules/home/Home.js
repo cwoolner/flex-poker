@@ -24,9 +24,6 @@ export default React.createClass({
 
     webSocketService.registerSubscription('/topic/availabletournaments', message => {
       this.setState({
-        createGameDialogOpen: this.state.createGameDialogOpen,
-        joinGameDialogOpen: this.state.joinGameDialogOpen,
-        joinGameId: this.state.joinGameId,
         openGameList: JSON.parse(message.body)
       });
     });
@@ -41,36 +38,28 @@ export default React.createClass({
   openCreateGameModal() {
     this.setState({
       createGameDialogOpen: true,
-      joinGameDialogOpen: this.state.joinGameDialogOpen,
-      joinGameId: null,
-      openGameList: this.state.openGameList
+      joinGameId: null
     });
   },
 
   openJoinGameModal(gameId) {
     this.setState({
-      createGameDialogOpen: this.state.createGameDialogOpen,
       joinGameDialogOpen: true,
-      joinGameId: gameId,
-      openGameList: this.state.openGameList
+      joinGameId: gameId
     });
   },
 
   hideCreateGameDialog() {
     this.setState({
       createGameDialogOpen: false,
-      joinGameDialogOpen: this.state.joinGameDialogOpen,
-      joinGameId: null,
-      openGameList: this.state.openGameList
+      joinGameId: null
     });
   },
 
   hideJoinGameDialog() {
     this.setState({
-      createGameDialogOpen: this.state.createGameDialogOpen,
       joinGameDialogOpen: false,
-      joinGameId: null,
-      openGameList: this.state.openGameList
+      joinGameId: null
     });
   },
 

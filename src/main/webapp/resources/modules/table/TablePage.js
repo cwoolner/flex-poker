@@ -31,10 +31,7 @@ export default React.createClass({
     document.addEventListener(`pocketCardsReceived-${tableId}`, evt => {
       this.setState({
         myLeftCard: cardData[evt.detail.cardId1],
-        myRightCard: cardData[evt.detail.cardId2],
-        totalPot: this.state.totalPot,
-        visibleCommonCards: this.state.visibleCommonCards,
-        seats: this.state.seats
+        myRightCard: cardData[evt.detail.cardId2]
       })
     });
 
@@ -99,8 +96,6 @@ function receiveTableUpdate(message) {
   let table = JSON.parse(message.body);
 
   this.setState({
-    myLeftCard: this.state.myLeftCard,
-    myRightCard: this.state.myRightCard,
     totalPot: table.totalPot,
     visibleCommonCards: table.visibleCommonCards,
     seats: table.seats
