@@ -1,16 +1,11 @@
 import React from 'react';
 import webSocketService from '../common/webSocketService';
+import { Modal, Button, FormControl, FormGroup, ControlLabel } from 'react-bootstrap';
 
 export default React.createClass({
 
   hideDialog() {
     this.props.hideDialog();
-  },
-
-  potentiallyHideDialog(evt) {
-    if (evt.keyCode === 27) {
-      this.hideDialog();
-    }
   },
 
   preventNonNumeric(evt) {
@@ -38,30 +33,36 @@ export default React.createClass({
 
   render() {
     return (
-      <div {...this.props}>
-        <div className="overlay" onClick={this.hideDialog}></div>
-        <div className="content">
-          <div className="close" onClick={this.hideDialog}>X</div>
-          <form id="create-game-form" onKeyDown={this.potentiallyHideDialog} onSubmit={this.createGameFormSubmitted}>
-            <FormField label="Name:" name="name" />
-            <FormField label="Players:" name="players" onKeyPress={this.preventNonNumeric} />
-            <FormField label="Players per table:" name="playersPerTable" onKeyPress={this.preventNonNumeric} />
-            <FormField label="Blind increment (minutes):" name="numberOfMinutesBetweenBlindLevels" onKeyPress={this.preventNonNumeric} />
-            <input type="submit" value="Create" />
-          </form>
-        </div>
-      </div>
+      <Modal show={this.props.showModal} onHide={this.hideDialog} {...this.props}>
+        <Modal.Header>
+          <button className={"close"} onClick={this.hideDialog}>X</button>
+          <Modal.Title>Create Game</Modal.Title>
+        </Modal.Header>
+        <form id="create-game-form" onSubmit={this.createGameFormSubmitted}>
+          <Modal.Body>
+            <FormGroup>
+              <ControlLabel>Name</ControlLabel>
+              <FormControl type="text" name="name" />
+            </FormGroup>
+            <FormGroup>
+              <ControlLabel>Number of Players</ControlLabel>
+              <FormControl type="text" name="players" onKeyPress={this.preventNonNumeric} />
+            </FormGroup>
+            <FormGroup>
+              <ControlLabel>Number of Players per Table</ControlLabel>
+              <FormControl type="text" name="playersPerTable" onKeyPress={this.preventNonNumeric} />
+            </FormGroup>
+            <FormGroup>
+              <ControlLabel>Blind increment (minutes)</ControlLabel>
+              <FormControl type="text" name="numberOfMinutesBetweenBlindLevels" onKeyPress={this.preventNonNumeric} />
+            </FormGroup>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button onClick={this.hideDialog}>Close</Button>
+            <Button type="submit" bsStyle="primary">Create Game</Button>
+          </Modal.Footer>
+        </form>
+      </Modal>
     )
   }
 })
-
-const FormField = (props) => {
-  return (
-    <div>
-      <label>{props.label}</label> <input name={props.name} onKeyPress={props.onKeyPress} />
-      <ErrorSpan />
-    </div>
-  )
-}
-
-const ErrorSpan = (props) => <span className="error" />;

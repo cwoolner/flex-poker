@@ -1,16 +1,11 @@
 import React from 'react';
 import webSocketService from '../common/webSocketService';
+import { Modal, Button, FormControl, FormGroup, ControlLabel } from 'react-bootstrap';
 
 export default React.createClass({
 
   hideDialog() {
     this.props.hideDialog();
-  },
-
-  potentiallyHideDialog(evt) {
-    if (evt.keyCode === 27) {
-      this.hideDialog();
-    }
   },
 
   joinGameFormSubmitted(evt) {
@@ -21,24 +16,32 @@ export default React.createClass({
 
   render() {
     return (
-      <div {...this.props}>
-        <div className="overlay" onClick={this.hideDialog}></div>
-        <div className="content">
-          <div className="close" onClick={this.hideDialog}>X</div>
-          <form id="join-game-form" onKeyDown={this.potentiallyHideDialog} onSubmit={this.joinGameFormSubmitted}>
-            <div>
-              <label>Current balance:</label> <span id="current-balance">100</span>
-            </div>
-            <div>
-              <label>Cost:</label> <span id="cost-of-game">10</span>
-            </div>
-            <div>
-              <label>Remaining balance:</label> <span id="remaining-balance">90</span>
-            </div>
-            <input type="submit" value="Join" />
-          </form>
-        </div>
-      </div>
+      <Modal show={this.props.showModal} onHide={this.hideDialog} {...this.props}>
+        <Modal.Header>
+          <button className={"close"} onClick={this.hideDialog}>X</button>
+          <Modal.Title>Join Game</Modal.Title>
+        </Modal.Header>
+        <form id="join-game-form" onSubmit={this.joinGameFormSubmitted}>
+          <Modal.Body>
+            <FormGroup>
+              <ControlLabel>Current Balance</ControlLabel>
+              <FormControl.Static>100</FormControl.Static>
+            </FormGroup>
+            <FormGroup>
+              <ControlLabel>Cost</ControlLabel>
+              <FormControl.Static>10</FormControl.Static>
+            </FormGroup>
+            <FormGroup>
+              <ControlLabel>Remaining Balance</ControlLabel>
+              <FormControl.Static>90</FormControl.Static>
+            </FormGroup>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button onClick={this.hideDialog}>Close</Button>
+            <Button type="submit" bsStyle="primary">Join Game</Button>
+          </Modal.Footer>
+        </form>
+      </Modal>
     )
   }
 })

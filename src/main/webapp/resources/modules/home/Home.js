@@ -73,10 +73,10 @@ export default React.createClass({
         <Chat ref="globalChat" sendChat={sendGlobalChat} />
         <CreateGameDialog
           hideDialog={this.hideCreateGameDialog}
-          className={this.state.createGameDialogOpen ? '' : 'hidden'} />
+          showModal={this.state.createGameDialogOpen} />
         <JoinGameDialog
           hideDialog={this.hideJoinGameDialog}
-          className={this.state.joinGameDialogOpen ? '' : 'hidden'}
+          showModal={this.state.joinGameDialogOpen}
           gameId={this.state.joinGameId} />
       </div>
     )
