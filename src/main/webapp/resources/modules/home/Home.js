@@ -5,7 +5,6 @@ import CreateGameDialog from '../game/CreateGameDialog';
 import JoinGameDialog from '../game/JoinGameDialog';
 import GameList from '../game/GameList';
 import Chat from '../common/Chat';
-import { Link } from 'react-router';
 
 export default React.createClass({
 
@@ -66,8 +65,6 @@ export default React.createClass({
   render() {
     return (
       <div>
-        <Link to="/logout">Logout</Link>
-        <MainTabs />
         <button className={'btn'} onClick={this.openCreateGameModal}>Create Game</button>
         <GameList
           gameList={this.state.openGameList}

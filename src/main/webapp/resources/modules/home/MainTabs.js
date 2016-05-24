@@ -1,6 +1,6 @@
 import React from 'react';
 import webSocketService from '../common/webSocketService';
-import { hashHistory } from 'react-router';
+import { hashHistory, Link } from 'react-router';
 
 export default React.createClass({
 
@@ -49,9 +49,11 @@ export default React.createClass({
   render() {
     return (
       <div>
+        <Link to="/logout">Logout</Link>
         <ul className="game-tab-container">
-          <li><a href="#/">Home</a></li>
+          <li><Link to="/">Lobby</Link></li>
         </ul>
+        {this.props.children}
       </div>
     )
   }
