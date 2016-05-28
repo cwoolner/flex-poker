@@ -1,8 +1,8 @@
 import React from 'react';
 
-export default (props) => {
+export default ({gameList, gameOpenedCallback}) => {
   return (
-    <div {...props}>
+    <div className={'game-list'}>
       <table className={'table table-striped table-bordered table-hover'}>
         <thead>
           <tr>
@@ -18,7 +18,7 @@ export default (props) => {
         </thead>
         <tbody>
           {
-            props.gameList.map((game, index) => {
+            gameList.map((game, index) => {
               return (
                 <tr key={index}>
                   <td>{game.name}</td>
@@ -28,7 +28,7 @@ export default (props) => {
                   <td>{game.maxPlayersPerTable}</td>
                   <td>{game.createdBy}</td>
                   <td>{game.createdOn}</td>
-                  <td><button className={'btn'} onClick={props.gameOpenedCallback.bind(this, game.id)}>Open Game</button></td>
+                  <td><button className={'btn'} onClick={gameOpenedCallback.bind(this, game.id)}>Open Game</button></td>
                 </tr>
               )
             })

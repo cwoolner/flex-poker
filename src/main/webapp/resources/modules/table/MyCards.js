@@ -1,10 +1,10 @@
 import React from 'react';
 
-export default (props) => {
+export default ({myLeftCard, myRightCard}) => {
   return (
     <div>
-      <img className={"my-cards"} src={props.myLeftCard} />
-      <img className={"my-cards"} src={props.myRightCard} />
+      <img className={"my-cards"} src={myLeftCard} />
+      <img className={"my-cards"} src={myRightCard} />
     </div>
   )
 }

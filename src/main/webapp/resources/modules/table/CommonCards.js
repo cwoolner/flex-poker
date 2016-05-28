@@ -1,11 +1,11 @@
 import React from 'react';
 import cardData from './cardData';
 
-export default (props) => {
+export default ({visibleCommonCards}) => {
   return (
-    <div {...props}>
+    <div>
       {
-        props.visibleCommonCards.map((card, index) => {
+        visibleCommonCards.map((card, index) => {
           return (
             <span key={index}>
               <img className={'common-card'} src={cardData[card.id]} />

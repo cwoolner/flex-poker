@@ -68,8 +68,7 @@ export default React.createClass({
         <button className={'btn'} onClick={this.openCreateGameModal}>Create Game</button>
         <GameList
           gameList={this.state.openGameList}
-          gameOpenedCallback={this.gameOpened}
-          className={'game-list'} />
+          gameOpenedCallback={this.gameOpened} />
         <Chat ref="globalChat" sendChat={sendGlobalChat} />
         <CreateGameDialog
           hideDialog={this.hideCreateGameDialog}
