@@ -1,6 +1,6 @@
 #Summary
 
-Flex Poker is a poker-playing (Texas hold 'em) web app.  It was originally written with Flex on the front-end, hence the name.  It's been rewritten many times since  using various technologies.
+Flex Poker is a poker-playing (Texas hold 'em) web app.  It was originally written with Flex on the front-end, hence the name.  It's been rewritten many times since using various technologies.
 
 #Motivation
 
@@ -8,7 +8,16 @@ It would be nice to actually make a fully usable product at some point, but so f
 
 #Brief tech/design history
 
-The project started off using Flex on the front-end and Spring BlazeDS on the back-end for object serialization and pseudo-push functionality.  Regular Spring/Hibernate/MySQL webapp otherwise.  Project went dormant for a few years until the front-end was rewritten in Angular and BlazeDS was replaced with Spring WebSocket for true push functionality.  The back-end was later rewritten in an attempt to incorporate Domain-Driven Design, Command Query Responsibility Segregation, and Event Sourcing.  In-memory repositories replaced the use of a database and Hibernate with some optional pieces done in Redis.  Angular and other front-end frameworks/libraries were removed and replaced with raw Web Components and ES6.  A small front-end build using npm/bower/Grunt/Babel/Browserify was added, but has since been removed in favor of on-the-fly babel transpiling utilizing the System polyfill.
+###Back-end
+* 2009 - BlazeDS, Spring, Hibernate, MySQL
+* 2013 - BlazeDS replaced with Spring WebSocket
+* 2014 - Rewrote to incorporate DDD, CQRS, and ES
+
+###Front-end
+* 2009 - Flex
+* 2013 - Angular, WebSocket
+* 2015 - ES6, WebComponents
+* 2016 - React
 
 #Persistence
 
@@ -26,9 +35,11 @@ Spring Security is being used, but only the user role at the moment.  Four playe
 
 Thanks to Heroku for making it so simple (and free) to get a WebSocket-enabled Java app up and running on the public cloud.
 
-A Procfile is included in the repository that will allow the project to be run after pushing the git repo up to Heroku.  In addition to the Procfile, a small chunk of jetty-runner config was added to the pom.xml file.  Nothing else in the app has been specialized for Heroku.
+Node.js: The Heroku config had to be changed to add a heroku/nodejs buildpack as well as the existing heroku/java buildpack.  The pack by default just runs npm install, so the webpack build has been added to the postinstall script.
 
-My currently deployed version of the app is: [http://flex-poker.herokuapp.com/](http://flex-poker.herokuapp.com/)
+Java: A Procfile is included that contains the jetty-runner command that Heroku uses to launch the app.  In addition to the Procfile, a small chunk of jetty-runner config was added to the pom.
+
+Heroku auto-deploys whenever changes are made to master: [http://flex-poker.herokuapp.com/](http://flex-poker.herokuapp.com/)
 
 NOTE: Since the app uses in-memory persistence, the entire state of the app is essentially reset after Heroku puts it to sleep from inactivity.  Feel free to hit that URL and try it out.
 
@@ -59,6 +70,7 @@ NOTE: Since the app uses in-memory persistence, the entire state of the app is e
 
 ##Required
 
+* Node.js/npm
 * Java 8
 * Maven
 
@@ -80,13 +92,14 @@ NOTE: Since the app uses in-memory persistence, the entire state of the app is e
 
 #Running the app
 
-* Default version - from the top-level directory: `mvn jetty:run`
-* Prod version (Redis required) - from the top-level directory: `mvn jetty:run -Dspring.profiles.active=prod`
+* Default version - from the top-level directory: `npm install && mvn jetty:run`
+* Prod version (Redis required) - from the top-level directory: `npm install && mvn jetty:run -Dspring.profiles.active=prod`
 * Hit [http://localhost:8080/](http://localhost:8080/)
 
 #Dev environment setup
 
-Just been using Eclipse, so to generate the .classpath file, from the top-level directory: `mvn eclipse:eclipse`
+* Just been using Eclipse, so to generate the .classpath file, from the top-level directory: `mvn eclipse:eclipse`
+* While developing, running `npm start` launches webpack in watch mode
 
 #Testing
 
