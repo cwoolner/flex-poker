@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Stream;
@@ -46,6 +47,8 @@ public class Game extends AggregateRoot<GameEvent> {
 
     private final TableBalancer tableBalancer;
 
+    private final Set<UUID> pausedTablesForBalancing;
+
     protected Game(boolean creatingFromEvents, UUID aggregateId,
             String gameName, int maxNumberOfPlayers, int numberOfPlayersPerTable,
             UUID createdById, GameStage gameStage, BlindSchedule blindSchedule,
@@ -58,6 +61,7 @@ public class Game extends AggregateRoot<GameEvent> {
         this.gameStage = gameStage;
         registeredPlayerIds = new HashSet<>();
         tableIdToPlayerIdsMap = new HashMap<>();
+        pausedTablesForBalancing = new HashSet<>();
 
         methodTable = new HashMap<>();
         populateMethodTable();
@@ -112,17 +116,29 @@ public class Game extends AggregateRoot<GameEvent> {
     }
 
     public void attemptToStartNewHand(UUID tableId) {
-        // TODO: check for imbalanced tables and such
         if (gameStage != GameStage.INPROGRESS) {
             throw new FlexPokerException("the game must be INPROGRESS if trying"
                     + "to start a new hand");
         }
 
-        NewHandIsClearedToStartEvent event = new NewHandIsClearedToStartEvent(
-                aggregateId, ++aggregateVersion, tableId,
-                blindSchedule.getCurrentBlindAmounts());
-        addNewEvent(event);
-        applyCommonEvent(event);
+        Optional<GameEvent> singleBalancingEvent;
+        do {
+            singleBalancingEvent = tableBalancer.createSingleBalancingEvent(aggregateVersion + 1,
+                    tableId, pausedTablesForBalancing, tableIdToPlayerIdsMap);
+            if (singleBalancingEvent.isPresent()) {
+                aggregateVersion++;
+                addNewEvent(singleBalancingEvent.get());
+                applyCommonEvent(singleBalancingEvent.get());
+            }
+        } while (singleBalancingEvent.isPresent());
+
+        if (tableIdToPlayerIdsMap.containsKey(tableId) && !pausedTablesForBalancing.contains(tableId)) {
+            NewHandIsClearedToStartEvent event = new NewHandIsClearedToStartEvent(
+                    aggregateId, ++aggregateVersion, tableId,
+                    blindSchedule.getCurrentBlindAmounts());
+            addNewEvent(event);
+            applyCommonEvent(event);
+        }
     }
 
     public void increaseBlinds() {

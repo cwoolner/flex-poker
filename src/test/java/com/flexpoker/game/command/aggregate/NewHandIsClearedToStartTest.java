@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -24,8 +25,12 @@ public class NewHandIsClearedToStartTest {
     public void testJoinGameSuccessFirstPlayerJoins() {
         UUID gameId = UUID.randomUUID();
         UUID tableId = UUID.randomUUID();
-        Map<UUID, Set<UUID>> tableIdToPlayerIdsMap = new HashMap<>();
-        Set<UUID> tableIds = tableIdToPlayerIdsMap.keySet();
+        Map<UUID, Set<UUID>> tableToPlayersMap = new HashMap<>();
+        Set<UUID> playerIds = new HashSet<>();
+        playerIds.add(UUID.randomUUID());
+        playerIds.add(UUID.randomUUID());
+        tableToPlayersMap.put(tableId, playerIds );
+        Set<UUID> tableIds = tableToPlayersMap.keySet();
 
         List<GameEvent> events = new ArrayList<>();
         events.add(new GameCreatedEvent(gameId, 1, "test", 2, 2,
@@ -33,7 +38,7 @@ public class NewHandIsClearedToStartTest {
         events.add(new GameJoinedEvent(gameId, 2, UUID.randomUUID()));
         events.add(new GameJoinedEvent(gameId, 3, UUID.randomUUID()));
         events.add(new GameMovedToStartingStageEvent(gameId, 4));
-        events.add(new GameTablesCreatedAndPlayersAssociatedEvent(gameId, 5, tableIdToPlayerIdsMap, 2));
+        events.add(new GameTablesCreatedAndPlayersAssociatedEvent(gameId, 5, tableToPlayersMap, 2));
         events.add(new GameStartedEvent(gameId, 6, tableIds, new BlindSchedule(10)));
 
         Game game = new DefaultGameFactory().createFrom(events);

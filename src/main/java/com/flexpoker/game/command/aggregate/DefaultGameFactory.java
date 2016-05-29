@@ -42,7 +42,7 @@ public class DefaultGameFactory implements GameFactory {
             int numberOfPlayersPerTable, UUID createdById,
             int numberOfMinutesBetweenBlindLevels) {
         BlindSchedule blindSchedule = new BlindSchedule(numberOfMinutesBetweenBlindLevels);
-        TableBalancer tableBalancer = new TableBalancer(
+        TableBalancer tableBalancer = new TableBalancer(aggregateId,
                 numberOfPlayersPerTable);
         return new Game(creatingFromEvents, aggregateId, gameName,
                 maxNumberOfPlayers, numberOfPlayersPerTable, createdById,
