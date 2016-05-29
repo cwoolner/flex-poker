@@ -1,7 +1,6 @@
 package com.flexpoker.game.command.aggregate;
 
-import java.util.HashMap;
-import java.util.List;
+import java.util.Comparator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
@@ -10,11 +9,10 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import com.flexpoker.exception.FlexPokerException;
+import com.flexpoker.game.command.events.PlayerMovedToNewTableEvent;
 import com.flexpoker.game.command.events.TablePausedForBalancingEvent;
 import com.flexpoker.game.command.events.TableRemovedEvent;
 import com.flexpoker.game.command.framework.GameEvent;
-import com.flexpoker.model.Seat;
-import com.flexpoker.model.Table;
 
 public class TableBalancer {
 
@@ -47,6 +45,20 @@ public class TableBalancer {
                     emptyTable.get().getKey()));
         }
 
+        // check to see if the number of tables is greater than the number it
+        // should have. if so, move all the players from this table to other
+        // tables starting with the one with the lowest number
+        if (tableToPlayersMap
+                .size() > getRequiredNumberOfTables(totalNumberOfPlayers)) {
+            UUID playerToMove = tableToPlayersMap.get(subjectTableId).stream()
+                    .findFirst().get();
+            UUID toTableId = tableToPlayersMap.entrySet().stream()
+                    .filter(x -> !x.getKey().equals(subjectTableId))
+                    .min(setSizeComparator()).get().getKey();
+            return Optional.of(new PlayerMovedToNewTableEvent(gameId, version,
+                    subjectTableId, toTableId, playerToMove));
+        }
+
         if (tableToPlayersMap.get(subjectTableId).size() == 1) {
             return Optional.of(new TablePausedForBalancingEvent(gameId, version,
                     subjectTableId));
@@ -55,27 +67,25 @@ public class TableBalancer {
         return Optional.empty();
     }
 
+    private Comparator<? super Entry<UUID, Set<UUID>>> setSizeComparator() {
+        return (x, y) -> Integer.compare(x.getValue().size(),
+                y.getValue().size());
+    }
+
     private int getTotalNumberOfPlayers(
             Map<UUID, Set<UUID>> tableToPlayersMap) {
         return tableToPlayersMap.values().stream()
                 .collect(Collectors.summingInt(Set::size));
     }
 
-    private boolean isNumberOfTablesCorrect(List<Table> tables,
-            Map<UUID, Integer> tableSizesMap, int maxPlayersPerTable) {
-        int totalNumberOfPlayers = 0;
-
-        for (Integer tableSize : tableSizesMap.values()) {
-            totalNumberOfPlayers += tableSize;
-        }
-
+    private int getRequiredNumberOfTables(int totalNumberOfPlayers) {
         int numberOfRequiredTables = totalNumberOfPlayers / maxPlayersPerTable;
 
         if (totalNumberOfPlayers % maxPlayersPerTable != 0) {
             numberOfRequiredTables++;
         }
 
-        return numberOfRequiredTables == tables.size();
+        return numberOfRequiredTables;
     }
 
     private boolean arePlayersDistributedEvenly(
@@ -100,27 +110,6 @@ public class TableBalancer {
         }
 
         return minSize + 2 > maxSize;
-    }
-
-    private Map<UUID, Integer> findTableSizes(List<Table> tables) {
-        Map<UUID, Integer> tableSizesMap = new HashMap<>();
-
-        for (Table table : tables) {
-            tableSizesMap.put(table.getId(), determineNumberOfPlayers(table));
-        }
-        return tableSizesMap;
-    }
-
-    private Integer determineNumberOfPlayers(Table table) {
-        int numberOfPlayers = 0;
-
-        for (Seat seat : table.getSeats()) {
-            if (seat.getUserGameStatus() != null) {
-                numberOfPlayers++;
-            }
-        }
-
-        return numberOfPlayers;
     }
 
 }

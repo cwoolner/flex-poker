@@ -30,6 +30,41 @@ public class TableBalancerMergeTablesTest {
                 subjectTableId, Collections.singleton(otherTableId),
                 tableToPlayersMap);
         assertEquals(PlayerMovedToNewTableEvent.class, event.get().getClass());
+        assertEquals(subjectTableId,
+                ((PlayerMovedToNewTableEvent) event.get()).getFromTableId());
+    }
+
+    @Test
+    public void testTwoTablesReadyToMerge() {
+        UUID subjectTableId = UUID.randomUUID();
+        Map<UUID, Set<UUID>> tableToPlayersMap = createTableToPlayersMap(
+                subjectTableId, 1, 2);
+
+        TableBalancer tableBalancer = new TableBalancer(UUID.randomUUID(), 3);
+        Optional<GameEvent> event = tableBalancer.createSingleBalancingEvent(1,
+                subjectTableId, Collections.emptySet(), tableToPlayersMap);
+        assertEquals(PlayerMovedToNewTableEvent.class, event.get().getClass());
+        assertEquals(subjectTableId,
+                ((PlayerMovedToNewTableEvent) event.get()).getFromTableId());
+    }
+
+    @Test
+    public void testThreeTablesReadyToMerge() {
+        UUID subjectTableId = UUID.randomUUID();
+        Map<UUID, Set<UUID>> tableToPlayersMap = createTableToPlayersMap(
+                subjectTableId, 1, 3, 2);
+        UUID smallestOtherTableId = tableToPlayersMap.entrySet().stream()
+                .filter(x -> x.getValue().size() == 2).findFirst().get()
+                .getKey();
+
+        TableBalancer tableBalancer = new TableBalancer(UUID.randomUUID(), 3);
+        Optional<GameEvent> event = tableBalancer.createSingleBalancingEvent(1,
+                subjectTableId, Collections.emptySet(), tableToPlayersMap);
+        assertEquals(PlayerMovedToNewTableEvent.class, event.get().getClass());
+        assertEquals(subjectTableId,
+                ((PlayerMovedToNewTableEvent) event.get()).getFromTableId());
+        assertEquals(smallestOtherTableId,
+                ((PlayerMovedToNewTableEvent) event.get()).getToTableId());
     }
 
 }
