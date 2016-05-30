@@ -36,7 +36,7 @@ public class TwoPlayerButtonFoldsDueToTimeoutTest {
     public void test() {
         UUID tableId = UUID.randomUUID();
 
-        Table table = TableTestUtils.createBasicTable(tableId, UUID.randomUUID(),
+        Table table = TableTestUtils.createBasicTableAndStartHand(tableId, UUID.randomUUID(),
                 UUID.randomUUID());
 
         // use the info in action on event to simulate the expire

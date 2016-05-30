@@ -37,7 +37,7 @@ public class FourPlayerThreeCallsAndChecksUntilTheEndTest {
         UUID player3Id = UUID.randomUUID();
         UUID player4Id = UUID.randomUUID();
 
-        Table table = TableTestUtils.createBasicTable(tableId, player1Id, player2Id,
+        Table table = TableTestUtils.createBasicTableAndStartHand(tableId, player1Id, player2Id,
                 player3Id, player4Id);
 
         UUID rightOfButtonOnPlayerId = ((ActionOnChangedEvent) table.fetchNewEvents()

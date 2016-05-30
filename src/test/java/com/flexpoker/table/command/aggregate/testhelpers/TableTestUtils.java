@@ -25,7 +25,7 @@ import com.flexpoker.test.util.datageneration.DeckGenerator;
 
 public class TableTestUtils {
 
-    public static Table createBasicTable(UUID tableId, UUID... playerIdsArray) {
+    public static Table createBasicTableAndStartHand(UUID tableId, UUID... playerIdsArray) {
         Set<UUID> playerIds = new HashSet<>(Arrays.asList(playerIdsArray));
 
         int smallBlind = 10;

@@ -27,7 +27,7 @@ public class FourPlayerSeatPositionsAndButtonAndBlindsTest {
         UUID player3Id = UUID.randomUUID();
         UUID player4Id = UUID.randomUUID();
 
-        Table table = TableTestUtils.createBasicTable(tableId, player1Id, player2Id,
+        Table table = TableTestUtils.createBasicTableAndStartHand(tableId, player1Id, player2Id,
                 player3Id, player4Id);
 
         // check seat positions

@@ -22,7 +22,7 @@ public class TwoPlayerSeatPositionsAndButtonAndBlindsTest {
         UUID player1Id = UUID.randomUUID();
         UUID player2Id = UUID.randomUUID();
 
-        Table table = TableTestUtils.createBasicTable(tableId, player1Id, player2Id);
+        Table table = TableTestUtils.createBasicTableAndStartHand(tableId, player1Id, player2Id);
 
         // check seat positions
         Map<Integer, UUID> seatPositionToPlayerIdMap = ((TableCreatedEvent) table
