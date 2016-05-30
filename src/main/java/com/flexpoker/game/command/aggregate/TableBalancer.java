@@ -12,6 +12,7 @@ import com.flexpoker.exception.FlexPokerException;
 import com.flexpoker.game.command.events.PlayerMovedToNewTableEvent;
 import com.flexpoker.game.command.events.TablePausedForBalancingEvent;
 import com.flexpoker.game.command.events.TableRemovedEvent;
+import com.flexpoker.game.command.events.TableResumedAfterBalancingEvent;
 import com.flexpoker.game.command.framework.GameEvent;
 
 public class TableBalancer {
@@ -59,12 +60,39 @@ public class TableBalancer {
                     subjectTableId, toTableId, playerToMove));
         }
 
+        Set<UUID> pausedTablesThatShouldStayPaused = pausedTablesForBalancing
+                .stream().filter(x -> isTableOutOfBalance(x, tableToPlayersMap))
+                .collect(Collectors.toSet());
+
         if (tableToPlayersMap.get(subjectTableId).size() == 1) {
             return Optional.of(new TablePausedForBalancingEvent(gameId, version,
                     subjectTableId));
         }
 
+        Optional<UUID> tableToResume = pausedTablesForBalancing.stream()
+                .filter(x -> !pausedTablesThatShouldStayPaused.contains(x))
+                .findFirst();
+        if (tableToResume.isPresent()) {
+            return Optional.of(new TableResumedAfterBalancingEvent(gameId,
+                    version, tableToResume.get()));
+        }
+
         return Optional.empty();
+    }
+
+    private boolean isTableOutOfBalance(UUID tableId,
+            Map<UUID, Set<UUID>> tableToPlayersMap) {
+        int tableSize = tableToPlayersMap.get(tableId).size();
+
+        if (tableSize == 1) {
+            return true;
+        }
+
+        return tableToPlayersMap.values().stream() //
+                .anyMatch(x -> //
+                (x.size() >= tableSize + 2) //
+                        || (x.size() <= tableSize - 2));
+
     }
 
     private Comparator<? super Entry<UUID, Set<UUID>>> setSizeComparator() {
@@ -86,30 +114,6 @@ public class TableBalancer {
         }
 
         return numberOfRequiredTables;
-    }
-
-    private boolean arePlayersDistributedEvenly(
-            Map<UUID, Integer> tableSizesMap) {
-        int minSize = -1;
-        int maxSize = -1;
-
-        for (Integer tableSize : tableSizesMap.values()) {
-            if (minSize == -1) {
-                minSize = tableSize;
-            }
-            if (maxSize == -1) {
-                maxSize = tableSize;
-            }
-
-            if (tableSize < minSize) {
-                minSize = tableSize;
-            }
-            if (tableSize > maxSize) {
-                maxSize = tableSize;
-            }
-        }
-
-        return minSize + 2 > maxSize;
     }
 
 }
