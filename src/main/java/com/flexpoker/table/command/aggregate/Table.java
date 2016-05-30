@@ -23,16 +23,20 @@ import com.flexpoker.table.command.events.FlopCardsDealtEvent;
 import com.flexpoker.table.command.events.HandCompletedEvent;
 import com.flexpoker.table.command.events.HandDealtEvent;
 import com.flexpoker.table.command.events.LastToActChangedEvent;
+import com.flexpoker.table.command.events.PlayerAddedEvent;
 import com.flexpoker.table.command.events.PlayerCalledEvent;
 import com.flexpoker.table.command.events.PlayerCheckedEvent;
 import com.flexpoker.table.command.events.PlayerFoldedEvent;
 import com.flexpoker.table.command.events.PlayerRaisedEvent;
+import com.flexpoker.table.command.events.PlayerRemovedEvent;
 import com.flexpoker.table.command.events.PotAmountIncreasedEvent;
 import com.flexpoker.table.command.events.PotClosedEvent;
 import com.flexpoker.table.command.events.PotCreatedEvent;
 import com.flexpoker.table.command.events.RiverCardDealtEvent;
 import com.flexpoker.table.command.events.RoundCompletedEvent;
 import com.flexpoker.table.command.events.TableCreatedEvent;
+import com.flexpoker.table.command.events.TablePausedEvent;
+import com.flexpoker.table.command.events.TableResumedEvent;
 import com.flexpoker.table.command.events.TurnCardDealtEvent;
 import com.flexpoker.table.command.events.WinnersDeterminedEvent;
 import com.flexpoker.table.command.framework.TableEvent;
@@ -58,6 +62,8 @@ public class Table extends AggregateRoot<TableEvent> {
     private int bigBlindPosition;
 
     private Hand currentHand;
+
+    private boolean paused;
 
     protected Table(boolean creatingFromEvents, UUID aggregateId, UUID gameId,
             Map<Integer, UUID> seatMap, int startingNumberOfChips) {
@@ -108,6 +114,21 @@ public class Table extends AggregateRoot<TableEvent> {
         methodTable.put(LastToActChangedEvent.class, x -> currentHand.applyEvent((LastToActChangedEvent) x));
         methodTable.put(WinnersDeterminedEvent.class, x -> currentHand.applyEvent((WinnersDeterminedEvent) x));
         methodTable.put(HandCompletedEvent.class, x -> currentHand = null);
+        methodTable.put(TablePausedEvent.class, x -> paused = true);
+        methodTable.put(TableResumedEvent.class, x -> paused = false);
+        methodTable.put(PlayerAddedEvent.class, x -> {
+            PlayerAddedEvent event = (PlayerAddedEvent) x;
+            seatMap.put(event.getPosition(), event.getPlayerId());
+            chipsInBack.put(event.getPlayerId(), event.getChipsInBack());
+        });
+        methodTable.put(PlayerRemovedEvent.class, x -> {
+            PlayerRemovedEvent event = (PlayerRemovedEvent) x;
+            Integer position = seatMap.entrySet().stream()
+                    .filter(y -> y.getValue().equals(event.getPlayerId()))
+                    .findFirst().get().getKey();
+            seatMap.remove(position);
+            chipsInBack.remove(event.getPlayerId());
+        });
     }
 
     private void applyCommonEvent(TableEvent event) {
@@ -368,6 +389,62 @@ public class Table extends AggregateRoot<TableEvent> {
             applyCommonEvent(event);
             aggregateVersion++;
         });
+    }
+
+    public void addPlayer(UUID playerId, int chips) {
+        if (seatMap.values().contains(playerId)) {
+            throw new FlexPokerException("player already at this table");
+        }
+
+        int newPlayerPosition = findRandomOpenSeat();
+
+        PlayerAddedEvent playerAddedEvent = new PlayerAddedEvent(aggregateId,
+                ++aggregateVersion, gameId, playerId, chips, newPlayerPosition);
+        addNewEvent(playerAddedEvent);
+        applyCommonEvent(playerAddedEvent);
+    }
+
+    public void removePlayer(UUID playerId) {
+        if (!seatMap.values().contains(playerId)) {
+            throw new FlexPokerException("player not at this table");
+        }
+
+        if (currentHand != null) {
+            throw new FlexPokerException("can't remove a player while in a hand");
+        }
+
+        PlayerRemovedEvent playerRemovedEvent = new PlayerRemovedEvent(aggregateId, ++aggregateVersion, gameId, playerId);
+        addNewEvent(playerRemovedEvent);
+        applyCommonEvent(playerRemovedEvent);
+    }
+
+    public void pause() {
+        if (paused) {
+            throw new FlexPokerException("table is already paused.  can't pause again.");
+        }
+
+        TablePausedEvent tablePausedEvent = new TablePausedEvent(aggregateId, ++aggregateVersion, gameId);
+        addNewEvent(tablePausedEvent);
+        applyCommonEvent(tablePausedEvent);
+    }
+
+    public void resume() {
+        if (!paused) {
+            throw new FlexPokerException("table is not paused.  can't resume.");
+        }
+
+        TableResumedEvent tableResumedEvent = new TableResumedEvent(aggregateId, ++aggregateVersion, gameId);
+        addNewEvent(tableResumedEvent);
+        applyCommonEvent(tableResumedEvent);
+    }
+
+    private int findRandomOpenSeat() {
+        while (true) {
+            int potentialNewPlayerPosition = new Random().nextInt(seatMap.size());
+            if (seatMap.get(potentialNewPlayerPosition) == null) {
+                return potentialNewPlayerPosition;
+            }
+        }
     }
 
 }
