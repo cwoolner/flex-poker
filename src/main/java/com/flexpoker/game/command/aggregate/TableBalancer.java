@@ -51,24 +51,37 @@ public class TableBalancer {
         // tables starting with the one with the lowest number
         if (tableToPlayersMap
                 .size() > getRequiredNumberOfTables(totalNumberOfPlayers)) {
-            UUID playerToMove = tableToPlayersMap.get(subjectTableId).stream()
-                    .findFirst().get();
-            UUID toTableId = tableToPlayersMap.entrySet().stream()
-                    .filter(x -> !x.getKey().equals(subjectTableId))
-                    .min(setSizeComparator()).get().getKey();
-            return Optional.of(new PlayerMovedToNewTableEvent(gameId, version,
-                    subjectTableId, toTableId, playerToMove));
+            return createEventToMoveUserFromSubjectTableToAnyMinTable(version,
+                    subjectTableId, tableToPlayersMap);
         }
 
+        if (isTableOutOfBalance(subjectTableId, tableToPlayersMap)) {
+            int tableSize = tableToPlayersMap.get(subjectTableId).size();
+
+            // in the min case, pause the table since it needs to get another
+            // player
+            if (tableSize == tableToPlayersMap.values().stream()
+                    .map(x -> x.size()).min(Integer::compare).get()) {
+                return Optional.of(new TablePausedForBalancingEvent(gameId,
+                        version, subjectTableId));
+            }
+
+            // only move a player if the out of balance table has the max number
+            // of players. an out-of-balance medium-sized table should not send
+            // any players
+            if (tableSize == tableToPlayersMap.values().stream()
+                    .map(x -> x.size()).max(Integer::compare).get()) {
+                return createEventToMoveUserFromSubjectTableToAnyMinTable(
+                        version, subjectTableId, tableToPlayersMap);
+            }
+        }
+
+        // re-examine the paused tables to see if they are still not balanced
         Set<UUID> pausedTablesThatShouldStayPaused = pausedTablesForBalancing
                 .stream().filter(x -> isTableOutOfBalance(x, tableToPlayersMap))
                 .collect(Collectors.toSet());
 
-        if (tableToPlayersMap.get(subjectTableId).size() == 1) {
-            return Optional.of(new TablePausedForBalancingEvent(gameId, version,
-                    subjectTableId));
-        }
-
+        // resume the first table that is currently paused, but are now balanced
         Optional<UUID> tableToResume = pausedTablesForBalancing.stream()
                 .filter(x -> !pausedTablesThatShouldStayPaused.contains(x))
                 .findFirst();
@@ -78,6 +91,24 @@ public class TableBalancer {
         }
 
         return Optional.empty();
+    }
+
+    private Optional<GameEvent> createEventToMoveUserFromSubjectTableToAnyMinTable(
+            int version, UUID subjectTableId,
+            Map<UUID, Set<UUID>> tableToPlayersMap) {
+        UUID playerToMove = tableToPlayersMap.get(subjectTableId).stream()
+                .findFirst().get();
+        UUID toTableId = findNonSubjectMinTableId(subjectTableId,
+                tableToPlayersMap);
+        return Optional.of(new PlayerMovedToNewTableEvent(gameId, version,
+                subjectTableId, toTableId, playerToMove));
+    }
+
+    private UUID findNonSubjectMinTableId(UUID subjectTableId,
+            Map<UUID, Set<UUID>> tableToPlayersMap) {
+        return tableToPlayersMap.entrySet().stream()
+                .filter(x -> !x.getKey().equals(subjectTableId))
+                .min(setSizeComparator()).get().getKey();
     }
 
     private boolean isTableOutOfBalance(UUID tableId,

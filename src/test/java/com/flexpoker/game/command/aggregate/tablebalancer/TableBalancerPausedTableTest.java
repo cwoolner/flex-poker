@@ -12,13 +12,14 @@ import java.util.UUID;
 import org.junit.Test;
 
 import com.flexpoker.game.command.aggregate.TableBalancer;
+import com.flexpoker.game.command.events.PlayerMovedToNewTableEvent;
 import com.flexpoker.game.command.events.TablePausedForBalancingEvent;
 import com.flexpoker.game.command.framework.GameEvent;
 
 public class TableBalancerPausedTableTest {
 
     @Test
-    public void testTwoTablesOnePausedDueToWaitingForMerge() {
+    public void testTwoTablesOneAndTwoPlayersCantMerge() {
         UUID subjectTableId = UUID.randomUUID();
         Map<UUID, Set<UUID>> tableToPlayersMap = createTableToPlayersMap(
                 subjectTableId, 1, 2);
@@ -31,7 +32,7 @@ public class TableBalancerPausedTableTest {
     }
 
     @Test
-    public void testTwoTablesOnePausedDueToNotEnoughPlayersAtTable() {
+    public void testTwoTablesOneAndThreePlayersCantMerge() {
         UUID subjectTableId = UUID.randomUUID();
         Map<UUID, Set<UUID>> tableToPlayersMap = createTableToPlayersMap(
                 subjectTableId, 1, 3);
@@ -43,41 +44,73 @@ public class TableBalancerPausedTableTest {
                 event.get().getClass());
     }
 
-    /*
-     * @Test public void testImbalanceByTwoUnderMaxThreshold() { game =
-     * GameGenerator.createGame(9, 9); Table table1 = new Table(); Table table2
-     * = new Table(); DataUtilsForTests.fillTableWithUsers(table1, 3, 9);
-     * DataUtilsForTests.fillTableWithUsers(table2, 5, 9);
-     * game.addTable(table1); game.addTable(table2);
-     * assertFalse(command.execute(game)); }
-     * 
-     * @Test public void testShouldOnlyBeTwoTablesNotThree() { game =
-     * GameGenerator.createGame(18, 9); Table table1 = new Table(); Table table2
-     * = new Table(); Table table3 = new Table();
-     * DataUtilsForTests.fillTableWithUsers(table1, 4, 9);
-     * DataUtilsForTests.fillTableWithUsers(table2, 5, 9);
-     * DataUtilsForTests.fillTableWithUsers(table3, 4, 9);
-     * game.addTable(table1); game.addTable(table2); game.addTable(table3);
-     * assertFalse(command.execute(game)); }
-     * 
-     * @Test public void testThreeTablesTwoOutOfBalance() { game =
-     * GameGenerator.createGame(27, 9); Table table1 = new Table(); Table table2
-     * = new Table(); Table table3 = new Table();
-     * DataUtilsForTests.fillTableWithUsers(table1, 7, 9);
-     * DataUtilsForTests.fillTableWithUsers(table2, 9, 9);
-     * DataUtilsForTests.fillTableWithUsers(table3, 8, 9);
-     * game.addTable(table1); game.addTable(table2); game.addTable(table3);
-     * assertFalse(command.execute(game)); }
-     * 
-     * 
-     * @Test public void testShouldBeExactlyTwoTablesNotThree() { game =
-     * GameGenerator.createGame(27, 9); Table table1 = new Table(); Table table2
-     * = new Table(); Table table3 = new Table();
-     * DataUtilsForTests.fillTableWithUsers(table1, 6, 9);
-     * DataUtilsForTests.fillTableWithUsers(table2, 6, 9);
-     * DataUtilsForTests.fillTableWithUsers(table3, 6, 9);
-     * game.addTable(table1); game.addTable(table2); game.addTable(table3);
-     * assertFalse(command.execute(game)); }
-     * 
-     */
+    @Test
+    public void testTwoTablesImbalancedByTwoCantMergeSubjectIsSmallerTableNoPaused() {
+        UUID subjectTableId = UUID.randomUUID();
+        Map<UUID, Set<UUID>> tableToPlayersMap = createTableToPlayersMap(
+                subjectTableId, 5, 7);
+
+        TableBalancer tableBalancer = new TableBalancer(UUID.randomUUID(), 9);
+        Optional<GameEvent> event = tableBalancer.createSingleBalancingEvent(1,
+                subjectTableId, Collections.emptySet(), tableToPlayersMap);
+        assertEquals(TablePausedForBalancingEvent.class,
+                event.get().getClass());
+        assertEquals(subjectTableId,
+                ((TablePausedForBalancingEvent) event.get()).getTableId());
+    }
+
+    @Test
+    public void testTwoTablesImbalancedByTwoCantMergeSubjectIsLargerTableNoPaused() {
+        UUID subjectTableId = UUID.randomUUID();
+        Map<UUID, Set<UUID>> tableToPlayersMap = createTableToPlayersMap(
+                subjectTableId, 7, 5);
+        UUID otherTableId = tableToPlayersMap.keySet().stream()
+                .filter(x -> !x.equals(subjectTableId)).findFirst().get();
+
+        TableBalancer tableBalancer = new TableBalancer(UUID.randomUUID(), 9);
+        Optional<GameEvent> event = tableBalancer.createSingleBalancingEvent(1,
+                subjectTableId, Collections.emptySet(), tableToPlayersMap);
+        assertEquals(PlayerMovedToNewTableEvent.class, event.get().getClass());
+        assertEquals(subjectTableId,
+                ((PlayerMovedToNewTableEvent) event.get()).getFromTableId());
+        assertEquals(otherTableId,
+                ((PlayerMovedToNewTableEvent) event.get()).getToTableId());
+    }
+
+    @Test
+    public void testThreeTablesTwoImbalancedByTwoCantMergeSubjectIsSmallestTableNoPaused() {
+        UUID subjectTableId = UUID.randomUUID();
+        Map<UUID, Set<UUID>> tableToPlayersMap = createTableToPlayersMap(
+                subjectTableId, 7, 8, 9);
+
+        TableBalancer tableBalancer = new TableBalancer(UUID.randomUUID(), 9);
+        Optional<GameEvent> event = tableBalancer.createSingleBalancingEvent(1,
+                subjectTableId, Collections.emptySet(), tableToPlayersMap);
+
+        assertEquals(TablePausedForBalancingEvent.class,
+                event.get().getClass());
+        assertEquals(subjectTableId,
+                ((TablePausedForBalancingEvent) event.get()).getTableId());
+    }
+
+    @Test
+    public void testThreeTablesTwoImbalancedByTwoCantMergeSubjectIsLargestTableNoPaused() {
+        UUID subjectTableId = UUID.randomUUID();
+        Map<UUID, Set<UUID>> tableToPlayersMap = createTableToPlayersMap(
+                subjectTableId, 9, 8, 7);
+        UUID smallestOtherTableId = tableToPlayersMap.entrySet().stream()
+                .filter(x -> x.getValue().size() == 7).findFirst().get()
+                .getKey();
+
+        TableBalancer tableBalancer = new TableBalancer(UUID.randomUUID(), 9);
+        Optional<GameEvent> event = tableBalancer.createSingleBalancingEvent(1,
+                subjectTableId, Collections.emptySet(), tableToPlayersMap);
+
+        assertEquals(PlayerMovedToNewTableEvent.class, event.get().getClass());
+        assertEquals(subjectTableId,
+                ((PlayerMovedToNewTableEvent) event.get()).getFromTableId());
+        assertEquals(smallestOtherTableId,
+                ((PlayerMovedToNewTableEvent) event.get()).getToTableId());
+    }
+
 }

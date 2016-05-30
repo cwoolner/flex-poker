@@ -91,4 +91,36 @@ public class TableBalancerNothingToDoTest {
         assertFalse(event.isPresent());
     }
 
+    @Test
+    public void testThreeTablesTwoImbalancedByTwoCantMergeSubjectIsMediumTableSmallestPaused() {
+        UUID subjectTableId = UUID.randomUUID();
+        Map<UUID, Set<UUID>> tableToPlayersMap = createTableToPlayersMap(
+                subjectTableId, 8, 7, 9);
+        UUID smallestOtherTableId = tableToPlayersMap.entrySet().stream()
+                .filter(x -> x.getValue().size() == 7).findFirst().get()
+                .getKey();
+
+        TableBalancer tableBalancer = new TableBalancer(UUID.randomUUID(), 9);
+        Optional<GameEvent> event = tableBalancer.createSingleBalancingEvent(1,
+                subjectTableId, Collections.singleton(smallestOtherTableId),
+                tableToPlayersMap);
+        assertFalse(event.isPresent());
+    }
+
+    @Test
+    public void testThreeTablesAllImbalancedCantMergeSubjectIsMediumTableSmallestPaused() {
+        UUID subjectTableId = UUID.randomUUID();
+        Map<UUID, Set<UUID>> tableToPlayersMap = createTableToPlayersMap(
+                subjectTableId, 7, 6, 9);
+        UUID smallestOtherTableId = tableToPlayersMap.entrySet().stream()
+                .filter(x -> x.getValue().size() == 6).findFirst().get()
+                .getKey();
+
+        TableBalancer tableBalancer = new TableBalancer(UUID.randomUUID(), 9);
+        Optional<GameEvent> event = tableBalancer.createSingleBalancingEvent(1,
+                subjectTableId, Collections.singleton(smallestOtherTableId),
+                tableToPlayersMap);
+        assertFalse(event.isPresent());
+    }
+
 }
