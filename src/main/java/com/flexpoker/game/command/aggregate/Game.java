@@ -22,6 +22,10 @@ import com.flexpoker.game.command.events.GameMovedToStartingStageEvent;
 import com.flexpoker.game.command.events.GameStartedEvent;
 import com.flexpoker.game.command.events.GameTablesCreatedAndPlayersAssociatedEvent;
 import com.flexpoker.game.command.events.NewHandIsClearedToStartEvent;
+import com.flexpoker.game.command.events.PlayerMovedToNewTableEvent;
+import com.flexpoker.game.command.events.TablePausedForBalancingEvent;
+import com.flexpoker.game.command.events.TableRemovedEvent;
+import com.flexpoker.game.command.events.TableResumedAfterBalancingEvent;
 import com.flexpoker.game.command.framework.GameEvent;
 import com.flexpoker.game.query.dto.GameStage;
 
@@ -97,6 +101,24 @@ public class Game extends AggregateRoot<GameEvent> {
         methodTable.put(GameFinishedEvent.class, x -> gameStage = GameStage.FINISHED);
         methodTable.put(NewHandIsClearedToStartEvent.class, x -> {});
         methodTable.put(BlindsIncreasedEvent.class, x -> blindSchedule.incrementLevel());
+        methodTable.put(TableRemovedEvent.class, x -> {
+            UUID tableId = ((TableRemovedEvent) x).getTableId();
+            tableIdToPlayerIdsMap.remove(tableId);
+            pausedTablesForBalancing.remove(tableId);
+        });
+        methodTable.put(TablePausedForBalancingEvent.class, x -> {
+            UUID tableId = ((TablePausedForBalancingEvent) x).getTableId();
+            pausedTablesForBalancing.add(tableId);
+        });
+        methodTable.put(TableResumedAfterBalancingEvent.class, x -> {
+            UUID tableId = ((TableResumedAfterBalancingEvent) x).getTableId();
+            pausedTablesForBalancing.remove(tableId);
+        });
+        methodTable.put(PlayerMovedToNewTableEvent.class, x -> {
+            PlayerMovedToNewTableEvent event = (PlayerMovedToNewTableEvent) x;
+            tableIdToPlayerIdsMap.get(event.getFromTableId()).remove(event.getPlayerId());
+            tableIdToPlayerIdsMap.get(event.getToTableId()).add(event.getPlayerId());
+        });
     }
 
     private void applyCommonEvent(GameEvent event) {
