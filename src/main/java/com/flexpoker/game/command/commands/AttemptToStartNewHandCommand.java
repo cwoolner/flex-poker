@@ -1,5 +1,6 @@
 package com.flexpoker.game.command.commands;
 
+import java.util.Map;
 import java.util.UUID;
 
 import com.flexpoker.framework.command.BaseCommand;
@@ -15,10 +16,14 @@ public class AttemptToStartNewHandCommand extends BaseCommand<GameCommandType> i
 
     private final UUID tableId;
 
-    public AttemptToStartNewHandCommand(UUID aggregateId, UUID tableId) {
+    private final Map<UUID, Integer> playerToChipsAtTableMap;
+
+    public AttemptToStartNewHandCommand(UUID aggregateId, UUID tableId,
+            Map<UUID, Integer> playerToChipsAtTableMap) {
         super(TYPE);
         this.aggregateId = aggregateId;
         this.tableId = tableId;
+        this.playerToChipsAtTableMap = playerToChipsAtTableMap;
     }
 
     public UUID getAggregateId() {
@@ -27,6 +32,10 @@ public class AttemptToStartNewHandCommand extends BaseCommand<GameCommandType> i
 
     public UUID getTableId() {
         return tableId;
+    }
+
+    public Map<UUID, Integer> getPlayerToChipsAtTableMap() {
+        return playerToChipsAtTableMap;
     }
 
 }

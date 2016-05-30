@@ -40,7 +40,7 @@ public class AttemptToStartNewHandCommandHandler implements
         List<GameEvent> gameEvents = gameEventRepository.fetchAll(command
                 .getAggregateId());
         Game game = gameFactory.createFrom(gameEvents);
-        game.attemptToStartNewHand(command.getTableId());
+        game.attemptToStartNewHand(command.getTableId(), command.getPlayerToChipsAtTableMap());
         game.fetchNewEvents().forEach(x -> gameEventRepository.save(x));
         game.fetchNewEvents().forEach(x -> eventPublisher.publish(x));
     }

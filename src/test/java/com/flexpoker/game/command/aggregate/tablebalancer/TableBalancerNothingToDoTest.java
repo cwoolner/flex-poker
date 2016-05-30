@@ -1,5 +1,6 @@
 package com.flexpoker.game.command.aggregate.tablebalancer;
 
+import static com.flexpoker.game.command.aggregate.tablebalancer.TableBalancerTestUtils.createDefaultChipMapForSubjectTable;
 import static com.flexpoker.game.command.aggregate.tablebalancer.TableBalancerTestUtils.createTableToPlayersMap;
 import static org.junit.Assert.assertFalse;
 
@@ -24,7 +25,9 @@ public class TableBalancerNothingToDoTest {
 
         TableBalancer tableBalancer = new TableBalancer(UUID.randomUUID(), 2);
         Optional<GameEvent> event = tableBalancer.createSingleBalancingEvent(1,
-                subjectTableId, Collections.emptySet(), tableToPlayersMap);
+                subjectTableId, Collections.emptySet(), tableToPlayersMap,
+                createDefaultChipMapForSubjectTable(subjectTableId,
+                        tableToPlayersMap));
         assertFalse(event.isPresent());
     }
 
@@ -36,7 +39,9 @@ public class TableBalancerNothingToDoTest {
 
         TableBalancer tableBalancer = new TableBalancer(UUID.randomUUID(), 2);
         Optional<GameEvent> event = tableBalancer.createSingleBalancingEvent(1,
-                subjectTableId, Collections.emptySet(), tableToPlayersMap);
+                subjectTableId, Collections.emptySet(), tableToPlayersMap,
+                createDefaultChipMapForSubjectTable(subjectTableId,
+                        tableToPlayersMap));
         assertFalse(event.isPresent());
     }
 
@@ -51,7 +56,8 @@ public class TableBalancerNothingToDoTest {
         TableBalancer tableBalancer = new TableBalancer(UUID.randomUUID(), 2);
         Optional<GameEvent> event = tableBalancer.createSingleBalancingEvent(1,
                 subjectTableId, Collections.singleton(otherTableId),
-                tableToPlayersMap);
+                tableToPlayersMap, createDefaultChipMapForSubjectTable(
+                        subjectTableId, tableToPlayersMap));
         assertFalse(event.isPresent());
     }
 
@@ -63,7 +69,9 @@ public class TableBalancerNothingToDoTest {
 
         TableBalancer tableBalancer = new TableBalancer(UUID.randomUUID(), 9);
         Optional<GameEvent> event = tableBalancer.createSingleBalancingEvent(1,
-                subjectTableId, Collections.emptySet(), tableToPlayersMap);
+                subjectTableId, Collections.emptySet(), tableToPlayersMap,
+                createDefaultChipMapForSubjectTable(subjectTableId,
+                        tableToPlayersMap));
         assertFalse(event.isPresent());
     }
 
@@ -75,7 +83,9 @@ public class TableBalancerNothingToDoTest {
 
         TableBalancer tableBalancer = new TableBalancer(UUID.randomUUID(), 9);
         Optional<GameEvent> event = tableBalancer.createSingleBalancingEvent(1,
-                subjectTableId, Collections.emptySet(), tableToPlayersMap);
+                subjectTableId, Collections.emptySet(), tableToPlayersMap,
+                createDefaultChipMapForSubjectTable(subjectTableId,
+                        tableToPlayersMap));
         assertFalse(event.isPresent());
     }
 
@@ -87,7 +97,9 @@ public class TableBalancerNothingToDoTest {
 
         TableBalancer tableBalancer = new TableBalancer(UUID.randomUUID(), 6);
         Optional<GameEvent> event = tableBalancer.createSingleBalancingEvent(1,
-                subjectTableId, Collections.emptySet(), tableToPlayersMap);
+                subjectTableId, Collections.emptySet(), tableToPlayersMap,
+                createDefaultChipMapForSubjectTable(subjectTableId,
+                        tableToPlayersMap));
         assertFalse(event.isPresent());
     }
 
@@ -103,7 +115,8 @@ public class TableBalancerNothingToDoTest {
         TableBalancer tableBalancer = new TableBalancer(UUID.randomUUID(), 9);
         Optional<GameEvent> event = tableBalancer.createSingleBalancingEvent(1,
                 subjectTableId, Collections.singleton(smallestOtherTableId),
-                tableToPlayersMap);
+                tableToPlayersMap, createDefaultChipMapForSubjectTable(
+                        subjectTableId, tableToPlayersMap));
         assertFalse(event.isPresent());
     }
 
@@ -119,7 +132,8 @@ public class TableBalancerNothingToDoTest {
         TableBalancer tableBalancer = new TableBalancer(UUID.randomUUID(), 9);
         Optional<GameEvent> event = tableBalancer.createSingleBalancingEvent(1,
                 subjectTableId, Collections.singleton(smallestOtherTableId),
-                tableToPlayersMap);
+                tableToPlayersMap, createDefaultChipMapForSubjectTable(
+                        subjectTableId, tableToPlayersMap));
         assertFalse(event.isPresent());
     }
 

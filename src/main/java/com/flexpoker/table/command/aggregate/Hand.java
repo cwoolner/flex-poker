@@ -352,8 +352,8 @@ public class Hand {
 
     Optional<TableEvent> finishHandIfAppropriate(int aggregateVersion) {
         if (handDealerState == HandDealerState.COMPLETE) {
-            return Optional.of(new HandCompletedEvent(tableId, aggregateVersion, gameId,
-                    entityId));
+            return Optional.of(new HandCompletedEvent(tableId, aggregateVersion,
+                    gameId, entityId, chipsInBackMap));
         }
 
         return Optional.empty();

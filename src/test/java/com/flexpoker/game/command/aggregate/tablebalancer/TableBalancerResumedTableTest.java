@@ -1,5 +1,6 @@
 package com.flexpoker.game.command.aggregate.tablebalancer;
 
+import static com.flexpoker.game.command.aggregate.tablebalancer.TableBalancerTestUtils.createDefaultChipMapForSubjectTable;
 import static com.flexpoker.game.command.aggregate.tablebalancer.TableBalancerTestUtils.createTableToPlayersMap;
 import static org.junit.Assert.assertEquals;
 
@@ -26,7 +27,8 @@ public class TableBalancerResumedTableTest {
         TableBalancer tableBalancer = new TableBalancer(UUID.randomUUID(), 2);
         Optional<GameEvent> event = tableBalancer.createSingleBalancingEvent(1,
                 subjectTableId, Collections.singleton(subjectTableId),
-                tableToPlayersMap);
+                tableToPlayersMap, createDefaultChipMapForSubjectTable(
+                        subjectTableId, tableToPlayersMap));
         assertEquals(TableResumedAfterBalancingEvent.class,
                 event.get().getClass());
         assertEquals(subjectTableId,
@@ -44,7 +46,8 @@ public class TableBalancerResumedTableTest {
         TableBalancer tableBalancer = new TableBalancer(UUID.randomUUID(), 9);
         Optional<GameEvent> event = tableBalancer.createSingleBalancingEvent(1,
                 subjectTableId, Collections.singleton(otherTableId),
-                tableToPlayersMap);
+                tableToPlayersMap, createDefaultChipMapForSubjectTable(
+                        subjectTableId, tableToPlayersMap));
         assertEquals(TableResumedAfterBalancingEvent.class,
                 event.get().getClass());
         assertEquals(otherTableId,

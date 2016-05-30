@@ -1,5 +1,6 @@
 package com.flexpoker.game.command.aggregate.tablebalancer;
 
+import static com.flexpoker.game.command.aggregate.tablebalancer.TableBalancerTestUtils.createDefaultChipMapForSubjectTable;
 import static com.flexpoker.game.command.aggregate.tablebalancer.TableBalancerTestUtils.createTableToPlayersMap;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -28,7 +29,9 @@ public class TableBalancerRemoveTableTest {
 
         TableBalancer tableBalancer = new TableBalancer(UUID.randomUUID(), 2);
         Optional<GameEvent> event = tableBalancer.createSingleBalancingEvent(1,
-                subjectTableId, Collections.emptySet(), tableToPlayersMap);
+                subjectTableId, Collections.emptySet(), tableToPlayersMap,
+                createDefaultChipMapForSubjectTable(subjectTableId,
+                        tableToPlayersMap));
         assertEquals(TableRemovedEvent.class, event.get().getClass());
         assertEquals(subjectTableId,
                 ((TableRemovedEvent) event.get()).getTableId());
@@ -44,7 +47,9 @@ public class TableBalancerRemoveTableTest {
 
         TableBalancer tableBalancer = new TableBalancer(UUID.randomUUID(), 2);
         Optional<GameEvent> event = tableBalancer.createSingleBalancingEvent(1,
-                subjectTableId, Collections.emptySet(), tableToPlayersMap);
+                subjectTableId, Collections.emptySet(), tableToPlayersMap,
+                createDefaultChipMapForSubjectTable(subjectTableId,
+                        tableToPlayersMap));
         assertEquals(TableRemovedEvent.class, event.get().getClass());
         assertEquals(otherTableId,
                 ((TableRemovedEvent) event.get()).getTableId());
@@ -61,7 +66,9 @@ public class TableBalancerRemoveTableTest {
 
         TableBalancer tableBalancer = new TableBalancer(UUID.randomUUID(), 2);
         Optional<GameEvent> event = tableBalancer.createSingleBalancingEvent(1,
-                subjectTableId, Collections.emptySet(), tableToPlayersMap);
+                subjectTableId, Collections.emptySet(), tableToPlayersMap,
+                createDefaultChipMapForSubjectTable(subjectTableId,
+                        tableToPlayersMap));
         assertEquals(TableRemovedEvent.class, event.get().getClass());
         assertTrue(otherTableIds
                 .contains(((TableRemovedEvent) event.get()).getTableId()));
@@ -75,7 +82,9 @@ public class TableBalancerRemoveTableTest {
 
         TableBalancer tableBalancer = new TableBalancer(UUID.randomUUID(), 2);
         Optional<GameEvent> event = tableBalancer.createSingleBalancingEvent(1,
-                subjectTableId, Collections.emptySet(), tableToPlayersMap);
+                subjectTableId, Collections.emptySet(), tableToPlayersMap,
+                createDefaultChipMapForSubjectTable(subjectTableId,
+                        tableToPlayersMap));
         assertFalse(event.isPresent());
     }
 

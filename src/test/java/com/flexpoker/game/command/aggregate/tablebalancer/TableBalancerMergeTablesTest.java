@@ -1,5 +1,6 @@
 package com.flexpoker.game.command.aggregate.tablebalancer;
 
+import static com.flexpoker.game.command.aggregate.tablebalancer.TableBalancerTestUtils.createDefaultChipMapForSubjectTable;
 import static com.flexpoker.game.command.aggregate.tablebalancer.TableBalancerTestUtils.createTableToPlayersMap;
 import static org.junit.Assert.assertEquals;
 
@@ -28,7 +29,8 @@ public class TableBalancerMergeTablesTest {
         TableBalancer tableBalancer = new TableBalancer(UUID.randomUUID(), 2);
         Optional<GameEvent> event = tableBalancer.createSingleBalancingEvent(1,
                 subjectTableId, Collections.singleton(otherTableId),
-                tableToPlayersMap);
+                tableToPlayersMap, createDefaultChipMapForSubjectTable(
+                        subjectTableId, tableToPlayersMap));
         assertEquals(PlayerMovedToNewTableEvent.class, event.get().getClass());
         assertEquals(subjectTableId,
                 ((PlayerMovedToNewTableEvent) event.get()).getFromTableId());
@@ -42,7 +44,9 @@ public class TableBalancerMergeTablesTest {
 
         TableBalancer tableBalancer = new TableBalancer(UUID.randomUUID(), 3);
         Optional<GameEvent> event = tableBalancer.createSingleBalancingEvent(1,
-                subjectTableId, Collections.emptySet(), tableToPlayersMap);
+                subjectTableId, Collections.emptySet(), tableToPlayersMap,
+                createDefaultChipMapForSubjectTable(subjectTableId,
+                        tableToPlayersMap));
         assertEquals(PlayerMovedToNewTableEvent.class, event.get().getClass());
         assertEquals(subjectTableId,
                 ((PlayerMovedToNewTableEvent) event.get()).getFromTableId());
@@ -59,7 +63,9 @@ public class TableBalancerMergeTablesTest {
 
         TableBalancer tableBalancer = new TableBalancer(UUID.randomUUID(), 3);
         Optional<GameEvent> event = tableBalancer.createSingleBalancingEvent(1,
-                subjectTableId, Collections.emptySet(), tableToPlayersMap);
+                subjectTableId, Collections.emptySet(), tableToPlayersMap,
+                createDefaultChipMapForSubjectTable(subjectTableId,
+                        tableToPlayersMap));
         assertEquals(PlayerMovedToNewTableEvent.class, event.get().getClass());
         assertEquals(subjectTableId,
                 ((PlayerMovedToNewTableEvent) event.get()).getFromTableId());

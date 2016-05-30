@@ -1,5 +1,6 @@
 package com.flexpoker.game.command.aggregate.tablebalancer;
 
+import static com.flexpoker.game.command.aggregate.tablebalancer.TableBalancerTestUtils.createDefaultChipMapForSubjectTable;
 import static com.flexpoker.game.command.aggregate.tablebalancer.TableBalancerTestUtils.createTableToPlayersMap;
 
 import java.util.Collections;
@@ -22,9 +23,11 @@ public class TableBalancerExceptionTest {
 
         TableBalancer tableBalancer = new TableBalancer(UUID.randomUUID(), 2);
         tableBalancer.createSingleBalancingEvent(1, subjectTableId,
-                Collections.emptySet(), tableToPlayersMap);
+                Collections.emptySet(), tableToPlayersMap,
+                createDefaultChipMapForSubjectTable(subjectTableId,
+                        tableToPlayersMap));
     }
-    
+
     @Test(expected = FlexPokerException.class)
     public void testTwoTablesOnePlayer() {
         UUID subjectTableId = UUID.randomUUID();
@@ -33,9 +36,11 @@ public class TableBalancerExceptionTest {
 
         TableBalancer tableBalancer = new TableBalancer(UUID.randomUUID(), 2);
         tableBalancer.createSingleBalancingEvent(1, subjectTableId,
-                Collections.emptySet(), tableToPlayersMap);
+                Collections.emptySet(), tableToPlayersMap,
+                createDefaultChipMapForSubjectTable(subjectTableId,
+                        tableToPlayersMap));
     }
-    
+
     @Test(expected = FlexPokerException.class)
     public void testAllTablesEmpty() {
         UUID subjectTableId = UUID.randomUUID();
@@ -44,7 +49,9 @@ public class TableBalancerExceptionTest {
 
         TableBalancer tableBalancer = new TableBalancer(UUID.randomUUID(), 2);
         tableBalancer.createSingleBalancingEvent(1, subjectTableId,
-                Collections.emptySet(), tableToPlayersMap);
+                Collections.emptySet(), tableToPlayersMap,
+                createDefaultChipMapForSubjectTable(subjectTableId,
+                        tableToPlayersMap));
     }
-    
+
 }

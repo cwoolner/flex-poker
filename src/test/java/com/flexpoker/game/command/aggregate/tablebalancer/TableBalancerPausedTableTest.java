@@ -1,5 +1,6 @@
 package com.flexpoker.game.command.aggregate.tablebalancer;
 
+import static com.flexpoker.game.command.aggregate.tablebalancer.TableBalancerTestUtils.createDefaultChipMapForSubjectTable;
 import static com.flexpoker.game.command.aggregate.tablebalancer.TableBalancerTestUtils.createTableToPlayersMap;
 import static org.junit.Assert.assertEquals;
 
@@ -26,7 +27,9 @@ public class TableBalancerPausedTableTest {
 
         TableBalancer tableBalancer = new TableBalancer(UUID.randomUUID(), 2);
         Optional<GameEvent> event = tableBalancer.createSingleBalancingEvent(1,
-                subjectTableId, Collections.emptySet(), tableToPlayersMap);
+                subjectTableId, Collections.emptySet(), tableToPlayersMap,
+                createDefaultChipMapForSubjectTable(subjectTableId,
+                        tableToPlayersMap));
         assertEquals(TablePausedForBalancingEvent.class,
                 event.get().getClass());
     }
@@ -39,7 +42,9 @@ public class TableBalancerPausedTableTest {
 
         TableBalancer tableBalancer = new TableBalancer(UUID.randomUUID(), 3);
         Optional<GameEvent> event = tableBalancer.createSingleBalancingEvent(1,
-                subjectTableId, Collections.emptySet(), tableToPlayersMap);
+                subjectTableId, Collections.emptySet(), tableToPlayersMap,
+                createDefaultChipMapForSubjectTable(subjectTableId,
+                        tableToPlayersMap));
         assertEquals(TablePausedForBalancingEvent.class,
                 event.get().getClass());
     }
@@ -52,7 +57,9 @@ public class TableBalancerPausedTableTest {
 
         TableBalancer tableBalancer = new TableBalancer(UUID.randomUUID(), 9);
         Optional<GameEvent> event = tableBalancer.createSingleBalancingEvent(1,
-                subjectTableId, Collections.emptySet(), tableToPlayersMap);
+                subjectTableId, Collections.emptySet(), tableToPlayersMap,
+                createDefaultChipMapForSubjectTable(subjectTableId,
+                        tableToPlayersMap));
         assertEquals(TablePausedForBalancingEvent.class,
                 event.get().getClass());
         assertEquals(subjectTableId,
@@ -69,7 +76,9 @@ public class TableBalancerPausedTableTest {
 
         TableBalancer tableBalancer = new TableBalancer(UUID.randomUUID(), 9);
         Optional<GameEvent> event = tableBalancer.createSingleBalancingEvent(1,
-                subjectTableId, Collections.emptySet(), tableToPlayersMap);
+                subjectTableId, Collections.emptySet(), tableToPlayersMap,
+                createDefaultChipMapForSubjectTable(subjectTableId,
+                        tableToPlayersMap));
         assertEquals(PlayerMovedToNewTableEvent.class, event.get().getClass());
         assertEquals(subjectTableId,
                 ((PlayerMovedToNewTableEvent) event.get()).getFromTableId());
@@ -85,7 +94,9 @@ public class TableBalancerPausedTableTest {
 
         TableBalancer tableBalancer = new TableBalancer(UUID.randomUUID(), 9);
         Optional<GameEvent> event = tableBalancer.createSingleBalancingEvent(1,
-                subjectTableId, Collections.emptySet(), tableToPlayersMap);
+                subjectTableId, Collections.emptySet(), tableToPlayersMap,
+                createDefaultChipMapForSubjectTable(subjectTableId,
+                        tableToPlayersMap));
 
         assertEquals(TablePausedForBalancingEvent.class,
                 event.get().getClass());
@@ -104,7 +115,9 @@ public class TableBalancerPausedTableTest {
 
         TableBalancer tableBalancer = new TableBalancer(UUID.randomUUID(), 9);
         Optional<GameEvent> event = tableBalancer.createSingleBalancingEvent(1,
-                subjectTableId, Collections.emptySet(), tableToPlayersMap);
+                subjectTableId, Collections.emptySet(), tableToPlayersMap,
+                createDefaultChipMapForSubjectTable(subjectTableId,
+                        tableToPlayersMap));
 
         assertEquals(PlayerMovedToNewTableEvent.class, event.get().getClass());
         assertEquals(subjectTableId,

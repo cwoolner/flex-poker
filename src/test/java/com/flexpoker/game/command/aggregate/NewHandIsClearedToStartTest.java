@@ -3,6 +3,7 @@ package com.flexpoker.game.command.aggregate;
 import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -43,7 +44,7 @@ public class NewHandIsClearedToStartTest {
 
         Game game = new DefaultGameFactory().createFrom(events);
 
-        game.attemptToStartNewHand(tableId);
+        game.attemptToStartNewHand(tableId, Collections.emptyMap());
         
         assertEquals(7, game.fetchAppliedEvents().size());
         assertEquals(1, game.fetchNewEvents().size());

@@ -137,7 +137,7 @@ public class Game extends AggregateRoot<GameEvent> {
         }
     }
 
-    public void attemptToStartNewHand(UUID tableId) {
+    public void attemptToStartNewHand(UUID tableId, Map<UUID, Integer> playerToChipsAtTableMap) {
         if (gameStage != GameStage.INPROGRESS) {
             throw new FlexPokerException("the game must be INPROGRESS if trying"
                     + "to start a new hand");
@@ -146,7 +146,7 @@ public class Game extends AggregateRoot<GameEvent> {
         Optional<GameEvent> singleBalancingEvent;
         do {
             singleBalancingEvent = tableBalancer.createSingleBalancingEvent(aggregateVersion + 1,
-                    tableId, pausedTablesForBalancing, tableIdToPlayerIdsMap);
+                    tableId, pausedTablesForBalancing, tableIdToPlayerIdsMap, playerToChipsAtTableMap);
             if (singleBalancingEvent.isPresent()) {
                 aggregateVersion++;
                 addNewEvent(singleBalancingEvent.get());

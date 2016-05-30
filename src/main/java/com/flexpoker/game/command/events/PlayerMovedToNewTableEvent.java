@@ -13,12 +13,15 @@ public class PlayerMovedToNewTableEvent extends BaseEvent implements GameEvent {
 
     private final UUID playerId;
 
+    private final int chips;
+
     public PlayerMovedToNewTableEvent(UUID aggregateId, int version,
-            UUID fromTableId, UUID toTableId, UUID playerId) {
+            UUID fromTableId, UUID toTableId, UUID playerId, int chips) {
         super(aggregateId, version);
         this.fromTableId = fromTableId;
         this.toTableId = toTableId;
         this.playerId = playerId;
+        this.chips = chips;
     }
 
     public UUID getFromTableId() {
@@ -31,6 +34,10 @@ public class PlayerMovedToNewTableEvent extends BaseEvent implements GameEvent {
 
     public UUID getPlayerId() {
         return playerId;
+    }
+
+    public int getChips() {
+        return chips;
     }
 
 }

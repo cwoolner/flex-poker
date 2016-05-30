@@ -38,4 +38,10 @@ public class TableBalancerTestUtils {
                 .map(x -> UUID.randomUUID()).collect(Collectors.toSet());
     }
 
+    public static Map<UUID, Integer> createDefaultChipMapForSubjectTable(
+            UUID subjectTableId, Map<UUID, Set<UUID>> tableToPlayersMap) {
+        return tableToPlayersMap.get(subjectTableId).stream()
+                .collect(Collectors.toMap(x -> x, x -> 100));
+    }
+
 }
