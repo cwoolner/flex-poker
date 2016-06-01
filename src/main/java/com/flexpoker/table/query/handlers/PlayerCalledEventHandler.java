@@ -18,9 +18,9 @@ import com.flexpoker.model.chat.outgoing.TableChatMessage;
 import com.flexpoker.pushnotifications.TableUpdatedPushNotification;
 import com.flexpoker.table.command.events.PlayerCalledEvent;
 import com.flexpoker.table.query.repository.TableRepository;
-import com.flexpoker.web.model.outgoing.PotDTO;
-import com.flexpoker.web.model.outgoing.SeatDTO;
-import com.flexpoker.web.model.outgoing.TableDTO;
+import com.flexpoker.web.dto.outgoing.PotDTO;
+import com.flexpoker.web.dto.outgoing.SeatDTO;
+import com.flexpoker.web.dto.outgoing.TableDTO;
 
 @Component
 public class PlayerCalledEventHandler implements EventHandler<PlayerCalledEvent> {

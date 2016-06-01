@@ -10,7 +10,7 @@ import com.flexpoker.framework.pushnotifier.PushNotificationHandler;
 import com.flexpoker.pushnotifications.TableUpdatedPushNotification;
 import com.flexpoker.table.query.repository.TableRepository;
 import com.flexpoker.util.MessagingConstants;
-import com.flexpoker.web.model.outgoing.TableDTO;
+import com.flexpoker.web.dto.outgoing.TableDTO;
 
 @Component
 public class TableUpdatedPushNotificationHandler implements

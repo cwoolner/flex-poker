@@ -16,8 +16,8 @@ import com.flexpoker.model.chat.outgoing.TableChatMessage;
 import com.flexpoker.pushnotifications.TableUpdatedPushNotification;
 import com.flexpoker.table.command.events.PlayerCheckedEvent;
 import com.flexpoker.table.query.repository.TableRepository;
-import com.flexpoker.web.model.outgoing.SeatDTO;
-import com.flexpoker.web.model.outgoing.TableDTO;
+import com.flexpoker.web.dto.outgoing.SeatDTO;
+import com.flexpoker.web.dto.outgoing.TableDTO;
 
 @Component
 public class PlayerCheckedEventHandler implements EventHandler<PlayerCheckedEvent> {

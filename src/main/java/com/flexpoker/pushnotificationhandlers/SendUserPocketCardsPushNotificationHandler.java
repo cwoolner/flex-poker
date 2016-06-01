@@ -10,7 +10,7 @@ import com.flexpoker.framework.pushnotifier.PushNotificationHandler;
 import com.flexpoker.login.query.repository.LoginRepository;
 import com.flexpoker.pushnotifications.SendUserPocketCardsPushNotification;
 import com.flexpoker.util.MessagingConstants;
-import com.flexpoker.web.model.outgoing.PocketCardsDTO;
+import com.flexpoker.web.dto.outgoing.PocketCardsDTO;
 
 @Component
 public class SendUserPocketCardsPushNotificationHandler implements

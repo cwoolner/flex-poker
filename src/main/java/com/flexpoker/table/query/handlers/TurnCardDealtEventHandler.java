@@ -14,8 +14,8 @@ import com.flexpoker.pushnotifications.TableUpdatedPushNotification;
 import com.flexpoker.table.command.events.TurnCardDealtEvent;
 import com.flexpoker.table.query.repository.CardsUsedInHandRepository;
 import com.flexpoker.table.query.repository.TableRepository;
-import com.flexpoker.web.model.outgoing.CardDTO;
-import com.flexpoker.web.model.outgoing.TableDTO;
+import com.flexpoker.web.dto.outgoing.CardDTO;
+import com.flexpoker.web.dto.outgoing.TableDTO;
 
 @Component
 public class TurnCardDealtEventHandler implements EventHandler<TurnCardDealtEvent> {

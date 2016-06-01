@@ -17,8 +17,8 @@ import com.flexpoker.login.query.repository.LoginRepository;
 import com.flexpoker.pushnotifications.OpenTableForUserPushNotification;
 import com.flexpoker.table.command.events.TableCreatedEvent;
 import com.flexpoker.table.query.repository.TableRepository;
-import com.flexpoker.web.model.outgoing.SeatDTO;
-import com.flexpoker.web.model.outgoing.TableDTO;
+import com.flexpoker.web.dto.outgoing.SeatDTO;
+import com.flexpoker.web.dto.outgoing.TableDTO;
 
 @Component
 public class TableCreatedEventHandler implements EventHandler<TableCreatedEvent> {

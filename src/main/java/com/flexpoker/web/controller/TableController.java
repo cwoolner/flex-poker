@@ -22,7 +22,7 @@ import com.flexpoker.web.dto.incoming.CallTableActionDTO;
 import com.flexpoker.web.dto.incoming.CheckTableActionDTO;
 import com.flexpoker.web.dto.incoming.FoldTableActionDTO;
 import com.flexpoker.web.dto.incoming.RaiseTableActionDTO;
-import com.flexpoker.web.model.outgoing.TableDTO;
+import com.flexpoker.web.dto.outgoing.TableDTO;
 
 @Controller
 public class TableController {

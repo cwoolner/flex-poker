@@ -1,4 +1,4 @@
-package com.flexpoker.web.model.outgoing;
+package com.flexpoker.web.dto.outgoing;
 
 import java.util.List;
 import java.util.Set;
@@ -10,17 +10,13 @@ public class TableDTO {
 
     private final UUID tableId;
 
-    @JsonProperty
-    private List<SeatDTO> seats;
+    private final List<SeatDTO> seats;
 
-    @JsonProperty
-    private int totalPot;
+    private final int totalPot;
 
-    @JsonProperty
-    private Set<PotDTO> pots;
+    private final Set<PotDTO> pots;
 
-    @JsonProperty
-    private List<CardDTO> visibleCommonCards;
+    private final List<CardDTO> visibleCommonCards;
 
     public TableDTO(UUID tableId, List<SeatDTO> seats, int totalPot,
             Set<PotDTO> pots, List<CardDTO> visibleCommonCards) {
@@ -31,40 +27,29 @@ public class TableDTO {
         this.visibleCommonCards = visibleCommonCards;
     }
 
+    @JsonProperty
     public UUID getId() {
         return tableId;
     }
 
+    @JsonProperty
     public List<SeatDTO> getSeats() {
         return seats;
     }
 
-    public void setSeats(List<SeatDTO> seats) {
-        this.seats = seats;
-    }
-
+    @JsonProperty
     public int getTotalPot() {
         return totalPot;
     }
 
-    public void setTotalPot(int totalPot) {
-        this.totalPot = totalPot;
-    }
-
+    @JsonProperty
     public Set<PotDTO> getPots() {
         return pots;
     }
 
-    public void setPots(Set<PotDTO> pots) {
-        this.pots = pots;
-    }
-
+    @JsonProperty
     public List<CardDTO> getVisibleCommonCards() {
         return visibleCommonCards;
-    }
-
-    public void setVisibleCommonCards(List<CardDTO> visibleCommonCards) {
-        this.visibleCommonCards = visibleCommonCards;
     }
 
 }

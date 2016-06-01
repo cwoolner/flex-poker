@@ -7,7 +7,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.springframework.stereotype.Repository;
 
 import com.flexpoker.table.query.repository.TableRepository;
-import com.flexpoker.web.model.outgoing.TableDTO;
+import com.flexpoker.web.dto.outgoing.TableDTO;
 
 @Repository
 public class InMemoryTableRepository implements TableRepository {

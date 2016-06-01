@@ -14,8 +14,8 @@ import com.flexpoker.login.query.repository.LoginRepository;
 import com.flexpoker.pushnotifications.TableUpdatedPushNotification;
 import com.flexpoker.table.command.events.ActionOnChangedEvent;
 import com.flexpoker.table.query.repository.TableRepository;
-import com.flexpoker.web.model.outgoing.SeatDTO;
-import com.flexpoker.web.model.outgoing.TableDTO;
+import com.flexpoker.web.dto.outgoing.SeatDTO;
+import com.flexpoker.web.dto.outgoing.TableDTO;
 
 @Component
 public class ActionOnChangedEventHandler implements EventHandler<ActionOnChangedEvent> {
