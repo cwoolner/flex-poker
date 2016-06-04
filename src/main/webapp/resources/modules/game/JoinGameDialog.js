@@ -38,7 +38,7 @@ export default React.createClass({
           </Modal.Body>
           <Modal.Footer>
             <Button onClick={this.hideDialog}>Close</Button>
-            <Button type="submit" bsStyle="primary">Join Game</Button>
+            <Button type="submit" bsStyle="primary" autoFocus>Join Game</Button>
           </Modal.Footer>
         </form>
       </Modal>

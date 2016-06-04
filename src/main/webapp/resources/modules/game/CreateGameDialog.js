@@ -42,7 +42,7 @@ export default React.createClass({
           <Modal.Body>
             <FormGroup>
               <ControlLabel>Name</ControlLabel>
-              <FormControl type="text" name="name" />
+              <FormControl type="text" name="name" autoFocus />
             </FormGroup>
             <FormGroup>
               <ControlLabel>Number of Players</ControlLabel>
