@@ -7,7 +7,7 @@
   },
   "scripts": {
     "start": "webpack --watch",
-    "postinstall": "webpack"
+    "postinstall": "webpack --optimize-minimize"
   },
   "author": "",
   "license": "ISC",

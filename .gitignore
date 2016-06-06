@@ -8,3 +8,5 @@ dump.rdb
 output/
 node_modules/
 src/main/webapp/resources/bundle.js
+src/main/webapp/resources/vendor.bundle.js
+
