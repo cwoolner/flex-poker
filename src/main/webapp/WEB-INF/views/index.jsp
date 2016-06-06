@@ -7,9 +7,6 @@
 <meta name="_csrf_header" content="${_csrf.headerName}" />
 <jsp:include page="common-header-tags.jsp"></jsp:include>
 
-<script src="//cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.1.1/sockjs.min.js" defer></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js" defer></script>
-
 <script src="/resources/vendor.bundle.js" defer></script>
 <script src="/resources/bundle.js" defer></script>
 

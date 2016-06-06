@@ -1,8 +1,11 @@
+import webstomp from 'webstomp-client';
+import SockJS from 'sockjs-client';
+
 class WebSocketService {
 
     constructor() {
         this.nonRegisteredSubscriptions = [];
-        this.client = Stomp.over(new SockJS('/application'));
+        this.client = webstomp.over(new SockJS('/application'));
 
         let connectCallback = frame => {
             this.nonRegisteredSubscriptions.forEach(item => {
@@ -22,7 +25,7 @@ class WebSocketService {
     }
 
     send(location, objectToSend) {
-        this.client.send(location, {}, JSON.stringify(objectToSend));
+        this.client.send(location, JSON.stringify(objectToSend));
     }
 
     disconnect() {

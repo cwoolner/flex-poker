@@ -8,7 +8,9 @@ module.exports = {
       'react',
       'react-bootstrap',
       'react-dom',
-      'react-router'
+      'react-router',
+      'sockjs-client',
+      'webstomp-client'
     ]
   },
 
