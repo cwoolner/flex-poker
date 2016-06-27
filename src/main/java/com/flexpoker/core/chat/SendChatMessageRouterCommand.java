@@ -5,7 +5,8 @@ import java.util.UUID;
 
 import javax.inject.Inject;
 
-import com.flexpoker.config.Command;
+import org.springframework.stereotype.Component;
+
 import com.flexpoker.core.api.chat.SendChatMessageCommand;
 import com.flexpoker.core.api.chat.SendGameChatMessageCommand;
 import com.flexpoker.core.api.chat.SendGlobalChatMessageCommand;
@@ -17,7 +18,7 @@ import com.flexpoker.model.chat.outgoing.GlobalChatMessage;
 import com.flexpoker.model.chat.outgoing.PersonalChatMessage;
 import com.flexpoker.model.chat.outgoing.TableChatMessage;
 
-@Command
+@Component
 public class SendChatMessageRouterCommand implements SendChatMessageCommand {
 
     private final SendGlobalChatMessageCommand sendGlobalChatMessageCommand;

@@ -6,7 +6,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
-import com.flexpoker.config.Command;
+import org.springframework.stereotype.Service;
+
 import com.flexpoker.model.card.Card;
 import com.flexpoker.model.card.CardRank;
 import com.flexpoker.model.card.CardSuit;
@@ -16,7 +17,7 @@ import com.flexpoker.model.card.PocketCards;
 import com.flexpoker.model.card.RiverCard;
 import com.flexpoker.model.card.TurnCard;
 
-@Command
+@Service
 public class DefaultCardService implements CardService {
 
     @Override

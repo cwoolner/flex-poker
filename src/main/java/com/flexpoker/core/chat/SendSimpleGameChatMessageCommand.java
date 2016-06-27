@@ -3,13 +3,13 @@ package com.flexpoker.core.chat;
 import javax.inject.Inject;
 
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
+import org.springframework.stereotype.Component;
 
-import com.flexpoker.config.Command;
 import com.flexpoker.core.api.chat.SendGameChatMessageCommand;
 import com.flexpoker.model.chat.outgoing.GameChatMessage;
 import com.flexpoker.util.MessagingConstants;
 
-@Command
+@Component
 public class SendSimpleGameChatMessageCommand implements SendGameChatMessageCommand {
 
     private final SimpMessageSendingOperations messagingTemplate;
