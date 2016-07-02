@@ -20,7 +20,7 @@ export default React.createClass({
 
   render() {
     return (
-      <div {...this.props} className={'chat-area'}>
+      <div className={'chat-area'}>
         <textarea id="chat-text" disabled="disabled"></textarea>
         <form onSubmit={this.chatFormSubmitted}>
           <div>
