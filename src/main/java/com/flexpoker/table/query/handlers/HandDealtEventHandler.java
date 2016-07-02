@@ -86,8 +86,9 @@ public class HandDealtEventHandler implements EventHandler<HandDealtEvent> {
         List<SeatDTO> seats = event.getPlayersStillInHand().stream()
                 .map(seatMapper).collect(Collectors.toList());
 
-        TableDTO updatedTable = new TableDTO(currentTable.getId(), seats,
-                totalPot, Collections.emptySet(), Collections.emptyList());
+        TableDTO updatedTable = new TableDTO(currentTable.getId(),
+                event.getVersion(), seats, totalPot, Collections.emptySet(),
+                Collections.emptyList());
         tableRepository.save(updatedTable);
     }
 

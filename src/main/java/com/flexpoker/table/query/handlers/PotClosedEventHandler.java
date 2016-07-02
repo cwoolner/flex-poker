@@ -36,8 +36,9 @@ public class PotClosedEventHandler implements EventHandler<PotClosedEvent> {
         TableDTO currentTable = tableRepository.fetchById(event.getAggregateId());
 
         TableDTO updatedTable = new TableDTO(currentTable.getId(),
-                currentTable.getSeats(), currentTable.getTotalPot(),
-                currentTable.getPots(), currentTable.getVisibleCommonCards());
+                event.getVersion(), currentTable.getSeats(),
+                currentTable.getTotalPot(), currentTable.getPots(),
+                currentTable.getVisibleCommonCards());
         tableRepository.save(updatedTable);
     }
 

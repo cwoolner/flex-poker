@@ -59,8 +59,8 @@ public class ActionOnChangedEventHandler implements EventHandler<ActionOnChanged
         }
 
         TableDTO updatedTable = new TableDTO(currentTable.getId(),
-                updatedSeats, currentTable.getTotalPot(), currentTable.getPots(),
-                currentTable.getVisibleCommonCards());
+                event.getVersion(), updatedSeats, currentTable.getTotalPot(),
+                currentTable.getPots(), currentTable.getVisibleCommonCards());
         tableRepository.save(updatedTable);
     }
 

@@ -49,8 +49,9 @@ public class TurnCardDealtEventHandler implements EventHandler<TurnCardDealtEven
         visibleCommonCards.add(new CardDTO(turnCard.getCard().getId()));
 
         TableDTO updatedTable = new TableDTO(currentTable.getId(),
-                currentTable.getSeats(), currentTable.getTotalPot(),
-                currentTable.getPots(), visibleCommonCards);
+                event.getVersion(), currentTable.getSeats(),
+                currentTable.getTotalPot(), currentTable.getPots(),
+                visibleCommonCards);
         tableRepository.save(updatedTable);
     }
 

@@ -85,8 +85,8 @@ public class PlayerCalledEventHandler implements EventHandler<PlayerCalledEvent>
         }
 
         TableDTO updatedTable = new TableDTO(currentTable.getId(),
-                updatedSeats, updatedTotalPot, currentTable.getPots(),
-                currentTable.getVisibleCommonCards());
+                event.getVersion(), updatedSeats, updatedTotalPot,
+                currentTable.getPots(), currentTable.getVisibleCommonCards());
         tableRepository.save(updatedTable);
     }
 

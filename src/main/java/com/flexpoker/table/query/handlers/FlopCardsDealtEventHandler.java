@@ -52,8 +52,9 @@ public class FlopCardsDealtEventHandler implements EventHandler<FlopCardsDealtEv
         visibleCommonCards.add(new CardDTO(flopCards.getCard3().getId()));
 
         TableDTO updatedTable = new TableDTO(currentTable.getId(),
-                currentTable.getSeats(), currentTable.getTotalPot(),
-                currentTable.getPots(), visibleCommonCards);
+                event.getVersion(), currentTable.getSeats(),
+                currentTable.getTotalPot(), currentTable.getPots(),
+                visibleCommonCards);
         tableRepository.save(updatedTable);
     }
 
