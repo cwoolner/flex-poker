@@ -1,9 +1,10 @@
 package com.flexpoker.table.query.repository.impl;
 
 import java.util.Map;
-import java.util.NoSuchElementException;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.springframework.stereotype.Repository;
 
@@ -15,36 +16,40 @@ public class InMemoryTableRepository implements TableRepository {
 
     private final Map<UUID, TableDTO> idToTableDTOMap;
 
+    private final Map<UUID, ReadWriteLock> idToLockMap;
+
     public InMemoryTableRepository() {
         idToTableDTOMap = new ConcurrentHashMap<>();
+        idToLockMap = new ConcurrentHashMap<>();
     }
 
     @Override
     public TableDTO fetchById(UUID tableId) {
-        if (!idToTableDTOMap.containsKey(tableId)) {
-            throw new NoSuchElementException();
+        try {
+            idToLockMap.get(tableId).readLock().lock();
+            return idToTableDTOMap.get(tableId);
+        } finally {
+            idToLockMap.get(tableId).readLock().unlock();
         }
-
-        return idToTableDTOMap.get(tableId);
     }
 
     @Override
     public void save(TableDTO tableDTO) {
-        // get the tableId from the map if it exists so that it can be
-        // synchronized on
-        UUID tableId = idToTableDTOMap.keySet().stream() //
-                .filter(x -> x.equals(tableDTO.getId())) //
-                .findFirst() //
-                .orElse(tableDTO.getId());
-        synchronized (tableId) {
-            TableDTO existingTableDTO = idToTableDTOMap.get(tableId);
-            if (existingTableDTO == null) {
+        try {
+            idToLockMap.putIfAbsent(tableDTO.getId(),
+                    new ReentrantReadWriteLock());
+            idToLockMap.get(tableDTO.getId()).writeLock().lock();
+
+            TableDTO existingTableDTO = idToTableDTOMap.get(tableDTO.getId());
+
+            // only save if it's a new DTO or if the version is greater than the
+            // current
+            if (existingTableDTO == null
+                    || tableDTO.getVersion() > existingTableDTO.getVersion()) {
                 idToTableDTOMap.put(tableDTO.getId(), tableDTO);
-            } else {
-                if (tableDTO.getVersion() > existingTableDTO.getVersion()) {
-                    idToTableDTOMap.put(tableDTO.getId(), tableDTO);
-                }
             }
+        } finally {
+            idToLockMap.get(tableDTO.getId()).writeLock().unlock();
         }
     }
 

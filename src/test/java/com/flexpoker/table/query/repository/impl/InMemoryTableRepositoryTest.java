@@ -3,7 +3,6 @@ package com.flexpoker.table.query.repository.impl;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -15,7 +14,7 @@ import com.flexpoker.web.dto.outgoing.TableDTO;
 
 public class InMemoryTableRepositoryTest {
 
-    @Test(expected = NoSuchElementException.class)
+    @Test(expected = NullPointerException.class)
     public void testFetchNonExistentTable() {
         InMemoryTableRepository inMemoryTableRepository = new InMemoryTableRepository();
         inMemoryTableRepository.fetchById(UUID.randomUUID());
