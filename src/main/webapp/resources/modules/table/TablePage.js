@@ -16,7 +16,8 @@ export default React.createClass({
       myRightCard: null,
       totalPot: 0,
       visibleCommonCards: [],
-      seats: []
+      seats: [],
+      tableVersion: 0
     }
   },
 
@@ -43,8 +44,9 @@ export default React.createClass({
 
     return (
       <div>
-        <p>{this.props.params.gameId}</p>
-        <p>{this.props.params.tableId}</p>
+        <p>Game Id: {this.props.params.gameId}</p>
+        <p>Table Id: {this.props.params.tableId}</p>
+        <p>Version: {this.state.tableVersion}</p>
 
         <div className={"poker-table"}>
           <div>{this.state.totalPot}</div>
@@ -95,10 +97,12 @@ function sendChat(gameId, tableId, message) {
 function receiveTableUpdate(message) {
   let table = JSON.parse(message.body);
 
-  this.setState({
-    totalPot: table.totalPot,
-    visibleCommonCards: table.visibleCommonCards,
-    seats: table.seats
-  });
-
+  if (table.version > this.state.tableVersion) {
+    this.setState({
+      totalPot: table.totalPot,
+      visibleCommonCards: table.visibleCommonCards,
+      seats: table.seats,
+      tableVersion: table.version
+    });
+  }
 }
