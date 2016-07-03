@@ -1,4 +1,5 @@
 import React from 'react';
+import { Button } from 'react-bootstrap';
 
 export default ({gameList, gameOpenedCallback}) => {
   return (
@@ -28,7 +29,11 @@ export default ({gameList, gameOpenedCallback}) => {
                   <td>{game.maxPlayersPerTable}</td>
                   <td>{game.createdBy}</td>
                   <td>{game.createdOn}</td>
-                  <td><button className={'btn'} onClick={gameOpenedCallback.bind(this, game.id)}>Open Game</button></td>
+                  <td>
+                    <Button onClick={() => gameOpenedCallback(game.id)} disabled={game.stage !== 'REGISTERING'}>
+                      Open Game
+                    </Button>
+                  </td>
                 </tr>
               )
             })
