@@ -1,36 +1,31 @@
 import React from 'react';
-import WebSocketService from '../webSocket/WebSocketService';
+import WebSocketSubscriptionManager from '../webSocket/WebSocketSubscriptionManager';
 import { hashHistory, Link } from 'react-router';
 
 export default React.createClass({
 
   componentDidMount() {
-    WebSocketService.registerSubscription('/user/queue/errors', message => {
+    const subscriptions = [];
+    subscriptions.push({location: '/user/queue/errors', subscription: message => {
       alert("Error " + message.body);
       window.tryingToJoinGameId = null;
-    });
-
-    WebSocketService.registerSubscription('/app/opengamesforuser',
-      message => displayGameTabs.call(this, message));
-
-    WebSocketService.registerSubscription('/user/queue/opengamesforuser', message => {
+    }});
+    subscriptions.push({location: '/app/opengamesforuser', subscription: message =>
+      displayGameTabs.call(this, message)});
+    subscriptions.push({location: '/user/queue/opengamesforuser', subscription: message => {
       displayGameTabs.call(this, message);
       if (window.tryingToJoinGameId != null) {
         hashHistory.push(`/game/${window.tryingToJoinGameId}`);
         window.tryingToJoinGameId = null;
       }
-    });
-
-    WebSocketService.registerSubscription('/user/queue/opentable', message => {
+    }});
+    subscriptions.push({location: '/user/queue/opentable', subscription: message => {
       const openTable = JSON.parse(message.body);
       window.location.hash = `/game/${openTable.gameId}/table/${openTable.tableId}`;
-    });
-
-    WebSocketService.registerSubscription('/user/queue/personaltablestatus', message => {
-      alert(JSON.parse(message.body));
-    });
-
-    WebSocketService.registerSubscription('/user/queue/pocketcards', message => {
+    }});
+    subscriptions.push({location: '/user/queue/personaltablestatus', subscription: message =>
+      alert(JSON.parse(message.body))});
+    subscriptions.push({location: '/user/queue/pocketcards', subscription: message => {
       const parsedData = JSON.parse(message.body);
       const pocketCards = {
         cardId1: parsedData.cardId1,
@@ -42,8 +37,12 @@ export default React.createClass({
         bubbles: true
       });
       document.dispatchEvent(pocketCardsReceivedEvent);
-    });
+    }});
+    WebSocketSubscriptionManager.subscribe(this, subscriptions);
+  },
 
+  componentWillUnmount() {
+    WebSocketSubscriptionManager.unsubscribe(this);
   },
 
   render() {

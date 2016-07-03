@@ -1,5 +1,6 @@
 import React from 'react';
 import WebSocketService from '../webSocket/WebSocketService';
+import WebSocketSubscriptionManager from '../webSocket/WebSocketSubscriptionManager';
 import MainTabs from './MainTabs';
 import CreateGameDialog from '../game/CreateGameDialog';
 import JoinGameDialog from '../game/JoinGameDialog';
@@ -18,15 +19,20 @@ export default React.createClass({
   },
 
   componentDidMount() {
-    WebSocketService.registerSubscription('/topic/chat/global/user', displayChat.bind(this));
-    WebSocketService.registerSubscription('/topic/chat/global/system', displayChat.bind(this));
-
-    WebSocketService.registerSubscription('/topic/availabletournaments', message => {
+    const subscriptions = [];
+    subscriptions.push({location: '/topic/chat/global/user', subscription: displayChat.bind(this)});
+    subscriptions.push({location: '/topic/chat/global/system', subscription: displayChat.bind(this)});
+    subscriptions.push({location: '/topic/availabletournaments', subscription: message => {
       this.setState({
         openGameList: JSON.parse(message.body)
       });
-    });
+    }});
 
+    WebSocketSubscriptionManager.subscribe(this, subscriptions);
+  },
+
+  componentWillUnmount() {
+    WebSocketSubscriptionManager.unsubscribe(this);
   },
 
   gameOpened(gameId) {

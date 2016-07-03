@@ -1,5 +1,6 @@
 import React from 'react';
 import WebSocketService from '../webSocket/WebSocketService';
+import WebSocketSubscriptionManager from '../webSocket/WebSocketSubscriptionManager';
 import cardData from './cardData';
 import CommonCards from './CommonCards';
 import MyCards from './MyCards';
@@ -25,9 +26,12 @@ export default React.createClass({
     const gameId = this.props.params.gameId;
     const tableId = this.props.params.tableId;
 
-    WebSocketService.registerSubscription(`/topic/game/${gameId}/table/${tableId}`, receiveTableUpdate.bind(this));
-    WebSocketService.registerSubscription(`/topic/chat/game/${gameId}/table/${tableId}/user`, displayChat.bind(this));
-    WebSocketService.registerSubscription(`/topic/chat/game/${gameId}/table/${tableId}/system`, displayChat.bind(this));
+    const subscriptions = [];
+    subscriptions.push({location: `/topic/game/${gameId}/table/${tableId}`, subscription: receiveTableUpdate.bind(this)});
+    subscriptions.push({location: `/topic/chat/game/${gameId}/table/${tableId}/user`, subscription: displayChat.bind(this)});
+    subscriptions.push({location: `/topic/chat/game/${gameId}/table/${tableId}/system`, subscription: displayChat.bind(this)});
+
+    WebSocketSubscriptionManager.subscribe(this, subscriptions);
 
     document.addEventListener(`pocketCardsReceived-${tableId}`, evt => {
       this.setState({
@@ -36,6 +40,10 @@ export default React.createClass({
       })
     });
 
+  },
+
+  componentWillUnmount() {
+    WebSocketSubscriptionManager.unsubscribe(this);
   },
 
   render() {

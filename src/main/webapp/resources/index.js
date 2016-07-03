@@ -3,13 +3,16 @@ import { render } from 'react-dom'
 import { Router, Route, hashHistory, IndexRoute } from 'react-router'
 import Home from './modules/home/Home'
 import MainTabs from './modules/home/MainTabs'
-import WebSocketService from './modules/webSocket/WebSocketService';
+import WebSocketSubscriptionManager from './modules/webSocket/WebSocketSubscriptionManager';
 import GamePage from './modules/game/GamePage';
 import TablePage from './modules/table/TablePage';
 import Logout from './modules/home/Logout';
 
-WebSocketService.registerSubscription('/user/topic/chat/personal/user', message => alert('personal' + message.body));
-WebSocketService.registerSubscription('/user/topic/chat/personal/system', message => alert('personal' + message.body));
+const subscriptions = [];
+subscriptions.push({location: '/user/topic/chat/personal/user', subscription: message => alert('personal' + message.body)});
+subscriptions.push({location: '/user/topic/chat/personal/system', subscription: message => alert('personal' + message.body)});
+
+WebSocketSubscriptionManager.subscribe(this, subscriptions);
 
 render((
   <Router history={hashHistory}>

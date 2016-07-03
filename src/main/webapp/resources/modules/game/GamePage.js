@@ -1,13 +1,20 @@
 import React from 'react';
 import WebSocketService from '../webSocket/WebSocketService';
+import WebSocketSubscriptionManager from '../webSocket/WebSocketSubscriptionManager';
 import Chat from '../common/Chat';
 
 export default React.createClass({
 
   componentDidMount() {
     const gameId = this.props.params.gameId;
-    WebSocketService.registerSubscription(`/topic/chat/game/${gameId}/user`, displayChat.bind(this));
-    WebSocketService.registerSubscription(`/topic/chat/game/${gameId}/system`, displayChat.bind(this));
+    const subscriptions = [];
+    subscriptions.push({location: `/topic/chat/game/${gameId}/user`, subscription: displayChat.bind(this)});
+    subscriptions.push({location: `/topic/chat/game/${gameId}/system`, subscription: displayChat.bind(this)});
+    WebSocketSubscriptionManager.subscribe(this, subscriptions);
+  },
+
+  componentWillUnmount() {
+    WebSocketSubscriptionManager.unsubscribe(this);
   },
 
   render() {

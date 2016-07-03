@@ -4,24 +4,29 @@ import SockJS from 'sockjs-client';
 class WebSocketService {
 
     constructor() {
-        this.nonRegisteredSubscriptions = [];
         this.client = webstomp.over(new SockJS('/application'), {debug: false});
 
         let connectCallback = frame => {
-            this.nonRegisteredSubscriptions.forEach(item => {
-                this.client.subscribe(item.location, item.subscription);
-            });
+          const webSocketConnectedEvent = new CustomEvent('webSocketConnected', {
+            detail: {},
+            bubbles: true
+          });
+          document.dispatchEvent(webSocketConnectedEvent);
         };
 
         this.client.connect({}, connectCallback);
     }
 
     registerSubscription(location, subscription) {
-        if (this.client.connected) {
-            this.client.subscribe(location, subscription);
+      return new Promise((resolve, reject) => {
+          if (this.client.connected) {
+            resolve(this.client.subscribe(location, subscription));
         } else {
-            this.nonRegisteredSubscriptions.push({location, subscription});
+          document.addEventListener('webSocketConnected', evt => {
+            resolve(this.client.subscribe(location, subscription));
+          });
         }
+      });
     }
 
     send(location, objectToSend) {
