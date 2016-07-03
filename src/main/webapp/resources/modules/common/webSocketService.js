@@ -5,7 +5,7 @@ class WebSocketService {
 
     constructor() {
         this.nonRegisteredSubscriptions = [];
-        this.client = webstomp.over(new SockJS('/application'));
+        this.client = webstomp.over(new SockJS('/application'), {debug: false});
 
         let connectCallback = frame => {
             this.nonRegisteredSubscriptions.forEach(item => {
