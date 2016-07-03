@@ -3,13 +3,13 @@ import { render } from 'react-dom'
 import { Router, Route, hashHistory, IndexRoute } from 'react-router'
 import Home from './modules/home/Home'
 import MainTabs from './modules/home/MainTabs'
-import webSocketService from './modules/common/webSocketService';
+import WebSocketService from './modules/webSocket/WebSocketService';
 import GamePage from './modules/game/GamePage';
 import TablePage from './modules/table/TablePage';
 import Logout from './modules/home/Logout';
 
-webSocketService.registerSubscription('/user/topic/chat/personal/user', message => alert('personal' + message.body));
-webSocketService.registerSubscription('/user/topic/chat/personal/system', message => alert('personal' + message.body));
+WebSocketService.registerSubscription('/user/topic/chat/personal/user', message => alert('personal' + message.body));
+WebSocketService.registerSubscription('/user/topic/chat/personal/system', message => alert('personal' + message.body));
 
 render((
   <Router history={hashHistory}>

@@ -1,5 +1,5 @@
 import React from 'react';
-import webSocketService from '../common/webSocketService';
+import WebSocketService from '../webSocket/WebSocketService';
 import MainTabs from './MainTabs';
 import CreateGameDialog from '../game/CreateGameDialog';
 import JoinGameDialog from '../game/JoinGameDialog';
@@ -18,10 +18,10 @@ export default React.createClass({
   },
 
   componentDidMount() {
-    webSocketService.registerSubscription('/topic/chat/global/user', displayChat.bind(this));
-    webSocketService.registerSubscription('/topic/chat/global/system', displayChat.bind(this));
+    WebSocketService.registerSubscription('/topic/chat/global/user', displayChat.bind(this));
+    WebSocketService.registerSubscription('/topic/chat/global/system', displayChat.bind(this));
 
-    webSocketService.registerSubscription('/topic/availabletournaments', message => {
+    WebSocketService.registerSubscription('/topic/availabletournaments', message => {
       this.setState({
         openGameList: JSON.parse(message.body)
       });
@@ -94,5 +94,5 @@ function sendGlobalChat(message) {
     tableId: null
   };
 
-  webSocketService.send('/app/sendchatmessage', globalMessage);
+  WebSocketService.send('/app/sendchatmessage', globalMessage);
 }

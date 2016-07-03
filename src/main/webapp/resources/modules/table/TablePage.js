@@ -1,5 +1,5 @@
 import React from 'react';
-import webSocketService from '../common/webSocketService';
+import WebSocketService from '../webSocket/WebSocketService';
 import cardData from './cardData';
 import CommonCards from './CommonCards';
 import MyCards from './MyCards';
@@ -25,9 +25,9 @@ export default React.createClass({
     const gameId = this.props.params.gameId;
     const tableId = this.props.params.tableId;
 
-    webSocketService.registerSubscription(`/topic/game/${gameId}/table/${tableId}`, receiveTableUpdate.bind(this));
-    webSocketService.registerSubscription(`/topic/chat/game/${gameId}/table/${tableId}/user`, displayChat.bind(this));
-    webSocketService.registerSubscription(`/topic/chat/game/${gameId}/table/${tableId}/system`, displayChat.bind(this));
+    WebSocketService.registerSubscription(`/topic/game/${gameId}/table/${tableId}`, receiveTableUpdate.bind(this));
+    WebSocketService.registerSubscription(`/topic/chat/game/${gameId}/table/${tableId}/user`, displayChat.bind(this));
+    WebSocketService.registerSubscription(`/topic/chat/game/${gameId}/table/${tableId}/system`, displayChat.bind(this));
 
     document.addEventListener(`pocketCardsReceived-${tableId}`, evt => {
       this.setState({
@@ -91,7 +91,7 @@ function sendChat(gameId, tableId, message) {
     tableId: tableId
   };
 
-  webSocketService.send('/app/sendchatmessage', tableMessage);
+  WebSocketService.send('/app/sendchatmessage', tableMessage);
 }
 
 function receiveTableUpdate(message) {

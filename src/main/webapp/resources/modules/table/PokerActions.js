@@ -1,5 +1,5 @@
 import React from 'react';
-import webSocketService from '../common/webSocketService';
+import WebSocketService from '../webSocket/WebSocketService';
 
 export default ({gameId, tableId, actionOn, callAmount, raiseTo}) => {
   return (
@@ -21,17 +21,17 @@ export default ({gameId, tableId, actionOn, callAmount, raiseTo}) => {
 }
 
 function check(gameId, tableId) {
-  webSocketService.send('/app/check', { gameId, tableId });
+  WebSocketService.send('/app/check', { gameId, tableId });
 }
 
 function call(gameId, tableId) {
-  webSocketService.send('/app/call', { gameId, tableId });
+  WebSocketService.send('/app/call', { gameId, tableId });
 }
 
 function raise(gameId, tableId, raiseToAmount) {
-  webSocketService.send('/app/raise', { gameId, tableId, raiseToAmount });
+  WebSocketService.send('/app/raise', { gameId, tableId, raiseToAmount });
 }
 
 function fold(gameId, tableId) {
-  webSocketService.send('/app/fold', { gameId, tableId });
+  WebSocketService.send('/app/fold', { gameId, tableId });
 }

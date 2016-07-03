@@ -1,10 +1,10 @@
 import React from 'react';
-import webSocketService from '../common/webSocketService';
+import WebSocketService from '../webSocket/WebSocketService';
 
 export default React.createClass({
 
   componentWillMount() {
-    webSocketService.disconnect();
+    WebSocketService.disconnect();
 
     var token = document.querySelector("meta[name='_csrf']").content;
     var header = document.querySelector("meta[name='_csrf_header']").content;

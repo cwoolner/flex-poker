@@ -1,5 +1,5 @@
 import React from 'react';
-import webSocketService from '../common/webSocketService';
+import WebSocketService from '../webSocket/WebSocketService';
 import { Modal, Button, FormControl, FormGroup, ControlLabel } from 'react-bootstrap';
 
 export default React.createClass({
@@ -21,7 +21,7 @@ export default React.createClass({
     const playersPerTableElement = evt.target.elements[2];
     const numberOfMinutesBetweenBlindLevelsElement = evt.target.elements[3];
 
-    webSocketService.send('/app/creategame', {
+    WebSocketService.send('/app/creategame', {
       name: nameElement.value,
       players: playersElement.value,
       playersPerTable: playersPerTableElement.value,

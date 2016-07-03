@@ -1,5 +1,5 @@
 import React from 'react';
-import webSocketService from '../common/webSocketService';
+import WebSocketService from '../webSocket/WebSocketService';
 import { Modal, Button, FormControl, FormGroup, ControlLabel } from 'react-bootstrap';
 
 export default React.createClass({
@@ -10,7 +10,7 @@ export default React.createClass({
 
   joinGameFormSubmitted(evt) {
     evt.preventDefault();
-    webSocketService.send('/app/joingame', this.props.gameId);
+    WebSocketService.send('/app/joingame', this.props.gameId);
     this.hideDialog();
   },
 

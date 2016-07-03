@@ -1,19 +1,19 @@
 import React from 'react';
-import webSocketService from '../common/webSocketService';
+import WebSocketService from '../webSocket/WebSocketService';
 import { hashHistory, Link } from 'react-router';
 
 export default React.createClass({
 
   componentDidMount() {
-    webSocketService.registerSubscription('/user/queue/errors', message => {
+    WebSocketService.registerSubscription('/user/queue/errors', message => {
       alert("Error " + message.body);
       window.tryingToJoinGameId = null;
     });
 
-    webSocketService.registerSubscription('/app/opengamesforuser',
+    WebSocketService.registerSubscription('/app/opengamesforuser',
       message => displayGameTabs.call(this, message));
 
-    webSocketService.registerSubscription('/user/queue/opengamesforuser', message => {
+    WebSocketService.registerSubscription('/user/queue/opengamesforuser', message => {
       displayGameTabs.call(this, message);
       if (window.tryingToJoinGameId != null) {
         hashHistory.push(`/game/${window.tryingToJoinGameId}`);
@@ -21,16 +21,16 @@ export default React.createClass({
       }
     });
 
-    webSocketService.registerSubscription('/user/queue/opentable', message => {
+    WebSocketService.registerSubscription('/user/queue/opentable', message => {
       const openTable = JSON.parse(message.body);
       window.location.hash = `/game/${openTable.gameId}/table/${openTable.tableId}`;
     });
 
-    webSocketService.registerSubscription('/user/queue/personaltablestatus', message => {
+    WebSocketService.registerSubscription('/user/queue/personaltablestatus', message => {
       alert(JSON.parse(message.body));
     });
 
-    webSocketService.registerSubscription('/user/queue/pocketcards', message => {
+    WebSocketService.registerSubscription('/user/queue/pocketcards', message => {
       const parsedData = JSON.parse(message.body);
       const pocketCards = {
         cardId1: parsedData.cardId1,

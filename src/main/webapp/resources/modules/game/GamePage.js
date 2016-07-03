@@ -1,13 +1,13 @@
 import React from 'react';
-import webSocketService from '../common/webSocketService';
+import WebSocketService from '../webSocket/WebSocketService';
 import Chat from '../common/Chat';
 
 export default React.createClass({
 
   componentDidMount() {
     const gameId = this.props.params.gameId;
-    webSocketService.registerSubscription(`/topic/chat/game/${gameId}/user`, displayChat.bind(this));
-    webSocketService.registerSubscription(`/topic/chat/game/${gameId}/system`, displayChat.bind(this));
+    WebSocketService.registerSubscription(`/topic/chat/game/${gameId}/user`, displayChat.bind(this));
+    WebSocketService.registerSubscription(`/topic/chat/game/${gameId}/system`, displayChat.bind(this));
   },
 
   render() {
@@ -33,5 +33,5 @@ function sendChat(gameId, message) {
     tableId: null
   };
 
-  webSocketService.send('/app/sendchatmessage', gameMessage);
+  WebSocketService.send('/app/sendchatmessage', gameMessage);
 }
