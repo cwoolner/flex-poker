@@ -6,6 +6,7 @@ import CreateGameDialog from '../game/CreateGameDialog';
 import JoinGameDialog from '../game/JoinGameDialog';
 import GameList from '../game/GameList';
 import Chat from '../common/Chat';
+import { Button } from 'react-bootstrap';
 
 export default React.createClass({
 
@@ -71,7 +72,7 @@ export default React.createClass({
   render() {
     return (
       <div>
-        <button className={'btn'} onClick={this.openCreateGameModal}>Create Game</button>
+        <Button bsStyle="primary" onClick={this.openCreateGameModal}>Create Game</Button>
         <GameList
           gameList={this.state.openGameList}
           gameOpenedCallback={this.gameOpened} />

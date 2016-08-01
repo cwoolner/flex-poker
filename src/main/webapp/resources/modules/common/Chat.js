@@ -1,4 +1,5 @@
 import React from 'react';
+import { FormGroup, FormControl, FieldGroup, Button } from 'react-bootstrap';
 
 export default React.createClass({
 
@@ -21,13 +22,13 @@ export default React.createClass({
   render() {
     return (
       <div className={'chat-area'}>
-        <textarea id="chat-text" disabled="disabled"></textarea>
+        <FormGroup>
+          <FormControl componentClass="textarea" id="chat-text" disabled="disabled" />
+        </FormGroup>
         <form onSubmit={this.chatFormSubmitted}>
-          <div>
-            <label>Message:</label>
-            <input type="text" />
-            <input type="submit" value="Send" />
-          </div>
+          <FormGroup>
+            <FormControl type="text" placeholder="Chat..." />
+          </FormGroup>
         </form>
       </div>
     )
