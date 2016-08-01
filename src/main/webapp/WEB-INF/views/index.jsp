@@ -9,15 +9,13 @@
 
 <script src="/resources/vendor.bundle.js" defer></script>
 <script src="/resources/bundle.js" defer></script>
+<script>window.username = '<sec:authentication property="principal.username" />'</script>
 
 <title>Home</title>
 </head>
 
 <body>
-
-<p>Logged in as: <span class="username"><sec:authentication property="principal.username" /></span></p>
-
-<div id="app"></div>
-
+  <div id="app"></div>
+  <jsp:include page="footer.jsp"></jsp:include>
 </body>
 </html>

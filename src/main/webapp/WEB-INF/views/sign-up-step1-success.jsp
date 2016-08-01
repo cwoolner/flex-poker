@@ -15,6 +15,6 @@
   <c:url value="/sign-up-confirm?username=${username}" var="signUpConfirmUrl" />
   <p class="text-center"><a href="${signUpConfirmUrl}">Click here to confirm</a></p>
 </div>
-
+<jsp:include page="footer.jsp"></jsp:include>
 </body>
 </html>

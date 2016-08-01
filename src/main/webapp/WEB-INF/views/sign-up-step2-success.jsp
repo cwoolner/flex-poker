@@ -13,6 +13,6 @@
   <c:url value="/login" var="loginUrl" />
   <p class="text-center"><a href="${loginUrl}">Go to Login</a></p>
 </div>
-
+<jsp:include page="footer.jsp"></jsp:include>
 </body>
 </html>
