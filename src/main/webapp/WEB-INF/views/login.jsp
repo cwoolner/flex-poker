@@ -6,6 +6,7 @@
 <title>Login Page</title>
 </head>
 <body>
+<jsp:include page="generic-header.jsp"></jsp:include>
 
 <div class="container">
   <form class="standard-form" action="/login" method="POST">

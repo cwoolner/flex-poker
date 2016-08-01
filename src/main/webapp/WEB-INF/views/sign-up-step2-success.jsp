@@ -6,6 +6,7 @@
 <title>Sign Up</title>
 </head>
 <body>
+<jsp:include page="generic-header.jsp"></jsp:include>
 
 <div class="container">
   <h3 class="text-center">Confirmed!</h3>

@@ -6,6 +6,7 @@
 <title>Sign Up</title>
 </head>
 <body>
+<jsp:include page="generic-header.jsp"></jsp:include>
 
 <div class="container">
   <form class="standard-form" action="<c:url value='sign-up' />" method='POST'>
