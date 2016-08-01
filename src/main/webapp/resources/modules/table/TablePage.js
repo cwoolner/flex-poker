@@ -47,7 +47,7 @@ export default React.createClass({
   },
 
   render() {
-    const username = document.querySelector('.username').innerHTML;
+    const username = window.username;
     const mySeat = this.state.seats.find(seat => seat.name === username);
 
     return (

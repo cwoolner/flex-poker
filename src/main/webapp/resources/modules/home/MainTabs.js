@@ -48,7 +48,6 @@ export default React.createClass({
   render() {
     return (
       <div>
-        <Link to="/logout">Logout</Link>
         <ul className="game-tab-container">
           <li><Link to="/">Lobby</Link></li>
         </ul>

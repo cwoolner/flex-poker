@@ -83,6 +83,31 @@ div[data-still-in-hand='false'] {
   width: 100%;
 }
 
+.navbar-default {
+	background-color: #1d2731;
+}
+
+.navbar-default .navbar-nav > li > a, .navbar-default .navbar-nav > li > a:focus {
+	color: #ffffff;
+}
+
+.navbar-default .navbar-nav > li > a:hover {
+	color: #afafaf;
+}
+
+.navbar-default .navbar-nav > .active > a {
+	color: #ffffff;
+	background-color: #d9b310;
+}
+
+.navbar-default .navbar-brand, .navbar-default .navbar-brand:focus {
+	color: #ffffff;
+}
+
+.navbar-default .navbar-brand:hover {
+	color: #afafaf;
+}
+
 footer {
   position: absolute;
   bottom: 0;
