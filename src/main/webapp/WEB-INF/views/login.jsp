@@ -12,7 +12,7 @@
     <h3>Log in to Flex Poker</h3>
 
     <c:if test="${param.error != null}">
-      <p class="error-message">Invalid username and password.</p>
+      <p class="alert alert-danger">Invalid username and password.</p>
     </c:if>
 
     <input type="text" name="username" class="form-control" placeholder="Username" required autofocus />
