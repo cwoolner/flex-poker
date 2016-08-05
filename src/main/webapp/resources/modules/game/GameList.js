@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button, Table } from 'react-bootstrap';
 
-export default ({gameList, gameOpenedCallback}) => {
+export default ({gameList, gameOpenedCallback, openCreateGameModalCallback}) => {
   return (
     <div className={'game-list'}>
       <Table striped bordered hover>
@@ -14,7 +14,7 @@ export default ({gameList, gameOpenedCallback}) => {
             <th>Players Per Table</th>
             <th>Creator</th>
             <th>Created</th>
-            <th></th>
+            <th style={{textAlign: 'center'}}><Button bsStyle="primary" onClick={openCreateGameModalCallback}><span className="glyphicon glyphicon-plus-sign"></span></Button></th>
           </tr>
         </thead>
         <tbody>
@@ -31,7 +31,7 @@ export default ({gameList, gameOpenedCallback}) => {
                     <td>{game.maxPlayersPerTable}</td>
                     <td>{game.createdBy}</td>
                     <td>{game.createdOn}</td>
-                    <td><Button onClick={() => gameOpenedCallback(game.id)} disabled={game.stage !== 'REGISTERING'}>Open Game</Button></td>
+                    <td style={{textAlign: 'center'}}><Button onClick={() => gameOpenedCallback(game.id)} disabled={game.stage !== 'REGISTERING'}>Open Game</Button></td>
                   </tr>
                 )
               })
