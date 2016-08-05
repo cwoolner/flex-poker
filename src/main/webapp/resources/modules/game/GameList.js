@@ -1,10 +1,10 @@
 import React from 'react';
-import { Button } from 'react-bootstrap';
+import { Button, Table } from 'react-bootstrap';
 
 export default ({gameList, gameOpenedCallback}) => {
   return (
     <div className={'game-list'}>
-      <table className={'table table-striped table-bordered table-hover'}>
+      <Table striped bordered hover>
         <thead>
           <tr>
             <th>Name</th>
@@ -19,27 +19,25 @@ export default ({gameList, gameOpenedCallback}) => {
         </thead>
         <tbody>
           {
-            gameList.map((game, index) => {
-              return (
-                <tr key={index}>
-                  <td>{game.name}</td>
-                  <td>{game.stage}</td>
-                  <td>{game.numberOfRegisteredPlayers}</td>
-                  <td>{game.maxNumberOfPlayers}</td>
-                  <td>{game.maxPlayersPerTable}</td>
-                  <td>{game.createdBy}</td>
-                  <td>{game.createdOn}</td>
-                  <td>
-                    <Button onClick={() => gameOpenedCallback(game.id)} disabled={game.stage !== 'REGISTERING'}>
-                      Open Game
-                    </Button>
-                  </td>
-                </tr>
-              )
-            })
+            gameList.length === 0
+              ? <tr><td colSpan="8">No games to show</td></tr>
+              : gameList.map((game, index) => {
+                return (
+                  <tr key={index}>
+                    <td>{game.name}</td>
+                    <td>{game.stage}</td>
+                    <td>{game.numberOfRegisteredPlayers}</td>
+                    <td>{game.maxNumberOfPlayers}</td>
+                    <td>{game.maxPlayersPerTable}</td>
+                    <td>{game.createdBy}</td>
+                    <td>{game.createdOn}</td>
+                    <td><Button onClick={() => gameOpenedCallback(game.id)} disabled={game.stage !== 'REGISTERING'}>Open Game</Button></td>
+                  </tr>
+                )
+              })
           }
         </tbody>
-      </table>
+      </Table>
     </div>
   )
 }
