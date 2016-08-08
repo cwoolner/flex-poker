@@ -36,11 +36,6 @@ export default React.createClass({
     WebSocketSubscriptionManager.unsubscribe(this);
   },
 
-  gameOpened(gameId) {
-    window.tryingToJoinGameId = gameId;
-    this.openJoinGameModal(gameId);
-  },
-
   openCreateGameModal() {
     this.setState({
       createGameDialogOpen: true,
@@ -74,7 +69,7 @@ export default React.createClass({
       <div>
         <GameList
           gameList={this.state.openGameList}
-          gameOpenedCallback={this.gameOpened}
+          gameOpenedCallback={this.openJoinGameModal}
           openCreateGameModalCallback={this.openCreateGameModal} />
         <Chat ref="globalChat" sendChat={sendGlobalChat} />
         <CreateGameDialog

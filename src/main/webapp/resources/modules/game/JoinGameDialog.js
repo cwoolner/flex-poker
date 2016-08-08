@@ -1,6 +1,7 @@
 import React from 'react';
 import WebSocketService from '../webSocket/WebSocketService';
 import { Modal, Button, FormControl, FormGroup, ControlLabel } from 'react-bootstrap';
+import { hashHistory } from 'react-router';
 
 export default React.createClass({
 
@@ -12,6 +13,7 @@ export default React.createClass({
     evt.preventDefault();
     WebSocketService.send('/app/joingame', this.props.gameId);
     this.hideDialog();
+    hashHistory.push(`/game/${this.props.gameId}`);
   },
 
   render() {
