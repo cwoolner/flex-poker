@@ -59,7 +59,7 @@ public class GameMovedToStartingStageEventHandler implements
     private Set<UUID> handleOpenGameRepository(GameMovedToStartingStageEvent event) {
         Set<UUID> playerIdsForGame = gamePlayerRepository.fetchAllPlayerIdsForGame(event
                 .getAggregateId());
-        playerIdsForGame.forEach(x -> openGameForUserRepository.setGameStage(x,
+        playerIdsForGame.forEach(x -> openGameForUserRepository.changeGameStage(x,
                 event.getAggregateId(), GameStage.STARTING));
         return playerIdsForGame;
     }

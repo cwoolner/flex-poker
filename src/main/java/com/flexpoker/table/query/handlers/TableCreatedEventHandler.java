@@ -13,7 +13,9 @@ import org.springframework.stereotype.Component;
 import com.flexpoker.framework.event.EventHandler;
 import com.flexpoker.framework.pushnotifier.PushNotification;
 import com.flexpoker.framework.pushnotifier.PushNotificationPublisher;
+import com.flexpoker.game.query.repository.OpenGameForPlayerRepository;
 import com.flexpoker.login.query.repository.LoginRepository;
+import com.flexpoker.pushnotifications.OpenGamesForPlayerUpdatedPushNotification;
 import com.flexpoker.pushnotifications.OpenTableForUserPushNotification;
 import com.flexpoker.table.command.events.TableCreatedEvent;
 import com.flexpoker.table.query.repository.TableRepository;
@@ -27,20 +29,25 @@ public class TableCreatedEventHandler implements EventHandler<TableCreatedEvent>
 
     private final TableRepository tableRepository;
 
+    private final OpenGameForPlayerRepository openGameForPlayerRepository;
+
     private final PushNotificationPublisher pushNotificationPublisher;
 
     @Inject
     public TableCreatedEventHandler(LoginRepository loginRepository,
             TableRepository tableRepository,
+            OpenGameForPlayerRepository openGameForPlayerRepository,
             PushNotificationPublisher pushNotificationPublisher) {
         this.loginRepository = loginRepository;
         this.tableRepository = tableRepository;
+        this.openGameForPlayerRepository = openGameForPlayerRepository;
         this.pushNotificationPublisher = pushNotificationPublisher;
     }
 
     @Override
     public void handle(TableCreatedEvent event) {
         handleNewTableInsert(event);
+        handleOpenGameUpdate(event);
         handlePushNotifications(event);
     }
 
@@ -62,6 +69,11 @@ public class TableCreatedEventHandler implements EventHandler<TableCreatedEvent>
         tableRepository.save(tableDTO);
     }
 
+    private void handleOpenGameUpdate(TableCreatedEvent event) {
+        event.getSeatPositionToPlayerMap().values().forEach(
+                x -> openGameForPlayerRepository.assignTableToOpenGame(x, event.getGameId(), event.getAggregateId()));
+    }
+
     private void handlePushNotifications(TableCreatedEvent event) {
         Consumer<UUID> openTableConsumer = (UUID playerId) -> {
             PushNotification pushNotification = new OpenTableForUserPushNotification(
@@ -69,5 +81,7 @@ public class TableCreatedEventHandler implements EventHandler<TableCreatedEvent>
             pushNotificationPublisher.publish(pushNotification);
         };
         event.getSeatPositionToPlayerMap().values().forEach(openTableConsumer);
+        event.getSeatPositionToPlayerMap().values().forEach(x -> pushNotificationPublisher
+                .publish(new OpenGamesForPlayerUpdatedPushNotification(x)));
     }
 }

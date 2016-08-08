@@ -58,7 +58,7 @@ public class GameStartedEventHandler implements EventHandler<GameStartedEvent> {
     private Set<UUID> handleOpenGameRepository(GameStartedEvent event) {
         Set<UUID> playerIdsForGame = gamePlayerRepository.fetchAllPlayerIdsForGame(event
                 .getAggregateId());
-        playerIdsForGame.forEach(x -> openGameForUserRepository.setGameStage(x,
+        playerIdsForGame.forEach(x -> openGameForUserRepository.changeGameStage(x,
                 event.getAggregateId(), GameStage.INPROGRESS));
         return playerIdsForGame;
     }

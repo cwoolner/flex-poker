@@ -12,8 +12,10 @@ public interface OpenGameForPlayerRepository {
 
     void deleteOpenGameForPlayer(UUID playerId, UUID gameId);
 
-    void addOpenGameForUser(UUID playerId, OpenGameForUser openGameForUser);
+    void addOpenGameForUser(UUID playerId, UUID aggregateId, String gameName);
 
-    void setGameStage(UUID playerId, UUID gameId, GameStage gameStage);
+    void changeGameStage(UUID playerId, UUID gameId, GameStage gameStage);
+
+    void assignTableToOpenGame(UUID playerId, UUID gameId, UUID tableId);
 
 }

@@ -9,8 +9,6 @@ import com.flexpoker.core.api.chat.SendGameChatMessageCommand;
 import com.flexpoker.framework.event.EventHandler;
 import com.flexpoker.framework.pushnotifier.PushNotificationPublisher;
 import com.flexpoker.game.command.events.GameJoinedEvent;
-import com.flexpoker.game.query.dto.GameStage;
-import com.flexpoker.game.query.dto.OpenGameForUser;
 import com.flexpoker.game.query.repository.GameListRepository;
 import com.flexpoker.game.query.repository.GamePlayerRepository;
 import com.flexpoker.game.query.repository.OpenGameForPlayerRepository;
@@ -69,10 +67,7 @@ public class GameJoinedEventHandler implements EventHandler<GameJoinedEvent> {
 
     private void handleOpenGameRepository(GameJoinedEvent event) {
         String gameName = gameListRepository.fetchGameName(event.getAggregateId());
-        OpenGameForUser openGameForUser = new OpenGameForUser(event.getAggregateId(),
-                gameName, GameStage.REGISTERING);
-        openGameForUserRepository
-                .addOpenGameForUser(event.getPlayerId(), openGameForUser);
+        openGameForUserRepository.addOpenGameForUser(event.getPlayerId(), event.getAggregateId(), gameName);
     }
 
     private void handlePushNotifications(GameJoinedEvent event) {
