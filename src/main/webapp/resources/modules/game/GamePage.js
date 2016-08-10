@@ -20,7 +20,6 @@ export default React.createClass({
   render() {
     return (
       <div>
-        <p>{this.props.params.gameId}</p>
         <Chat ref="gameChat" sendChat={sendChat.bind(this, this.props.params.gameId)} />
       </div>
     )

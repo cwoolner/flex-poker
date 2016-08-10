@@ -52,10 +52,6 @@ export default React.createClass({
 
     return (
       <div>
-        <p>Game Id: {this.props.params.gameId}</p>
-        <p>Table Id: {this.props.params.tableId}</p>
-        <p>Version: {this.state.tableVersion}</p>
-
         <div className={"poker-table"}>
           <div>{this.state.totalPot}</div>
           <CommonCards visibleCommonCards={this.state.visibleCommonCards} />
