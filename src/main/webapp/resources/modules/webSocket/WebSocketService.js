@@ -1,42 +1,27 @@
 import webstomp from 'webstomp-client';
 import SockJS from 'sockjs-client';
 
-class WebSocketService {
+const WebSocketService = () => {
+  const client = webstomp.over(new SockJS('/application'), {debug: false});
+  client.connect({}, frame => document.dispatchEvent(new Event('webSocketConnected')));
 
-    constructor() {
-        this.client = webstomp.over(new SockJS('/application'), {debug: false});
+  const registerSubscription = (location, subscription) => {
+    return new Promise((resolve, reject) => {
+      if (client.connected) {
+        resolve(client.subscribe(location, subscription));
+      } else {
+        document.addEventListener('webSocketConnected', evt => {
+          resolve(client.subscribe(location, subscription));
+        });
+      }
+    });
+  }
 
-        let connectCallback = frame => {
-          const webSocketConnectedEvent = new CustomEvent('webSocketConnected', {
-            detail: {},
-            bubbles: true
-          });
-          document.dispatchEvent(webSocketConnectedEvent);
-        };
+  const send = (location, objectToSend) => client.send(location, JSON.stringify(objectToSend));
 
-        this.client.connect({}, connectCallback);
-    }
+  const disconnect = () => client.disconnect();
 
-    registerSubscription(location, subscription) {
-      return new Promise((resolve, reject) => {
-          if (this.client.connected) {
-            resolve(this.client.subscribe(location, subscription));
-        } else {
-          document.addEventListener('webSocketConnected', evt => {
-            resolve(this.client.subscribe(location, subscription));
-          });
-        }
-      });
-    }
-
-    send(location, objectToSend) {
-        this.client.send(location, JSON.stringify(objectToSend));
-    }
-
-    disconnect() {
-        this.client.disconnect();
-    }
-
+  return { registerSubscription, send, disconnect };
 }
 
-export default new WebSocketService();
+export default WebSocketService();
