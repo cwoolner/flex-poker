@@ -20,7 +20,8 @@ module.exports = {
   },
 
   plugins: [
-    new webpack.optimize.CommonsChunkPlugin('vendor', 'src/main/webapp/resources/vendor.bundle.js')
+    new webpack.optimize.CommonsChunkPlugin('vendor', 'src/main/webapp/resources/vendor.bundle.js'),
+    new webpack.DefinePlugin({"process.env": {NODE_ENV: JSON.stringify("production")}})
   ],
 
   module: {
