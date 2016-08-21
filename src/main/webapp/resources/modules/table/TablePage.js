@@ -1,7 +1,7 @@
 import React from 'react';
 import WebSocketService from '../webSocket/WebSocketService';
 import WebSocketSubscriptionManager from '../webSocket/WebSocketSubscriptionManager';
-import cardData from './cardData';
+import CardData from './CardData';
 import CommonCards from './CommonCards';
 import MyCards from './MyCards';
 import Seat from './Seat';
@@ -35,8 +35,8 @@ export default React.createClass({
 
     document.addEventListener(`pocketCardsReceived-${tableId}`, evt => {
       this.setState({
-        myLeftCard: cardData[evt.detail.cardId1],
-        myRightCard: cardData[evt.detail.cardId2]
+        myLeftCard: CardData[evt.detail.cardId1],
+        myRightCard: CardData[evt.detail.cardId2]
       })
     });
 

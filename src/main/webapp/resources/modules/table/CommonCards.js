@@ -1,5 +1,5 @@
 import React from 'react';
-import cardData from './cardData';
+import CardData from './CardData';
 
 export default ({visibleCommonCards}) => {
   return (
@@ -8,7 +8,7 @@ export default ({visibleCommonCards}) => {
         visibleCommonCards.map((card, index) => {
           return (
             <span key={index}>
-              <img className={'common-card'} src={cardData[card.id]} />
+              <img className={'common-card'} src={CardData[card.id]} />
             </span>
           )
         })
