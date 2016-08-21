@@ -20,13 +20,16 @@ module.exports = {
   },
 
   plugins: [
-    new webpack.optimize.CommonsChunkPlugin('vendor', 'src/main/webapp/resources/vendor.bundle.js'),
+    new webpack.optimize.CommonsChunkPlugin({
+        'name': 'vendor',
+        'filename': 'src/main/webapp/resources/vendor.bundle.js'
+    }),
     new webpack.DefinePlugin({"process.env": {NODE_ENV: JSON.stringify("production")}})
   ],
 
   module: {
     loaders: [
-      { test: /\.js$/, exclude: /node_modules/, loader: 'babel-loader?presets[]=es2015&presets[]=react' }
+      { test: /\.js$/, exclude: /node_modules/, loader: 'babel-loader' }
     ]
   }
 }
