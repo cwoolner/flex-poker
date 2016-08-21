@@ -46,7 +46,7 @@ export default React.createClass({
     return (
       <div>
         <Nav bsStyle="tabs">
-          <NavItem href="/">Lobby</NavItem>
+          <NavItem href="/#">Lobby</NavItem>
          {this.state.openGameTabs.map((openGameTab, index) => <GameTab key={index} openGameTab={openGameTab} />)}
         </Nav>
         {this.props.children}
