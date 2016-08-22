@@ -1,10 +1,11 @@
 import React from 'react';
+import CardData from './CardData';
 
-export default ({myLeftCard, myRightCard}) => {
+export default ({myLeftCardId, myRightCardId}) => {
   return (
     <div>
-      <img className={"my-cards"} src={myLeftCard} />
-      <img className={"my-cards"} src={myRightCard} />
+      <img className={"my-cards"} src={CardData[myLeftCardId]} />
+      <img className={"my-cards"} src={CardData[myRightCardId]} />
     </div>
   )
 }

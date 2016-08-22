@@ -1,7 +1,6 @@
 import React from 'react';
 import WebSocketService from '../webSocket/WebSocketService';
 import WebSocketSubscriptionManager from '../webSocket/WebSocketSubscriptionManager';
-import CardData from './CardData';
 import CommonCards from './CommonCards';
 import MyCards from './MyCards';
 import Seat from './Seat';
@@ -13,8 +12,8 @@ export default React.createClass({
 
   getInitialState() {
     return {
-      myLeftCard: null,
-      myRightCard: null,
+      myLeftCardId: null,
+      myRightCardId: null,
       totalPot: 0,
       visibleCommonCards: [],
       seats: [],
@@ -35,8 +34,8 @@ export default React.createClass({
 
     document.addEventListener(`pocketCardsReceived-${tableId}`, evt => {
       this.setState({
-        myLeftCard: CardData[evt.detail.cardId1],
-        myRightCard: CardData[evt.detail.cardId2]
+        myLeftCardId: evt.detail.cardId1,
+        myRightCardId: evt.detail.cardId2
       })
     });
 
@@ -64,7 +63,7 @@ export default React.createClass({
           </div>
         </div>
 
-        <MyCards myLeftCard={this.state.myLeftCard} myRightCard={this.state.myRightCard} />
+        <MyCards myLeftCardId={this.state.myLeftCardId} myRightCardId={this.state.myRightCardId} />
         {
           _.isNil(mySeat)
             ? null
