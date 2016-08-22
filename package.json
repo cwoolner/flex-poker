@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "engines": {
-    "node": "6.2.0"
+    "node": "6.4.0"
   },
   "scripts": {
     "start": "webpack --watch",
