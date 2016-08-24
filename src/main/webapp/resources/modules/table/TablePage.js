@@ -72,7 +72,8 @@ export default React.createClass({
                 tableId={this.props.params.tableId}
                 actionOn={mySeat.actionOn}
                 callAmount={mySeat.callAmount}
-                raiseTo={mySeat.raiseTo} />
+                minRaiseTo={mySeat.raiseTo}
+                maxRaiseTo={mySeat.chipsInBack + mySeat.chipsInFront} />
         }
 
         <Chat ref="tableChat" sendChat={sendChat.bind(this, this.props.params.gameId, this.props.params.tableId)} />
