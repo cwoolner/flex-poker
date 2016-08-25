@@ -1,15 +1,25 @@
 package com.flexpoker.web.init;
 
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
 import javax.servlet.ServletRegistration.Dynamic;
 
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
+import com.flexpoker.config.ForceHttpsFilter;
 import com.flexpoker.config.RedisConfig;
 import com.flexpoker.config.SecurityConfig;
 import com.flexpoker.config.WebConfig;
 import com.flexpoker.config.WebSocketConfig;
 
 public class WebInitializer extends AbstractAnnotationConfigDispatcherServletInitializer {
+
+    @Override
+    public void onStartup(ServletContext container) throws ServletException {
+        container.addFilter(ForceHttpsFilter.class.getSimpleName(), ForceHttpsFilter.class)
+                .addMappingForUrlPatterns(null, false, "/*");
+        super.onStartup(container);
+    }
 
     @Override
     protected Class<?>[] getRootConfigClasses() {
