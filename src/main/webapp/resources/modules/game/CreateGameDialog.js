@@ -4,12 +4,6 @@ import { Modal, Button, FormControl, FormGroup, ControlLabel } from 'react-boots
 
 export default ({showModal, hideDialog}) => {
 
-  const preventNonNumeric = (evt) => {
-    if (!(evt.which >= 48 && evt.which <= 57)) {
-      evt.preventDefault();
-    }
-  };
-
   const createGameFormSubmitted = (evt) => {
     evt.preventDefault();
     const nameElement = evt.target.elements[0];
@@ -40,16 +34,16 @@ export default ({showModal, hideDialog}) => {
             <FormControl type="text" name="name" autoFocus />
           </FormGroup>
           <FormGroup>
-            <ControlLabel>Number of Players</ControlLabel>
-            <FormControl type="text" name="players" onKeyPress={preventNonNumeric} />
+            <ControlLabel>Number of Players (2 - 90)</ControlLabel>
+            <FormControl type="number" name="players" min="2" max="90" />
           </FormGroup>
           <FormGroup>
-            <ControlLabel>Number of Players per Table</ControlLabel>
-            <FormControl type="text" name="playersPerTable" onKeyPress={preventNonNumeric} />
+            <ControlLabel>Number of Players per Table (2 - 9)</ControlLabel>
+            <FormControl type="number" name="playersPerTable" min="2" max="9" />
           </FormGroup>
           <FormGroup>
-            <ControlLabel>Blind increment (minutes)</ControlLabel>
-            <FormControl type="text" name="numberOfMinutesBetweenBlindLevels" onKeyPress={preventNonNumeric} />
+            <ControlLabel>Blind increment in minutes (1 - 60)</ControlLabel>
+            <FormControl type="number" name="numberOfMinutesBetweenBlindLevels" min="1" max="60" />
           </FormGroup>
         </Modal.Body>
         <Modal.Footer>
