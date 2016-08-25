@@ -22,7 +22,7 @@ export default ({showModal, hideDialog}) => {
   };
 
  return (
-    <Modal show={showModal} onHide={hideDialog}>
+    <Modal bsSize="small" show={showModal} onHide={hideDialog}>
       <Modal.Header>
         <button className={"close"} onClick={hideDialog}>X</button>
         <Modal.Title>Create Game</Modal.Title>
