@@ -1,10 +1,10 @@
 package com.flexpoker.table.query.handlers;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
@@ -52,16 +52,15 @@ public class TableCreatedEventHandler implements EventHandler<TableCreatedEvent>
     }
 
     private void handleNewTableInsert(TableCreatedEvent event) {
-        List<SeatDTO> seats = new ArrayList<>();
-
-        for (int position : event.getSeatPositionToPlayerMap().keySet()) {
-            String displayName = loginRepository.fetchUsernameByAggregateId(event
-                    .getSeatPositionToPlayerMap().get(Integer.valueOf(position)));
-            SeatDTO seatDTO = new SeatDTO(position, displayName,
-                    event.getStartingNumberOfChips(), 0, false, 0, 0, false, false,
-                    false, false);
-            seats.add(seatDTO);
-        }
+        List<SeatDTO> seats = event.getSeatPositionToPlayerMap().keySet().stream()
+                .map(position -> {
+                    String displayName = loginRepository.fetchUsernameByAggregateId(event
+                            .getSeatPositionToPlayerMap().get(Integer.valueOf(position)));
+                    return SeatDTO.createForNewTable(
+                            position,
+                            displayName,
+                            event.getStartingNumberOfChips());
+                }).collect(Collectors.toList());
 
         TableDTO tableDTO = new TableDTO(event.getAggregateId(),
                 event.getVersion(), seats, 0, Collections.emptySet(),

@@ -97,4 +97,8 @@ public class SeatDTO {
         return actionOn;
     }
 
+    public static SeatDTO createForNewTable(int position, String displayName, int startingNumberOfChips) {
+        return new SeatDTO(position, displayName, startingNumberOfChips, 0, false, 0, 0, false, false, false, false);
+    }
+
 }

@@ -1,6 +1,6 @@
 package com.flexpoker.table.query.handlers;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -46,10 +46,10 @@ public class FlopCardsDealtEventHandler implements EventHandler<FlopCardsDealtEv
         TableDTO currentTable = tableRepository.fetchById(event.getAggregateId());
 
         FlopCards flopCards = cardsUsedInHandRepository.fetchFlopCards(event.getHandId());
-        List<CardDTO> visibleCommonCards = new ArrayList<>();
-        visibleCommonCards.add(new CardDTO(flopCards.getCard1().getId()));
-        visibleCommonCards.add(new CardDTO(flopCards.getCard2().getId()));
-        visibleCommonCards.add(new CardDTO(flopCards.getCard3().getId()));
+        List<CardDTO> visibleCommonCards = Arrays.asList(
+                new CardDTO(flopCards.getCard1().getId()),
+                new CardDTO(flopCards.getCard2().getId()),
+                new CardDTO(flopCards.getCard3().getId()));
 
         TableDTO updatedTable = new TableDTO(currentTable.getId(),
                 event.getVersion(), currentTable.getSeats(),

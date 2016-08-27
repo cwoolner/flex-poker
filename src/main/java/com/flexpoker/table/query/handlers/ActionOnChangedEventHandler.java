@@ -1,7 +1,7 @@
 package com.flexpoker.table.query.handlers;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
@@ -45,18 +45,22 @@ public class ActionOnChangedEventHandler implements EventHandler<ActionOnChanged
         TableDTO currentTable = tableRepository.fetchById(event.getAggregateId());
         String username = loginRepository.fetchUsernameByAggregateId(event.getPlayerId());
 
-        List<SeatDTO> updatedSeats = new ArrayList<>();
-
-        for (SeatDTO seatDTO : currentTable.getSeats()) {
-            updatedSeats
-                    .add(new SeatDTO(seatDTO.getPosition(), seatDTO
-                            .getName(), seatDTO.getChipsInBack(), seatDTO
-                            .getChipsInFront(), seatDTO.isStillInHand(),
-                            seatDTO.getRaiseTo(), seatDTO.getCallAmount(),
-                            seatDTO.isButton(), seatDTO.isSmallBlind(),
-                            seatDTO.isBigBlind(), seatDTO.getName().equals(
-                                    username)));
-        }
+        List<SeatDTO> updatedSeats = currentTable.getSeats().stream()
+                .map(seatDTO -> {
+                    return new SeatDTO(
+                            seatDTO.getPosition(),
+                            seatDTO.getName(),
+                            seatDTO.getChipsInBack(),
+                            seatDTO.getChipsInFront(),
+                            seatDTO.isStillInHand(),
+                            seatDTO.getRaiseTo(),
+                            seatDTO.getCallAmount(),
+                            seatDTO.isButton(),
+                            seatDTO.isSmallBlind(),
+                            seatDTO.isBigBlind(),
+                            seatDTO.getName().equals(username));
+                    })
+                .collect(Collectors.toList());
 
         TableDTO updatedTable = new TableDTO(currentTable.getId(),
                 event.getVersion(), updatedSeats, currentTable.getTotalPot(),

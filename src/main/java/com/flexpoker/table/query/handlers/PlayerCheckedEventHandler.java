@@ -1,7 +1,7 @@
 package com.flexpoker.table.query.handlers;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
@@ -52,19 +52,17 @@ public class PlayerCheckedEventHandler implements EventHandler<PlayerCheckedEven
         TableDTO currentTable = tableRepository.fetchById(event.getAggregateId());
         String username = loginRepository.fetchUsernameByAggregateId(event.getPlayerId());
 
-        List<SeatDTO> updatedSeats = new ArrayList<>();
-
-        for (SeatDTO seatDTO : currentTable.getSeats()) {
-            if (seatDTO.getName().equals(username)) {
-                updatedSeats.add(new SeatDTO(seatDTO.getPosition(),
-                        seatDTO.getName(), seatDTO.getChipsInBack(),
-                        seatDTO.getChipsInFront(), seatDTO.isStillInHand(),
-                        0, 0, seatDTO.isButton(), seatDTO.isSmallBlind(),
-                        seatDTO.isBigBlind(), false));
-            } else {
-                updatedSeats.add(seatDTO);
-            }
-        }
+        List<SeatDTO> updatedSeats = currentTable.getSeats().stream()
+                .map(seatDTO -> {
+                    if (seatDTO.getName().equals(username)) {
+                        return new SeatDTO(seatDTO.getPosition(),
+                                seatDTO.getName(), seatDTO.getChipsInBack(),
+                                seatDTO.getChipsInFront(), seatDTO.isStillInHand(),
+                                0, 0, seatDTO.isButton(), seatDTO.isSmallBlind(),
+                                seatDTO.isBigBlind(), false);
+                    }
+                    return seatDTO;
+                }).collect(Collectors.toList());
 
         TableDTO updatedTable = new TableDTO(currentTable.getId(),
                 event.getVersion(), updatedSeats, currentTable.getTotalPot(),
