@@ -1,8 +1,6 @@
 package com.flexpoker.table.query.handlers;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
@@ -18,7 +16,6 @@ import com.flexpoker.model.chat.outgoing.TableChatMessage;
 import com.flexpoker.pushnotifications.TableUpdatedPushNotification;
 import com.flexpoker.table.command.events.PlayerCalledEvent;
 import com.flexpoker.table.query.repository.TableRepository;
-import com.flexpoker.web.dto.outgoing.PotDTO;
 import com.flexpoker.web.dto.outgoing.SeatDTO;
 import com.flexpoker.web.dto.outgoing.TableDTO;
 
@@ -55,14 +52,10 @@ public class PlayerCalledEventHandler implements EventHandler<PlayerCalledEvent>
         TableDTO currentTable = tableRepository.fetchById(event.getAggregateId());
         String username = loginRepository.fetchUsernameByAggregateId(event.getPlayerId());
 
-        SeatDTO callingSeat = currentTable.getSeats().stream()
-                .filter(x -> x.getName().equals(username)).findAny().get();
-        int callingAmount = callingSeat.getCallAmount();
-        int updatedTotalPot = currentTable.getTotalPot() + callingAmount;
-
         List<SeatDTO> updatedSeats = currentTable.getSeats().stream()
                 .map(seatDTO -> {
                     if (seatDTO.getName().equals(username)) {
+                        int callingAmount = seatDTO.getCallAmount();
                         int updatedChipsInFront = seatDTO.getChipsInFront() + callingAmount;
                         int updatedChipsInBack = seatDTO.getChipsInBack() - callingAmount;
                         return new SeatDTO(seatDTO.getPosition(),
@@ -73,17 +66,8 @@ public class PlayerCalledEventHandler implements EventHandler<PlayerCalledEvent>
                     return seatDTO;
                 }).collect(Collectors.toList());
 
-        Set<PotDTO> updatePots = new HashSet<>();
-
-        for (PotDTO potDTO : currentTable.getPots()) {
-            Set<String> updatedPotSeats = potDTO.getSeats();
-            updatedPotSeats.remove(username);
-            updatePots.add(new PotDTO(updatedPotSeats, potDTO.getAmount(),
-                    potDTO.isOpen(), potDTO.getWinners()));
-        }
-
         TableDTO updatedTable = new TableDTO(currentTable.getId(),
-                event.getVersion(), updatedSeats, updatedTotalPot,
+                event.getVersion(), updatedSeats, currentTable.getTotalPot(),
                 currentTable.getPots(), currentTable.getVisibleCommonCards());
         tableRepository.save(updatedTable);
     }
