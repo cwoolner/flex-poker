@@ -1,11 +1,10 @@
 package com.flexpoker.table.query.eventsubscribers;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Comparator;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.PriorityBlockingQueue;
 
 import javax.inject.Inject;
 
@@ -33,7 +32,7 @@ import com.flexpoker.table.command.framework.TableEvent;
 @Component("tableEventSubscriber")
 public class InMemoryAsyncTableEventSubscriber implements EventSubscriber<TableEvent> {
 
-    private final Map<UUID, List<TableEvent>> listOfTableEventsNeededToProcess;
+    private final Map<UUID, PriorityBlockingQueue<TableEvent>> listOfTableEventsNeededToProcess;
 
     private final Map<UUID, Integer> nextExpectedEventVersion;
 
@@ -102,14 +101,15 @@ public class InMemoryAsyncTableEventSubscriber implements EventSubscriber<TableE
     @Async
     @Override
     public void receive(TableEvent event) {
-        listOfTableEventsNeededToProcess.putIfAbsent(event.getAggregateId(),
-                new CopyOnWriteArrayList<>());
-        nextExpectedEventVersion.putIfAbsent(event.getAggregateId(), Integer.valueOf(1));
+        synchronized (this) {
+            listOfTableEventsNeededToProcess.putIfAbsent(event.getAggregateId(), new PriorityBlockingQueue<>(10, Comparator.comparingInt(TableEvent::getVersion)));
+            nextExpectedEventVersion.putIfAbsent(event.getAggregateId(), Integer.valueOf(1));
 
-        if (isExpectedEvent(event)) {
-            handleEventAndRunAnyOthers(event);
-        } else {
-            listOfTableEventsNeededToProcess.get(event.getAggregateId()).add(event);
+            if (isExpectedEvent(event)) {
+                handleEventAndRunAnyOthers(event);
+            } else {
+                listOfTableEventsNeededToProcess.get(event.getAggregateId()).add(event);
+            }
         }
     }
 
@@ -168,14 +168,9 @@ public class InMemoryAsyncTableEventSubscriber implements EventSubscriber<TableE
     }
 
     private void handleAnyPreviouslyUnhandledEvents(TableEvent event) {
-        List<TableEvent> unHandledEvents = new ArrayList<>(
-                listOfTableEventsNeededToProcess.get(event.getAggregateId()));
-
-        unHandledEvents.forEach(previouslyUnRunEvent -> {
-            if (isExpectedEvent(previouslyUnRunEvent)) {
-                handleEventAndRunAnyOthers(previouslyUnRunEvent);
-            }
-        });
-
+        TableEvent earliestUnrunTableEvent = listOfTableEventsNeededToProcess.get(event.getAggregateId()).peek();
+        if (isExpectedEvent(earliestUnrunTableEvent)) {
+            handleEventAndRunAnyOthers(earliestUnrunTableEvent);
+        }
     }
 }
