@@ -15,7 +15,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import com.flexpoker.framework.event.EventHandler;
-import com.flexpoker.framework.event.EventSubscriber;
+import com.flexpoker.framework.event.subscriber.EventSubscriber;
 import com.flexpoker.game.command.events.GameCreatedEvent;
 import com.flexpoker.game.command.events.GameJoinedEvent;
 import com.flexpoker.game.command.events.GameMovedToStartingStageEvent;

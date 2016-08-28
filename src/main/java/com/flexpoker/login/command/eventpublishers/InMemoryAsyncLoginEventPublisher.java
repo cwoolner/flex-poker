@@ -5,7 +5,7 @@ import javax.inject.Inject;
 import org.springframework.stereotype.Component;
 
 import com.flexpoker.framework.event.EventPublisher;
-import com.flexpoker.framework.event.EventSubscriber;
+import com.flexpoker.framework.event.subscriber.EventSubscriber;
 import com.flexpoker.login.command.framework.LoginEvent;
 
 @Component

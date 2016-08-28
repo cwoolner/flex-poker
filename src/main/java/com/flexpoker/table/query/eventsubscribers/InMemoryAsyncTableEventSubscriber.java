@@ -12,7 +12,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import com.flexpoker.framework.event.EventHandler;
-import com.flexpoker.framework.event.EventSubscriber;
+import com.flexpoker.framework.event.subscriber.EventSubscriber;
 import com.flexpoker.table.command.events.ActionOnChangedEvent;
 import com.flexpoker.table.command.events.FlopCardsDealtEvent;
 import com.flexpoker.table.command.events.HandDealtEvent;

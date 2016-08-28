@@ -13,7 +13,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import com.flexpoker.framework.event.EventHandler;
-import com.flexpoker.framework.event.EventSubscriber;
+import com.flexpoker.framework.event.subscriber.EventSubscriber;
 import com.flexpoker.signup.command.events.NewUserSignedUpEvent;
 import com.flexpoker.signup.command.events.SignedUpUserConfirmedEvent;
 import com.flexpoker.signup.command.framework.SignUpEvent;
