@@ -1,30 +1,37 @@
 package com.flexpoker.table.query.eventsubscribers;
 
-import java.util.Comparator;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.PriorityBlockingQueue;
 
 import javax.inject.Inject;
 
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
+import com.flexpoker.framework.event.Event;
 import com.flexpoker.framework.event.EventHandler;
 import com.flexpoker.framework.event.subscriber.EventSubscriber;
+import com.flexpoker.framework.event.subscriber.InMemoryThreadSafeEventSubscriberHelper;
 import com.flexpoker.table.command.events.ActionOnChangedEvent;
+import com.flexpoker.table.command.events.CardsShuffledEvent;
 import com.flexpoker.table.command.events.FlopCardsDealtEvent;
+import com.flexpoker.table.command.events.HandCompletedEvent;
 import com.flexpoker.table.command.events.HandDealtEvent;
+import com.flexpoker.table.command.events.LastToActChangedEvent;
+import com.flexpoker.table.command.events.PlayerAddedEvent;
 import com.flexpoker.table.command.events.PlayerCalledEvent;
 import com.flexpoker.table.command.events.PlayerCheckedEvent;
 import com.flexpoker.table.command.events.PlayerFoldedEvent;
 import com.flexpoker.table.command.events.PlayerRaisedEvent;
+import com.flexpoker.table.command.events.PlayerRemovedEvent;
 import com.flexpoker.table.command.events.PotAmountIncreasedEvent;
 import com.flexpoker.table.command.events.PotClosedEvent;
 import com.flexpoker.table.command.events.PotCreatedEvent;
 import com.flexpoker.table.command.events.RiverCardDealtEvent;
+import com.flexpoker.table.command.events.RoundCompletedEvent;
 import com.flexpoker.table.command.events.TableCreatedEvent;
+import com.flexpoker.table.command.events.TablePausedEvent;
+import com.flexpoker.table.command.events.TableResumedEvent;
 import com.flexpoker.table.command.events.TurnCardDealtEvent;
 import com.flexpoker.table.command.events.WinnersDeterminedEvent;
 import com.flexpoker.table.command.framework.TableEvent;
@@ -32,9 +39,7 @@ import com.flexpoker.table.command.framework.TableEvent;
 @Component("tableEventSubscriber")
 public class InMemoryAsyncTableEventSubscriber implements EventSubscriber<TableEvent> {
 
-    private final Map<UUID, PriorityBlockingQueue<TableEvent>> listOfTableEventsNeededToProcess;
-
-    private final Map<UUID, Integer> nextExpectedEventVersion;
+    private final InMemoryThreadSafeEventSubscriberHelper inMemoryThreadSafeEventSubscriberHelper;
 
     private final EventHandler<TableCreatedEvent> tableCreatedEventHandler;
 
@@ -66,6 +71,7 @@ public class InMemoryAsyncTableEventSubscriber implements EventSubscriber<TableE
 
     @Inject
     public InMemoryAsyncTableEventSubscriber(
+            InMemoryThreadSafeEventSubscriberHelper inMemoryThreadSafeEventSubscriberHelper,
             EventHandler<TableCreatedEvent> tableCreatedEventHandler,
             EventHandler<HandDealtEvent> handDealtEventHandler,
             EventHandler<PlayerCalledEvent> playerCalledEventHandler,
@@ -80,8 +86,7 @@ public class InMemoryAsyncTableEventSubscriber implements EventSubscriber<TableE
             EventHandler<PotClosedEvent> potClosedEventHandler,
             EventHandler<PotCreatedEvent> potCreatedEventHandler,
             EventHandler<WinnersDeterminedEvent> winnersDeterminedEventHandler) {
-        listOfTableEventsNeededToProcess = new ConcurrentHashMap<>();
-        nextExpectedEventVersion = new ConcurrentHashMap<>();
+        this.inMemoryThreadSafeEventSubscriberHelper = inMemoryThreadSafeEventSubscriberHelper;
         this.tableCreatedEventHandler = tableCreatedEventHandler;
         this.handDealtEventHandler = handDealtEventHandler;
         this.playerCalledEventHandler = playerCalledEventHandler;
@@ -96,81 +101,40 @@ public class InMemoryAsyncTableEventSubscriber implements EventSubscriber<TableE
         this.potClosedEventHandler = potClosedEventHandler;
         this.potCreatedEventHandler = potCreatedEventHandler;
         this.winnersDeterminedEventHandler = winnersDeterminedEventHandler;
+        this.inMemoryThreadSafeEventSubscriberHelper.setHandlerMap(createEventHandlerMap());
     }
 
     @Async
     @Override
     public void receive(TableEvent event) {
-        synchronized (this) {
-            listOfTableEventsNeededToProcess.putIfAbsent(event.getAggregateId(), new PriorityBlockingQueue<>(10, Comparator.comparingInt(TableEvent::getVersion)));
-            nextExpectedEventVersion.putIfAbsent(event.getAggregateId(), Integer.valueOf(1));
-
-            if (isExpectedEvent(event)) {
-                handleEventAndRunAnyOthers(event);
-            } else {
-                listOfTableEventsNeededToProcess.get(event.getAggregateId()).add(event);
-            }
-        }
+        inMemoryThreadSafeEventSubscriberHelper.receive(event);
     }
 
-    private void handleEventAndRunAnyOthers(TableEvent event) {
-        handleEvent(event);
-        removeEventFromUnhandleList(event);
-        incrementNextEventVersion(event);
-        handleAnyPreviouslyUnhandledEvents(event);
+    private Map<Class<? extends Event>, EventHandler<? extends Event>> createEventHandlerMap() {
+        Map<Class<? extends Event>, EventHandler<? extends Event>> eventHandlerMap = new HashMap<>();
+        eventHandlerMap.put(ActionOnChangedEvent.class, actionOnChangedEventHandler);
+        eventHandlerMap.put(CardsShuffledEvent.class, x -> {});
+        eventHandlerMap.put(FlopCardsDealtEvent.class, flopCardsDealtEventHandler);
+        eventHandlerMap.put(HandCompletedEvent.class, x -> {});
+        eventHandlerMap.put(HandDealtEvent.class, handDealtEventHandler);
+        eventHandlerMap.put(LastToActChangedEvent.class, x -> {});
+        eventHandlerMap.put(PlayerAddedEvent.class, x -> {});
+        eventHandlerMap.put(PlayerCalledEvent.class, playerCalledEventHandler);
+        eventHandlerMap.put(PlayerCheckedEvent.class, playerCheckedEventHandler);
+        eventHandlerMap.put(PlayerFoldedEvent.class, playerFoldedEventHandler);
+        eventHandlerMap.put(PlayerRaisedEvent.class, playerRaisedEventHandler);
+        eventHandlerMap.put(PlayerRemovedEvent.class, x -> {});
+        eventHandlerMap.put(PotAmountIncreasedEvent.class, potAmountIncreasedEventHandler);
+        eventHandlerMap.put(PotClosedEvent.class, potClosedEventHandler);
+        eventHandlerMap.put(PotCreatedEvent.class, potCreatedEventHandler);
+        eventHandlerMap.put(RiverCardDealtEvent.class, riverCardDealtEventHandler);
+        eventHandlerMap.put(RoundCompletedEvent.class, x -> {});
+        eventHandlerMap.put(TableCreatedEvent.class, tableCreatedEventHandler);
+        eventHandlerMap.put(TablePausedEvent.class, x -> {});
+        eventHandlerMap.put(TableResumedEvent.class, x -> {});
+        eventHandlerMap.put(TurnCardDealtEvent.class, turnCardDealtEventHandler);
+        eventHandlerMap.put(WinnersDeterminedEvent.class, winnersDeterminedEventHandler);
+        return eventHandlerMap;
     }
 
-    private boolean isExpectedEvent(TableEvent event) {
-        int expectedEventVersion = nextExpectedEventVersion.get(event.getAggregateId())
-                .intValue();
-        return expectedEventVersion == event.getVersion();
-    }
-
-    private void handleEvent(TableEvent event) {
-        if (event.getClass() == TableCreatedEvent.class) {
-            tableCreatedEventHandler.handle((TableCreatedEvent) event);
-        } else if (event.getClass() == HandDealtEvent.class) {
-            handDealtEventHandler.handle((HandDealtEvent) event);
-        } else if (event.getClass() == PlayerCalledEvent.class) {
-            playerCalledEventHandler.handle((PlayerCalledEvent) event);
-        } else if (event.getClass() == PlayerCheckedEvent.class) {
-            playerCheckedEventHandler.handle((PlayerCheckedEvent) event);
-        } else if (event.getClass() == PlayerFoldedEvent.class) {
-            playerFoldedEventHandler.handle((PlayerFoldedEvent) event);
-        } else if (event.getClass() == PlayerRaisedEvent.class) {
-            playerRaisedEventHandler.handle((PlayerRaisedEvent) event);
-        } else if (event.getClass() == FlopCardsDealtEvent.class) {
-            flopCardsDealtEventHandler.handle((FlopCardsDealtEvent) event);
-        } else if (event.getClass() == TurnCardDealtEvent.class) {
-            turnCardDealtEventHandler.handle((TurnCardDealtEvent) event);
-        } else if (event.getClass() == RiverCardDealtEvent.class) {
-            riverCardDealtEventHandler.handle((RiverCardDealtEvent) event);
-        } else if (event.getClass() == ActionOnChangedEvent.class) {
-            actionOnChangedEventHandler.handle((ActionOnChangedEvent) event);
-        } else if (event.getClass() == PotAmountIncreasedEvent.class) {
-            potAmountIncreasedEventHandler.handle((PotAmountIncreasedEvent) event);
-        } else if (event.getClass() == PotClosedEvent.class) {
-            potClosedEventHandler.handle((PotClosedEvent) event);
-        } else if (event.getClass() == PotCreatedEvent.class) {
-            potCreatedEventHandler.handle((PotCreatedEvent) event);
-        } else if (event.getClass() == WinnersDeterminedEvent.class) {
-            winnersDeterminedEventHandler.handle((WinnersDeterminedEvent) event);
-        }
-    }
-
-    private void removeEventFromUnhandleList(TableEvent event) {
-        listOfTableEventsNeededToProcess.get(event.getAggregateId()).remove(event);
-    }
-
-    private void incrementNextEventVersion(TableEvent event) {
-        nextExpectedEventVersion.compute(event.getAggregateId(),
-                (eventId, eventVersion) -> eventVersion + 1);
-    }
-
-    private void handleAnyPreviouslyUnhandledEvents(TableEvent event) {
-        TableEvent earliestUnrunTableEvent = listOfTableEventsNeededToProcess.get(event.getAggregateId()).peek();
-        if (isExpectedEvent(earliestUnrunTableEvent)) {
-            handleEventAndRunAnyOthers(earliestUnrunTableEvent);
-        }
-    }
 }
