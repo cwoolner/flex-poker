@@ -68,7 +68,7 @@ public class InMemoryThreadSafeEventSubscriberHelper<T extends Event> {
 
     private void handleAnyPreviouslyUnhandledEvents(T event) {
         T earliestUnrunTableEvent = listOfEventsNeededToProcess.get(event.getAggregateId()).peek();
-        if (isExpectedEvent(earliestUnrunTableEvent)) {
+        if (earliestUnrunTableEvent != null && isExpectedEvent(earliestUnrunTableEvent)) {
             handleEventAndRunAnyOthers(earliestUnrunTableEvent);
         }
     }
