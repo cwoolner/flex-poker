@@ -21,7 +21,7 @@ import org.springframework.web.servlet.view.InternalResourceViewResolver;
 @EnableWebMvc
 @EnableScheduling
 @EnableAsync
-@ComponentScan
+@ComponentScan("com.flexpoker")
 public class WebConfig extends WebMvcConfigurerAdapter {
 
     @Override

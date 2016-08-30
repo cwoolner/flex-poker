@@ -7,8 +7,6 @@ import javax.servlet.ServletRegistration.Dynamic;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
 import com.flexpoker.config.ForceHttpsFilter;
-import com.flexpoker.config.RedisConfig;
-import com.flexpoker.config.SecurityConfig;
 import com.flexpoker.config.WebConfig;
 import com.flexpoker.config.WebSocketConfig;
 
@@ -23,12 +21,12 @@ public class WebInitializer extends AbstractAnnotationConfigDispatcherServletIni
 
     @Override
     protected Class<?>[] getRootConfigClasses() {
-        return new Class<?>[] { SecurityConfig.class, RedisConfig.class, WebSocketConfig.class };
+        return null;
     }
 
     @Override
     protected Class<?>[] getServletConfigClasses() {
-        return new Class<?>[] { WebConfig.class };
+        return new Class<?>[] { WebConfig.class, WebSocketConfig.class };
     }
 
     @Override
