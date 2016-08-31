@@ -1,5 +1,6 @@
 package com.flexpoker.table.query.handlers;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -45,7 +46,7 @@ public class RiverCardDealtEventHandler implements EventHandler<RiverCardDealtEv
         TableDTO currentTable = tableRepository.fetchById(event.getAggregateId());
 
         RiverCard riverCard = cardsUsedInHandRepository.fetchRiverCard(event.getHandId());
-        List<CardDTO> visibleCommonCards = currentTable.getVisibleCommonCards();
+        List<CardDTO> visibleCommonCards = new ArrayList<>(currentTable.getVisibleCommonCards());
         visibleCommonCards.add(new CardDTO(riverCard.getCard().getId()));
 
         TableDTO updatedTable = new TableDTO(currentTable.getId(),

@@ -1,5 +1,6 @@
 package com.flexpoker.table.query.handlers;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -45,7 +46,7 @@ public class TurnCardDealtEventHandler implements EventHandler<TurnCardDealtEven
         TableDTO currentTable = tableRepository.fetchById(event.getAggregateId());
 
         TurnCard turnCard = cardsUsedInHandRepository.fetchTurnCard(event.getHandId());
-        List<CardDTO> visibleCommonCards = currentTable.getVisibleCommonCards();
+        List<CardDTO> visibleCommonCards = new ArrayList<>(currentTable.getVisibleCommonCards());
         visibleCommonCards.add(new CardDTO(turnCard.getCard().getId()));
 
         TableDTO updatedTable = new TableDTO(currentTable.getId(),
