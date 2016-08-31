@@ -1,9 +1,9 @@
 package com.flexpoker.framework.event.subscriber;
 
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.PriorityBlockingQueue;
 
 import org.springframework.context.annotation.Scope;
@@ -23,8 +23,8 @@ public class InMemoryThreadSafeEventSubscriberHelper<T extends Event> {
     private Map<Class<T>, EventHandler<T>> handlerMap;
     
     public InMemoryThreadSafeEventSubscriberHelper() {
-        listOfEventsNeededToProcess = new ConcurrentHashMap<>();
-        nextExpectedEventVersion = new ConcurrentHashMap<>();
+        listOfEventsNeededToProcess = new HashMap<>();
+        nextExpectedEventVersion = new HashMap<>();
     }
 
     public void receive(T event) {
