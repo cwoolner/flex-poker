@@ -6,7 +6,8 @@ export default React.createClass({
 
   getInitialState() {
     return {
-      currentRaiseTo: null
+      currentRaiseTo: null,
+      validRaiseTo: null
     };
   },
 
@@ -25,10 +26,12 @@ export default React.createClass({
   },
 
   raise(gameId, tableId, raiseToAmount) {
-    WebSocketService.send('/app/raise', { gameId, tableId, raiseToAmount });
-    this.setState({
-      currentRaiseTo: null
-    });
+    if (_.inRange(raiseToAmount, this.props.minRaiseTo, this.props.maxRaiseTo + 1)) {
+      WebSocketService.send('/app/raise', { gameId, tableId, raiseToAmount });
+      this.setState({
+        currentRaiseTo: null
+      });
+    }
   },
 
   fold(gameId, tableId) {
@@ -40,31 +43,35 @@ export default React.createClass({
 
   onRaiseToChange(evt) {
     this.setState({
-      currentRaiseTo: evt.target.value
+      currentRaiseTo: evt.target.value,
+      validRaiseTo: _.inRange(evt.target.value, this.props.minRaiseTo, this.props.maxRaiseTo + 1),
     });
+  },
+
+  componentWillReceiveProps(nextProps) {
+    this.state.currentRaiseTo = nextProps.minRaiseTo;
+  },
+
+  componentDidMount() {
+    if (_.isNil(this.state.currentRaiseTo)) {
+      this.setState({
+        currentRaiseTo: this.props.minRaiseTo,
+        validRaiseTo: true,
+      });
+    }
   },
 
   render() {
     const {gameId, tableId, actionOn, callAmount, minRaiseTo, maxRaiseTo} = this.props;
-
-    console.log(`current: ${this.state.currentRaiseTo}`);
-    console.log(`min: ${minRaiseTo}`);
-
-    if (_.isNil(this.state.currentRaiseTo) || minRaiseTo > this.state.currentRaiseTo) {
-      this.setState({
-        currentRaiseTo: minRaiseTo
-      });
-    }
 
     return (
       <div>
         <div className={actionOn ? '' : 'hidden'}>
           <button className={callAmount === 0 ? '' : 'hidden'} onClick={evt => this.check(gameId, tableId)}>Check</button>
           <button className={callAmount > 0 ? '' : 'hidden'} onClick={evt => this.call(gameId, tableId)}>Call</button>
-          <button className={minRaiseTo > 0 ? '' : 'hidden'} onClick={evt => this.raise(gameId, tableId, this.state.currentRaiseTo)}>Raise to {this.state.currentRaiseTo}</button>
-          <label>Min: {minRaiseTo}</label>
-          <input type="text" onBlur={this.onRaiseToChange} />
-          <label>Max: {maxRaiseTo}</label>
+          <button className={minRaiseTo > 0 ? '' : 'hidden'} onClick={evt => this.raise(gameId, tableId, this.state.currentRaiseTo)}>Raise to {this.state.validRaiseTo ? this.state.currentRaiseTo : '--'}</button>
+          <input type="number" min={minRaiseTo} max={maxRaiseTo} value={this.state.currentRaiseTo} onChange={this.onRaiseToChange} />
+          <label className={this.state.validRaiseTo ? 'hidden' : ''}>Invalid raise</label>
           <button className={minRaiseTo > 0 ? '' : 'hidden'} onClick={evt => this.fold(gameId, tableId)}>Fold</button>
         </div>
         <div className={actionOn ? 'hidden' : ''}>
