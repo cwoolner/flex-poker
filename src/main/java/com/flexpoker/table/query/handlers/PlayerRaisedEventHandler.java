@@ -52,23 +52,36 @@ public class PlayerRaisedEventHandler implements EventHandler<PlayerRaisedEvent>
         TableDTO currentTable = tableRepository.fetchById(event.getAggregateId());
         String username = loginRepository.fetchUsernameByAggregateId(event.getPlayerId());
 
+        int raiseToAmount = event.getRaiseToAmount();
+
         List<SeatDTO> updatedSeats = currentTable.getSeats().stream()
                 .map(seatDTO -> {
+                    int amountOverChipsInFront = raiseToAmount - seatDTO.getChipsInFront();
+
                     if (seatDTO.getName().equals(username)) {
-                        int raiseToAmount = event.getRaiseToAmount();
-                        int amountOverChipsInFront = raiseToAmount - seatDTO.getChipsInFront();
                         int updatedChipsInBack = seatDTO.getChipsInBack() - amountOverChipsInFront;
                         return new SeatDTO(seatDTO.getPosition(),
                                 seatDTO.getName(), updatedChipsInBack, raiseToAmount,
                                 seatDTO.isStillInHand(), 0, 0, seatDTO.isButton(),
                                 seatDTO.isSmallBlind(), seatDTO.isBigBlind(), false);
                     }
-                    return seatDTO;
+                    return new SeatDTO(seatDTO.getPosition(), seatDTO.getName(), seatDTO.getChipsInBack(),
+                            seatDTO.getChipsInFront(), seatDTO.isStillInHand(),
+                            Math.min(raiseToAmount * 2, seatDTO.getChipsInFront() + seatDTO.getChipsInBack()),
+                            amountOverChipsInFront, seatDTO.isButton(), seatDTO.isSmallBlind(), seatDTO.isBigBlind(),
+                            seatDTO.isActionOn());
                 }).collect(Collectors.toList());
 
+        int previousChipsInFront = currentTable.getSeats().stream()
+                .filter(x -> x.getName().equals(username))
+                .findAny().get()
+                .getChipsInFront();
+        int totalPotIncrease = raiseToAmount - previousChipsInFront;
+
         TableDTO updatedTable = new TableDTO(currentTable.getId(),
-                event.getVersion(), updatedSeats, currentTable.getTotalPot(),
-                currentTable.getPots(), currentTable.getVisibleCommonCards());
+                event.getVersion(), updatedSeats, currentTable.getTotalPot() + totalPotIncrease,
+                currentTable.getPots(), currentTable.getVisibleCommonCards(),
+                currentTable.getCurrentHandMinRaiseToAmount());
         tableRepository.save(updatedTable);
     }
 

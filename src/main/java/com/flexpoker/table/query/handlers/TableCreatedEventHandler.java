@@ -64,7 +64,7 @@ public class TableCreatedEventHandler implements EventHandler<TableCreatedEvent>
 
         TableDTO tableDTO = new TableDTO(event.getAggregateId(),
                 event.getVersion(), seats, 0, Collections.emptySet(),
-                Collections.emptyList());
+                Collections.emptyList(), 0);
         tableRepository.save(tableDTO);
     }
 

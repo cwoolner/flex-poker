@@ -39,7 +39,8 @@ public class WinnersDeterminedEventHandler implements
         TableDTO updatedTable = new TableDTO(currentTable.getId(),
                 event.getVersion(), currentTable.getSeats(),
                 currentTable.getTotalPot(), currentTable.getPots(),
-                currentTable.getVisibleCommonCards());
+                currentTable.getVisibleCommonCards(),
+                currentTable.getCurrentHandMinRaiseToAmount());
         tableRepository.save(updatedTable);
     }
 

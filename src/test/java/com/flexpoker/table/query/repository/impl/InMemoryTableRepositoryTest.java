@@ -25,7 +25,7 @@ public class InMemoryTableRepositoryTest {
         InMemoryTableRepository inMemoryTableRepository = new InMemoryTableRepository();
         UUID tableId = UUID.randomUUID();
         inMemoryTableRepository
-                .save(new TableDTO(tableId, 1, null, 0, null, null));
+                .save(new TableDTO(tableId, 1, null, 0, null, null, 0));
         assertNotNull(inMemoryTableRepository.fetchById(tableId));
     }
 
@@ -34,9 +34,9 @@ public class InMemoryTableRepositoryTest {
         InMemoryTableRepository inMemoryTableRepository = new InMemoryTableRepository();
         UUID tableId = UUID.randomUUID();
         inMemoryTableRepository
-                .save(new TableDTO(tableId, 1, null, 0, null, null));
+                .save(new TableDTO(tableId, 1, null, 0, null, null, 0));
         inMemoryTableRepository
-                .save(new TableDTO(tableId, 2, null, 0, null, null));
+                .save(new TableDTO(tableId, 2, null, 0, null, null, 0));
         assertEquals(2,
                 inMemoryTableRepository.fetchById(tableId).getVersion());
     }
@@ -46,9 +46,9 @@ public class InMemoryTableRepositoryTest {
         InMemoryTableRepository inMemoryTableRepository = new InMemoryTableRepository();
         UUID tableId = UUID.randomUUID();
         inMemoryTableRepository
-                .save(new TableDTO(tableId, 2, null, 0, null, null));
+                .save(new TableDTO(tableId, 2, null, 0, null, null, 0));
         inMemoryTableRepository
-                .save(new TableDTO(tableId, 1, null, 0, null, null));
+                .save(new TableDTO(tableId, 1, null, 0, null, null, 0));
         assertEquals(2,
                 inMemoryTableRepository.fetchById(tableId).getVersion());
     }
@@ -63,7 +63,7 @@ public class InMemoryTableRepositoryTest {
         // the odds of the max version thread running during the disorderly
         // begin time less likely
         Set<Thread> saveThreads = IntStream.range(1, 6).boxed()
-                .map(x -> new TableDTO(tableId, x, null, 0, null, null))
+                .map(x -> new TableDTO(tableId, x, null, 0, null, null, 0))
                 .map(x -> new Thread(() -> inMemoryTableRepository.save(x)))
                 .collect(Collectors.toSet());
 

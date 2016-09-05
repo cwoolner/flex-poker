@@ -87,7 +87,8 @@ public class PlayerFoldedEventHandler implements EventHandler<PlayerFoldedEvent>
 
         TableDTO updatedTable = new TableDTO(currentTable.getId(),
                 event.getVersion(), updatedSeats, currentTable.getTotalPot(),
-                updatePots, currentTable.getVisibleCommonCards());
+                updatePots, currentTable.getVisibleCommonCards(),
+                currentTable.getCurrentHandMinRaiseToAmount());
         tableRepository.save(updatedTable);
     }
 

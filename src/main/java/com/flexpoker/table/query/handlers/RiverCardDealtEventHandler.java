@@ -52,7 +52,7 @@ public class RiverCardDealtEventHandler implements EventHandler<RiverCardDealtEv
         TableDTO updatedTable = new TableDTO(currentTable.getId(),
                 event.getVersion(), currentTable.getSeats(),
                 currentTable.getTotalPot(), currentTable.getPots(),
-                visibleCommonCards);
+                visibleCommonCards, currentTable.getCurrentHandMinRaiseToAmount());
         tableRepository.save(updatedTable);
     }
 

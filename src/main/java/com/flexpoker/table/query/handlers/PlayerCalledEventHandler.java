@@ -66,9 +66,15 @@ public class PlayerCalledEventHandler implements EventHandler<PlayerCalledEvent>
                     return seatDTO;
                 }).collect(Collectors.toList());
 
+        int callAmount = currentTable.getSeats().stream()
+                .filter(x -> x.getName().equals(username))
+                .findAny().get()
+                .getCallAmount();
+
         TableDTO updatedTable = new TableDTO(currentTable.getId(),
-                event.getVersion(), updatedSeats, currentTable.getTotalPot(),
-                currentTable.getPots(), currentTable.getVisibleCommonCards());
+                event.getVersion(), updatedSeats, currentTable.getTotalPot() + callAmount,
+                currentTable.getPots(), currentTable.getVisibleCommonCards(),
+                currentTable.getCurrentHandMinRaiseToAmount());
         tableRepository.save(updatedTable);
     }
 

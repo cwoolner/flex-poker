@@ -88,7 +88,7 @@ public class HandDealtEventHandler implements EventHandler<HandDealtEvent> {
 
         TableDTO updatedTable = new TableDTO(currentTable.getId(),
                 event.getVersion(), seats, totalPot, Collections.emptySet(),
-                Collections.emptyList());
+                Collections.emptyList(), event.getBigBlind());
         tableRepository.save(updatedTable);
     }
 
