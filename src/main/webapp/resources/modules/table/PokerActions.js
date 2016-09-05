@@ -68,7 +68,7 @@ export default React.createClass({
       <div>
         <div className={actionOn ? '' : 'hidden'}>
           <button className={callAmount === 0 ? '' : 'hidden'} onClick={evt => this.check(gameId, tableId)}>Check</button>
-          <button className={callAmount > 0 ? '' : 'hidden'} onClick={evt => this.call(gameId, tableId)}>Call</button>
+          <button className={callAmount > 0 ? '' : 'hidden'} onClick={evt => this.call(gameId, tableId)}>Call {callAmount}</button>
           <button className={minRaiseTo > 0 ? '' : 'hidden'} onClick={evt => this.raise(gameId, tableId, this.state.currentRaiseTo)}>Raise to {this.state.validRaiseTo ? this.state.currentRaiseTo : '--'}</button>
           <input type="number" min={minRaiseTo} max={maxRaiseTo} value={this.state.currentRaiseTo} onChange={this.onRaiseToChange} />
           <label className={this.state.validRaiseTo ? 'hidden' : ''}>Invalid raise</label>
