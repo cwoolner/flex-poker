@@ -6,8 +6,7 @@ export default React.createClass({
 
   getInitialState() {
     return {
-      currentRaiseTo: null,
-      validRaiseTo: null
+      currentRaiseTo: null
     };
   },
 
@@ -43,8 +42,7 @@ export default React.createClass({
 
   onRaiseToChange(evt) {
     this.setState({
-      currentRaiseTo: evt.target.value,
-      validRaiseTo: _.inRange(evt.target.value, this.props.minRaiseTo, this.props.maxRaiseTo + 1),
+      currentRaiseTo: evt.target.value
     });
   },
 
@@ -55,8 +53,7 @@ export default React.createClass({
   componentDidMount() {
     if (_.isNil(this.state.currentRaiseTo)) {
       this.setState({
-        currentRaiseTo: this.props.minRaiseTo,
-        validRaiseTo: true,
+        currentRaiseTo: this.props.minRaiseTo
       });
     }
   },
@@ -69,9 +66,11 @@ export default React.createClass({
         <div className={actionOn ? '' : 'hidden'}>
           <button className={callAmount === 0 ? '' : 'hidden'} onClick={evt => this.check(gameId, tableId)}>Check</button>
           <button className={callAmount > 0 ? '' : 'hidden'} onClick={evt => this.call(gameId, tableId)}>Call {callAmount}</button>
-          <button className={minRaiseTo > 0 ? '' : 'hidden'} onClick={evt => this.raise(gameId, tableId, this.state.currentRaiseTo)}>Raise to {this.state.validRaiseTo ? this.state.currentRaiseTo : '--'}</button>
+          <button className={minRaiseTo > 0 ? '' : 'hidden'} onClick={evt => this.raise(gameId, tableId, this.state.currentRaiseTo)}>
+            Raise to {_.inRange(this.state.currentRaiseTo, minRaiseTo, maxRaiseTo + 1) ? this.state.currentRaiseTo : '--'}
+          </button>
           <input type="number" min={minRaiseTo} max={maxRaiseTo} value={this.state.currentRaiseTo} onChange={this.onRaiseToChange} />
-          <label className={this.state.validRaiseTo ? 'hidden' : ''}>Invalid raise</label>
+          <label className={_.inRange(this.state.currentRaiseTo, minRaiseTo, maxRaiseTo + 1) ? 'hidden' : ''}>Invalid raise</label>
           <button className={minRaiseTo > 0 ? '' : 'hidden'} onClick={evt => this.fold(gameId, tableId)}>Fold</button>
         </div>
         <div className={actionOn ? 'hidden' : ''}>
