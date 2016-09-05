@@ -59,6 +59,8 @@ public class InMemoryAsyncTableEventSubscriber implements EventSubscriber<TableE
 
     private final EventHandler<RiverCardDealtEvent> riverCardDealtEventHandler;
 
+    private final EventHandler<RoundCompletedEvent> roundCompletedEventHandler;
+
     private final EventHandler<ActionOnChangedEvent> actionOnChangedEventHandler;
 
     private final EventHandler<PotAmountIncreasedEvent> potAmountIncreasedEventHandler;
@@ -81,6 +83,7 @@ public class InMemoryAsyncTableEventSubscriber implements EventSubscriber<TableE
             EventHandler<FlopCardsDealtEvent> flopCardsDealtEventHandler,
             EventHandler<TurnCardDealtEvent> turnCardDealtEventHandler,
             EventHandler<RiverCardDealtEvent> riverCardDealtEventHandler,
+            EventHandler<RoundCompletedEvent> roundCompletedEventHandler,
             EventHandler<ActionOnChangedEvent> actionOnChangedEventHandler,
             EventHandler<PotAmountIncreasedEvent> potAmountIncreasedEventHandler,
             EventHandler<PotClosedEvent> potClosedEventHandler,
@@ -96,6 +99,7 @@ public class InMemoryAsyncTableEventSubscriber implements EventSubscriber<TableE
         this.flopCardsDealtEventHandler = flopCardsDealtEventHandler;
         this.turnCardDealtEventHandler = turnCardDealtEventHandler;
         this.riverCardDealtEventHandler = riverCardDealtEventHandler;
+        this.roundCompletedEventHandler = roundCompletedEventHandler;
         this.actionOnChangedEventHandler = actionOnChangedEventHandler;
         this.potAmountIncreasedEventHandler = potAmountIncreasedEventHandler;
         this.potClosedEventHandler = potClosedEventHandler;
@@ -128,7 +132,7 @@ public class InMemoryAsyncTableEventSubscriber implements EventSubscriber<TableE
         eventHandlerMap.put(PotClosedEvent.class, potClosedEventHandler);
         eventHandlerMap.put(PotCreatedEvent.class, potCreatedEventHandler);
         eventHandlerMap.put(RiverCardDealtEvent.class, riverCardDealtEventHandler);
-        eventHandlerMap.put(RoundCompletedEvent.class, x -> {});
+        eventHandlerMap.put(RoundCompletedEvent.class, roundCompletedEventHandler);
         eventHandlerMap.put(TableCreatedEvent.class, tableCreatedEventHandler);
         eventHandlerMap.put(TablePausedEvent.class, x -> {});
         eventHandlerMap.put(TableResumedEvent.class, x -> {});
