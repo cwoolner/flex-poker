@@ -22,6 +22,8 @@ import com.flexpoker.table.command.events.PlayerAddedEvent;
 import com.flexpoker.table.command.events.PlayerCalledEvent;
 import com.flexpoker.table.command.events.PlayerCheckedEvent;
 import com.flexpoker.table.command.events.PlayerFoldedEvent;
+import com.flexpoker.table.command.events.PlayerForceCheckedEvent;
+import com.flexpoker.table.command.events.PlayerForceFoldedEvent;
 import com.flexpoker.table.command.events.PlayerRaisedEvent;
 import com.flexpoker.table.command.events.PlayerRemovedEvent;
 import com.flexpoker.table.command.events.PotAmountIncreasedEvent;
@@ -49,7 +51,11 @@ public class InMemoryAsyncTableEventSubscriber implements EventSubscriber<TableE
 
     private final EventHandler<PlayerCheckedEvent> playerCheckedEventHandler;
 
+    private final EventHandler<PlayerForceCheckedEvent> playerForceCheckedEventHandler;
+
     private final EventHandler<PlayerFoldedEvent> playerFoldedEventHandler;
+
+    private final EventHandler<PlayerForceFoldedEvent> playerForceFoldedEventHandler;
 
     private final EventHandler<PlayerRaisedEvent> playerRaisedEventHandler;
 
@@ -78,7 +84,9 @@ public class InMemoryAsyncTableEventSubscriber implements EventSubscriber<TableE
             EventHandler<HandDealtEvent> handDealtEventHandler,
             EventHandler<PlayerCalledEvent> playerCalledEventHandler,
             EventHandler<PlayerCheckedEvent> playerCheckedEventHandler,
+            EventHandler<PlayerForceCheckedEvent> playerForceCheckedEventHandler,
             EventHandler<PlayerFoldedEvent> playerFoldedEventHandler,
+            EventHandler<PlayerForceFoldedEvent> playerForceFoldedEventHandler,
             EventHandler<PlayerRaisedEvent> playerRaisedEventHandler,
             EventHandler<FlopCardsDealtEvent> flopCardsDealtEventHandler,
             EventHandler<TurnCardDealtEvent> turnCardDealtEventHandler,
@@ -94,7 +102,9 @@ public class InMemoryAsyncTableEventSubscriber implements EventSubscriber<TableE
         this.handDealtEventHandler = handDealtEventHandler;
         this.playerCalledEventHandler = playerCalledEventHandler;
         this.playerCheckedEventHandler = playerCheckedEventHandler;
+        this.playerForceCheckedEventHandler = playerForceCheckedEventHandler;
         this.playerFoldedEventHandler = playerFoldedEventHandler;
+        this.playerForceFoldedEventHandler = playerForceFoldedEventHandler;
         this.playerRaisedEventHandler = playerRaisedEventHandler;
         this.flopCardsDealtEventHandler = flopCardsDealtEventHandler;
         this.turnCardDealtEventHandler = turnCardDealtEventHandler;
@@ -125,7 +135,9 @@ public class InMemoryAsyncTableEventSubscriber implements EventSubscriber<TableE
         eventHandlerMap.put(PlayerAddedEvent.class, x -> {});
         eventHandlerMap.put(PlayerCalledEvent.class, playerCalledEventHandler);
         eventHandlerMap.put(PlayerCheckedEvent.class, playerCheckedEventHandler);
+        eventHandlerMap.put(PlayerForceCheckedEvent.class, playerForceCheckedEventHandler);
         eventHandlerMap.put(PlayerFoldedEvent.class, playerFoldedEventHandler);
+        eventHandlerMap.put(PlayerForceFoldedEvent.class, playerForceFoldedEventHandler);
         eventHandlerMap.put(PlayerRaisedEvent.class, playerRaisedEventHandler);
         eventHandlerMap.put(PlayerRemovedEvent.class, x -> {});
         eventHandlerMap.put(PotAmountIncreasedEvent.class, potAmountIncreasedEventHandler);

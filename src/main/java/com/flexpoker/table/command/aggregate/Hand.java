@@ -24,6 +24,8 @@ import com.flexpoker.table.command.events.LastToActChangedEvent;
 import com.flexpoker.table.command.events.PlayerCalledEvent;
 import com.flexpoker.table.command.events.PlayerCheckedEvent;
 import com.flexpoker.table.command.events.PlayerFoldedEvent;
+import com.flexpoker.table.command.events.PlayerForceCheckedEvent;
+import com.flexpoker.table.command.events.PlayerForceFoldedEvent;
 import com.flexpoker.table.command.events.PlayerRaisedEvent;
 import com.flexpoker.table.command.events.PotAmountIncreasedEvent;
 import com.flexpoker.table.command.events.PotClosedEvent;
@@ -215,13 +217,13 @@ public class Hand {
         }
     }
 
-    public PlayerCheckedEvent check(UUID playerId, int aggregateVersion) {
+    public TableEvent check(UUID playerId, boolean forced, int aggregateVersion) {
         checkActionOnPlayer(playerId);
         checkPerformAction(playerId, PlayerAction.CHECK);
 
-        PlayerCheckedEvent playerCheckedEvent = new PlayerCheckedEvent(tableId,
-                aggregateVersion, gameId, entityId, playerId);
-        return playerCheckedEvent;
+        return forced
+                ? new PlayerForceCheckedEvent(tableId, aggregateVersion, gameId, entityId, playerId)
+                : new PlayerCheckedEvent(tableId, aggregateVersion, gameId, entityId, playerId);
     }
 
     public PlayerCalledEvent call(UUID playerId, int aggregateVersion) {
@@ -233,13 +235,13 @@ public class Hand {
         return playerCalledEvent;
     }
 
-    public PlayerFoldedEvent fold(UUID playerId, int aggregateVersion) {
+    public TableEvent fold(UUID playerId, boolean forced, int aggregateVersion) {
         checkActionOnPlayer(playerId);
         checkPerformAction(playerId, PlayerAction.FOLD);
 
-        PlayerFoldedEvent playerFoldedEvent = new PlayerFoldedEvent(tableId,
-                aggregateVersion, gameId, entityId, playerId);
-        return playerFoldedEvent;
+        return forced
+                ? new PlayerForceFoldedEvent(tableId, aggregateVersion, gameId, entityId, playerId)
+                : new PlayerFoldedEvent(tableId, aggregateVersion, gameId, entityId, playerId);
     }
 
     public PlayerRaisedEvent raise(UUID playerId, int aggregateVersion, int raiseToAmount) {
@@ -254,10 +256,10 @@ public class Hand {
 
     TableEvent expireActionOn(UUID playerId, int aggregateVersion) {
         if (callAmountsMap.get(playerId).intValue() == 0) {
-            return check(playerId, aggregateVersion);
+            return check(playerId, true, aggregateVersion);
         }
 
-        return fold(playerId, aggregateVersion);
+        return fold(playerId, true, aggregateVersion);
     }
 
     public List<TableEvent> changeActionOn(int aggregateVersion) {
@@ -389,6 +391,13 @@ public class Hand {
         raiseToAmountsMap.put(playerId, Integer.valueOf(0));
     }
 
+    void applyEvent(PlayerForceCheckedEvent event) {
+        UUID playerId = event.getPlayerId();
+        possibleSeatActionsMap.get(playerId).clear();
+        callAmountsMap.put(playerId, Integer.valueOf(0));
+        raiseToAmountsMap.put(playerId, Integer.valueOf(0));
+    }
+
     void applyEvent(PlayerCalledEvent event) {
         UUID playerId = event.getPlayerId();
         possibleSeatActionsMap.get(playerId).clear();
@@ -405,6 +414,15 @@ public class Hand {
     }
 
     void applyEvent(PlayerFoldedEvent event) {
+        UUID playerId = event.getPlayerId();
+        playersStillInHand.remove(playerId);
+        potHandler.removePlayerFromAllPots(playerId);
+        possibleSeatActionsMap.get(playerId).clear();
+        callAmountsMap.put(playerId, Integer.valueOf(0));
+        raiseToAmountsMap.put(playerId, Integer.valueOf(0));
+    }
+
+    void applyEvent(PlayerForceFoldedEvent event) {
         UUID playerId = event.getPlayerId();
         playersStillInHand.remove(playerId);
         potHandler.removePlayerFromAllPots(playerId);

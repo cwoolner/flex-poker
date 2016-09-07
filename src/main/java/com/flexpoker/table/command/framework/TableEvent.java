@@ -14,6 +14,8 @@ import com.flexpoker.table.command.events.LastToActChangedEvent;
 import com.flexpoker.table.command.events.PlayerCalledEvent;
 import com.flexpoker.table.command.events.PlayerCheckedEvent;
 import com.flexpoker.table.command.events.PlayerFoldedEvent;
+import com.flexpoker.table.command.events.PlayerForceCheckedEvent;
+import com.flexpoker.table.command.events.PlayerForceFoldedEvent;
 import com.flexpoker.table.command.events.PlayerRaisedEvent;
 import com.flexpoker.table.command.events.PotAmountIncreasedEvent;
 import com.flexpoker.table.command.events.PotClosedEvent;
@@ -34,7 +36,9 @@ import com.flexpoker.table.command.events.WinnersDeterminedEvent;
         @JsonSubTypes.Type(value = LastToActChangedEvent.class, name = "LastToActChanged"),
         @JsonSubTypes.Type(value = PlayerCalledEvent.class, name = "PlayerCalled"),
         @JsonSubTypes.Type(value = PlayerCheckedEvent.class, name = "PlayerChecked"),
+        @JsonSubTypes.Type(value = PlayerForceCheckedEvent.class, name = "PlayerForceChecked"),
         @JsonSubTypes.Type(value = PlayerFoldedEvent.class, name = "PlayerFolded"),
+        @JsonSubTypes.Type(value = PlayerForceFoldedEvent.class, name = "PlayerForceFolded"),
         @JsonSubTypes.Type(value = PlayerRaisedEvent.class, name = "PlayerRaised"),
         @JsonSubTypes.Type(value = PotAmountIncreasedEvent.class, name = "PotAmountIncreased"),
         @JsonSubTypes.Type(value = PotClosedEvent.class, name = "PotClosed"),

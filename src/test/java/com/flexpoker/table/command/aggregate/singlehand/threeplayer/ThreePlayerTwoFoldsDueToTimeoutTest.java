@@ -14,7 +14,7 @@ import com.flexpoker.table.command.events.ActionOnChangedEvent;
 import com.flexpoker.table.command.events.CardsShuffledEvent;
 import com.flexpoker.table.command.events.HandCompletedEvent;
 import com.flexpoker.table.command.events.HandDealtEvent;
-import com.flexpoker.table.command.events.PlayerFoldedEvent;
+import com.flexpoker.table.command.events.PlayerForceFoldedEvent;
 import com.flexpoker.table.command.events.PotAmountIncreasedEvent;
 import com.flexpoker.table.command.events.PotCreatedEvent;
 import com.flexpoker.table.command.events.RoundCompletedEvent;
@@ -49,8 +49,8 @@ public class ThreePlayerTwoFoldsDueToTimeoutTest {
         verifyNumberOfEventsAndEntireOrderByType(newEvents,
                 TableCreatedEvent.class, CardsShuffledEvent.class,
                 HandDealtEvent.class, PotCreatedEvent.class,
-                ActionOnChangedEvent.class, PlayerFoldedEvent.class,
-                ActionOnChangedEvent.class, PlayerFoldedEvent.class,
+                ActionOnChangedEvent.class, PlayerForceFoldedEvent.class,
+                ActionOnChangedEvent.class, PlayerForceFoldedEvent.class,
                 PotAmountIncreasedEvent.class, PotAmountIncreasedEvent.class,
                 RoundCompletedEvent.class, WinnersDeterminedEvent.class,
                 HandCompletedEvent.class);

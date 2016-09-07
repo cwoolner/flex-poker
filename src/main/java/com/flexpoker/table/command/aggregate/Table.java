@@ -27,6 +27,8 @@ import com.flexpoker.table.command.events.PlayerAddedEvent;
 import com.flexpoker.table.command.events.PlayerCalledEvent;
 import com.flexpoker.table.command.events.PlayerCheckedEvent;
 import com.flexpoker.table.command.events.PlayerFoldedEvent;
+import com.flexpoker.table.command.events.PlayerForceCheckedEvent;
+import com.flexpoker.table.command.events.PlayerForceFoldedEvent;
 import com.flexpoker.table.command.events.PlayerRaisedEvent;
 import com.flexpoker.table.command.events.PlayerRemovedEvent;
 import com.flexpoker.table.command.events.PotAmountIncreasedEvent;
@@ -101,7 +103,9 @@ public class Table extends AggregateRoot<TableEvent> {
         methodTable.put(HandDealtEvent.class, x -> applyHandDealtEvent((HandDealtEvent) x));
         methodTable.put(PlayerCalledEvent.class, x -> currentHand.applyEvent((PlayerCalledEvent) x));
         methodTable.put(PlayerCheckedEvent.class, x -> currentHand.applyEvent((PlayerCheckedEvent) x));
+        methodTable.put(PlayerForceCheckedEvent.class, x -> currentHand.applyEvent((PlayerForceCheckedEvent) x));
         methodTable.put(PlayerFoldedEvent.class, x -> currentHand.applyEvent((PlayerFoldedEvent) x));
+        methodTable.put(PlayerForceFoldedEvent.class, x -> currentHand.applyEvent((PlayerForceFoldedEvent) x));
         methodTable.put(PlayerRaisedEvent.class, x -> currentHand.applyEvent((PlayerRaisedEvent) x));
         methodTable.put(FlopCardsDealtEvent.class, x -> currentHand.applyEvent((FlopCardsDealtEvent) x));
         methodTable.put(TurnCardDealtEvent.class, x -> currentHand.applyEvent((TurnCardDealtEvent) x));
@@ -276,7 +280,7 @@ public class Table extends AggregateRoot<TableEvent> {
     public void check(UUID playerId) {
         checkHandIsBeingPlayed();
 
-        PlayerCheckedEvent playerCheckedEvent = currentHand.check(playerId,
+        TableEvent playerCheckedEvent = currentHand.check(playerId, false,
                 ++aggregateVersion);
         addNewEvent(playerCheckedEvent);
         applyCommonEvent(playerCheckedEvent);
@@ -298,7 +302,7 @@ public class Table extends AggregateRoot<TableEvent> {
     public void fold(UUID playerId) {
         checkHandIsBeingPlayed();
 
-        PlayerFoldedEvent playerFoldedEvent = currentHand.fold(playerId,
+        TableEvent playerFoldedEvent = currentHand.fold(playerId, false,
                 ++aggregateVersion);
         addNewEvent(playerFoldedEvent);
         applyCommonEvent(playerFoldedEvent);
@@ -324,8 +328,6 @@ public class Table extends AggregateRoot<TableEvent> {
             return;
         }
 
-        // TODO: player folding/checking is different than being forced. two
-        // different events should be used
         TableEvent forcedActionOnExpiredEvent = currentHand.expireActionOn(playerId,
                 ++aggregateVersion);
         addNewEvent(forcedActionOnExpiredEvent);

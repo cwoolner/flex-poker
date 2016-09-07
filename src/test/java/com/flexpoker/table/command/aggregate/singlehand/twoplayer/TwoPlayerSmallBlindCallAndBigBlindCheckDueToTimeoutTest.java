@@ -18,6 +18,7 @@ import com.flexpoker.table.command.events.HandDealtEvent;
 import com.flexpoker.table.command.events.LastToActChangedEvent;
 import com.flexpoker.table.command.events.PlayerCalledEvent;
 import com.flexpoker.table.command.events.PlayerCheckedEvent;
+import com.flexpoker.table.command.events.PlayerForceCheckedEvent;
 import com.flexpoker.table.command.events.PotAmountIncreasedEvent;
 import com.flexpoker.table.command.events.PotCreatedEvent;
 import com.flexpoker.table.command.events.RiverCardDealtEvent;
@@ -69,7 +70,7 @@ public class TwoPlayerSmallBlindCallAndBigBlindCheckDueToTimeoutTest {
                 ActionOnChangedEvent.class,
                 // pre-flop
                 PlayerCalledEvent.class, ActionOnChangedEvent.class,
-                PlayerCheckedEvent.class,
+                PlayerForceCheckedEvent.class,
                 PotAmountIncreasedEvent.class, PotAmountIncreasedEvent.class,
                 RoundCompletedEvent.class, ActionOnChangedEvent.class,
                 LastToActChangedEvent.class, FlopCardsDealtEvent.class,
