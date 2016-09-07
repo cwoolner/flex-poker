@@ -39,22 +39,22 @@ public class ActionOnCountdownProcessManager implements ProcessManager<ActionOnC
     @Async
     @Override
     public void handle(ActionOnChangedEvent event) {
-        clearExistingTimer(event.getHandId());
+        clearExistingTimer(event.getAggregateId());
         addNewActionOnTimer(event);
     }
 
-    private void clearExistingTimer(UUID handId) {
-        ScheduledFuture<?> scheduledFuture = actionOnPlayerScheduledFutureMap.get(handId);
+    private void clearExistingTimer(UUID tableId) {
+        ScheduledFuture<?> scheduledFuture = actionOnPlayerScheduledFutureMap.get(tableId);
         if (scheduledFuture != null) {
             scheduledFuture.cancel(true);
         }
-        actionOnPlayerScheduledFutureMap.remove(handId);
+        actionOnPlayerScheduledFutureMap.remove(tableId);
     }
 
     private void addNewActionOnTimer(ActionOnChangedEvent event) {
         ScheduledFuture<?> scheduledFuture = scheduledThreadPoolExecutor
                 .scheduleAtFixedRate(new ActionOnCounter(event), 0, 1, TimeUnit.SECONDS);
-        actionOnPlayerScheduledFutureMap.put(event.getHandId(), scheduledFuture);
+        actionOnPlayerScheduledFutureMap.put(event.getAggregateId(), scheduledFuture);
     }
 
     private class ActionOnCounter implements Runnable {
