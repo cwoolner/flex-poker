@@ -79,7 +79,7 @@ public class PlayerForceCheckedEventHandler implements EventHandler<PlayerForceC
 
     private void handleChat(PlayerForceCheckedEvent event) {
         String username = loginRepository.fetchUsernameByAggregateId(event.getPlayerId());
-        String message = username + " checks";
+        String message = "Time expired - " + username + " checks";
         sendTableChatMessageCommand.execute(new TableChatMessage(message, null, true,
                 event.getGameId(), event.getAggregateId()));
     }

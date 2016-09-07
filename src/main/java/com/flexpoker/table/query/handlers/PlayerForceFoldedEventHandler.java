@@ -100,7 +100,7 @@ public class PlayerForceFoldedEventHandler implements EventHandler<PlayerForceFo
 
     private void handleChat(PlayerForceFoldedEvent event) {
         String username = loginRepository.fetchUsernameByAggregateId(event.getPlayerId());
-        String message = username + " folds";
+        String message = "Time expired - " + username + " folds";
         sendTableChatMessageCommand.execute(new TableChatMessage(message, null, true,
                 event.getGameId(), event.getAggregateId()));
     }
