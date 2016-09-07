@@ -71,7 +71,7 @@ export default React.createClass({
           </button>
           <input type="number" min={minRaiseTo} max={maxRaiseTo} value={this.state.currentRaiseTo} onChange={this.onRaiseToChange} />
           <label className={_.inRange(this.state.currentRaiseTo, minRaiseTo, maxRaiseTo + 1) ? 'hidden' : ''}>Invalid raise</label>
-          <button className={minRaiseTo > 0 ? '' : 'hidden'} onClick={evt => this.fold(gameId, tableId)}>Fold</button>
+          <button className={callAmount > 0 ? '' : 'hidden'} onClick={evt => this.fold(gameId, tableId)}>Fold</button>
         </div>
         <div className={actionOn ? 'hidden' : ''}>
           <input type="checkbox" id="check-checkbox" /><label for="check-checkbox">Check</label>
