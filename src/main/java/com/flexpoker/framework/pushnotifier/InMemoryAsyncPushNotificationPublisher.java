@@ -10,6 +10,7 @@ import com.flexpoker.pushnotifications.OpenGamesForPlayerUpdatedPushNotification
 import com.flexpoker.pushnotifications.OpenTableForUserPushNotification;
 import com.flexpoker.pushnotifications.SendUserPocketCardsPushNotification;
 import com.flexpoker.pushnotifications.TableUpdatedPushNotification;
+import com.flexpoker.pushnotifications.TickActionOnTimerPushNotification;
 
 @Component
 public class InMemoryAsyncPushNotificationPublisher implements PushNotificationPublisher {
@@ -24,18 +25,22 @@ public class InMemoryAsyncPushNotificationPublisher implements PushNotificationP
 
     private final PushNotificationHandler<TableUpdatedPushNotification> tableUpdatedPushNotificationHandler;
 
+    private final PushNotificationHandler<TickActionOnTimerPushNotification> tickActionOnTimerPushNotificationHandler;
+
     @Inject
     public InMemoryAsyncPushNotificationPublisher(
             PushNotificationHandler<GameListUpdatedPushNotification> gameListUpdatedPushNotificationHandler,
             PushNotificationHandler<OpenGamesForPlayerUpdatedPushNotification> openGamesForPlayerUpdatedPushNotificationHandler,
             PushNotificationHandler<OpenTableForUserPushNotification> openTableForUserPushNotificationHandler,
             PushNotificationHandler<SendUserPocketCardsPushNotification> sendUserPocketCardsPushNotificationHandler,
-            PushNotificationHandler<TableUpdatedPushNotification> tableUpdatedPushNotificationHandler) {
+            PushNotificationHandler<TableUpdatedPushNotification> tableUpdatedPushNotificationHandler,
+            PushNotificationHandler<TickActionOnTimerPushNotification> tickActionOnTimerPushNotificationHandler) {
         this.gameListUpdatedPushNotificationHandler = gameListUpdatedPushNotificationHandler;
         this.openGamesForPlayerUpdatedPushNotificationHandler = openGamesForPlayerUpdatedPushNotificationHandler;
         this.openTableForUserPushNotificationHandler = openTableForUserPushNotificationHandler;
         this.sendUserPocketCardsPushNotificationHandler = sendUserPocketCardsPushNotificationHandler;
         this.tableUpdatedPushNotificationHandler = tableUpdatedPushNotificationHandler;
+        this.tickActionOnTimerPushNotificationHandler = tickActionOnTimerPushNotificationHandler;
     }
 
     @Async
@@ -61,6 +66,10 @@ public class InMemoryAsyncPushNotificationPublisher implements PushNotificationP
         case TableUpdated:
             tableUpdatedPushNotificationHandler
                     .handle((TableUpdatedPushNotification) pushNotification);
+            break;
+        case TickActionOnTimer:
+            tickActionOnTimerPushNotificationHandler
+                    .handle((TickActionOnTimerPushNotification) pushNotification);
             break;
         default:
             throw new IllegalArgumentException(

@@ -17,7 +17,8 @@ export default React.createClass({
       totalPot: 0,
       visibleCommonCards: [],
       seats: [],
-      tableVersion: 0
+      tableVersion: 0,
+      actionOnTick: 0
     }
   },
 
@@ -27,6 +28,7 @@ export default React.createClass({
 
     const subscriptions = [];
     subscriptions.push({location: `/topic/game/${gameId}/table/${tableId}`, subscription: receiveTableUpdate.bind(this)});
+    subscriptions.push({location: `/topic/game/${gameId}/table/${tableId}/action-on-tick`, subscription: receiveActionOnTick.bind(this)});
     subscriptions.push({location: `/topic/chat/game/${gameId}/table/${tableId}/user`, subscription: displayChat.bind(this)});
     subscriptions.push({location: `/topic/chat/game/${gameId}/table/${tableId}/system`, subscription: displayChat.bind(this)});
 
@@ -52,6 +54,7 @@ export default React.createClass({
     return (
       <div>
         <div className={"poker-table"}>
+          <div>{this.state.actionOnTick}</div>
           <div>{this.state.totalPot}</div>
           <CommonCards visibleCommonCards={this.state.visibleCommonCards} />
           <div className={"seat-holder"}>
@@ -109,4 +112,10 @@ function receiveTableUpdate(message) {
       tableVersion: table.version
     });
   }
+}
+
+function receiveActionOnTick(message) {
+  this.setState({
+    actionOnTick: message.body
+  });
 }

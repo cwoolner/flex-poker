@@ -7,6 +7,8 @@ package com.flexpoker.framework.pushnotifier;
  */
 public enum PushNotificationType {
 
-    GameListUpdated, OpenGamesForPlayerUpdated, TableUpdated, SendUserPocketCards, OpenTableForUser
+    GameListUpdated, OpenGamesForPlayerUpdated, OpenTableForUser, //
+
+    TableUpdated, SendUserPocketCards, TickActionOnTimer
 
 }

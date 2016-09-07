@@ -20,6 +20,8 @@ public class MessagingConstants {
 
     public static final String TABLE_STATUS = "/topic/game/%s/table/%s";
 
+    public static final String TICK_ACTION_ON_TIMER = "/topic/game/%s/table/%s/action-on-tick";
+
     public static final String PERSONAL_TABLE_STATUS = "/queue/personaltablestatus";
 
     public static final String POCKET_CARDS = "/queue/pocketcards";

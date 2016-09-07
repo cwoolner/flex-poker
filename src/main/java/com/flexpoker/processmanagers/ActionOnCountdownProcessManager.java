@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 import com.flexpoker.framework.command.CommandSender;
 import com.flexpoker.framework.processmanager.ProcessManager;
 import com.flexpoker.table.command.commands.ExpireActionOnTimerCommand;
+import com.flexpoker.table.command.commands.TickActionOnTimerCommand;
 import com.flexpoker.table.command.events.ActionOnChangedEvent;
 import com.flexpoker.table.command.framework.TableCommandType;
 
@@ -60,23 +61,30 @@ public class ActionOnCountdownProcessManager implements ProcessManager<ActionOnC
 
         private int runCount;
 
+        private final UUID gameId;
+
+        private final UUID tableId;
+
         private final UUID handId;
 
-        private final ExpireActionOnTimerCommand expireCommand;
+        private final UUID playerId;
 
         public ActionOnCounter(ActionOnChangedEvent event) {
+            this.gameId = event.getGameId();
+            this.tableId = event.getAggregateId();
             this.handId = event.getHandId();
-            this.expireCommand = new ExpireActionOnTimerCommand(event.getAggregateId(), event.getGameId(),
-                    event.getHandId(), event.getPlayerId());
+            this.playerId = event.getPlayerId();
         }
 
         @Override
         public void run() {
             if (runCount == 20) {
                 clearExistingTimer(handId);
-                tableCommandSender.send(expireCommand);
+                tableCommandSender.send(new ExpireActionOnTimerCommand(tableId, gameId, handId, playerId));
+            } else {
+                runCount++;
+                tableCommandSender.send(new TickActionOnTimerCommand(tableId, gameId, handId, 20 - runCount));
             }
-            runCount++;
         }
 
     }

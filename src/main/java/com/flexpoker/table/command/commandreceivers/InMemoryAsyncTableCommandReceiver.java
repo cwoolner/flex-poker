@@ -20,6 +20,7 @@ import com.flexpoker.table.command.commands.RemovePlayerCommand;
 import com.flexpoker.table.command.commands.ResumeCommand;
 import com.flexpoker.table.command.commands.StartNewHandForExistingTableCommand;
 import com.flexpoker.table.command.commands.StartNewHandForNewGameCommand;
+import com.flexpoker.table.command.commands.TickActionOnTimerCommand;
 import com.flexpoker.table.command.framework.TableCommandType;
 
 @Component("tableCommandReceiver")
@@ -42,6 +43,8 @@ public class InMemoryAsyncTableCommandReceiver
 
     private final CommandHandler<ExpireActionOnTimerCommand> expireActionOnTimerCommandHandler;
 
+    private final CommandHandler<TickActionOnTimerCommand> tickActionOnTimerCommandHandler;
+
     private final CommandHandler<PauseCommand> pauseCommandHandler;
 
     private final CommandHandler<ResumeCommand> resumeCommandHandler;
@@ -60,6 +63,7 @@ public class InMemoryAsyncTableCommandReceiver
             CommandHandler<FoldCommand> foldCommandHandler,
             CommandHandler<RaiseCommand> raiseCommandHandler,
             CommandHandler<ExpireActionOnTimerCommand> expireActionOnTimerCommandHandler,
+            CommandHandler<TickActionOnTimerCommand> tickActionOnTimerCommandHandler,
             CommandHandler<PauseCommand> pauseCommandHandler,
             CommandHandler<ResumeCommand> resumeCommandHandler,
             CommandHandler<AddPlayerCommand> addPlayerCommandHandler,
@@ -72,6 +76,7 @@ public class InMemoryAsyncTableCommandReceiver
         this.foldCommandHandler = foldCommandHandler;
         this.raiseCommandHandler = raiseCommandHandler;
         this.expireActionOnTimerCommandHandler = expireActionOnTimerCommandHandler;
+        this.tickActionOnTimerCommandHandler = tickActionOnTimerCommandHandler;
         this.pauseCommandHandler = pauseCommandHandler;
         this.resumeCommandHandler = resumeCommandHandler;
         this.addPlayerCommandHandler = addPlayerCommandHandler;
@@ -108,6 +113,10 @@ public class InMemoryAsyncTableCommandReceiver
         case ExpireActionOnTimer:
             expireActionOnTimerCommandHandler
                     .handle((ExpireActionOnTimerCommand) command);
+            break;
+        case TickActionOnTimer:
+            tickActionOnTimerCommandHandler
+                    .handle((TickActionOnTimerCommand) command);
             break;
         case AddPlayer:
             addPlayerCommandHandler.handle((AddPlayerCommand) command);
