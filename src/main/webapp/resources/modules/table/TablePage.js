@@ -5,6 +5,7 @@ import CommonCards from './CommonCards';
 import MyCards from './MyCards';
 import Seat from './Seat';
 import PokerActions from './PokerActions';
+import SeatContainer from './SeatContainer';
 import Chat from '../common/Chat';
 import _ from 'lodash';
 
@@ -17,8 +18,7 @@ export default React.createClass({
       totalPot: 0,
       visibleCommonCards: [],
       seats: [],
-      tableVersion: 0,
-      actionOnTick: 0
+      tableVersion: 0
     }
   },
 
@@ -28,7 +28,6 @@ export default React.createClass({
 
     const subscriptions = [];
     subscriptions.push({location: `/topic/game/${gameId}/table/${tableId}`, subscription: receiveTableUpdate.bind(this)});
-    subscriptions.push({location: `/topic/game/${gameId}/table/${tableId}/action-on-tick`, subscription: receiveActionOnTick.bind(this)});
     subscriptions.push({location: `/topic/chat/game/${gameId}/table/${tableId}/user`, subscription: displayChat.bind(this)});
     subscriptions.push({location: `/topic/chat/game/${gameId}/table/${tableId}/system`, subscription: displayChat.bind(this)});
 
@@ -56,13 +55,7 @@ export default React.createClass({
         <div className={"poker-table"}>
           <div>{this.state.totalPot}</div>
           <CommonCards visibleCommonCards={this.state.visibleCommonCards} />
-          <div className={"seat-holder"}>
-            {
-              this.state.seats.map((seat, index) =>
-                <Seat seat={seat} mySeat={seat === mySeat} key={index} actionOnTick={this.state.actionOnTick} />
-              )
-            }
-          </div>
+          <SeatContainer gameId={this.props.params.gameId} tableId={this.props.params.tableId} mySeat={mySeat} seats={this.state.seats} />
         </div>
 
         <MyCards myLeftCardId={this.state.myLeftCardId} myRightCardId={this.state.myRightCardId} />
@@ -111,10 +104,4 @@ function receiveTableUpdate(message) {
       tableVersion: table.version
     });
   }
-}
-
-function receiveActionOnTick(message) {
-  this.setState({
-    actionOnTick: message.body
-  });
 }
