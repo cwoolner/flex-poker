@@ -54,13 +54,12 @@ export default React.createClass({
     return (
       <div>
         <div className={"poker-table"}>
-          <div>{this.state.actionOnTick}</div>
           <div>{this.state.totalPot}</div>
           <CommonCards visibleCommonCards={this.state.visibleCommonCards} />
           <div className={"seat-holder"}>
             {
               this.state.seats.map((seat, index) =>
-                <Seat seat={seat} mySeat={seat === mySeat} key={index} />
+                <Seat seat={seat} mySeat={seat === mySeat} key={index} actionOnTick={this.state.actionOnTick} />
               )
             }
           </div>
