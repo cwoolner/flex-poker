@@ -89,7 +89,6 @@ public class FourPlayerThreeCallsAndChecksUntilTheEndTest {
                 PlayerCalledEvent.class, ActionOnChangedEvent.class,
                 PlayerCheckedEvent.class,
                 PotAmountIncreasedEvent.class,
-                PotAmountIncreasedEvent.class,
                 RoundCompletedEvent.class,
                 ActionOnChangedEvent.class,
                 LastToActChangedEvent.class,

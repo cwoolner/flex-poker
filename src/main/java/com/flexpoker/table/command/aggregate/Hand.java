@@ -401,8 +401,6 @@ public class Hand {
     void applyEvent(PlayerCalledEvent event) {
         UUID playerId = event.getPlayerId();
         possibleSeatActionsMap.get(playerId).clear();
-        callAmountsMap.put(playerId, Integer.valueOf(0));
-        raiseToAmountsMap.put(playerId, Integer.valueOf(0));
 
         int newChipsInFront = chipsInFrontMap.get(playerId).intValue()
                 + callAmountsMap.get(playerId).intValue();
@@ -411,6 +409,9 @@ public class Hand {
         int newChipsInBack = chipsInBackMap.get(playerId).intValue()
                 - callAmountsMap.get(playerId).intValue();
         chipsInBackMap.put(playerId, Integer.valueOf(newChipsInBack));
+
+        callAmountsMap.put(playerId, Integer.valueOf(0));
+        raiseToAmountsMap.put(playerId, Integer.valueOf(0));
     }
 
     void applyEvent(PlayerFoldedEvent event) {

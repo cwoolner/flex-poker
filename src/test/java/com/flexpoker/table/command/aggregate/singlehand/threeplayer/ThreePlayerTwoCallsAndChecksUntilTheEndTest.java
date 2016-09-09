@@ -79,7 +79,7 @@ public class ThreePlayerTwoCallsAndChecksUntilTheEndTest {
                 PlayerCalledEvent.class, ActionOnChangedEvent.class,
                 PlayerCalledEvent.class, ActionOnChangedEvent.class,
                 PlayerCheckedEvent.class,
-                PotAmountIncreasedEvent.class, PotAmountIncreasedEvent.class,
+                PotAmountIncreasedEvent.class,
                 RoundCompletedEvent.class, ActionOnChangedEvent.class,
                 LastToActChangedEvent.class, FlopCardsDealtEvent.class,
                 // post-flop

@@ -71,7 +71,7 @@ public class TwoPlayerSmallBlindCallAndBigBlindCheckDueToTimeoutTest {
                 // pre-flop
                 PlayerCalledEvent.class, ActionOnChangedEvent.class,
                 PlayerForceCheckedEvent.class,
-                PotAmountIncreasedEvent.class, PotAmountIncreasedEvent.class,
+                PotAmountIncreasedEvent.class,
                 RoundCompletedEvent.class, ActionOnChangedEvent.class,
                 LastToActChangedEvent.class, FlopCardsDealtEvent.class,
                 // post-flop

@@ -70,7 +70,7 @@ public class TwoPlayerSmallBlindCallAndChecksUntilTheEndTest {
                 // pre-flop
                 PlayerCalledEvent.class, ActionOnChangedEvent.class,
                 PlayerCheckedEvent.class,
-                PotAmountIncreasedEvent.class, PotAmountIncreasedEvent.class,
+                PotAmountIncreasedEvent.class,
                 RoundCompletedEvent.class, ActionOnChangedEvent.class,
                 LastToActChangedEvent.class, FlopCardsDealtEvent.class,
                 // post-flop
