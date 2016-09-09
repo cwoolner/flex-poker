@@ -18,7 +18,8 @@ export default React.createClass({
       totalPot: 0,
       visibleCommonCards: [],
       seats: [],
-      tableVersion: 0
+      tableVersion: 0,
+      pots: []
     }
   },
 
@@ -57,6 +58,17 @@ export default React.createClass({
           <CommonCards visibleCommonCards={this.state.visibleCommonCards} />
           <SeatContainer gameId={this.props.params.gameId} tableId={this.props.params.tableId} mySeat={mySeat} seats={this.state.seats} />
         </div>
+
+        {this.state.pots.map(pot => {
+          return(
+            <div>
+              <div>{pot.seats}</div>
+              <div>{pot.amount}</div>
+              <div>{pot.winners}</div>
+              <div>{pot.open ? 'open' : 'closed'}</div>
+            </div>
+          )
+        })}
 
         <MyCards myLeftCardId={this.state.myLeftCardId} myRightCardId={this.state.myRightCardId} />
         {
@@ -101,7 +113,8 @@ function receiveTableUpdate(message) {
       totalPot: table.totalPot,
       visibleCommonCards: table.visibleCommonCards,
       seats: table.seats,
-      tableVersion: table.version
+      tableVersion: table.version,
+      pots: table.pots
     });
   }
 }

@@ -1,5 +1,8 @@
 package com.flexpoker.table.query.handlers;
 
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import javax.inject.Inject;
 
 import org.springframework.stereotype.Component;
@@ -10,6 +13,7 @@ import com.flexpoker.framework.pushnotifier.PushNotificationPublisher;
 import com.flexpoker.pushnotifications.TableUpdatedPushNotification;
 import com.flexpoker.table.command.events.PotClosedEvent;
 import com.flexpoker.table.query.repository.TableRepository;
+import com.flexpoker.web.dto.outgoing.PotDTO;
 import com.flexpoker.web.dto.outgoing.TableDTO;
 
 @Component
@@ -35,9 +39,15 @@ public class PotClosedEventHandler implements EventHandler<PotClosedEvent> {
     private void handleUpdatingTable(PotClosedEvent event) {
         TableDTO currentTable = tableRepository.fetchById(event.getAggregateId());
 
+        Set<PotDTO> pots = currentTable.getPots().stream()
+                .map(x -> x.isOpen()
+                        ? new PotDTO(x.getSeats(), x.getAmount(), false, x.getWinners())
+                        : new PotDTO(x.getSeats(), x.getAmount(), x.isOpen(), x.getWinners()))
+                .collect(Collectors.toSet());
+
         TableDTO updatedTable = new TableDTO(currentTable.getId(),
                 event.getVersion(), currentTable.getSeats(),
-                currentTable.getTotalPot(), currentTable.getPots(),
+                currentTable.getTotalPot(), pots,
                 currentTable.getVisibleCommonCards(),
                 currentTable.getCurrentHandMinRaiseToAmount());
         tableRepository.save(updatedTable);
