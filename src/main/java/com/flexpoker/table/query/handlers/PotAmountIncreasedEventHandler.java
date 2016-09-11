@@ -40,8 +40,6 @@ public class PotAmountIncreasedEventHandler implements
     private void handleUpdatingTable(PotAmountIncreasedEvent event) {
         TableDTO currentTable = tableRepository.fetchById(event.getAggregateId());
 
-        System.out.println("increase: " + event.getAmountIncreased());
-
         Set<PotDTO> pots = currentTable.getPots().stream()
                 .map(x -> x.isOpen()
                         ? new PotDTO(x.getSeats(), x.getAmount() + event.getAmountIncreased(), x.isOpen(), x.getWinners())
