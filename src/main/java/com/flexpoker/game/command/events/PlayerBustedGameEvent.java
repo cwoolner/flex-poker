@@ -5,11 +5,11 @@ import java.util.UUID;
 import com.flexpoker.framework.event.BaseEvent;
 import com.flexpoker.game.command.framework.GameEvent;
 
-public class PlayerBustedEvent extends BaseEvent implements GameEvent {
+public class PlayerBustedGameEvent extends BaseEvent implements GameEvent {
 
     private final UUID playerId;
 
-    public PlayerBustedEvent(UUID aggregateId, int version, UUID playerId) {
+    public PlayerBustedGameEvent(UUID aggregateId, int version, UUID playerId) {
         super(aggregateId, version);
         this.playerId = playerId;
     }

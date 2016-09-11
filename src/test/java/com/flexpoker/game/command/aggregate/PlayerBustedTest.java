@@ -14,7 +14,7 @@ import org.junit.Test;
 import com.flexpoker.exception.FlexPokerException;
 import com.flexpoker.game.command.commands.CreateGameCommand;
 import com.flexpoker.game.command.events.GameTablesCreatedAndPlayersAssociatedEvent;
-import com.flexpoker.game.command.events.PlayerBustedEvent;
+import com.flexpoker.game.command.events.PlayerBustedGameEvent;
 
 public class PlayerBustedTest {
 
@@ -43,8 +43,8 @@ public class PlayerBustedTest {
         assertEquals(9, game.fetchAppliedEvents().size());
         assertEquals(9, game.fetchNewEvents().size());
         assertEquals(9, game.fetchNewEvents().get(8).getVersion());
-        assertEquals(PlayerBustedEvent.class, game.fetchAppliedEvents().get(7).getClass());
-        assertEquals(player2Id, ((PlayerBustedEvent) game.fetchAppliedEvents().get(7)).getPlayerId());
+        assertEquals(PlayerBustedGameEvent.class, game.fetchAppliedEvents().get(7).getClass());
+        assertEquals(player2Id, ((PlayerBustedGameEvent) game.fetchAppliedEvents().get(7)).getPlayerId());
     }
 
     @Test
@@ -71,8 +71,8 @@ public class PlayerBustedTest {
         assertEquals(9, game.fetchAppliedEvents().size());
         assertEquals(9, game.fetchNewEvents().size());
         assertEquals(9, game.fetchNewEvents().get(8).getVersion());
-        assertEquals(PlayerBustedEvent.class, game.fetchAppliedEvents().get(7).getClass());
-        assertEquals(player2Id, ((PlayerBustedEvent) game.fetchAppliedEvents().get(7)).getPlayerId());
+        assertEquals(PlayerBustedGameEvent.class, game.fetchAppliedEvents().get(7).getClass());
+        assertEquals(player2Id, ((PlayerBustedGameEvent) game.fetchAppliedEvents().get(7)).getPlayerId());
     }
 
     @Test
@@ -100,12 +100,12 @@ public class PlayerBustedTest {
         assertEquals(9, game.fetchAppliedEvents().size());
         assertEquals(9, game.fetchNewEvents().size());
         assertEquals(9, game.fetchNewEvents().get(8).getVersion());
-        assertEquals(PlayerBustedEvent.class, game.fetchAppliedEvents().get(7).getClass());
-        assertEquals(PlayerBustedEvent.class, game.fetchAppliedEvents().get(8).getClass());
+        assertEquals(PlayerBustedGameEvent.class, game.fetchAppliedEvents().get(7).getClass());
+        assertEquals(PlayerBustedGameEvent.class, game.fetchAppliedEvents().get(8).getClass());
 
         Set<UUID> bustedPlayers = new HashSet<>();
-        bustedPlayers.add(((PlayerBustedEvent) game.fetchAppliedEvents().get(7)).getPlayerId());
-        bustedPlayers.add(((PlayerBustedEvent) game.fetchAppliedEvents().get(8)).getPlayerId());
+        bustedPlayers.add(((PlayerBustedGameEvent) game.fetchAppliedEvents().get(7)).getPlayerId());
+        bustedPlayers.add(((PlayerBustedGameEvent) game.fetchAppliedEvents().get(8)).getPlayerId());
 
         assertTrue(bustedPlayers.contains(player1Id));
         assertTrue(bustedPlayers.contains(player2Id));

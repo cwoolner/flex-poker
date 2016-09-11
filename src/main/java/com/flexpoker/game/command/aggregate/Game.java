@@ -24,7 +24,7 @@ import com.flexpoker.game.command.events.GameMovedToStartingStageEvent;
 import com.flexpoker.game.command.events.GameStartedEvent;
 import com.flexpoker.game.command.events.GameTablesCreatedAndPlayersAssociatedEvent;
 import com.flexpoker.game.command.events.NewHandIsClearedToStartEvent;
-import com.flexpoker.game.command.events.PlayerBustedEvent;
+import com.flexpoker.game.command.events.PlayerBustedGameEvent;
 import com.flexpoker.game.command.events.PlayerMovedToNewTableEvent;
 import com.flexpoker.game.command.events.TablePausedForBalancingEvent;
 import com.flexpoker.game.command.events.TableRemovedEvent;
@@ -122,8 +122,8 @@ public class Game extends AggregateRoot<GameEvent> {
             tableIdToPlayerIdsMap.get(event.getFromTableId()).remove(event.getPlayerId());
             tableIdToPlayerIdsMap.get(event.getToTableId()).add(event.getPlayerId());
         });
-        methodTable.put(PlayerBustedEvent.class, x -> {
-            PlayerBustedEvent event = (PlayerBustedEvent) x;
+        methodTable.put(PlayerBustedGameEvent.class, x -> {
+            PlayerBustedGameEvent event = (PlayerBustedGameEvent) x;
             UUID tableId = tableIdToPlayerIdsMap.entrySet().stream()
                     .filter(y -> y.getValue().contains(event.getPlayerId()))
                     .findAny().get().getKey();
@@ -207,7 +207,7 @@ public class Game extends AggregateRoot<GameEvent> {
             throw new FlexPokerException("player is not active in the game");
         }
 
-        PlayerBustedEvent event = new PlayerBustedEvent(aggregateId, ++aggregateVersion, playerId);
+        PlayerBustedGameEvent event = new PlayerBustedGameEvent(aggregateId, ++aggregateVersion, playerId);
         addNewEvent(event);
         applyCommonEvent(event);
     }
