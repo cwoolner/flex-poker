@@ -48,6 +48,8 @@ public class InMemoryAsyncTableEventSubscriber implements EventSubscriber<TableE
 
     private final EventHandler<HandDealtEvent> handDealtEventHandler;
 
+    private final EventHandler<PlayerBustedTableEvent> playerBustedTableEventHandler;
+
     private final EventHandler<PlayerCalledEvent> playerCalledEventHandler;
 
     private final EventHandler<PlayerCheckedEvent> playerCheckedEventHandler;
@@ -83,6 +85,7 @@ public class InMemoryAsyncTableEventSubscriber implements EventSubscriber<TableE
             InMemoryThreadSafeEventSubscriberHelper inMemoryThreadSafeEventSubscriberHelper,
             EventHandler<TableCreatedEvent> tableCreatedEventHandler,
             EventHandler<HandDealtEvent> handDealtEventHandler,
+            EventHandler<PlayerBustedTableEvent> playerBustedTableEventHandler,
             EventHandler<PlayerCalledEvent> playerCalledEventHandler,
             EventHandler<PlayerCheckedEvent> playerCheckedEventHandler,
             EventHandler<PlayerForceCheckedEvent> playerForceCheckedEventHandler,
@@ -101,6 +104,7 @@ public class InMemoryAsyncTableEventSubscriber implements EventSubscriber<TableE
         this.inMemoryThreadSafeEventSubscriberHelper = inMemoryThreadSafeEventSubscriberHelper;
         this.tableCreatedEventHandler = tableCreatedEventHandler;
         this.handDealtEventHandler = handDealtEventHandler;
+        this.playerBustedTableEventHandler = playerBustedTableEventHandler;
         this.playerCalledEventHandler = playerCalledEventHandler;
         this.playerCheckedEventHandler = playerCheckedEventHandler;
         this.playerForceCheckedEventHandler = playerForceCheckedEventHandler;
@@ -134,7 +138,7 @@ public class InMemoryAsyncTableEventSubscriber implements EventSubscriber<TableE
         eventHandlerMap.put(HandDealtEvent.class, handDealtEventHandler);
         eventHandlerMap.put(LastToActChangedEvent.class, x -> {});
         eventHandlerMap.put(PlayerAddedEvent.class, x -> {});
-        eventHandlerMap.put(PlayerBustedTableEvent.class, x -> {});
+        eventHandlerMap.put(PlayerBustedTableEvent.class, playerBustedTableEventHandler);
         eventHandlerMap.put(PlayerCalledEvent.class, playerCalledEventHandler);
         eventHandlerMap.put(PlayerCheckedEvent.class, playerCheckedEventHandler);
         eventHandlerMap.put(PlayerForceCheckedEvent.class, playerForceCheckedEventHandler);

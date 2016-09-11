@@ -35,18 +35,22 @@ public class InMemoryAsyncGameEventSubscriber
 
     private final EventHandler<GameStartedEvent> gameStartedEventHandler;
 
+    private final EventHandler<PlayerBustedGameEvent> playerBustedGameEventHandler;
+
     @Inject
     public InMemoryAsyncGameEventSubscriber(
             InMemoryThreadSafeEventSubscriberHelper inMemoryThreadSafeEventSubscriberHelper,
             EventHandler<GameCreatedEvent> gameCreatedEventHandler,
             EventHandler<GameJoinedEvent> gameJoinedEventHandler,
             EventHandler<GameMovedToStartingStageEvent> gameMovedToStartingStageEventHandler,
-            EventHandler<GameStartedEvent> gameStartedEventHandler) {
+            EventHandler<GameStartedEvent> gameStartedEventHandler,
+            EventHandler<PlayerBustedGameEvent> playerBustedGameEventHandler) {
         this.inMemoryThreadSafeEventSubscriberHelper = inMemoryThreadSafeEventSubscriberHelper;
         this.gameCreatedEventHandler = gameCreatedEventHandler;
         this.gameJoinedEventHandler = gameJoinedEventHandler;
         this.gameMovedToStartingStageEventHandler = gameMovedToStartingStageEventHandler;
         this.gameStartedEventHandler = gameStartedEventHandler;
+        this.playerBustedGameEventHandler = playerBustedGameEventHandler;
         this.inMemoryThreadSafeEventSubscriberHelper.setHandlerMap(createEventHandlerMap());
     }
 
@@ -71,7 +75,7 @@ public class InMemoryAsyncGameEventSubscriber
             };
             timer.schedule(timerTask, 10000);
         });
-        eventHandlerMap.put(PlayerBustedGameEvent.class, x -> {});
+        eventHandlerMap.put(PlayerBustedGameEvent.class, playerBustedGameEventHandler);
         return eventHandlerMap;
     }
 
