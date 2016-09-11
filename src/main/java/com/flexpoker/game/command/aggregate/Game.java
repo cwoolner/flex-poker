@@ -1,6 +1,7 @@
 package com.flexpoker.game.command.aggregate;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -22,6 +23,7 @@ import com.flexpoker.game.command.events.GameMovedToStartingStageEvent;
 import com.flexpoker.game.command.events.GameStartedEvent;
 import com.flexpoker.game.command.events.GameTablesCreatedAndPlayersAssociatedEvent;
 import com.flexpoker.game.command.events.NewHandIsClearedToStartEvent;
+import com.flexpoker.game.command.events.PlayerBustedEvent;
 import com.flexpoker.game.command.events.PlayerMovedToNewTableEvent;
 import com.flexpoker.game.command.events.TablePausedForBalancingEvent;
 import com.flexpoker.game.command.events.TableRemovedEvent;
@@ -119,6 +121,13 @@ public class Game extends AggregateRoot<GameEvent> {
             tableIdToPlayerIdsMap.get(event.getFromTableId()).remove(event.getPlayerId());
             tableIdToPlayerIdsMap.get(event.getToTableId()).add(event.getPlayerId());
         });
+        methodTable.put(PlayerBustedEvent.class, x -> {
+            PlayerBustedEvent event = (PlayerBustedEvent) x;
+            UUID tableId = tableIdToPlayerIdsMap.entrySet().stream()
+                    .filter(y -> y.getValue().contains(event.getPlayerId()))
+                    .findAny().get().getKey();
+            tableIdToPlayerIdsMap.get(tableId).remove(event.getPlayerId());
+        });
     }
 
     private void applyCommonEvent(GameEvent event) {
@@ -174,6 +183,18 @@ public class Game extends AggregateRoot<GameEvent> {
             addNewEvent(event);
             applyCommonEvent(event);
         }
+    }
+
+    public void bustPlayer(UUID playerId) {
+        if (tableIdToPlayerIdsMap.values().stream()
+                .flatMap(Collection::stream)
+                .noneMatch(x -> x.equals(playerId))) {
+            throw new FlexPokerException("player is not active in the game");
+        }
+
+        PlayerBustedEvent event = new PlayerBustedEvent(aggregateId, ++aggregateVersion, playerId);
+        addNewEvent(event);
+        applyCommonEvent(event);
     }
 
     private void createJoinGameEvent(UUID playerId) {

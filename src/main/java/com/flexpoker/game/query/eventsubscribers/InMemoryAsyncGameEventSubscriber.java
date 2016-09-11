@@ -18,6 +18,7 @@ import com.flexpoker.game.command.events.GameCreatedEvent;
 import com.flexpoker.game.command.events.GameJoinedEvent;
 import com.flexpoker.game.command.events.GameMovedToStartingStageEvent;
 import com.flexpoker.game.command.events.GameStartedEvent;
+import com.flexpoker.game.command.events.PlayerBustedEvent;
 import com.flexpoker.game.command.framework.GameEvent;
 
 @Component("gameEventSubscriber")
@@ -70,6 +71,7 @@ public class InMemoryAsyncGameEventSubscriber
             };
             timer.schedule(timerTask, 10000);
         });
+        eventHandlerMap.put(PlayerBustedEvent.class, x -> {});
         return eventHandlerMap;
     }
 
