@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import com.flexpoker.exception.FlexPokerException;
@@ -156,6 +157,11 @@ public class Game extends AggregateRoot<GameEvent> {
             .filter(x -> x.getValue() == 0)
             .map(x -> x.getKey())
             .forEach(x -> bustPlayer(x));
+
+        Set<UUID> bustedPlayers = tableIdToPlayerIdsMap.get(tableId).stream()
+            .filter(x -> !playerToChipsAtTableMap.keySet().contains(x))
+            .collect(Collectors.toSet());
+        bustedPlayers.forEach(x -> bustPlayer(x));
 
         if (tableIdToPlayerIdsMap.values().stream().flatMap(Collection::stream).count() == 1) {
             // TODO: do something for the winner
