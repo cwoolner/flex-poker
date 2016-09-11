@@ -152,23 +152,32 @@ public class Game extends AggregateRoot<GameEvent> {
                     + "to start a new hand");
         }
 
-        Optional<GameEvent> singleBalancingEvent;
-        do {
-            singleBalancingEvent = tableBalancer.createSingleBalancingEvent(aggregateVersion + 1,
-                    tableId, pausedTablesForBalancing, tableIdToPlayerIdsMap, playerToChipsAtTableMap);
-            if (singleBalancingEvent.isPresent()) {
-                aggregateVersion++;
-                addNewEvent(singleBalancingEvent.get());
-                applyCommonEvent(singleBalancingEvent.get());
-            }
-        } while (singleBalancingEvent.isPresent());
+        playerToChipsAtTableMap.entrySet().stream()
+            .filter(x -> x.getValue() == 0)
+            .map(x -> x.getKey())
+            .forEach(x -> bustPlayer(x));
 
-        if (tableIdToPlayerIdsMap.containsKey(tableId) && !pausedTablesForBalancing.contains(tableId)) {
-            NewHandIsClearedToStartEvent event = new NewHandIsClearedToStartEvent(
-                    aggregateId, ++aggregateVersion, tableId,
-                    blindSchedule.getCurrentBlindAmounts());
-            addNewEvent(event);
-            applyCommonEvent(event);
+        if (tableIdToPlayerIdsMap.values().stream().flatMap(Collection::stream).count() == 1) {
+            // TODO: do something for the winner
+        } else {
+            Optional<GameEvent> singleBalancingEvent;
+            do {
+                singleBalancingEvent = tableBalancer.createSingleBalancingEvent(aggregateVersion + 1,
+                        tableId, pausedTablesForBalancing, tableIdToPlayerIdsMap, playerToChipsAtTableMap);
+                if (singleBalancingEvent.isPresent()) {
+                    aggregateVersion++;
+                    addNewEvent(singleBalancingEvent.get());
+                    applyCommonEvent(singleBalancingEvent.get());
+                }
+            } while (singleBalancingEvent.isPresent());
+
+            if (tableIdToPlayerIdsMap.containsKey(tableId) && !pausedTablesForBalancing.contains(tableId)) {
+                NewHandIsClearedToStartEvent event = new NewHandIsClearedToStartEvent(
+                        aggregateId, ++aggregateVersion, tableId,
+                        blindSchedule.getCurrentBlindAmounts());
+                addNewEvent(event);
+                applyCommonEvent(event);
+            }
         }
     }
 
@@ -185,7 +194,7 @@ public class Game extends AggregateRoot<GameEvent> {
         }
     }
 
-    public void bustPlayer(UUID playerId) {
+    private void bustPlayer(UUID playerId) {
         if (tableIdToPlayerIdsMap.values().stream()
                 .flatMap(Collection::stream)
                 .noneMatch(x -> x.equals(playerId))) {
