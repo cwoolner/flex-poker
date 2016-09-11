@@ -19,6 +19,7 @@ import com.flexpoker.table.command.events.HandCompletedEvent;
 import com.flexpoker.table.command.events.HandDealtEvent;
 import com.flexpoker.table.command.events.LastToActChangedEvent;
 import com.flexpoker.table.command.events.PlayerAddedEvent;
+import com.flexpoker.table.command.events.PlayerBustedTableEvent;
 import com.flexpoker.table.command.events.PlayerCalledEvent;
 import com.flexpoker.table.command.events.PlayerCheckedEvent;
 import com.flexpoker.table.command.events.PlayerFoldedEvent;
@@ -133,6 +134,7 @@ public class InMemoryAsyncTableEventSubscriber implements EventSubscriber<TableE
         eventHandlerMap.put(HandDealtEvent.class, handDealtEventHandler);
         eventHandlerMap.put(LastToActChangedEvent.class, x -> {});
         eventHandlerMap.put(PlayerAddedEvent.class, x -> {});
+        eventHandlerMap.put(PlayerBustedTableEvent.class, x -> {});
         eventHandlerMap.put(PlayerCalledEvent.class, playerCalledEventHandler);
         eventHandlerMap.put(PlayerCheckedEvent.class, playerCheckedEventHandler);
         eventHandlerMap.put(PlayerForceCheckedEvent.class, playerForceCheckedEventHandler);

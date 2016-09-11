@@ -24,6 +24,7 @@ import com.flexpoker.table.command.events.HandCompletedEvent;
 import com.flexpoker.table.command.events.HandDealtEvent;
 import com.flexpoker.table.command.events.LastToActChangedEvent;
 import com.flexpoker.table.command.events.PlayerAddedEvent;
+import com.flexpoker.table.command.events.PlayerBustedTableEvent;
 import com.flexpoker.table.command.events.PlayerCalledEvent;
 import com.flexpoker.table.command.events.PlayerCheckedEvent;
 import com.flexpoker.table.command.events.PlayerFoldedEvent;
@@ -127,6 +128,14 @@ public class Table extends AggregateRoot<TableEvent> {
         });
         methodTable.put(PlayerRemovedEvent.class, x -> {
             PlayerRemovedEvent event = (PlayerRemovedEvent) x;
+            Integer position = seatMap.entrySet().stream()
+                    .filter(y -> y.getValue().equals(event.getPlayerId()))
+                    .findFirst().get().getKey();
+            seatMap.remove(position);
+            chipsInBack.remove(event.getPlayerId());
+        });
+        methodTable.put(PlayerBustedTableEvent.class, x -> {
+            PlayerBustedTableEvent event = (PlayerBustedTableEvent) x;
             Integer position = seatMap.entrySet().stream()
                     .filter(y -> y.getValue().equals(event.getPlayerId()))
                     .findFirst().get().getKey();
@@ -345,6 +354,7 @@ public class Table extends AggregateRoot<TableEvent> {
         changeActionOnIfAppropriate();
         dealCommonCardsIfAppropriate();
         determineWinnersIfAppropriate();
+        removeAnyBustedPlayers();
         finishHandIfAppropriate();
     }
 
@@ -393,6 +403,18 @@ public class Table extends AggregateRoot<TableEvent> {
                     applyCommonEvent(event);
                     aggregateVersion++;
                 });
+    }
+
+    private void removeAnyBustedPlayers() {
+        chipsInBack.entrySet().stream()
+            .filter(x -> x.getValue() == 0)
+            .forEach(x -> {
+                PlayerBustedTableEvent event = new PlayerBustedTableEvent(aggregateId,
+                        aggregateVersion, gameId, x.getKey());
+                addNewEvent(event);
+                applyCommonEvent(event);
+                aggregateVersion++;
+            });
     }
 
     private void finishHandIfAppropriate() {
