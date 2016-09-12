@@ -623,8 +623,8 @@ public class Hand {
                 + chipsInFrontMap.get(playerId).intValue();
 
         if (totalChips <= raiseToAmount) {
-            callAmountsMap.put(playerId, Integer.valueOf(totalChips));
-            raiseToAmountsMap.put(playerId, Integer.valueOf(0));
+            callAmountsMap.put(playerId, totalChips - chipsInFrontMap.get(playerId));
+            raiseToAmountsMap.put(playerId, 0);
         } else {
             callAmountsMap.put(
                     playerId,
