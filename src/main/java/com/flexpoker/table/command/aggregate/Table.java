@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
@@ -18,6 +19,7 @@ import com.flexpoker.model.card.Card;
 import com.flexpoker.model.card.CardsUsedInHand;
 import com.flexpoker.model.card.PocketCards;
 import com.flexpoker.table.command.events.ActionOnChangedEvent;
+import com.flexpoker.table.command.events.AutoMoveHandForwardEvent;
 import com.flexpoker.table.command.events.CardsShuffledEvent;
 import com.flexpoker.table.command.events.FlopCardsDealtEvent;
 import com.flexpoker.table.command.events.HandCompletedEvent;
@@ -102,6 +104,7 @@ public class Table extends AggregateRoot<TableEvent> {
         methodTable.put(TableCreatedEvent.class, x -> {});
         methodTable.put(CardsShuffledEvent.class, x -> {});
         methodTable.put(HandDealtEvent.class, x -> applyHandDealtEvent((HandDealtEvent) x));
+        methodTable.put(AutoMoveHandForwardEvent.class, x -> {});
         methodTable.put(PlayerCalledEvent.class, x -> currentHand.applyEvent((PlayerCalledEvent) x));
         methodTable.put(PlayerCheckedEvent.class, x -> currentHand.applyEvent((PlayerCheckedEvent) x));
         methodTable.put(PlayerForceCheckedEvent.class, x -> currentHand.applyEvent((PlayerForceCheckedEvent) x));
@@ -349,6 +352,16 @@ public class Table extends AggregateRoot<TableEvent> {
         handleEndOfRound();
     }
 
+    public void autoMoveHandForward(UUID handId) {
+        checkHandIsBeingPlayed();
+
+        if (!currentHand.idMatches(handId)) {
+            return;
+        }
+
+        handleEndOfRound();
+    }
+
     private void handleEndOfRound() {
         handlePotAndRoundCompleted();
         changeActionOnIfAppropriate();
@@ -418,11 +431,19 @@ public class Table extends AggregateRoot<TableEvent> {
     }
 
     private void finishHandIfAppropriate() {
-        currentHand.finishHandIfAppropriate(aggregateVersion + 1).ifPresent(event -> {
-            addNewEvent(event);
-            applyCommonEvent(event);
+        Optional<TableEvent> handCompleteEvent = currentHand.finishHandIfAppropriate(aggregateVersion + 1);
+
+        if (handCompleteEvent.isPresent()) {
+            addNewEvent(handCompleteEvent.get());
+            applyCommonEvent(handCompleteEvent.get());
             aggregateVersion++;
-        });
+        } else {
+            currentHand.autoMoveHandForward(aggregateVersion + 1).ifPresent(event -> {
+                addNewEvent(event);
+                applyCommonEvent(event);
+                aggregateVersion++;
+            });
+        }
     }
 
     public void addPlayer(UUID playerId, int chips) {

@@ -17,6 +17,7 @@ import com.flexpoker.model.card.RiverCard;
 import com.flexpoker.model.card.TurnCard;
 import com.flexpoker.table.command.aggregate.pot.PotHandler;
 import com.flexpoker.table.command.events.ActionOnChangedEvent;
+import com.flexpoker.table.command.events.AutoMoveHandForwardEvent;
 import com.flexpoker.table.command.events.FlopCardsDealtEvent;
 import com.flexpoker.table.command.events.HandCompletedEvent;
 import com.flexpoker.table.command.events.HandDealtEvent;
@@ -263,6 +264,10 @@ public class Hand {
     }
 
     public List<TableEvent> changeActionOn(int aggregateVersion) {
+        if (chipsInBackMap.values().stream().allMatch(x -> x == 0)) {
+            return Collections.emptyList();
+        }
+
         List<TableEvent> eventsCreated = new ArrayList<>();
 
         // do not change action on if the hand is over. starting a new hand
@@ -667,6 +672,12 @@ public class Hand {
         event.getPlayersToChipsWonMap().forEach((playerId, chips) -> {
             addToChipsInBack(playerId, chips.intValue());
         });
+    }
+
+    Optional<TableEvent> autoMoveHandForward(int aggregateVersion) {
+        return chipsInBackMap.values().stream().allMatch(x -> x == 0)
+                ? Optional.of(new AutoMoveHandForwardEvent(tableId, aggregateVersion, gameId, entityId))
+                : Optional.empty();
     }
 
 }
