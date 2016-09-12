@@ -242,6 +242,7 @@ public class Table extends AggregateRoot<TableEvent> {
         CardsShuffledEvent cardsShuffledEvent = new CardsShuffledEvent(aggregateId,
                 ++aggregateVersion, gameId, shuffledDeckOfCards);
         addNewEvent(cardsShuffledEvent);
+        applyCommonEvent(cardsShuffledEvent);
 
         int nextToReceivePocketCards = findNextFilledSeat(buttonOnPosition);
         Map<UUID, PocketCards> playerToPocketCardsMap = new HashMap<>();
@@ -267,14 +268,13 @@ public class Table extends AggregateRoot<TableEvent> {
                 playersStillInHand, new ArrayList<>(handEvaluations.values()),
                 HandDealerState.NONE, chipsInBack, new HashMap<>(), new HashMap<>(),
                 new HashMap<>(), smallBlind, bigBlind);
-        List<TableEvent> eventsCreated = hand.dealHand(++aggregateVersion,
+        List<TableEvent> eventsCreated = hand.dealHand(aggregateVersion + 1,
                 actionOnPosition);
         eventsCreated.forEach(x -> {
             addNewEvent(x);
             applyCommonEvent(x);
+            aggregateVersion++;
         });
-
-        aggregateVersion += eventsCreated.size() - 1;
     }
 
     public int getNumberOfPlayersAtTable() {
@@ -356,19 +356,25 @@ public class Table extends AggregateRoot<TableEvent> {
 
     private void handlePotAndRoundCompleted() {
         List<TableEvent> endOfRoundEvents = currentHand
-                .handlePotAndRoundCompleted(++aggregateVersion);
-        endOfRoundEvents.forEach(x -> addNewEvent(x));
-        aggregateVersion += endOfRoundEvents.size() - 1;
+                .handlePotAndRoundCompleted(aggregateVersion + 1);
+        endOfRoundEvents.forEach(x -> {
+            addNewEvent(x);
+            // TODO: not using applyCommonEvent() here because PotHandler is too
+            // stateful and the events get applied to the state down there. when
+            // that's refactored, this should change
+            addAppliedEvent(x);
+            aggregateVersion++;
+        });
     }
 
     private void changeActionOnIfAppropriate() {
         List<TableEvent> actionOnChangedEvents = currentHand
-                .changeActionOn(++aggregateVersion);
+                .changeActionOn(aggregateVersion + 1);
         actionOnChangedEvents.forEach(x -> {
             addNewEvent(x);
             applyCommonEvent(x);
+            aggregateVersion++;
         });
-        aggregateVersion += actionOnChangedEvents.size() - 1;
     }
 
     private void dealCommonCardsIfAppropriate() {

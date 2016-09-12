@@ -2,8 +2,7 @@ package com.flexpoker.table.command.aggregate.singlehand.twoplayer;
 
 import static com.flexpoker.table.command.aggregate.testhelpers.TableTestUtils.fetchIdForBigBlind;
 import static com.flexpoker.table.command.aggregate.testhelpers.TableTestUtils.fetchIdForButton;
-import static com.flexpoker.test.util.CommonAssertions.verifyEventIdsAndVersionNumbers;
-import static com.flexpoker.test.util.CommonAssertions.verifyNumberOfEventsAndEntireOrderByType;
+import static com.flexpoker.test.util.CommonAssertions.verifyAppliedAndNewEventsForAggregate;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -83,14 +82,13 @@ public class TwoPlayerButtonFoldsDueToTimeoutTest {
         assertEquals(30, playersToChipsWonMap.get(bigBlindPlayerId).intValue());
         assertTrue(playersToShowCards.isEmpty());
 
-        verifyNumberOfEventsAndEntireOrderByType(newEvents,
+        verifyAppliedAndNewEventsForAggregate(table,
                 TableCreatedEvent.class, CardsShuffledEvent.class,
                 HandDealtEvent.class, PotCreatedEvent.class,
                 ActionOnChangedEvent.class, PlayerForceFoldedEvent.class,
                 PotAmountIncreasedEvent.class, PotAmountIncreasedEvent.class,
                 RoundCompletedEvent.class, WinnersDeterminedEvent.class,
                 HandCompletedEvent.class);
-        verifyEventIdsAndVersionNumbers(tableId, newEvents);
     }
 
 }

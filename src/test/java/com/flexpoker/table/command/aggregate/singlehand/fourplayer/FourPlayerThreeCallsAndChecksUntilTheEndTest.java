@@ -1,9 +1,7 @@
 package com.flexpoker.table.command.aggregate.singlehand.fourplayer;
 
-import static com.flexpoker.test.util.CommonAssertions.verifyEventIdsAndVersionNumbers;
-import static com.flexpoker.test.util.CommonAssertions.verifyNumberOfEventsAndEntireOrderByType;
+import static com.flexpoker.test.util.CommonAssertions.verifyAppliedAndNewEventsForAggregate;
 
-import java.util.List;
 import java.util.UUID;
 
 import org.junit.Test;
@@ -25,7 +23,6 @@ import com.flexpoker.table.command.events.RoundCompletedEvent;
 import com.flexpoker.table.command.events.TableCreatedEvent;
 import com.flexpoker.table.command.events.TurnCardDealtEvent;
 import com.flexpoker.table.command.events.WinnersDeterminedEvent;
-import com.flexpoker.table.command.framework.TableEvent;
 
 public class FourPlayerThreeCallsAndChecksUntilTheEndTest {
 
@@ -74,10 +71,7 @@ public class FourPlayerThreeCallsAndChecksUntilTheEndTest {
         table.check(rightOfButtonOnPlayerId);
         table.check(buttonOnPlayerId);
 
-        List<TableEvent> newEvents = table.fetchNewEvents();
-
-        verifyNumberOfEventsAndEntireOrderByType(
-                newEvents,
+        verifyAppliedAndNewEventsForAggregate(table,
                 TableCreatedEvent.class,
                 CardsShuffledEvent.class,
                 HandDealtEvent.class,
@@ -114,6 +108,5 @@ public class FourPlayerThreeCallsAndChecksUntilTheEndTest {
                 PlayerCheckedEvent.class, ActionOnChangedEvent.class,
                 PlayerCheckedEvent.class, RoundCompletedEvent.class,
                 WinnersDeterminedEvent.class, HandCompletedEvent.class);
-        verifyEventIdsAndVersionNumbers(tableId, newEvents);
     }
 }
