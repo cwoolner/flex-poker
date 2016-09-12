@@ -140,6 +140,10 @@ public class Table extends AggregateRoot<TableEvent> {
         addAppliedEvent(event);
     }
 
+    public UUID getAggregateId() {
+        return aggregateId;
+    }
+
     private void applyHandDealtEvent(HandDealtEvent event) {
         buttonOnPosition = event.getButtonOnPosition();
         smallBlindPosition = event.getSmallBlindPosition();

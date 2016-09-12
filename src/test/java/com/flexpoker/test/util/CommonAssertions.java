@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.UUID;
 
 import com.flexpoker.framework.event.Event;
+import com.flexpoker.table.command.aggregate.Table;
 
 public class CommonAssertions {
 
@@ -24,4 +25,12 @@ public class CommonAssertions {
         assertEquals(eventClasses.length, events.size());
         assertArrayEquals(eventClasses, events.stream().map(x -> x.getClass()).toArray());
     }
+
+    public static void verifyAppliedAndNewEventsForAggregate(Table table, Class<? extends Event>... eventClasses) {
+        verifyEventIdsAndVersionNumbers(table.getAggregateId(), table.fetchAppliedEvents());
+        verifyEventIdsAndVersionNumbers(table.getAggregateId(), table.fetchNewEvents());
+        verifyNumberOfEventsAndEntireOrderByType(table.fetchAppliedEvents(), eventClasses);
+        verifyNumberOfEventsAndEntireOrderByType(table.fetchNewEvents(), eventClasses);
+    }
+
 }
