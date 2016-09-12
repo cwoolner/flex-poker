@@ -42,7 +42,7 @@ public class TableTestUtils {
 
         HandEvaluation handEvaluation1 = new HandEvaluation();
         handEvaluation1.setPlayerId(playerIdsArray[0]);
-        handEvaluation1.setHandRanking(HandRanking.STRAIGHT);
+        handEvaluation1.setHandRanking(HandRanking.FLUSH);
         handEvaluation1.setPrimaryCardRank(CardRank.KING);
 
         HandEvaluation handEvaluation2 = new HandEvaluation();
