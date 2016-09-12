@@ -169,7 +169,7 @@ public class PotHandler {
                     .filter(player -> chipsInBackMap.get(player) == 0)
                     .count() > 0) {
                 PotClosedEvent potClosedEvent = new PotClosedEvent(tableId,
-                        aggregateVersion, gameId, handId, openPotId);
+                        aggregateVersion + newPotEvents.size(), gameId, handId, openPotId);
                 newPotEvents.add(potClosedEvent);
                 closePot(potClosedEvent.getPotId());
             };
