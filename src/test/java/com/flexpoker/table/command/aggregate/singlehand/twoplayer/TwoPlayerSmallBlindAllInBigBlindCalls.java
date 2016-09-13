@@ -46,9 +46,9 @@ public class TwoPlayerSmallBlindAllInBigBlindCalls {
         table.call(bigBlindPlayerId);
 
         UUID handId = ((HandDealtEvent) table.fetchNewEvents().get(2)).getHandId();
-        table.autoMoveHandForward(handId);
-        table.autoMoveHandForward(handId);
-        table.autoMoveHandForward(handId);
+        table.autoMoveHandForward();
+        table.autoMoveHandForward();
+        table.autoMoveHandForward();
 
         verifyAppliedAndNewEventsForAggregate(table,
                 TableCreatedEvent.class,

@@ -8,6 +8,7 @@ import com.flexpoker.framework.event.EventPublisher;
 import com.flexpoker.framework.event.subscriber.EventSubscriber;
 import com.flexpoker.framework.processmanager.ProcessManager;
 import com.flexpoker.table.command.events.ActionOnChangedEvent;
+import com.flexpoker.table.command.events.AutoMoveHandForwardEvent;
 import com.flexpoker.table.command.events.HandCompletedEvent;
 import com.flexpoker.table.command.framework.TableEvent;
 
@@ -20,14 +21,18 @@ public class InMemoryAsyncTableEventPublisher implements EventPublisher<TableEve
 
     private final ProcessManager<HandCompletedEvent> attemptToStartNewHandForExistingTableProcessManager;
 
+    private final ProcessManager<AutoMoveHandForwardEvent> autoMoveHandForwardProcessManager;
+
     @Inject
     public InMemoryAsyncTableEventPublisher(
             EventSubscriber<TableEvent> tableEventSubscriber,
             ProcessManager<ActionOnChangedEvent> actionOnCountdownProcessManager,
-            ProcessManager<HandCompletedEvent> attemptToStartNewHandForExistingTableProcessManager) {
+            ProcessManager<HandCompletedEvent> attemptToStartNewHandForExistingTableProcessManager,
+            ProcessManager<AutoMoveHandForwardEvent> autoMoveHandForwardProcessManager) {
         this.tableEventSubscriber = tableEventSubscriber;
         this.actionOnCountdownProcessManager = actionOnCountdownProcessManager;
         this.attemptToStartNewHandForExistingTableProcessManager = attemptToStartNewHandForExistingTableProcessManager;
+        this.autoMoveHandForwardProcessManager = autoMoveHandForwardProcessManager;
     }
 
     @Override
@@ -39,6 +44,8 @@ public class InMemoryAsyncTableEventPublisher implements EventPublisher<TableEve
         } else if (event.getClass() == HandCompletedEvent.class) {
             attemptToStartNewHandForExistingTableProcessManager
                     .handle((HandCompletedEvent) event);
+        } else if (event.getClass() == AutoMoveHandForwardEvent.class) {
+            autoMoveHandForwardProcessManager.handle((AutoMoveHandForwardEvent) event);
         }
     }
 }

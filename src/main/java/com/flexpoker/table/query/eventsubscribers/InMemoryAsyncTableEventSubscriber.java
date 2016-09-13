@@ -13,6 +13,7 @@ import com.flexpoker.framework.event.EventHandler;
 import com.flexpoker.framework.event.subscriber.EventSubscriber;
 import com.flexpoker.framework.event.subscriber.InMemoryThreadSafeEventSubscriberHelper;
 import com.flexpoker.table.command.events.ActionOnChangedEvent;
+import com.flexpoker.table.command.events.AutoMoveHandForwardEvent;
 import com.flexpoker.table.command.events.CardsShuffledEvent;
 import com.flexpoker.table.command.events.FlopCardsDealtEvent;
 import com.flexpoker.table.command.events.HandCompletedEvent;
@@ -132,6 +133,7 @@ public class InMemoryAsyncTableEventSubscriber implements EventSubscriber<TableE
     private Map<Class<? extends Event>, EventHandler<? extends Event>> createEventHandlerMap() {
         Map<Class<? extends Event>, EventHandler<? extends Event>> eventHandlerMap = new HashMap<>();
         eventHandlerMap.put(ActionOnChangedEvent.class, actionOnChangedEventHandler);
+        eventHandlerMap.put(AutoMoveHandForwardEvent.class, x -> {});
         eventHandlerMap.put(CardsShuffledEvent.class, x -> {});
         eventHandlerMap.put(FlopCardsDealtEvent.class, flopCardsDealtEventHandler);
         eventHandlerMap.put(HandCompletedEvent.class, x -> {});

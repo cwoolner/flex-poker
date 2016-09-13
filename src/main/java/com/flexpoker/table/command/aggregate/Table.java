@@ -357,13 +357,8 @@ public class Table extends AggregateRoot<TableEvent> {
         handleEndOfRound();
     }
 
-    public void autoMoveHandForward(UUID handId) {
+    public void autoMoveHandForward() {
         checkHandIsBeingPlayed();
-
-        if (!currentHand.idMatches(handId)) {
-            return;
-        }
-
         handleEndOfRound();
     }
 

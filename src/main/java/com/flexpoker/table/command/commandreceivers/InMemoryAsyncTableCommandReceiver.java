@@ -9,6 +9,7 @@ import com.flexpoker.framework.command.Command;
 import com.flexpoker.framework.command.CommandHandler;
 import com.flexpoker.framework.command.CommandReceiver;
 import com.flexpoker.table.command.commands.AddPlayerCommand;
+import com.flexpoker.table.command.commands.AutoMoveHandForwardCommand;
 import com.flexpoker.table.command.commands.CallCommand;
 import com.flexpoker.table.command.commands.CheckCommand;
 import com.flexpoker.table.command.commands.CreateTableCommand;
@@ -53,6 +54,8 @@ public class InMemoryAsyncTableCommandReceiver
 
     private final CommandHandler<RemovePlayerCommand> removePlayerCommandHandler;
 
+    private final CommandHandler<AutoMoveHandForwardCommand> autoMoveHandForwardCommandHandler;
+
     @Inject
     public InMemoryAsyncTableCommandReceiver(
             CommandHandler<CreateTableCommand> createTableCommandHandler,
@@ -67,7 +70,8 @@ public class InMemoryAsyncTableCommandReceiver
             CommandHandler<PauseCommand> pauseCommandHandler,
             CommandHandler<ResumeCommand> resumeCommandHandler,
             CommandHandler<AddPlayerCommand> addPlayerCommandHandler,
-            CommandHandler<RemovePlayerCommand> removePlayerCommandHandler) {
+            CommandHandler<RemovePlayerCommand> removePlayerCommandHandler,
+            CommandHandler<AutoMoveHandForwardCommand> autoMoveHandForwardCommandHandler) {
         this.createTableCommandHandler = createTableCommandHandler;
         this.startNewHandForNewGameCommandHandler = startNewHandForNewGameCommandHandler;
         this.startNewHandForExistingTableCommandHandler = startNewHandForExistingTableCommandHandler;
@@ -81,6 +85,7 @@ public class InMemoryAsyncTableCommandReceiver
         this.resumeCommandHandler = resumeCommandHandler;
         this.addPlayerCommandHandler = addPlayerCommandHandler;
         this.removePlayerCommandHandler = removePlayerCommandHandler;
+        this.autoMoveHandForwardCommandHandler = autoMoveHandForwardCommandHandler;
     }
 
     @Async
@@ -129,6 +134,9 @@ public class InMemoryAsyncTableCommandReceiver
             break;
         case Resume:
             resumeCommandHandler.handle((ResumeCommand) command);
+            break;
+        case AutoMoveHandForward:
+            autoMoveHandForwardCommandHandler.handle((AutoMoveHandForwardCommand) command);
             break;
         default:
             throw new IllegalArgumentException(
