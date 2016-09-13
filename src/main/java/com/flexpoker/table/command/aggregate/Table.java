@@ -121,7 +121,12 @@ public class Table extends AggregateRoot<TableEvent> {
         methodTable.put(ActionOnChangedEvent.class, x -> currentHand.applyEvent((ActionOnChangedEvent) x));
         methodTable.put(LastToActChangedEvent.class, x -> currentHand.applyEvent((LastToActChangedEvent) x));
         methodTable.put(WinnersDeterminedEvent.class, x -> currentHand.applyEvent((WinnersDeterminedEvent) x));
-        methodTable.put(HandCompletedEvent.class, x -> currentHand = null);
+        methodTable.put(HandCompletedEvent.class, x -> {
+            HandCompletedEvent event = (HandCompletedEvent) x;
+            currentHand = null;
+            chipsInBack.clear();
+            chipsInBack.putAll(new HashMap<>(event.getPlayerToChipsAtTableMap()));
+        });
         methodTable.put(TablePausedEvent.class, x -> paused = true);
         methodTable.put(TableResumedEvent.class, x -> paused = false);
         methodTable.put(PlayerAddedEvent.class, x -> {
