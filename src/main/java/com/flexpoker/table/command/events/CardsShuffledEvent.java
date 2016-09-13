@@ -23,7 +23,7 @@ public class CardsShuffledEvent extends BaseEvent implements TableEvent {
             @JsonProperty(value = "shuffledDeck") List<Card> shuffledDeck) {
         super(aggregateId, version);
         this.gameId = gameId;
-        this.shuffledDeck = shuffledDeck;
+        this.shuffledDeck = new ArrayList<>(shuffledDeck);
     }
 
     @Override

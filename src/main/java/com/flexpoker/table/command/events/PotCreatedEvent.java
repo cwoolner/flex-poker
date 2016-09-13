@@ -30,7 +30,7 @@ public class PotCreatedEvent extends BaseEvent implements TableEvent {
         this.gameId = gameId;
         this.handId = handId;
         this.potId = potId;
-        this.playersInvolved = playersInvolved;
+        this.playersInvolved = new HashSet<>(playersInvolved);
     }
 
     @Override

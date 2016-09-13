@@ -30,7 +30,7 @@ public class TableCreatedEvent extends BaseEvent implements TableEvent {
         super(aggregateId, version);
         this.gameId = gameId;
         this.numberOfPlayersPerTable = numberOfPlayersPerTable;
-        this.seatPositionToPlayerMap = seatPositionToPlayerMap;
+        this.seatPositionToPlayerMap = new HashMap<>(seatPositionToPlayerMap);
         this.startingNumberOfChips = startingNumberOfChips;
     }
 

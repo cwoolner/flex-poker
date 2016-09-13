@@ -33,8 +33,8 @@ public class WinnersDeterminedEvent extends BaseEvent implements
         super(aggregateId, version);
         this.gameId = gameId;
         this.handId = handId;
-        this.playersToShowCards = playersToShowCards;
-        this.playersToChipsWonMap = playersToChipsWonMap;
+        this.playersToShowCards = new HashSet<>(playersToShowCards);
+        this.playersToChipsWonMap = new HashMap<>(playersToChipsWonMap);
     }
 
     @Override

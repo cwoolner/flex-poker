@@ -18,7 +18,7 @@ public class GameTablesCreatedAndPlayersAssociatedEvent extends BaseEvent
     public GameTablesCreatedAndPlayersAssociatedEvent(UUID aggregateId, int version,
             Map<UUID, Set<UUID>> tableIdToPlayerIdsMap, int numberOfPlayersPerTable) {
         super(aggregateId, version);
-        this.tableIdToPlayerIdsMap = tableIdToPlayerIdsMap;
+        this.tableIdToPlayerIdsMap = new HashMap<>(tableIdToPlayerIdsMap);
         this.numberOfPlayersPerTable = numberOfPlayersPerTable;
     }
 

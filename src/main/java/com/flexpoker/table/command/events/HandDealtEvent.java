@@ -99,16 +99,16 @@ public class HandDealtEvent extends BaseEvent implements TableEvent {
         this.smallBlindPosition = smallBlindPosition;
         this.bigBlindPosition = bigBlindPosition;
         this.lastToActPlayerId = lastToActPlayerId;
-        this.seatMap = seatMap;
-        this.playerToPocketCardsMap = playerToPocketCardsMap;
-        this.possibleSeatActionsMap = possibleSeatActionsMap;
-        this.playersStillInHand = playersStillInHand;
-        this.handEvaluations = handEvaluations;
+        this.seatMap = new HashMap<>(seatMap);
+        this.playerToPocketCardsMap = new HashMap<>(playerToPocketCardsMap);
+        this.possibleSeatActionsMap = new HashMap<>(possibleSeatActionsMap);
+        this.playersStillInHand = new HashSet<>(playersStillInHand);
+        this.handEvaluations = new ArrayList<>(handEvaluations);
         this.handDealerState = handDealerState;
-        this.chipsInBack = chipsInBack;
-        this.chipsInFrontMap = chipsInFrontMap;
-        this.callAmountsMap = callAmountsMap;
-        this.raiseToAmountsMap = raiseToAmountsMap;
+        this.chipsInBack = new HashMap<>(chipsInBack);
+        this.chipsInFrontMap = new HashMap<>(chipsInFrontMap);
+        this.callAmountsMap = new HashMap<>(callAmountsMap);
+        this.raiseToAmountsMap = new HashMap<>(raiseToAmountsMap);
         this.smallBlind = smallBlind;
         this.bigBlind = bigBlind;
     }

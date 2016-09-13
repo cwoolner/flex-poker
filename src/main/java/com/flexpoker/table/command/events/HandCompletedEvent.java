@@ -1,5 +1,6 @@
 package com.flexpoker.table.command.events;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
@@ -25,7 +26,7 @@ public class HandCompletedEvent extends BaseEvent implements TableEvent {
         super(aggregateId, version);
         this.gameId = gameId;
         this.handId = handId;
-        this.playerToChipsAtTableMap = playerToChipsAtTableMap;
+        this.playerToChipsAtTableMap = new HashMap<>(playerToChipsAtTableMap);
     }
 
     @Override
@@ -38,7 +39,7 @@ public class HandCompletedEvent extends BaseEvent implements TableEvent {
     }
 
     public Map<UUID, Integer> getPlayerToChipsAtTableMap() {
-        return playerToChipsAtTableMap;
+        return new HashMap<>(playerToChipsAtTableMap);
     }
 
 }
