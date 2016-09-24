@@ -7,10 +7,11 @@ export default React.createClass({
 
   componentDidMount() {
     const gameId = this.props.params.gameId;
-    const subscriptions = [];
-    subscriptions.push({location: `/topic/chat/game/${gameId}/user`, subscription: displayChat.bind(this)});
-    subscriptions.push({location: `/topic/chat/game/${gameId}/system`, subscription: displayChat.bind(this)});
-    WebSocketSubscriptionManager.subscribe(this, subscriptions);
+
+    WebSocketSubscriptionManager.subscribe(this, [
+      {location: `/topic/chat/game/${gameId}/user`, subscription: displayChat.bind(this)},
+      {location: `/topic/chat/game/${gameId}/system`, subscription: displayChat.bind(this)}
+    ]);
   },
 
   componentWillUnmount() {

@@ -14,9 +14,9 @@ export default React.createClass({
     const gameId = this.props.gameId;
     const tableId = this.props.tableId;
 
-    const subscriptions = [];
-    subscriptions.push({location: `/topic/game/${gameId}/table/${tableId}/action-on-tick`, subscription: receiveActionOnTick.bind(this)});
-    WebSocketSubscriptionManager.subscribe(this, subscriptions);
+    WebSocketSubscriptionManager.subscribe(this, [
+      {location: `/topic/game/${gameId}/table/${tableId}/action-on-tick`, subscription: receiveActionOnTick.bind(this)}
+    ]);
   },
 
   componentWillUnmount() {

@@ -27,12 +27,11 @@ export default React.createClass({
     const gameId = this.props.params.gameId;
     const tableId = this.props.params.tableId;
 
-    const subscriptions = [];
-    subscriptions.push({location: `/topic/game/${gameId}/table/${tableId}`, subscription: receiveTableUpdate.bind(this)});
-    subscriptions.push({location: `/topic/chat/game/${gameId}/table/${tableId}/user`, subscription: displayChat.bind(this)});
-    subscriptions.push({location: `/topic/chat/game/${gameId}/table/${tableId}/system`, subscription: displayChat.bind(this)});
-
-    WebSocketSubscriptionManager.subscribe(this, subscriptions);
+    WebSocketSubscriptionManager.subscribe(this, [
+      {location: `/topic/game/${gameId}/table/${tableId}`, subscription: receiveTableUpdate.bind(this)},
+      {location: `/topic/chat/game/${gameId}/table/${tableId}/user`, subscription: displayChat.bind(this)},
+      {location: `/topic/chat/game/${gameId}/table/${tableId}/system`, subscription: displayChat.bind(this)}
+    ]);
 
     document.addEventListener(`pocketCardsReceived-${tableId}`, evt => {
       this.setState({

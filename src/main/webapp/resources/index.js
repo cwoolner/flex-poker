@@ -4,11 +4,10 @@ import WebSocketSubscriptionManager from './modules/webSocket/WebSocketSubscript
 import Navigation from './modules/common/Navigation';
 import Router from './modules/common/Router';
 
-const subscriptions = [];
-subscriptions.push({location: '/user/topic/chat/personal/user', subscription: message => alert('personal' + message.body)});
-subscriptions.push({location: '/user/topic/chat/personal/system', subscription: message => alert('personal' + message.body)});
-
-WebSocketSubscriptionManager.subscribe(this, subscriptions);
+WebSocketSubscriptionManager.subscribe(this, [
+  {location: '/user/topic/chat/personal/user', subscription: message => alert('personal' + message.body)},
+  {location: '/user/topic/chat/personal/system', subscription: message => alert('personal' + message.body)}
+]);
 
 render((
   <div>

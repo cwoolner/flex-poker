@@ -13,29 +13,14 @@ export default React.createClass({
   },
 
   componentDidMount() {
-    const subscriptions = [];
-    subscriptions.push({location: '/user/queue/errors', subscription: message => alert("Error " + message.body)});
-    subscriptions.push({location: '/app/opengamesforuser', subscription: message => displayGameTabs.call(this, message)});
-    subscriptions.push({location: '/user/queue/opengamesforuser', subscription: message => displayGameTabs.call(this, message)});
-    subscriptions.push({location: '/user/queue/opentable', subscription: message => {
-      const openTable = JSON.parse(message.body);
-      hashHistory.push(`/game/${openTable.gameId}/table/${openTable.tableId}`);
-    }});
-    subscriptions.push({location: '/user/queue/personaltablestatus', subscription: message => alert(JSON.parse(message.body))});
-    subscriptions.push({location: '/user/queue/pocketcards', subscription: message => {
-      const parsedData = JSON.parse(message.body);
-      const pocketCards = {
-        cardId1: parsedData.cardId1,
-        cardId2: parsedData.cardId2
-      };
-
-      const pocketCardsReceivedEvent = new CustomEvent(`pocketCardsReceived-${parsedData.tableId}`, {
-        detail: pocketCards,
-        bubbles: true
-      });
-      document.dispatchEvent(pocketCardsReceivedEvent);
-    }});
-    WebSocketSubscriptionManager.subscribe(this, subscriptions);
+    WebSocketSubscriptionManager.subscribe(this, [
+      {location: '/user/queue/errors', subscription: message => alert("Error " + message.body)},
+      {location: '/app/opengamesforuser', subscription: displayGameTabs.bind(this)},
+      {location: '/user/queue/opengamesforuser', subscription: displayGameTabs.bind(this)},
+      {location: '/user/queue/opentable', subscription: openTable.bind(this)},
+      {location: '/user/queue/personaltablestatus', subscription: message => alert(JSON.parse(message.body))},
+      {location: '/user/queue/pocketcards', subscription: displayPocketCards.bind(this)}
+    ]);
   },
 
   componentWillUnmount() {
@@ -59,4 +44,23 @@ function displayGameTabs(message) {
   this.setState({
     openGameTabs: JSON.parse(message.body)
   });
+}
+
+function openTable(message) {
+  const openTable = JSON.parse(message.body);
+  hashHistory.push(`/game/${openTable.gameId}/table/${openTable.tableId}`);
+}
+
+function displayPocketCards(message) {
+  const parsedData = JSON.parse(message.body);
+  const pocketCards = {
+    cardId1: parsedData.cardId1,
+    cardId2: parsedData.cardId2
+  };
+
+  const pocketCardsReceivedEvent = new CustomEvent(`pocketCardsReceived-${parsedData.tableId}`, {
+    detail: pocketCards,
+    bubbles: true
+  });
+  document.dispatchEvent(pocketCardsReceivedEvent);
 }

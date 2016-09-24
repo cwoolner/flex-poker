@@ -20,16 +20,11 @@ export default React.createClass({
   },
 
   componentDidMount() {
-    const subscriptions = [];
-    subscriptions.push({location: '/topic/chat/global/user', subscription: displayChat.bind(this)});
-    subscriptions.push({location: '/topic/chat/global/system', subscription: displayChat.bind(this)});
-    subscriptions.push({location: '/topic/availabletournaments', subscription: message => {
-      this.setState({
-        openGameList: JSON.parse(message.body)
-      });
-    }});
-
-    WebSocketSubscriptionManager.subscribe(this, subscriptions);
+    WebSocketSubscriptionManager.subscribe(this, [
+      {location: '/topic/chat/global/user', subscription: displayChat.bind(this)},
+      {location: '/topic/chat/global/system', subscription: displayChat.bind(this)},
+      {location: '/topic/availabletournaments', subscription: updateGameList.bind(this)}
+    ]);
   },
 
   componentWillUnmount() {
@@ -97,4 +92,10 @@ function sendGlobalChat(message) {
   };
 
   WebSocketService.send('/app/sendchatmessage', globalMessage);
+}
+
+function updateGameList(message) {
+  this.setState({
+    openGameList: JSON.parse(message.body)
+  });
 }
