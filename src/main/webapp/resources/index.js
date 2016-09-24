@@ -1,7 +1,7 @@
 import React from 'react'
 import { render } from 'react-dom'
 import WebSocketSubscriptionManager from './modules/webSocket/WebSocketSubscriptionManager';
-import Navigation from './modules/common/Navigation';
+import Navigation from './modules/home/Navigation';
 import Router from './modules/common/Router';
 
 WebSocketSubscriptionManager.subscribe(this, [

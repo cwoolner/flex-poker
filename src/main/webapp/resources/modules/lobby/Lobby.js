@@ -1,10 +1,9 @@
 import React from 'react';
 import WebSocketService from '../webSocket/WebSocketService';
 import WebSocketSubscriptionManager from '../webSocket/WebSocketSubscriptionManager';
-import MainTabs from './MainTabs';
-import CreateGameDialog from '../game/CreateGameDialog';
-import JoinGameDialog from '../game/JoinGameDialog';
-import GameList from '../game/GameList';
+import CreateGameDialog from './CreateGameDialog';
+import JoinGameDialog from './JoinGameDialog';
+import GameList from './GameList';
 import Chat from '../common/Chat';
 import { Button } from 'react-bootstrap';
 
