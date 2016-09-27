@@ -10,7 +10,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <jetty.version>9.3.9.v20160517</jetty.version>
+        <jetty.version>9.3.12.v20160915</jetty.version>
     </properties>
 
     <build>
@@ -84,7 +84,7 @@
         <dependency>
           <groupId>io.spring.platform</groupId>
           <artifactId>platform-bom</artifactId>
-          <version>2.0.8.RELEASE</version>
+          <version>Athens-RELEASE</version>
           <type>pom</type>
           <scope>import</scope>
         </dependency>
