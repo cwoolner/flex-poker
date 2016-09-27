@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 import com.flexpoker.core.api.chat.SendGameChatMessageCommand;
 import com.flexpoker.framework.event.EventHandler;
 import com.flexpoker.game.command.events.PlayerBustedGameEvent;
-import com.flexpoker.login.query.repository.LoginRepository;
+import com.flexpoker.login.repository.LoginRepository;
 import com.flexpoker.model.chat.outgoing.GameChatMessage;
 
 @Component

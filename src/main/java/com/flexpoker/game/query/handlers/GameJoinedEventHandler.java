@@ -12,7 +12,7 @@ import com.flexpoker.game.command.events.GameJoinedEvent;
 import com.flexpoker.game.query.repository.GameListRepository;
 import com.flexpoker.game.query.repository.GamePlayerRepository;
 import com.flexpoker.game.query.repository.OpenGameForPlayerRepository;
-import com.flexpoker.login.query.repository.LoginRepository;
+import com.flexpoker.login.repository.LoginRepository;
 import com.flexpoker.model.chat.outgoing.GameChatMessage;
 import com.flexpoker.pushnotifications.GameListUpdatedPushNotification;
 import com.flexpoker.pushnotifications.OpenGamesForPlayerUpdatedPushNotification;

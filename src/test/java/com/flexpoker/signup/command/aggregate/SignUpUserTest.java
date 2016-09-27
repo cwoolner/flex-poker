@@ -8,6 +8,7 @@ import org.junit.Test;
 import org.springframework.security.authentication.encoding.ShaPasswordEncoder;
 
 import com.flexpoker.exception.FlexPokerException;
+import com.flexpoker.signup.SignUpUser;
 
 public class SignUpUserTest {
 

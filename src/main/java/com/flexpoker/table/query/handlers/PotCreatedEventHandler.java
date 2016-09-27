@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 import com.flexpoker.framework.event.EventHandler;
 import com.flexpoker.framework.pushnotifier.PushNotification;
 import com.flexpoker.framework.pushnotifier.PushNotificationPublisher;
-import com.flexpoker.login.query.repository.LoginRepository;
+import com.flexpoker.login.repository.LoginRepository;
 import com.flexpoker.pushnotifications.TableUpdatedPushNotification;
 import com.flexpoker.table.command.events.PotCreatedEvent;
 import com.flexpoker.table.query.repository.TableRepository;

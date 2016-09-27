@@ -1,4 +1,4 @@
-package com.flexpoker.signup.query.repository;
+package com.flexpoker.signup.repository;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -9,7 +9,7 @@ import java.util.UUID;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Repository;
 
-import com.flexpoker.signup.command.aggregate.SignUpUser;
+import com.flexpoker.signup.SignUpUser;
 
 @Profile("default")
 @Repository

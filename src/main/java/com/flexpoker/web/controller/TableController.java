@@ -11,7 +11,7 @@ import org.springframework.messaging.simp.annotation.SubscribeMapping;
 import org.springframework.stereotype.Controller;
 
 import com.flexpoker.framework.command.CommandSender;
-import com.flexpoker.login.query.repository.LoginRepository;
+import com.flexpoker.login.repository.LoginRepository;
 import com.flexpoker.table.command.commands.CallCommand;
 import com.flexpoker.table.command.commands.CheckCommand;
 import com.flexpoker.table.command.commands.FoldCommand;

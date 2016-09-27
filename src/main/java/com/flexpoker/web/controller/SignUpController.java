@@ -11,9 +11,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.flexpoker.login.query.repository.LoginRepository;
-import com.flexpoker.signup.command.aggregate.SignUpUser;
-import com.flexpoker.signup.query.repository.SignUpRepository;
+import com.flexpoker.login.repository.LoginRepository;
+import com.flexpoker.signup.SignUpUser;
+import com.flexpoker.signup.repository.SignUpRepository;
 
 @Controller
 public class SignUpController {

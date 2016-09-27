@@ -1,4 +1,4 @@
-package com.flexpoker.signup.query.repository;
+package com.flexpoker.signup.repository;
 
 import java.io.IOException;
 import java.util.UUID;
@@ -16,7 +16,7 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Repository;
 
 import com.flexpoker.exception.FlexPokerException;
-import com.flexpoker.signup.command.aggregate.SignUpUser;
+import com.flexpoker.signup.SignUpUser;
 
 @Profile("prod")
 @Repository

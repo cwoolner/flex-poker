@@ -1,8 +1,8 @@
-package com.flexpoker.signup.query.repository;
+package com.flexpoker.signup.repository;
 
 import java.util.UUID;
 
-import com.flexpoker.signup.command.aggregate.SignUpUser;
+import com.flexpoker.signup.SignUpUser;
 
 public interface SignUpRepository {
 

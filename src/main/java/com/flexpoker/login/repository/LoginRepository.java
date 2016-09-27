@@ -1,4 +1,4 @@
-package com.flexpoker.login.query.repository;
+package com.flexpoker.login.repository;
 
 import java.util.UUID;
 

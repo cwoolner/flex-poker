@@ -20,7 +20,7 @@ import com.flexpoker.game.query.dto.GameInListDTO;
 import com.flexpoker.game.query.dto.OpenGameForUser;
 import com.flexpoker.game.query.repository.GameListRepository;
 import com.flexpoker.game.query.repository.OpenGameForPlayerRepository;
-import com.flexpoker.login.query.repository.LoginRepository;
+import com.flexpoker.login.repository.LoginRepository;
 import com.flexpoker.web.dto.incoming.CreateGameDTO;
 
 @Controller

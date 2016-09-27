@@ -11,7 +11,7 @@ import com.flexpoker.game.command.events.GameCreatedEvent;
 import com.flexpoker.game.query.dto.GameInListDTO;
 import com.flexpoker.game.query.dto.GameStage;
 import com.flexpoker.game.query.repository.GameListRepository;
-import com.flexpoker.login.query.repository.LoginRepository;
+import com.flexpoker.login.repository.LoginRepository;
 import com.flexpoker.pushnotifications.GameListUpdatedPushNotification;
 
 @Component

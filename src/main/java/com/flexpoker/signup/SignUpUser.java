@@ -1,4 +1,4 @@
-package com.flexpoker.signup.command.aggregate;
+package com.flexpoker.signup;
 
 import java.util.UUID;
 

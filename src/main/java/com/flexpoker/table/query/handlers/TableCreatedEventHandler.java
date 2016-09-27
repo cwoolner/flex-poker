@@ -14,7 +14,7 @@ import com.flexpoker.framework.event.EventHandler;
 import com.flexpoker.framework.pushnotifier.PushNotification;
 import com.flexpoker.framework.pushnotifier.PushNotificationPublisher;
 import com.flexpoker.game.query.repository.OpenGameForPlayerRepository;
-import com.flexpoker.login.query.repository.LoginRepository;
+import com.flexpoker.login.repository.LoginRepository;
 import com.flexpoker.pushnotifications.OpenGamesForPlayerUpdatedPushNotification;
 import com.flexpoker.pushnotifications.OpenTableForUserPushNotification;
 import com.flexpoker.table.command.events.TableCreatedEvent;

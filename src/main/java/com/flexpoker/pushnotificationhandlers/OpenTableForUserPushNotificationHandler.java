@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.flexpoker.framework.pushnotifier.PushNotificationHandler;
-import com.flexpoker.login.query.repository.LoginRepository;
+import com.flexpoker.login.repository.LoginRepository;
 import com.flexpoker.pushnotifications.OpenTableForUserPushNotification;
 import com.flexpoker.util.MessagingConstants;
 
