@@ -5,8 +5,8 @@ import java.util.UUID;
 import javax.inject.Inject;
 
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -30,12 +30,12 @@ public class SignUpController {
         this.signUpCodeRepository = signUpCodeRepository;
     }
 
-    @RequestMapping(value = "/sign-up", method = RequestMethod.GET)
+    @GetMapping("/sign-up")
     public String index() {
         return "sign-up-step1";
     }
 
-    @RequestMapping(value = "/sign-up", method = RequestMethod.POST)
+    @PostMapping("/sign-up")
     public ModelAndView signUpStep1Post(String username, String emailAddress,
             String password) {
         boolean usernameExists = signUpCodeRepository.usernameExists(username);
@@ -58,7 +58,7 @@ public class SignUpController {
         return modelAndView;
     }
 
-    @RequestMapping(value = "/sign-up-confirm", method = RequestMethod.GET)
+    @GetMapping("/sign-up-confirm")
     public ModelAndView signUpStep2Get(@RequestParam String username) {
 
         // TODO: signUpCode should be sent in once email works, username is temporary
@@ -77,7 +77,7 @@ public class SignUpController {
         return modelAndView;
     }
 
-    @RequestMapping(value = "/sign-up-confirm", method = RequestMethod.POST)
+    @PostMapping("/sign-up-confirm")
     public ModelAndView signUpStep2Post(String username, @RequestParam UUID signUpCode) {
         UUID aggregateId = signUpCodeRepository.findAggregateIdByUsernameAndSignUpCode(
                 username, signUpCode);
