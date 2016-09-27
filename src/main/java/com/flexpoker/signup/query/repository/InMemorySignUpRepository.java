@@ -9,6 +9,8 @@ import java.util.UUID;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Repository;
 
+import com.flexpoker.signup.command.aggregate.SignUpUser;
+
 @Profile("default")
 @Repository
 public class InMemorySignUpRepository implements SignUpRepository {
@@ -17,9 +19,12 @@ public class InMemorySignUpRepository implements SignUpRepository {
 
     private final Map<UUID, Map<String, UUID>> signUpCodeMap;
 
+    private final Map<UUID, SignUpUser> signUpUserMap;
+
     public InMemorySignUpRepository() {
         usernameSet = new HashSet<>();
         signUpCodeMap = new HashMap<>();
+        signUpUserMap = new HashMap<>();
         addDefaultSignUps();
     }
 
@@ -67,6 +72,16 @@ public class InMemorySignUpRepository implements SignUpRepository {
         storeNewlyConfirmedUsername("player2");
         storeNewlyConfirmedUsername("player3");
         storeNewlyConfirmedUsername("player4");
+    }
+
+    @Override
+    public SignUpUser fetchSignUpUser(UUID signUpUserId) {
+        return signUpUserMap.get(signUpUserId);
+    }
+
+    @Override
+    public void saveSignUpUser(SignUpUser signUpUser) {
+        signUpUserMap.put(signUpUser.getAggregateId(), signUpUser);
     }
 
 }

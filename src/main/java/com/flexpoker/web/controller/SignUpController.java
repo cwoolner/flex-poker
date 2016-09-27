@@ -4,30 +4,29 @@ import java.util.UUID;
 
 import javax.inject.Inject;
 
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.flexpoker.framework.command.CommandSender;
-import com.flexpoker.signup.command.commands.ConfirmSignUpUserEmailCommand;
-import com.flexpoker.signup.command.commands.SignUpNewUserCommand;
-import com.flexpoker.signup.command.framework.SignUpCommandType;
+import com.flexpoker.login.query.repository.LoginRepository;
+import com.flexpoker.signup.command.aggregate.SignUpUser;
 import com.flexpoker.signup.query.repository.SignUpRepository;
 
 @Controller
 public class SignUpController {
 
-    private final CommandSender<SignUpCommandType> commandSender;
+    private final SignUpRepository signUpRepository;
 
-    private final SignUpRepository signUpCodeRepository;
+    private final LoginRepository loginRepository;
 
     @Inject
-    public SignUpController(CommandSender<SignUpCommandType> commandSender,
-            SignUpRepository signUpCodeRepository) {
-        this.commandSender = commandSender;
-        this.signUpCodeRepository = signUpCodeRepository;
+    public SignUpController(SignUpRepository signUpRepository,
+            LoginRepository loginRepository) {
+        this.signUpRepository = signUpRepository;
+        this.loginRepository = loginRepository;
     }
 
     @GetMapping("/sign-up")
@@ -38,7 +37,7 @@ public class SignUpController {
     @PostMapping("/sign-up")
     public ModelAndView signUpStep1Post(String username, String emailAddress,
             String password) {
-        boolean usernameExists = signUpCodeRepository.usernameExists(username);
+        boolean usernameExists = signUpRepository.usernameExists(username);
 
         if (usernameExists) {
             ModelAndView modelAndView = new ModelAndView("sign-up-step1");
@@ -46,9 +45,12 @@ public class SignUpController {
             return modelAndView;
         }
 
-        SignUpNewUserCommand command = new SignUpNewUserCommand(username,
-                emailAddress, password);
-        commandSender.send(command);
+        UUID aggregateId = UUID.randomUUID();
+        UUID signUpCode = UUID.randomUUID();
+        String encryptedPassword = new BCryptPasswordEncoder().encode(password);
+
+        signUpRepository.saveSignUpUser(new SignUpUser(aggregateId, signUpCode, emailAddress, username, encryptedPassword));
+        signUpRepository.storeSignUpInformation(aggregateId, username, signUpCode);
 
         ModelAndView modelAndView = new ModelAndView("sign-up-step1-success");
         modelAndView.setViewName("sign-up-step1-success");
@@ -62,9 +64,9 @@ public class SignUpController {
     public ModelAndView signUpStep2Get(@RequestParam String username) {
 
         // TODO: signUpCode should be sent in once email works, username is temporary
-        UUID signUpCode = signUpCodeRepository.findSignUpCodeByUsername(username);
+        UUID signUpCode = signUpRepository.findSignUpCodeByUsername(username);
 
-        boolean signUpCodeExists = signUpCodeRepository.signUpCodeExists(signUpCode);
+        boolean signUpCodeExists = signUpRepository.signUpCodeExists(signUpCode);
 
         ModelAndView modelAndView = new ModelAndView("sign-up-step2");
 
@@ -79,7 +81,7 @@ public class SignUpController {
 
     @PostMapping("/sign-up-confirm")
     public ModelAndView signUpStep2Post(String username, @RequestParam UUID signUpCode) {
-        UUID aggregateId = signUpCodeRepository.findAggregateIdByUsernameAndSignUpCode(
+        UUID aggregateId = signUpRepository.findAggregateIdByUsernameAndSignUpCode(
                 username, signUpCode);
 
         if (aggregateId == null) {
@@ -89,9 +91,15 @@ public class SignUpController {
             return modelAndView;
         }
 
-        ConfirmSignUpUserEmailCommand command = new ConfirmSignUpUserEmailCommand(
-                aggregateId, username, signUpCode);
-        commandSender.send(command);
+        SignUpUser signUpUser = signUpRepository.fetchSignUpUser(aggregateId);
+        signUpUser.confirmSignedUpUser(username, signUpCode);
+
+        signUpRepository.saveSignUpUser(signUpUser);
+        signUpRepository.storeNewlyConfirmedUsername(username);
+
+        loginRepository.saveUsernameAndPassword(username, signUpUser.getEncryptedPassword());
+        loginRepository.saveAggregateIdAndUsername(aggregateId, username);
+
         ModelAndView modelAndView = new ModelAndView("sign-up-step2-success");
         modelAndView.addObject("username", username);
         return modelAndView;

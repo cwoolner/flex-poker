@@ -16,6 +16,7 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Repository;
 
 import com.flexpoker.exception.FlexPokerException;
+import com.flexpoker.signup.command.aggregate.SignUpUser;
 
 @Profile("prod")
 @Repository
@@ -30,6 +31,9 @@ public class RedisSignUpRepository implements SignUpRepository {
 
     private static final String SIGN_UP_CODE_NAMESPACE = SIGN_UP_NAMESPACE
             + "signupcode:";
+
+    private static final String SIGN_UP_USER_NAMESPACE = SIGN_UP_NAMESPACE
+            + "signupuser:";
 
     private final StringRedisTemplate redisTemplate;
 
@@ -116,6 +120,32 @@ public class RedisSignUpRepository implements SignUpRepository {
         storeNewlyConfirmedUsername("player2");
         storeNewlyConfirmedUsername("player3");
         storeNewlyConfirmedUsername("player4");
+    }
+
+    @Override
+    public SignUpUser fetchSignUpUser(UUID signUpUserId) {
+        String signUpCodeKey = SIGN_UP_USER_NAMESPACE + signUpUserId;
+        Object objectFromQuery = redisTemplate.opsForHash()
+                .get(signUpCodeKey, "username");
+
+        if (objectFromQuery == null) {
+            return null;
+        }
+
+        String usernameFromQuery = (String) objectFromQuery;
+
+//        if (usernameFromQuery.equals(username)) {
+//            return UUID.fromString((String) redisTemplate.opsForHash().get(signUpCodeKey,
+//                    "aggregateid"));
+//        }
+
+        return null;
+    }
+
+    @Override
+    public void saveSignUpUser(SignUpUser signUpUser) {
+        // TODO Auto-generated method stub
+        
     }
 
 }
