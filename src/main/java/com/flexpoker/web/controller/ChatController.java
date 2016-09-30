@@ -20,7 +20,7 @@ public class ChatController {
         this.chatBso = chatBso;
     }
 
-    @MessageMapping(value = "/app/sendchatmessage")
+    @MessageMapping("/app/sendchatmessage")
     public void sendChatMessage(ChatMessage chatMessage, Principal principal) {
         chatBso.sendChatMessage(chatMessage, principal);
     }

@@ -41,34 +41,34 @@ public class TableController {
         this.tableRepository = tableRepository;
     }
 
-    @SubscribeMapping(value = "/topic/game/{gameId}/table/{tableId}")
+    @SubscribeMapping("/topic/game/{gameId}/table/{tableId}")
     public TableDTO fetchTable(@DestinationVariable UUID gameId,
             @DestinationVariable UUID tableId) {
         return tableRepository.fetchById(tableId);
     }
 
-    @MessageMapping(value = "/app/check")
+    @MessageMapping("/app/check")
     public void check(CheckTableActionDTO model, Principal principal) {
         UUID playerId = loginRepository.fetchAggregateIdByUsername(principal.getName());
         commandSender.send(new CheckCommand(model.getTableId(), model.getGameId(),
                 playerId));
     }
 
-    @MessageMapping(value = "/app/fold")
+    @MessageMapping("/app/fold")
     public void fold(FoldTableActionDTO model, Principal principal) {
         UUID playerId = loginRepository.fetchAggregateIdByUsername(principal.getName());
         commandSender.send(new FoldCommand(model.getTableId(), model.getGameId(),
                 playerId));
     }
 
-    @MessageMapping(value = "/app/call")
+    @MessageMapping("/app/call")
     public void call(CallTableActionDTO model, Principal principal) {
         UUID playerId = loginRepository.fetchAggregateIdByUsername(principal.getName());
         commandSender.send(new CallCommand(model.getTableId(), model.getTableId(),
                 playerId));
     }
 
-    @MessageMapping(value = "/app/raise")
+    @MessageMapping("/app/raise")
     public void raise(RaiseTableActionDTO model, Principal principal) {
         UUID playerId = loginRepository.fetchAggregateIdByUsername(principal.getName());
         commandSender.send(new RaiseCommand(model.getTableId(), model.getGameId(),

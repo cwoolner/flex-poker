@@ -45,18 +45,18 @@ public class GameManagementController {
         this.gameRepository = gameRepository;
     }
 
-    @SubscribeMapping(value = "/topic/availabletournaments")
+    @SubscribeMapping("/topic/availabletournaments")
     public List<GameInListDTO> displayAllGames() {
         return gameRepository.fetchAll();
     }
 
-    @SubscribeMapping(value = "/app/opengamesforuser")
+    @SubscribeMapping("/app/opengamesforuser")
     public List<OpenGameForUser> displayOpenGames(Principal principal) {
         UUID playerId = loginRepository.fetchAggregateIdByUsername(principal.getName());
         return openGameForUserRepository.fetchAllOpenGamesForPlayer(playerId);
     }
 
-    @MessageMapping(value = "/app/creategame")
+    @MessageMapping("/app/creategame")
     public void createGame(CreateGameDTO model, Principal principal) {
         UUID playerId = loginRepository.fetchAggregateIdByUsername(principal.getName());
         CreateGameCommand command = new CreateGameCommand(model.getName(),
@@ -65,7 +65,7 @@ public class GameManagementController {
         commandSender.send(command);
     }
 
-    @MessageMapping(value = "/app/joingame")
+    @MessageMapping("/app/joingame")
     public void joinGame(UUID gameId, Principal principal) {
         UUID playerId = loginRepository.fetchAggregateIdByUsername(principal.getName());
         JoinGameCommand command = new JoinGameCommand(gameId, playerId);
@@ -73,7 +73,7 @@ public class GameManagementController {
     }
 
     @MessageExceptionHandler
-    @SendToUser(value = "/queue/errors")
+    @SendToUser("/queue/errors")
     public String handleException(Throwable exception) {
         return exception.getMessage();
     }
