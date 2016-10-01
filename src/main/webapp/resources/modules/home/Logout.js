@@ -20,9 +20,6 @@ export default React.createClass({
       credentials: 'same-origin'
     };
 
-    // the url coming back is actually blank becuase it's an opaqueredirect.
-    // this is fine for our purposes because we'll just be redirected to the
-    // login page anyway
     fetch('/logout', myInit).then(response => location.href = response.url);
   },
 
