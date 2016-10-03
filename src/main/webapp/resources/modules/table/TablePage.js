@@ -1,12 +1,10 @@
 import React from 'react';
-import WebSocketService from '../webSocket/WebSocketService';
 import WebSocketSubscriptionManager from '../webSocket/WebSocketSubscriptionManager';
 import CommonCards from './CommonCards';
 import MyCards from './MyCards';
 import Seat from './Seat';
 import PokerActions from './PokerActions';
 import SeatContainer from './SeatContainer';
-import Chat from '../common/Chat';
 import _ from 'lodash';
 
 class TablePage extends React.Component {
@@ -14,8 +12,6 @@ class TablePage extends React.Component {
   constructor(props) {
     super(props)
 
-    this.displayChat = this.displayChat.bind(this)
-    this.sendChat = this.sendChat.bind(this)
     this.receiveTableUpdate = this.receiveTableUpdate.bind(this)
 
     this.state = {
@@ -32,9 +28,7 @@ class TablePage extends React.Component {
   componentDidMount() {
     const { gameId, tableId } = this.props.match.params
     WebSocketSubscriptionManager.subscribe(this, [
-      {location: `/topic/game/${gameId}/table/${tableId}`, subscription: this.receiveTableUpdate},
-      {location: `/topic/chat/game/${gameId}/table/${tableId}/user`, subscription: this.displayChat},
-      {location: `/topic/chat/game/${gameId}/table/${tableId}/system`, subscription: this.displayChat}
+      {location: `/topic/game/${gameId}/table/${tableId}`, subscription: this.receiveTableUpdate}
     ]);
 
     document.addEventListener(`pocketCardsReceived-${tableId}`, evt => {
@@ -48,22 +42,6 @@ class TablePage extends React.Component {
 
   componentWillUnmount() {
     WebSocketSubscriptionManager.unsubscribe(this);
-  }
-
-  displayChat(message) {
-    this.refs.tableChat.displayChat(message.body);
-  }
-
-  sendChat(message) {
-    const { gameId, tableId } = this.props.match.params
-    const tableMessage = {
-      message,
-      receiverUsernames: null,
-      gameId,
-      tableId
-    };
-
-    WebSocketService.send('/app/sendchatmessage', tableMessage);
   }
 
   receiveTableUpdate(message) {
@@ -116,8 +94,6 @@ class TablePage extends React.Component {
                 minRaiseTo={mySeat.raiseTo}
                 maxRaiseTo={mySeat.chipsInBack + mySeat.chipsInFront} />
         }
-
-        <Chat ref="tableChat" sendChat={this.sendChat} />
       </div>
     )
   }

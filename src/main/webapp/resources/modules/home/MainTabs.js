@@ -2,6 +2,7 @@ import React from 'react';
 import WebSocketSubscriptionManager from '../webSocket/WebSocketSubscriptionManager';
 import { HashRouter } from 'react-router-dom';
 import { Redirect, Route, Switch } from 'react-router';
+import WebSocketService from '../webSocket/WebSocketService';
 import { Nav, NavItem, NavDropdown, MenuItem } from 'react-bootstrap';
 import _ from 'lodash';
 import { connect } from 'react-redux';
@@ -11,6 +12,7 @@ import GamePage from '../game/GamePage';
 import TablePage from '../table/TablePage';
 import Logout from './Logout';
 import { initOpenGameTabs, updateOpenGameTabs, updateOpenGameList } from '../../reducers';
+import Chat from './Chat';
 
 class MainTabs extends React.Component {
 
@@ -105,6 +107,7 @@ class MainTabs extends React.Component {
           </Switch>
           {_.isNil(this.state.tableToRedirectTo) ? null : <Redirect to={this.state.tableToRedirectTo || ""} />}
           {_.isNil(this.state.gameToRedirectTo) ? null : <Redirect to={this.state.gameToRedirectTo || ""} />}
+          <Chat />
         </div>
       </HashRouter>
     )
