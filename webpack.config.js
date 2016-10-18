@@ -9,6 +9,8 @@ module.exports = {
       'react-bootstrap',
       'react-dom',
       'react-router',
+      'react-redux',
+      'redux',
       'sockjs-client',
       'webstomp-client'
     ]
