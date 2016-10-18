@@ -12,9 +12,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "lodash": "4.16.2",
+    "lodash": "4.16.4",
     "react": "15.3.2",
-    "react-bootstrap": "0.30.3",
+    "react-bootstrap": "0.30.5",
     "react-dom": "15.3.2",
     "react-router": "4.0.0-alpha.4",
     "sockjs-client": "1.1.1",
