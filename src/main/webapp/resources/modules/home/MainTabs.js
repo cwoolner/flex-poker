@@ -86,7 +86,7 @@ class MainTabs extends React.Component {
   render() {
     return (
       <div>
-        <GameTabs />
+        <GameTabs openGameTabs={this.props.openGameTabs} />
         <Switch>
           <Route exact path="/" component={Lobby} />
           <Route exact path="/game/:gameId" component={GamePage} />

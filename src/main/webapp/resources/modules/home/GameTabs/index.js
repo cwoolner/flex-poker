@@ -1,7 +1,12 @@
 import React from 'react';
-import { connect } from 'react-redux';
-import GameTabList from './GameTabList';
+import { Nav, NavItem } from 'react-bootstrap';
+import GameTab from './GameTab';
 
-const mapStateToProps = state => ({ openGameTabs: state.openGameTabs })
-
-export default connect(mapStateToProps)(GameTabList)
+export default ({openGameTabs}) => {
+  return (
+    <Nav bsStyle="tabs">
+      <NavItem href="/#">Lobby</NavItem>
+      {openGameTabs.map((openGameTab, index) => <GameTab key={index} openGameTab={openGameTab} />)}
+    </Nav>
+  );
+}

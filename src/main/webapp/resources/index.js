@@ -4,7 +4,7 @@ import { HashRouter } from 'react-router-dom';
 import { createStore } from 'redux';
 import { Provider } from 'react-redux';
 import WebSocketSubscriptionManager from './modules/webSocket/WebSocketSubscriptionManager';
-import NavigationContainer from './modules/home/Navigation/NavigationContainer';
+import Navigation from './modules/home/Navigation';
 import MainTabs from './modules/home/MainTabs';
 import reducer from './reducers';
 
@@ -19,7 +19,7 @@ store.dispatch({type: 'UPDATE_USERNAME', username: window.username});
 render((
   <Provider store={store}>
     <div>
-      <NavigationContainer />
+      <Navigation />
       <div className="container">
         <HashRouter>
           <MainTabs store={store} />
