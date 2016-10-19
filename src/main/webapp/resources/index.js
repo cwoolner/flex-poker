@@ -22,7 +22,7 @@ render((
       <NavigationContainer />
       <div className="container">
         <HashRouter>
-          <MainTabs />
+          <MainTabs store={store} />
         </HashRouter>
       </div>
     </div>

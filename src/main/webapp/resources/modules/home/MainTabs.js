@@ -3,7 +3,7 @@ import WebSocketSubscriptionManager from '../webSocket/WebSocketSubscriptionMana
 import { Redirect, Route, Switch } from 'react-router';
 import { Nav, NavItem, NavDropdown, MenuItem } from 'react-bootstrap';
 import _ from 'lodash';
-import GameTab from './GameTab';
+import GameTabs from './GameTabs';
 import Lobby from '../lobby/Lobby';
 import GamePage from '../game/GamePage';
 import TablePage from '../table/TablePage';
@@ -42,22 +42,23 @@ class MainTabs extends React.Component {
   }
 
   displayGameTabs(message) {
+    this.props.store.dispatch({type: 'INIT_OPEN_GAME_TABS', openGameTabs: JSON.parse(message.body)});
     this.setState({
-      openGameTabs: JSON.parse(message.body),
       tableToRedirectTo: null,
       gameToRedirectTo: null
-    })
+    });
   }
 
   openGameTab(message) {
-    const newOpenGameTabs = JSON.parse(message.body)
-    const gameToRedirectTo = newOpenGameTabs.filter(x => !(this.state.openGameTabs.map(y => y.gameId).includes(x.gameId)))
+    const currentOpenGameTabs = this.props.store.getState().openGameTabs;
+    const newOpenGameTabs = JSON.parse(message.body);
+    const gameToRedirectTo = newOpenGameTabs.filter(x => !(currentOpenGameTabs.map(y => y.gameId).includes(x.gameId)));
 
+    this.props.store.dispatch({type: 'UPDATE_OPEN_GAME_TABS', openGameTabs: newOpenGameTabs});
     this.setState({
-      openGameTabs: newOpenGameTabs,
       tableToRedirectTo: null,
       gameToRedirectTo: gameToRedirectTo.length === 0 ? null : `/game/${gameToRedirectTo[0].gameId}`
-    })
+    });
 }
 
   openTable(message) {
@@ -85,10 +86,7 @@ class MainTabs extends React.Component {
   render() {
     return (
       <div>
-        <Nav bsStyle="tabs">
-          <NavItem href="/#">Lobby</NavItem>
-          {this.state.openGameTabs.map((openGameTab, index) => <GameTab key={index} openGameTab={openGameTab} />)}
-        </Nav>
+        <GameTabs />
         <Switch>
           <Route exact path="/" component={Lobby} />
           <Route exact path="/game/:gameId" component={GamePage} />
