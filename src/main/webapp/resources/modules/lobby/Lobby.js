@@ -13,7 +13,6 @@ class Lobby extends React.Component {
     super(props)
 
     this.displayChat = this.displayChat.bind(this)
-    this.updateGameList = this.updateGameList.bind(this)
     this.openCreateGameModal = this.openCreateGameModal.bind(this)
     this.openJoinGameModal = this.openJoinGameModal.bind(this)
     this.hideCreateGameDialog = this.hideCreateGameDialog.bind(this)
@@ -23,15 +22,13 @@ class Lobby extends React.Component {
       createGameDialogOpen: false,
       joinGameDialogOpen: false,
       joinGameId: null,
-      openGameList: []
     }
   }
 
   componentDidMount() {
     WebSocketSubscriptionManager.subscribe(this, [
       {location: '/topic/chat/global/user', subscription: this.displayChat},
-      {location: '/topic/chat/global/system', subscription: this.displayChat},
-      {location: '/topic/availabletournaments', subscription: this.updateGameList}
+      {location: '/topic/chat/global/system', subscription: this.displayChat}
     ]);
   }
 
@@ -81,17 +78,10 @@ class Lobby extends React.Component {
     WebSocketService.send('/app/sendchatmessage', globalMessage)
   }
 
-  updateGameList(message) {
-    this.setState({
-      openGameList: JSON.parse(message.body)
-    })
-  }
-
   render() {
     return (
       <div>
         <GameList
-          gameList={this.state.openGameList}
           gameOpenedCallback={this.openJoinGameModal}
           openCreateGameModalCallback={this.openCreateGameModal} />
         <Chat ref="globalChat" sendChat={this.sendGlobalChat} />

@@ -18,6 +18,7 @@ class MainTabs extends React.Component {
     this.openTable = this.openTable.bind(this)
     this.displayGameTabs = this.displayGameTabs.bind(this)
     this.displayPocketCards = this.displayPocketCards.bind(this)
+    this.updateGameList = this.updateGameList.bind(this)
 
     this.state = {
       openGameTabs: [],
@@ -33,7 +34,8 @@ class MainTabs extends React.Component {
       {location: '/user/queue/opengamesforuser', subscription: this.openGameTab},
       {location: '/user/queue/opentable', subscription: this.openTable},
       {location: '/user/queue/personaltablestatus', subscription: message => alert(JSON.parse(message.body))},
-      {location: '/user/queue/pocketcards', subscription: this.displayPocketCards}
+      {location: '/user/queue/pocketcards', subscription: this.displayPocketCards},
+      {location: '/topic/availabletournaments', subscription: this.updateGameList}
     ]);
   }
 
@@ -81,6 +83,10 @@ class MainTabs extends React.Component {
       bubbles: true
     });
     document.dispatchEvent(pocketCardsReceivedEvent);
+  }
+
+  updateGameList(message) {
+    this.props.store.dispatch({type: 'UPDATE_OPEN_GAME_LIST', openGameList: JSON.parse(message.body)});
   }
 
   render() {

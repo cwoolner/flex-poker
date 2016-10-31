@@ -1,7 +1,8 @@
 import React from 'react';
 import { Button, Table } from 'react-bootstrap';
+import { connect } from 'react-redux';
 
-export default ({gameList, gameOpenedCallback, openCreateGameModalCallback}) => {
+const GameList = ({gameList, gameOpenedCallback, openCreateGameModalCallback}) => {
   return (
     <div className={'game-list'}>
       <Table striped bordered hover>
@@ -41,3 +42,7 @@ export default ({gameList, gameOpenedCallback, openCreateGameModalCallback}) => 
     </div>
   )
 }
+
+const mapStateToProps = state => ({ gameList: state.openGameList })
+
+export default connect(mapStateToProps)(GameList)
