@@ -1,8 +1,9 @@
 package com.flexpoker.web.controller;
 
 import java.security.Principal;
-import java.util.Map;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
@@ -13,7 +14,6 @@ import org.springframework.stereotype.Controller;
 
 import com.flexpoker.framework.command.CommandSender;
 import com.flexpoker.login.repository.LoginRepository;
-import com.flexpoker.model.card.PocketCards;
 import com.flexpoker.table.command.commands.CallCommand;
 import com.flexpoker.table.command.commands.CheckCommand;
 import com.flexpoker.table.command.commands.FoldCommand;
@@ -25,6 +25,7 @@ import com.flexpoker.web.dto.incoming.CallTableActionDTO;
 import com.flexpoker.web.dto.incoming.CheckTableActionDTO;
 import com.flexpoker.web.dto.incoming.FoldTableActionDTO;
 import com.flexpoker.web.dto.incoming.RaiseTableActionDTO;
+import com.flexpoker.web.dto.outgoing.PocketCardsDTO;
 import com.flexpoker.web.dto.outgoing.TableDTO;
 
 @Controller
@@ -49,9 +50,12 @@ public class TableController {
     }
 
     @SubscribeMapping("/user/queue/pocketcards")
-    public Map<UUID, PocketCards> fetchPocketCards(Principal principal) {
-        UUID playerId = loginRepository.fetchAggregateIdByUsername(principal.getName());
-        return cardsUsedInHandRepository.fetchAllPocketCardsForUser(playerId);
+    public List<PocketCardsDTO> fetchPocketCards(Principal principal) {
+        var playerId = loginRepository.fetchAggregateIdByUsername(principal.getName());
+        var pocketCardsForUser = cardsUsedInHandRepository.fetchAllPocketCardsForUser(playerId);
+        return pocketCardsForUser.entrySet().stream()
+                .map(x -> new PocketCardsDTO(x.getKey(), x.getValue().getCard1().getId(), x.getValue().getCard2().getId()))
+                .collect(Collectors.toList());
     }
 
     @SubscribeMapping("/topic/game/{gameId}/table/{tableId}")
