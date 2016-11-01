@@ -22,8 +22,11 @@ public class TableDTO {
 
     private final int currentHandMinRaiseToAmount;
 
+    private final UUID currentHandId;
+
     public TableDTO(UUID tableId, int version, List<SeatDTO> seats,
-            int totalPot, Set<PotDTO> pots, List<CardDTO> visibleCommonCards, int currentHandMinRaiseToAmount) {
+            int totalPot, Set<PotDTO> pots, List<CardDTO> visibleCommonCards,
+            int currentHandMinRaiseToAmount, UUID currentHandId) {
         this.tableId = tableId;
         this.version = version;
         this.seats = seats;
@@ -31,6 +34,7 @@ public class TableDTO {
         this.pots = pots;
         this.visibleCommonCards = visibleCommonCards;
         this.currentHandMinRaiseToAmount = currentHandMinRaiseToAmount;
+        this.currentHandId = currentHandId;
     }
 
     @JsonProperty
@@ -66,6 +70,11 @@ public class TableDTO {
     @JsonProperty
     public int getCurrentHandMinRaiseToAmount() {
         return currentHandMinRaiseToAmount;
+    }
+
+    @JsonProperty
+    public UUID getCurrentHandId() {
+        return currentHandId;
     }
 
 }

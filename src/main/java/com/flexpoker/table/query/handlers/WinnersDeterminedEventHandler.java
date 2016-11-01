@@ -39,7 +39,8 @@ public class WinnersDeterminedEventHandler implements
                 event.getVersion(), currentTable.getSeats(),
                 currentTable.getTotalPot(), currentTable.getPots(),
                 currentTable.getVisibleCommonCards(),
-                currentTable.getCurrentHandMinRaiseToAmount());
+                currentTable.getCurrentHandMinRaiseToAmount(),
+                currentTable.getCurrentHandId());
         tableRepository.save(updatedTable);
     }
 

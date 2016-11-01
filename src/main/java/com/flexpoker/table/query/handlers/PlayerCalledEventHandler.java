@@ -68,7 +68,7 @@ public class PlayerCalledEventHandler implements EventHandler<PlayerCalledEvent>
         var updatedTable = new TableDTO(currentTable.getId(),
                 event.getVersion(), updatedSeats, currentTable.getTotalPot() + callAmount,
                 currentTable.getPots(), currentTable.getVisibleCommonCards(),
-                currentTable.getCurrentHandMinRaiseToAmount());
+                currentTable.getCurrentHandMinRaiseToAmount(), currentTable.getCurrentHandId());
         tableRepository.save(updatedTable);
     }
 

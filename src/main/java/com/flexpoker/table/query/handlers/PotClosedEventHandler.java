@@ -47,7 +47,8 @@ public class PotClosedEventHandler implements EventHandler<PotClosedEvent> {
                 event.getVersion(), currentTable.getSeats(),
                 currentTable.getTotalPot(), pots,
                 currentTable.getVisibleCommonCards(),
-                currentTable.getCurrentHandMinRaiseToAmount());
+                currentTable.getCurrentHandMinRaiseToAmount(),
+                currentTable.getCurrentHandId());
         tableRepository.save(updatedTable);
     }
 

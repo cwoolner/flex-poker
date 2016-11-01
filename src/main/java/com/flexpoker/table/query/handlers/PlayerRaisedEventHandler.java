@@ -74,7 +74,7 @@ public class PlayerRaisedEventHandler implements EventHandler<PlayerRaisedEvent>
         var updatedTable = new TableDTO(currentTable.getId(),
                 event.getVersion(), updatedSeats, currentTable.getTotalPot() + totalPotIncrease,
                 currentTable.getPots(), currentTable.getVisibleCommonCards(),
-                currentTable.getCurrentHandMinRaiseToAmount());
+                currentTable.getCurrentHandMinRaiseToAmount(), currentTable.getCurrentHandId());
         tableRepository.save(updatedTable);
     }
 

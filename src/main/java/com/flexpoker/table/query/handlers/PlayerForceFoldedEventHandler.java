@@ -80,7 +80,7 @@ public class PlayerForceFoldedEventHandler implements EventHandler<PlayerForceFo
         var updatedTable = new TableDTO(currentTable.getId(),
                 event.getVersion(), updatedSeats, currentTable.getTotalPot(),
                 updatePots, currentTable.getVisibleCommonCards(),
-                currentTable.getCurrentHandMinRaiseToAmount());
+                currentTable.getCurrentHandMinRaiseToAmount(), currentTable.getCurrentHandId());
         tableRepository.save(updatedTable);
     }
 

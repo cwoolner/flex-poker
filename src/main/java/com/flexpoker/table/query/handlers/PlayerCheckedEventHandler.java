@@ -60,7 +60,7 @@ public class PlayerCheckedEventHandler implements EventHandler<PlayerCheckedEven
         var updatedTable = new TableDTO(currentTable.getId(),
                 event.getVersion(), updatedSeats, currentTable.getTotalPot(),
                 currentTable.getPots(), currentTable.getVisibleCommonCards(),
-                currentTable.getCurrentHandMinRaiseToAmount());
+                currentTable.getCurrentHandMinRaiseToAmount(), currentTable.getCurrentHandId());
         tableRepository.save(updatedTable);
     }
 

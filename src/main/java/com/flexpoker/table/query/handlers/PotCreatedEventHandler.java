@@ -55,7 +55,8 @@ public class PotCreatedEventHandler implements EventHandler<PotCreatedEvent> {
                 event.getVersion(), currentTable.getSeats(),
                 currentTable.getTotalPot(), pots,
                 currentTable.getVisibleCommonCards(),
-                currentTable.getCurrentHandMinRaiseToAmount());
+                currentTable.getCurrentHandMinRaiseToAmount(),
+                currentTable.getCurrentHandId());
         tableRepository.save(updatedTable);
     }
 
