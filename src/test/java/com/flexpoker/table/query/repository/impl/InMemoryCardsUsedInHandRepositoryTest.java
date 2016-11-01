@@ -1,6 +1,7 @@
 package com.flexpoker.table.query.repository.impl;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.util.HashMap;
 import java.util.UUID;
@@ -70,6 +71,42 @@ public class InMemoryCardsUsedInHandRepositoryTest {
 
         assertEquals(pocketCards1, repository.fetchPocketCards(handId, player1Id));
         assertEquals(pocketCards2, repository.fetchPocketCards(handId, player2Id));
+    }
+
+    @Test
+    public void testFetchAllPocketCardsForUser() {
+        InMemoryCardsUsedInHandRepository repository = new InMemoryCardsUsedInHandRepository();
+
+        PocketCards pocketCards1 = new PocketCards(
+                new Card(0, CardRank.TWO, CardSuit.HEARTS),
+                new Card(1, CardRank.THREE, CardSuit.HEARTS));
+        PocketCards pocketCards2 = new PocketCards(
+                new Card(0, CardRank.THREE, CardSuit.HEARTS),
+                new Card(1, CardRank.FOUR, CardSuit.HEARTS));
+
+        UUID player1Id = UUID.randomUUID();
+        UUID player2Id = UUID.randomUUID();
+
+        var playerToPocketCardsMap = new HashMap<UUID, PocketCards>();
+        playerToPocketCardsMap.put(player1Id, pocketCards1);
+        playerToPocketCardsMap.put(player2Id, pocketCards2);
+        UUID handId1 = UUID.randomUUID();
+        repository.savePocketCards(handId1, playerToPocketCardsMap);
+
+        playerToPocketCardsMap = new HashMap<>();
+        playerToPocketCardsMap.put(player1Id, pocketCards2);
+        UUID handId2 = UUID.randomUUID();
+        repository.savePocketCards(handId2, playerToPocketCardsMap);
+
+        var player1PocketCards = repository.fetchAllPocketCardsForUser(player1Id);
+        var player2PocketCards = repository.fetchAllPocketCardsForUser(player2Id);
+
+        assertEquals(2, player1PocketCards.size());
+        assertTrue(player1PocketCards.containsKey(handId1));
+        assertTrue(player1PocketCards.containsKey(handId2));
+
+        assertEquals(1, player2PocketCards.size());
+        assertTrue(player2PocketCards.containsKey(handId1));
     }
 
 }

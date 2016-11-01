@@ -1,6 +1,7 @@
 package com.flexpoker.web.controller;
 
 import java.security.Principal;
+import java.util.Map;
 import java.util.UUID;
 
 import javax.inject.Inject;
@@ -12,11 +13,13 @@ import org.springframework.stereotype.Controller;
 
 import com.flexpoker.framework.command.CommandSender;
 import com.flexpoker.login.repository.LoginRepository;
+import com.flexpoker.model.card.PocketCards;
 import com.flexpoker.table.command.commands.CallCommand;
 import com.flexpoker.table.command.commands.CheckCommand;
 import com.flexpoker.table.command.commands.FoldCommand;
 import com.flexpoker.table.command.commands.RaiseCommand;
 import com.flexpoker.table.command.framework.TableCommandType;
+import com.flexpoker.table.query.repository.CardsUsedInHandRepository;
 import com.flexpoker.table.query.repository.TableRepository;
 import com.flexpoker.web.dto.incoming.CallTableActionDTO;
 import com.flexpoker.web.dto.incoming.CheckTableActionDTO;
@@ -33,12 +36,22 @@ public class TableController {
 
     private final TableRepository tableRepository;
 
+    private final CardsUsedInHandRepository cardsUsedInHandRepository;
+
     @Inject
     public TableController(CommandSender<TableCommandType> commandSender,
-            LoginRepository loginRepository, TableRepository tableRepository) {
+            LoginRepository loginRepository, TableRepository tableRepository,
+            CardsUsedInHandRepository cardsUsedInHandRepository) {
         this.commandSender = commandSender;
         this.loginRepository = loginRepository;
         this.tableRepository = tableRepository;
+        this.cardsUsedInHandRepository = cardsUsedInHandRepository;
+    }
+
+    @SubscribeMapping("/user/queue/pocketcards")
+    public Map<UUID, PocketCards> fetchPocketCards(Principal principal) {
+        UUID playerId = loginRepository.fetchAggregateIdByUsername(principal.getName());
+        return cardsUsedInHandRepository.fetchAllPocketCardsForUser(playerId);
     }
 
     @SubscribeMapping("/topic/game/{gameId}/table/{tableId}")

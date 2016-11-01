@@ -26,4 +26,6 @@ public interface CardsUsedInHandRepository {
 
     PocketCards fetchPocketCards(UUID handId, UUID playerId);
 
+    Map<UUID, PocketCards> fetchAllPocketCardsForUser(UUID playerId);
+
 }

@@ -3,6 +3,7 @@ package com.flexpoker.table.query.repository.impl;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Repository;
 
@@ -68,6 +69,13 @@ public class InMemoryCardsUsedInHandRepository implements CardsUsedInHandReposit
     @Override
     public PocketCards fetchPocketCards(UUID handId, UUID playerId) {
         return handIdToPocketCardsMap.get(handId).get(playerId);
+    }
+
+    @Override
+    public Map<UUID, PocketCards> fetchAllPocketCardsForUser(UUID playerId) {
+        return handIdToPocketCardsMap.entrySet().stream()
+                .filter(x -> x.getValue().containsKey(playerId))
+                .collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().get(playerId)));
     }
 
 }
