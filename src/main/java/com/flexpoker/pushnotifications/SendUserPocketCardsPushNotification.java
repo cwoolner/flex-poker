@@ -10,29 +10,29 @@ public class SendUserPocketCardsPushNotification extends BasePushNotification {
 
     private static final PushNotificationType TYPE = PushNotificationType.SendUserPocketCards;
 
-    private final PocketCards pocketCards;
-
-    private final UUID tableId;
-
     private final UUID playerId;
 
-    public SendUserPocketCardsPushNotification(UUID playerId, PocketCards pocketCards, UUID tableId) {
+    private final UUID handId;
+
+    private final PocketCards pocketCards;
+
+    public SendUserPocketCardsPushNotification(UUID playerId, UUID handId, PocketCards pocketCards) {
         super(TYPE);
         this.playerId = playerId;
+        this.handId = handId;
         this.pocketCards = pocketCards;
-        this.tableId = tableId;
-    }
-
-    public PocketCards getPocketCards() {
-        return pocketCards;
-    }
-
-    public UUID getTableId() {
-        return tableId;
     }
 
     public UUID getPlayerId() {
         return playerId;
+    }
+
+    public UUID getHandId() {
+        return handId;
+    }
+
+    public PocketCards getPocketCards() {
+        return pocketCards;
     }
 
 }

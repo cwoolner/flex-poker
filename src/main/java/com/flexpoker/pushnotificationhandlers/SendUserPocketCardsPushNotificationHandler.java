@@ -31,8 +31,9 @@ public class SendUserPocketCardsPushNotificationHandler
     @Override
     public void handle(SendUserPocketCardsPushNotification pushNotification) {
         var username = loginRepository.fetchUsernameByAggregateId(pushNotification.getPlayerId());
-        var pocketCardsDTO = new PocketCardsDTO(pushNotification.getPocketCards().getCard1().getId(),
-                pushNotification.getPocketCards().getCard2().getId(), pushNotification.getTableId());
+        var pocketCardsDTO = new PocketCardsDTO(pushNotification.getHandId(),
+                pushNotification.getPocketCards().getCard1().getId(),
+                pushNotification.getPocketCards().getCard2().getId());
         messagingTemplate.convertAndSendToUser(username, MessagingConstants.POCKET_CARDS, pocketCardsDTO);
     }
 

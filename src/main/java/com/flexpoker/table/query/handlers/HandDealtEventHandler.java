@@ -97,11 +97,10 @@ public class HandDealtEventHandler implements EventHandler<HandDealtEvent> {
         var pushNotification = new TableUpdatedPushNotification(event.getGameId(), event.getAggregateId());
         pushNotificationPublisher.publish(pushNotification);
 
-        Consumer<UUID> pocketCardsConsumer = (UUID playerId) -> {
-            var pocketCardsPushNotification = new SendUserPocketCardsPushNotification(
-                    playerId, event.getPlayerToPocketCardsMap().get(playerId),
-                    event.getAggregateId());
-            pushNotificationPublisher.publish(pocketCardsPushNotification);
+        Consumer<UUID> pocketCardsConsumer = playerId -> {
+            var pockCardsPushNotification = new SendUserPocketCardsPushNotification(
+                    playerId, event.getHandId(), event.getPlayerToPocketCardsMap().get(playerId));
+            pushNotificationPublisher.publish(pockCardsPushNotification);
         };
         event.getPlayersStillInHand().forEach(pocketCardsConsumer);
     }
