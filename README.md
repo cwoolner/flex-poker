@@ -70,7 +70,7 @@ NOTE: Since the app uses in-memory persistence, the entire state of the app is e
 
 ##Required
 
-* Node.js/npm
+* Node.js/(npm|yarn)
 * Java 8
 * Maven
 
@@ -92,14 +92,16 @@ NOTE: Since the app uses in-memory persistence, the entire state of the app is e
 
 #Running the app
 
-* Default version - from the top-level directory: `npm install && mvn jetty:run`
-* Prod version (Redis required) - from the top-level directory: `npm install && mvn jetty:run -Dspring.profiles.active=prod`
-* Hit [http://localhost:8080/](http://localhost:8080/)
+1. Run the front-end build: `npm install` or `yarn`
+2. Run the server:
+   * Default version: `mvn jetty:run`
+   * Prod version (Redis required): `mvn jetty:run -Dspring.profiles.active=prod`
+3. Hit [http://localhost:8080/](http://localhost:8080/)
 
 #Dev environment setup
 
 * Just been using Eclipse, so to generate the .classpath file, from the top-level directory: `mvn eclipse:eclipse`
-* While developing, running `npm start` launches webpack in watch mode
+* While developing, running `npm start` or `yarn start` launches webpack in watch mode
 
 #Testing
 
