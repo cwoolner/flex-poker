@@ -7,6 +7,7 @@ import WebSocketSubscriptionManager from './modules/webSocket/WebSocketSubscript
 import Navigation from './modules/home/Navigation';
 import MainTabs from './modules/home/MainTabs';
 import reducer from './reducers';
+import { UPDATE_USERNAME } from './constants/ActionTypes';
 
 WebSocketSubscriptionManager.subscribe(this, [
   {location: '/user/topic/chat/personal/user', subscription: message => alert('personal' + message.body)},
@@ -14,7 +15,7 @@ WebSocketSubscriptionManager.subscribe(this, [
 ]);
 
 const store = createStore(reducer);
-store.dispatch({type: 'UPDATE_USERNAME', username: window.username});
+store.dispatch({type: UPDATE_USERNAME, username: window.username});
 
 render((
   <Provider store={store}>
