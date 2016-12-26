@@ -1,8 +1,7 @@
 import React from 'react';
 import { Nav, Navbar, NavItem, NavDropdown, MenuItem } from 'react-bootstrap';
-import { connect } from 'react-redux';
 
-const Navigation = ({username}) => {
+export default ({username}) => {
   return (
     <Navbar>
       <Navbar.Header>
@@ -21,7 +20,3 @@ const Navigation = ({username}) => {
     </Navbar>
   );
 }
-
-const mapStateToProps = state => ({ username: state.username })
-
-export default connect(mapStateToProps)(Navigation)
