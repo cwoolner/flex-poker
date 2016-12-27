@@ -9,6 +9,7 @@ import Lobby from '../lobby/Lobby';
 import GamePage from '../game/GamePage';
 import TablePage from '../table/TablePage';
 import Logout from './Logout';
+import { initOpenGameTabs, updateOpenGameTabs, updateOpenGameList } from '../../actions';
 
 class MainTabs extends React.Component {
 
@@ -45,7 +46,7 @@ class MainTabs extends React.Component {
   }
 
   displayGameTabs(message) {
-    this.props.actions.initOpenGameTabs(JSON.parse(message.body));
+    this.props.dispatch(initOpenGameTabs(JSON.parse(message.body)));
     this.setState({
       tableToRedirectTo: null,
       gameToRedirectTo: null
@@ -57,7 +58,7 @@ class MainTabs extends React.Component {
     const newOpenGameTabs = JSON.parse(message.body);
     const gameToRedirectTo = newOpenGameTabs.filter(x => !(currentOpenGameTabs.map(y => y.gameId).includes(x.gameId)));
 
-    this.props.actions.updateOpenGameTabs(newOpenGameTabs);
+    this.props.dispatch(updateOpenGameTabs(newOpenGameTabs));
     this.setState({
       tableToRedirectTo: null,
       gameToRedirectTo: gameToRedirectTo.length === 0 ? null : `/game/${gameToRedirectTo[0].gameId}`
@@ -87,7 +88,7 @@ class MainTabs extends React.Component {
   }
 
   updateGameList(message) {
-    this.props.actions.updateOpenGameList(JSON.parse(message.body));
+    this.props.dispatch(updateOpenGameList(JSON.parse(message.body)));
   }
 
   render() {
