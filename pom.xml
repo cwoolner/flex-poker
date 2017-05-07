@@ -13,7 +13,7 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <jetty.version>9.4.0.v20161208</jetty.version>
+    <jetty.version>9.4.5.v20170502</jetty.version>
   </properties>
 
   <build>
@@ -67,7 +67,7 @@
       <plugin>
         <groupId>org.pitest</groupId>
         <artifactId>pitest-maven</artifactId>
-        <version>1.1.11</version>
+        <version>1.2.0</version>
         <configuration>
           <targetClasses>
             <param>com.flexpoker.*</param>
@@ -87,7 +87,7 @@
       <dependency>
         <groupId>io.spring.platform</groupId>
         <artifactId>platform-bom</artifactId>
-        <version>Athens-SR2</version>
+        <version>Brussels-SR2</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
