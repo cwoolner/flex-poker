@@ -14,18 +14,18 @@
   "dependencies": {
     "lodash": "4.17.4",
     "react": "15.4.2",
-    "react-bootstrap": "0.30.7",
+    "react-bootstrap": "0.31.0",
     "react-dom": "15.4.2",
     "react-router": "4.0.0-alpha.6",
-    "sockjs-client": "1.1.1",
-    "webstomp-client": "1.0.3"
+    "sockjs-client": "1.1.4",
+    "webstomp-client": "1.0.6"
   },
   "devDependencies": {
-    "babel-core": "6.22.1",
-    "babel-loader": "6.2.10",
-    "babel-preset-es2015": "6.22.0",
-    "babel-preset-react": "6.22.0",
-    "http-server": "0.9.0",
-    "webpack": "v2.2.0"
+    "babel-core": "6.24.1",
+    "babel-loader": "7.0.0",
+    "babel-preset-es2015": "6.24.1",
+    "babel-preset-react": "6.24.1",
+    "http-server": "0.10.0",
+    "webpack": "v2.5.1"
   }
 }
