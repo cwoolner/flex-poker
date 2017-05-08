@@ -30,7 +30,7 @@ class TablePage extends React.Component {
   }
 
   componentDidMount() {
-    const { gameId, tableId } = this.props.params
+    const { gameId, tableId } = this.props.match.params
     WebSocketSubscriptionManager.subscribe(this, [
       {location: `/topic/game/${gameId}/table/${tableId}`, subscription: this.receiveTableUpdate},
       {location: `/topic/chat/game/${gameId}/table/${tableId}/user`, subscription: this.displayChat},
@@ -55,7 +55,7 @@ class TablePage extends React.Component {
   }
 
   sendChat(message) {
-    const { gameId, tableId } = this.props.params
+    const { gameId, tableId } = this.props.match.params
     const tableMessage = {
       message,
       receiverUsernames: null,
@@ -81,7 +81,7 @@ class TablePage extends React.Component {
   }
 
   render() {
-    const { gameId, tableId } = this.props.params
+    const { gameId, tableId } = this.props.match.params
     const username = window.username;
     const mySeat = this.state.seats.find(seat => seat.name === username);
 

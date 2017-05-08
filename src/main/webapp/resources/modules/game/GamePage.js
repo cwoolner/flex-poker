@@ -12,7 +12,7 @@ class GamePage extends React.Component {
   }
 
   componentDidMount() {
-    const gameId = this.props.params.gameId;
+    const gameId = this.props.match.params.gameId;
 
     WebSocketSubscriptionManager.subscribe(this, [
       {location: `/topic/chat/game/${gameId}/user`, subscription: this.displayChat},
@@ -32,7 +32,7 @@ class GamePage extends React.Component {
     const gameMessage = {
       message: message,
       receiverUsernames: null,
-      gameId: this.props.params.gameId,
+      gameId: this.props.match.params.gameId,
     }
     WebSocketService.send('/app/sendchatmessage', gameMessage)
   }

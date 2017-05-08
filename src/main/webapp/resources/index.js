@@ -1,6 +1,6 @@
 import React from 'react';
 import { render } from 'react-dom';
-import { HashRouter, Match, Miss } from 'react-router';
+import { HashRouter } from 'react-router-dom';
 import WebSocketSubscriptionManager from './modules/webSocket/WebSocketSubscriptionManager';
 import Navigation from './modules/home/Navigation';
 import MainTabs from './modules/home/MainTabs';

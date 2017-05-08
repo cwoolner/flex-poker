@@ -1,6 +1,6 @@
 import React from 'react';
 import WebSocketSubscriptionManager from '../webSocket/WebSocketSubscriptionManager';
-import { Redirect, Link, Match, Miss } from 'react-router';
+import { Redirect, Route, Switch } from 'react-router';
 import { Nav, NavItem, NavDropdown, MenuItem } from 'react-bootstrap';
 import _ from 'lodash';
 import GameTab from './GameTab';
@@ -89,10 +89,12 @@ class MainTabs extends React.Component {
           <NavItem href="/#">Lobby</NavItem>
           {this.state.openGameTabs.map((openGameTab, index) => <GameTab key={index} openGameTab={openGameTab} />)}
         </Nav>
-        <Match exactly pattern="/" component={Lobby} />
-        <Match exactly pattern="/game/:gameId" component={GamePage} />
-        <Match exactly pattern="/game/:gameId/table/:tableId" component={TablePage} />
-        <Match exactly pattern="/logout" component={Logout} />
+        <Switch>
+          <Route exact path="/" component={Lobby} />
+          <Route exact path="/game/:gameId" component={GamePage} />
+          <Route exact path="/game/:gameId/table/:tableId" component={TablePage} />
+          <Route exact path="/logout" component={Logout} />
+        </Switch>
         {_.isNil(this.state.tableToRedirectTo) ? null : <Redirect to={this.state.tableToRedirectTo || ""} />}
         {_.isNil(this.state.gameToRedirectTo) ? null : <Redirect to={this.state.gameToRedirectTo || ""} />}
       </div>
