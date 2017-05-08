@@ -13,9 +13,9 @@
   "license": "ISC",
   "dependencies": {
     "lodash": "4.17.4",
-    "react": "15.4.2",
+    "react": "15.5.4",
     "react-bootstrap": "0.31.0",
-    "react-dom": "15.4.2",
+    "react-dom": "15.5.4",
     "react-router": "4.0.0-alpha.6",
     "sockjs-client": "1.1.4",
     "webstomp-client": "1.0.6"

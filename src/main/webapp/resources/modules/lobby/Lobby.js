@@ -7,56 +7,85 @@ import GameList from './GameList';
 import Chat from '../common/Chat';
 import { Button } from 'react-bootstrap';
 
-export default React.createClass({
+class Lobby extends React.Component {
 
-  getInitialState() {
-    return {
+  constructor(props) {
+    super(props)
+
+    this.displayChat = this.displayChat.bind(this)
+    this.updateGameList = this.updateGameList.bind(this)
+    this.openCreateGameModal = this.openCreateGameModal.bind(this)
+    this.openJoinGameModal = this.openJoinGameModal.bind(this)
+    this.hideCreateGameDialog = this.hideCreateGameDialog.bind(this)
+    this.hideJoinGameDialog = this.hideJoinGameDialog.bind(this)
+
+    this.state = {
       createGameDialogOpen: false,
       joinGameDialogOpen: false,
       joinGameId: null,
       openGameList: []
     }
-  },
+  }
 
   componentDidMount() {
     WebSocketSubscriptionManager.subscribe(this, [
-      {location: '/topic/chat/global/user', subscription: displayChat.bind(this)},
-      {location: '/topic/chat/global/system', subscription: displayChat.bind(this)},
-      {location: '/topic/availabletournaments', subscription: updateGameList.bind(this)}
+      {location: '/topic/chat/global/user', subscription: this.displayChat},
+      {location: '/topic/chat/global/system', subscription: this.displayChat},
+      {location: '/topic/availabletournaments', subscription: this.updateGameList}
     ]);
-  },
+  }
 
   componentWillUnmount() {
     WebSocketSubscriptionManager.unsubscribe(this);
-  },
+  }
 
   openCreateGameModal() {
     this.setState({
       createGameDialogOpen: true,
       joinGameId: null
     });
-  },
+  }
 
   openJoinGameModal(gameId) {
     this.setState({
       joinGameDialogOpen: true,
       joinGameId: gameId
     });
-  },
+  }
 
   hideCreateGameDialog() {
     this.setState({
       createGameDialogOpen: false,
       joinGameId: null
     });
-  },
+  }
 
   hideJoinGameDialog() {
     this.setState({
       joinGameDialogOpen: false,
       joinGameId: null
     });
-  },
+  }
+
+  displayChat(message) {
+    this.refs.globalChat.displayChat(message.body)
+  }
+
+  sendGlobalChat(message) {
+    const globalMessage = {
+      message,
+      receiverUsernames: null,
+      gameId: null,
+      tableId: null
+    }
+    WebSocketService.send('/app/sendchatmessage', globalMessage)
+  }
+
+  updateGameList(message) {
+    this.setState({
+      openGameList: JSON.parse(message.body)
+    })
+  }
 
   render() {
     return (
@@ -65,7 +94,7 @@ export default React.createClass({
           gameList={this.state.openGameList}
           gameOpenedCallback={this.openJoinGameModal}
           openCreateGameModalCallback={this.openCreateGameModal} />
-        <Chat ref="globalChat" sendChat={sendGlobalChat} />
+        <Chat ref="globalChat" sendChat={this.sendGlobalChat} />
         <CreateGameDialog
           hideDialog={this.hideCreateGameDialog}
           showModal={this.state.createGameDialogOpen} />
@@ -76,25 +105,7 @@ export default React.createClass({
       </div>
     )
   }
-});
 
-function displayChat(message) {
-  this.refs.globalChat.displayChat(message.body);
 }
 
-function sendGlobalChat(message) {
-  const globalMessage = {
-    message,
-    receiverUsernames: null,
-    gameId: null,
-    tableId: null
-  };
-
-  WebSocketService.send('/app/sendchatmessage', globalMessage);
-}
-
-function updateGameList(message) {
-  this.setState({
-    openGameList: JSON.parse(message.body)
-  });
-}
+export default Lobby

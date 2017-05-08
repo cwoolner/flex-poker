@@ -9,10 +9,16 @@ import SeatContainer from './SeatContainer';
 import Chat from '../common/Chat';
 import _ from 'lodash';
 
-export default React.createClass({
+class TablePage extends React.Component {
 
-  getInitialState() {
-    return {
+  constructor(props) {
+    super(props)
+
+    this.displayChat = this.displayChat.bind(this)
+    this.sendChat = this.sendChat.bind(this)
+    this.receiveTableUpdate = this.receiveTableUpdate.bind(this)
+
+    this.state = {
       myLeftCardId: null,
       myRightCardId: null,
       totalPot: 0,
@@ -21,16 +27,14 @@ export default React.createClass({
       tableVersion: 0,
       pots: []
     }
-  },
+  }
 
   componentDidMount() {
-    const gameId = this.props.params.gameId;
-    const tableId = this.props.params.tableId;
-
+    const { gameId, tableId } = this.props.params
     WebSocketSubscriptionManager.subscribe(this, [
-      {location: `/topic/game/${gameId}/table/${tableId}`, subscription: receiveTableUpdate.bind(this)},
-      {location: `/topic/chat/game/${gameId}/table/${tableId}/user`, subscription: displayChat.bind(this)},
-      {location: `/topic/chat/game/${gameId}/table/${tableId}/system`, subscription: displayChat.bind(this)}
+      {location: `/topic/game/${gameId}/table/${tableId}`, subscription: this.receiveTableUpdate},
+      {location: `/topic/chat/game/${gameId}/table/${tableId}/user`, subscription: this.displayChat},
+      {location: `/topic/chat/game/${gameId}/table/${tableId}/system`, subscription: this.displayChat}
     ]);
 
     document.addEventListener(`pocketCardsReceived-${tableId}`, evt => {
@@ -40,13 +44,44 @@ export default React.createClass({
       })
     });
 
-  },
+  }
 
   componentWillUnmount() {
     WebSocketSubscriptionManager.unsubscribe(this);
-  },
+  }
+
+  displayChat(message) {
+    this.refs.tableChat.displayChat(message.body);
+  }
+
+  sendChat(message) {
+    const { gameId, tableId } = this.props.params
+    const tableMessage = {
+      message,
+      receiverUsernames: null,
+      gameId,
+      tableId
+    };
+
+    WebSocketService.send('/app/sendchatmessage', tableMessage);
+  }
+
+  receiveTableUpdate(message) {
+    let table = JSON.parse(message.body);
+
+    if (table.version > this.state.tableVersion) {
+      this.setState({
+        totalPot: table.totalPot,
+        visibleCommonCards: table.visibleCommonCards,
+        seats: table.seats,
+        tableVersion: table.version,
+        pots: table.pots
+      });
+    }
+  }
 
   render() {
+    const { gameId, tableId } = this.props.params
     const username = window.username;
     const mySeat = this.state.seats.find(seat => seat.name === username);
 
@@ -55,7 +90,7 @@ export default React.createClass({
         <div className={"poker-table"}>
           <div>{this.state.totalPot}</div>
           <CommonCards visibleCommonCards={this.state.visibleCommonCards} />
-          <SeatContainer gameId={this.props.params.gameId} tableId={this.props.params.tableId} mySeat={mySeat} seats={this.state.seats} />
+          <SeatContainer gameId={gameId} tableId={tableId} mySeat={mySeat} seats={this.state.seats} />
         </div>
 
         {this.state.pots.map(pot => {
@@ -74,46 +109,19 @@ export default React.createClass({
           _.isNil(mySeat)
             ? null
             : <PokerActions
-                gameId={this.props.params.gameId}
-                tableId={this.props.params.tableId}
+                gameId={gameId}
+                tableId={tableId}
                 actionOn={mySeat.actionOn}
                 callAmount={mySeat.callAmount}
                 minRaiseTo={mySeat.raiseTo}
                 maxRaiseTo={mySeat.chipsInBack + mySeat.chipsInFront} />
         }
 
-        <Chat ref="tableChat" sendChat={sendChat.bind(this, this.props.params.gameId, this.props.params.tableId)} />
+        <Chat ref="tableChat" sendChat={this.sendChat} />
       </div>
     )
   }
 
-})
-
-function displayChat(message) {
-  this.refs.tableChat.displayChat(message.body);
 }
 
-function sendChat(gameId, tableId, message) {
-  const tableMessage = {
-    message: message,
-    receiverUsernames: null,
-    gameId: gameId,
-    tableId: tableId
-  };
-
-  WebSocketService.send('/app/sendchatmessage', tableMessage);
-}
-
-function receiveTableUpdate(message) {
-  let table = JSON.parse(message.body);
-
-  if (table.version > this.state.tableVersion) {
-    this.setState({
-      totalPot: table.totalPot,
-      visibleCommonCards: table.visibleCommonCards,
-      seats: table.seats,
-      tableVersion: table.version,
-      pots: table.pots
-    });
-  }
-}
+export default TablePage

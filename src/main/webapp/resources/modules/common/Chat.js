@@ -1,14 +1,19 @@
 import React from 'react';
 import { FormGroup, FormControl, FieldGroup, Button } from 'react-bootstrap';
 
-export default React.createClass({
+class Chat extends React.Component {
+
+  constructor(props) {
+    super(props);
+    this.chatFormSubmitted = this.chatFormSubmitted.bind(this);
+  }
 
   displayChat(message) {
     const chatTextArea = document.querySelector('#chat-text');
     const scrollHeight = chatTextArea['scrollHeight'];
     chatTextArea['scrollTop'] = scrollHeight;
     chatTextArea.value += message + '\n';
-  },
+  }
 
   chatFormSubmitted(evt) {
     evt.preventDefault();
@@ -17,7 +22,7 @@ export default React.createClass({
       this.props.sendChat(messageTextBox.value);
       messageTextBox.value = '';
     }
-  },
+  }
 
   render() {
     return (
@@ -33,4 +38,7 @@ export default React.createClass({
       </div>
     )
   }
-})
+
+}
+
+export default Chat

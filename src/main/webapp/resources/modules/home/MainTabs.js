@@ -9,30 +9,78 @@ import GamePage from '../game/GamePage';
 import TablePage from '../table/TablePage';
 import Logout from './Logout';
 
-export default React.createClass({
+class MainTabs extends React.Component {
 
-  getInitialState() {
-    return {
+  constructor(props) {
+    super(props)
+
+    this.openGameTab = this.openGameTab.bind(this)
+    this.openTable = this.openTable.bind(this)
+    this.displayGameTabs = this.displayGameTabs.bind(this)
+    this.displayPocketCards = this.displayPocketCards.bind(this)
+
+    this.state = {
       openGameTabs: [],
       tableToRedirectTo: null,
       gameToRedirectTo: null
     }
-  },
+  }
 
   componentDidMount() {
     WebSocketSubscriptionManager.subscribe(this, [
       {location: '/user/queue/errors', subscription: message => alert("Error " + message.body)},
-      {location: '/app/opengamesforuser', subscription: displayGameTabs.bind(this)},
-      {location: '/user/queue/opengamesforuser', subscription: openGameTab.bind(this)},
-      {location: '/user/queue/opentable', subscription: openTable.bind(this)},
+      {location: '/app/opengamesforuser', subscription: this.displayGameTabs},
+      {location: '/user/queue/opengamesforuser', subscription: this.openGameTab},
+      {location: '/user/queue/opentable', subscription: this.openTable},
       {location: '/user/queue/personaltablestatus', subscription: message => alert(JSON.parse(message.body))},
-      {location: '/user/queue/pocketcards', subscription: displayPocketCards.bind(this)}
+      {location: '/user/queue/pocketcards', subscription: this.displayPocketCards}
     ]);
-  },
+  }
 
   componentWillUnmount() {
     WebSocketSubscriptionManager.unsubscribe(this);
-  },
+  }
+
+  displayGameTabs(message) {
+    this.setState({
+      openGameTabs: JSON.parse(message.body),
+      tableToRedirectTo: null,
+      gameToRedirectTo: null
+    })
+  }
+
+  openGameTab(message) {
+    const newOpenGameTabs = JSON.parse(message.body)
+    const gameToRedirectTo = newOpenGameTabs.filter(x => !(this.state.openGameTabs.map(y => y.gameId).includes(x.gameId)))
+
+    this.setState({
+      openGameTabs: newOpenGameTabs,
+      tableToRedirectTo: null,
+      gameToRedirectTo: gameToRedirectTo.length === 0 ? null : `/game/${gameToRedirectTo[0].gameId}`
+    })
+}
+
+  openTable(message) {
+    const openTable = JSON.parse(message.body)
+    this.setState({
+      tableToRedirectTo: `/game/${openTable.gameId}/table/${openTable.tableId}`,
+      gameToRedirectTo: null
+    })
+  }
+
+  displayPocketCards(message) {
+    const parsedData = JSON.parse(message.body);
+    const pocketCards = {
+      cardId1: parsedData.cardId1,
+      cardId2: parsedData.cardId2
+    };
+
+    const pocketCardsReceivedEvent = new CustomEvent(`pocketCardsReceived-${parsedData.tableId}`, {
+      detail: pocketCards,
+      bubbles: true
+    });
+    document.dispatchEvent(pocketCardsReceivedEvent);
+  }
 
   render() {
     return (
@@ -50,45 +98,7 @@ export default React.createClass({
       </div>
     )
   }
-})
 
-function displayGameTabs(message) {
-  this.setState({
-    openGameTabs: JSON.parse(message.body),
-    tableToRedirectTo: null,
-    gameToRedirectTo: null
-  });
 }
 
-function openGameTab(message) {
-  const newOpenGameTabs = JSON.parse(message.body);
-  const gameToRedirectTo = newOpenGameTabs.filter(x => !(this.state.openGameTabs.map(y => y.gameId).includes(x.gameId)));
-
-  this.setState({
-    openGameTabs: newOpenGameTabs,
-    tableToRedirectTo: null,
-    gameToRedirectTo: gameToRedirectTo.length === 0 ? null : `/game/${gameToRedirectTo[0].gameId}`
-  });
-}
-
-function openTable(message) {
-  const openTable = JSON.parse(message.body);
-  this.setState({
-    tableToRedirectTo: `/game/${openTable.gameId}/table/${openTable.tableId}`,
-    gameToRedirectTo: null
-  });
-}
-
-function displayPocketCards(message) {
-  const parsedData = JSON.parse(message.body);
-  const pocketCards = {
-    cardId1: parsedData.cardId1,
-    cardId2: parsedData.cardId2
-  };
-
-  const pocketCardsReceivedEvent = new CustomEvent(`pocketCardsReceived-${parsedData.tableId}`, {
-    detail: pocketCards,
-    bubbles: true
-  });
-  document.dispatchEvent(pocketCardsReceivedEvent);
-}
+export default MainTabs

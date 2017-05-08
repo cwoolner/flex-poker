@@ -2,19 +2,28 @@ import React from 'react';
 import WebSocketService from '../webSocket/WebSocketService';
 import _ from 'lodash';
 
-export default React.createClass({
+class PokerActions extends React.Component {
 
-  getInitialState() {
-    return {
+  constructor(props) {
+    super(props)
+
+    this.check = this.check.bind(this)
+    this.call = this.call.bind(this)
+    this.raise = this.raise.bind(this)
+    this.fold = this.fold.bind(this)
+    this.validRaise = this.validRaise.bind(this)
+    this.handleRaiseChangeEvent = this.handleRaiseChangeEvent.bind(this)
+
+    this.state = {
       currentRaiseTo: null
-    };
-  },
+    }
+  }
 
   componentWillReceiveProps({minRaiseTo}) {
     this.setState({
       currentRaiseTo: minRaiseTo
     });
-  },
+  }
 
   componentDidMount() {
     if (_.isNil(this.state.currentRaiseTo)) {
@@ -22,22 +31,68 @@ export default React.createClass({
         currentRaiseTo: this.props.minRaiseTo
       });
     }
-  },
+  }
+
+  check() {
+    const { gameId, tableId } = this.props
+    WebSocketService.send('/app/check', { gameId, tableId });
+    this.setState({
+      currentRaiseTo: null
+    });
+  }
+
+  call() {
+    const { gameId, tableId } = this.props
+    WebSocketService.send('/app/call', { gameId, tableId });
+    this.setState({
+      currentRaiseTo: null
+    });
+  }
+
+  raise() {
+    const { gameId, tableId } = this.props
+    const raiseToAmount = this.state.currentRaiseTo
+    if (this.validRaise()) {
+      WebSocketService.send('/app/raise', { gameId, tableId, raiseToAmount });
+      this.setState({
+        currentRaiseTo: null
+      });
+    }
+  }
+
+  fold() {
+    const { gameId, tableId } = this.props
+    WebSocketService.send('/app/fold', { gameId, tableId });
+    this.setState({
+      currentRaiseTo: null
+    });
+  }
+
+  validRaise() {
+    const { minRaiseTo, maxRaiseTo } = this.props
+    return _.inRange(this.state.currentRaiseTo, minRaiseTo, maxRaiseTo + 1);
+  }
+
+  handleRaiseChangeEvent(evt) {
+    this.setState({
+      currentRaiseTo: evt.target.value
+    });
+  }
 
   render() {
-    const {gameId, tableId, actionOn, callAmount, minRaiseTo, maxRaiseTo} = this.props;
+    const { actionOn, callAmount, minRaiseTo, maxRaiseTo} = this.props;
 
     return (
       <div>
         <div className={actionOn ? '' : 'hidden'}>
-          <button className={callAmount === 0 ? '' : 'hidden'} onClick={check.bind(this, gameId, tableId)}>Check</button>
-          <button className={callAmount > 0 ? '' : 'hidden'} onClick={call.bind(this, gameId, tableId)}>Call {callAmount}</button>
-          <button className={minRaiseTo > 0 ? '' : 'hidden'} onClick={raise.bind(this, gameId, tableId, this.state.currentRaiseTo, minRaiseTo, maxRaiseTo)}>
-            Raise to {validRaise(this.state.currentRaiseTo, minRaiseTo, maxRaiseTo) ? this.state.currentRaiseTo : '--'}
+          <button className={callAmount === 0 ? '' : 'hidden'} onClick={this.check}>Check</button>
+          <button className={callAmount > 0 ? '' : 'hidden'} onClick={this.call}>Call {callAmount}</button>
+          <button className={minRaiseTo > 0 ? '' : 'hidden'} onClick={this.raise}>
+            Raise to {this.validRaise() ? this.state.currentRaiseTo : '--'}
           </button>
-          <input type="number" min={minRaiseTo} max={maxRaiseTo} value={this.state.currentRaiseTo} onChange={evt => this.setState({ currentRaiseTo: evt.target.value })} />
-          <label className={_.inRange(this.state.currentRaiseTo, minRaiseTo, maxRaiseTo + 1) ? 'hidden' : ''}>Invalid raise</label>
-          <button className={callAmount > 0 ? '' : 'hidden'} onClick={fold.bind(this, gameId, tableId)}>Fold</button>
+          <input type="number" min={minRaiseTo} max={maxRaiseTo} value={this.state.currentRaiseTo} onChange={this.handleRaiseChangeEvent} />
+          <label className={this.validRaise() ? 'hidden' : ''}>Invalid raise</label>
+          <button className={callAmount > 0 ? '' : 'hidden'} onClick={this.fold}>Fold</button>
         </div>
         <div className={actionOn ? 'hidden' : ''}>
           <input type="checkbox" id="check-checkbox" /><label for="check-checkbox">Check</label>
@@ -49,38 +104,6 @@ export default React.createClass({
     )
   }
 
-});
-
-function check(gameId, tableId) {
-  WebSocketService.send('/app/check', { gameId, tableId });
-  this.setState({
-    currentRaiseTo: null
-  });
 }
 
-function call(gameId, tableId) {
-  WebSocketService.send('/app/call', { gameId, tableId });
-  this.setState({
-    currentRaiseTo: null
-  });
-}
-
-function raise(gameId, tableId, raiseToAmount, minRaiseTo, maxRaiseTo) {
-  if (validRaise(raiseToAmount, minRaiseTo, maxRaiseTo)) {
-    WebSocketService.send('/app/raise', { gameId, tableId, raiseToAmount });
-    this.setState({
-      currentRaiseTo: null
-    });
-  }
-}
-
-function fold(gameId, tableId) {
-  WebSocketService.send('/app/fold', { gameId, tableId });
-  this.setState({
-    currentRaiseTo: null
-  });
-}
-
-function validRaise(raiseToAmount, minRaiseTo, maxRaiseTo) {
-  return _.inRange(raiseToAmount, minRaiseTo, maxRaiseTo + 1);
-}
+export default PokerActions
