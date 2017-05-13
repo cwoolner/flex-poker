@@ -1,5 +1,6 @@
 import React from 'react';
 import WebSocketSubscriptionManager from '../webSocket/WebSocketSubscriptionManager';
+import { HashRouter } from 'react-router-dom';
 import { Redirect, Route, Switch } from 'react-router';
 import { Nav, NavItem, NavDropdown, MenuItem } from 'react-bootstrap';
 import _ from 'lodash';
@@ -93,17 +94,19 @@ class MainTabs extends React.Component {
 
   render() {
     return (
-      <div>
-        <GameTabs openGameTabs={this.props.openGameTabs} />
-        <Switch>
-          <Route exact path="/" component={Lobby} />
-          <Route exact path="/game/:gameId" component={GamePage} />
-          <Route exact path="/game/:gameId/table/:tableId" component={TablePage} />
-          <Route exact path="/logout" component={Logout} />
-        </Switch>
-        {_.isNil(this.state.tableToRedirectTo) ? null : <Redirect to={this.state.tableToRedirectTo || ""} />}
-        {_.isNil(this.state.gameToRedirectTo) ? null : <Redirect to={this.state.gameToRedirectTo || ""} />}
-      </div>
+      <HashRouter>
+        <div>
+          <GameTabs openGameTabs={this.props.openGameTabs} />
+          <Switch>
+            <Route exact path="/" component={Lobby} />
+            <Route exact path="/game/:gameId" component={GamePage} />
+            <Route exact path="/game/:gameId/table/:tableId" component={TablePage} />
+            <Route exact path="/logout" component={Logout} />
+          </Switch>
+          {_.isNil(this.state.tableToRedirectTo) ? null : <Redirect to={this.state.tableToRedirectTo || ""} />}
+          {_.isNil(this.state.gameToRedirectTo) ? null : <Redirect to={this.state.gameToRedirectTo || ""} />}
+        </div>
+      </HashRouter>
     )
   }
 
