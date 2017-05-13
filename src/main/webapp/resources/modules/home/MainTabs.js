@@ -55,7 +55,7 @@ class MainTabs extends React.Component {
   }
 
   openGameTab(message) {
-    const currentOpenGameTabs = this.props.store.getState().openGameTabs;
+    const currentOpenGameTabs = this.props.openGameTabs;
     const newOpenGameTabs = JSON.parse(message.body);
     const gameToRedirectTo = newOpenGameTabs.filter(x => !(currentOpenGameTabs.map(y => y.gameId).includes(x.gameId)));
 
