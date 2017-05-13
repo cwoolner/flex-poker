@@ -10,7 +10,7 @@ import Lobby from '../lobby/Lobby';
 import GamePage from '../game/GamePage';
 import TablePage from '../table/TablePage';
 import Logout from './Logout';
-import { initOpenGameTabs, updateOpenGameTabs, updateOpenGameList } from '../../actions';
+import { initOpenGameTabs, updateOpenGameTabs, updateOpenGameList } from '../../reducers';
 
 class MainTabs extends React.Component {
 

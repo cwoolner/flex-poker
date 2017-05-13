@@ -1,8 +1,10 @@
-import {
-  INIT_OPEN_GAME_TABS,
-  UPDATE_OPEN_GAME_TABS,
-  UPDATE_OPEN_GAME_LIST
-} from '../constants/ActionTypes';
+const INIT_OPEN_GAME_TABS = 'INIT_OPEN_GAME_TABS'
+const UPDATE_OPEN_GAME_TABS = 'UPDATE_OPEN_GAME_TABS'
+const UPDATE_OPEN_GAME_LIST = 'UPDATE_OPEN_GAME_LIST'
+
+export const initOpenGameTabs = openGameTabs => ({ type: INIT_OPEN_GAME_TABS, openGameTabs });
+export const updateOpenGameTabs = openGameTabs => ({ type: UPDATE_OPEN_GAME_TABS, openGameTabs })
+export const updateOpenGameList = openGameList => ({ type: UPDATE_OPEN_GAME_LIST, openGameList });
 
 export default (state = {
   openGameTabs: [],
