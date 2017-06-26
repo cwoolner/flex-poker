@@ -26,6 +26,7 @@ module.exports = {
         'name': 'vendor',
         'filename': 'src/main/webapp/resources/vendor.bundle.js'
     }),
+    new webpack.optimize.ModuleConcatenationPlugin(),
     new webpack.DefinePlugin({"process.env": {NODE_ENV: JSON.stringify("production")}})
   ],
 
