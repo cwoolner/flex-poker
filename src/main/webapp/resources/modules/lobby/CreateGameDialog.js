@@ -12,7 +12,7 @@ export default ({showModal, hideDialog}) => {
       players: evt.target.elements.players.value,
       playersPerTable: evt.target.elements.playersPerTable.value,
       numberOfMinutesBetweenBlindLevels: evt.target.elements.numberOfMinutesBetweenBlindLevels.value,
-      secondsForBlindTimer: evt.target.elements.secondsForBlindTimer.value
+      numberOfSecondsForBlindTimer: evt.target.elements.secondsForBlindTimer.value
     });
 
     hideDialog();

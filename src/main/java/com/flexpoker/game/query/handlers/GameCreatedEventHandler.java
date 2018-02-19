@@ -46,6 +46,8 @@ public class GameCreatedEventHandler implements EventHandler<GameCreatedEvent> {
         GameInListDTO gameInListDTO = new GameInListDTO(event.getAggregateId(),
                 event.getGameName(), GameStage.REGISTERING.toString(), 0,
                 event.getNumberOfPlayers(), event.getNumberOfPlayersPerTable(),
+                event.getNumberOfMinutesBetweenBlindLevels(),
+                event.getNumberOfSecondsForBlindTimer(),
                 createdByUsername, event.getTime().toString());
 
         gameListRepository.saveNew(gameInListDTO);

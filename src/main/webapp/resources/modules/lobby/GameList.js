@@ -13,6 +13,8 @@ const GameList = ({gameList, gameOpenedCallback, openCreateGameModalCallback}) =
             <th>Registered Players</th>
             <th>Total Players</th>
             <th>Players Per Table</th>
+            <th>Blind level (min)</th>
+            <th>Blind timer (s)</th>
             <th>Creator</th>
             <th>Created</th>
             <th style={{textAlign: 'center'}}><Button bsStyle="primary" onClick={openCreateGameModalCallback}><span className="glyphicon glyphicon-plus-sign"></span></Button></th>
@@ -21,7 +23,7 @@ const GameList = ({gameList, gameOpenedCallback, openCreateGameModalCallback}) =
         <tbody>
           {
             gameList.length === 0
-              ? <tr><td colSpan="8">No games to show</td></tr>
+              ? <tr><td colSpan="10">No games to show</td></tr>
               : gameList.map((game, index) => {
                 return (
                   <tr key={index}>
@@ -30,6 +32,8 @@ const GameList = ({gameList, gameOpenedCallback, openCreateGameModalCallback}) =
                     <td>{game.numberOfRegisteredPlayers}</td>
                     <td>{game.maxNumberOfPlayers}</td>
                     <td>{game.maxPlayersPerTable}</td>
+                    <td>{game.blindLevelIncreaseInMinutes}</td>
+                    <td>{game.blindTimerInSeconds}</td>
                     <td>{game.createdBy}</td>
                     <td>{game.createdOn}</td>
                     <td style={{textAlign: 'center'}}><Button onClick={() => gameOpenedCallback(game.id)} disabled={game.stage !== 'REGISTERING'}>Open Game</Button></td>

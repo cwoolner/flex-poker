@@ -19,6 +19,10 @@ public class GameInListDTO {
 
     private final int maxPlayersPerTable;
 
+    private final int blindLevelIncreaseInMinutes;
+
+    private final int blindTimerInSeconds;
+
     private final String createdBy;
 
     private final String createdOn;
@@ -31,6 +35,8 @@ public class GameInListDTO {
             @JsonProperty(value = "numberOfRegisteredPlayers") int numberOfRegisteredPlayers,
             @JsonProperty(value = "maxNumberOfPlayers") int maxNumberOfPlayers,
             @JsonProperty(value = "maxPlayersPerTable") int maxPlayersPerTable,
+            @JsonProperty(value = "blindLevelIncreaseInMinutes") int blindLevelIncreaseInMinutes,
+            @JsonProperty(value = "blindTimerInSeconds") int blindTimerInSeconds,
             @JsonProperty(value = "createdBy") String createdBy,
             @JsonProperty(value = "createdOn") String createdOn) {
         this.id = id;
@@ -39,6 +45,8 @@ public class GameInListDTO {
         this.numberOfRegisteredPlayers = numberOfRegisteredPlayers;
         this.maxNumberOfPlayers = maxNumberOfPlayers;
         this.maxPlayersPerTable = maxPlayersPerTable;
+        this.blindLevelIncreaseInMinutes = blindLevelIncreaseInMinutes;
+        this.blindTimerInSeconds = blindTimerInSeconds;
         this.createdBy = createdBy;
         this.createdOn = createdOn;
     }
@@ -65,6 +73,14 @@ public class GameInListDTO {
 
     public int getMaxPlayersPerTable() {
         return maxPlayersPerTable;
+    }
+
+    public int getBlindLevelIncreaseInMinutes() {
+        return blindLevelIncreaseInMinutes;
+    }
+
+    public int getBlindTimerInSeconds() {
+        return blindTimerInSeconds;
     }
 
     public String getCreatedBy() {

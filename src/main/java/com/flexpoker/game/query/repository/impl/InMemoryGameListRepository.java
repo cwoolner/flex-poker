@@ -40,6 +40,8 @@ public class InMemoryGameListRepository implements GameListRepository {
                 existingGameInListDTO.getNumberOfRegisteredPlayers() + 1,
                 existingGameInListDTO.getMaxNumberOfPlayers(),
                 existingGameInListDTO.getMaxPlayersPerTable(),
+                existingGameInListDTO.getBlindLevelIncreaseInMinutes(),
+                existingGameInListDTO.getBlindTimerInSeconds(),
                 existingGameInListDTO.getCreatedBy(),
                 existingGameInListDTO.getCreatedOn());
         removeGame(aggregateId);
@@ -61,6 +63,8 @@ public class InMemoryGameListRepository implements GameListRepository {
                 existingGameInListDTO.getNumberOfRegisteredPlayers(),
                 existingGameInListDTO.getMaxNumberOfPlayers(),
                 existingGameInListDTO.getMaxPlayersPerTable(),
+                existingGameInListDTO.getBlindLevelIncreaseInMinutes(),
+                existingGameInListDTO.getBlindTimerInSeconds(),
                 existingGameInListDTO.getCreatedBy(),
                 existingGameInListDTO.getCreatedOn());
         removeGame(aggregateId);
