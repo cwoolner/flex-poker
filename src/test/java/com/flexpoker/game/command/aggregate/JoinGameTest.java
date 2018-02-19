@@ -20,8 +20,7 @@ public class JoinGameTest {
     @Test
     public void testJoinGameSuccessFirstPlayerJoins() {
         List<GameEvent> events = new ArrayList<>();
-        events.add(new GameCreatedEvent(UUID.randomUUID(), 1, "test", 2, 2,
-                UUID.randomUUID(), 10));
+        events.add(new GameCreatedEvent(UUID.randomUUID(), 1, "test", 2, 2, UUID.randomUUID(), 10, 20));
 
         Game game = new DefaultGameFactory().createFrom(events);
         game.joinGame(UUID.randomUUID());
@@ -34,8 +33,7 @@ public class JoinGameTest {
     @Test
     public void testJoinGameSuccessGameStarting() {
         List<GameEvent> events = new ArrayList<>();
-        events.add(new GameCreatedEvent(UUID.randomUUID(), 1, "test", 2, 2,
-                UUID.randomUUID(), 10));
+        events.add(new GameCreatedEvent(UUID.randomUUID(), 1, "test", 2, 2, UUID.randomUUID(), 10, 20));
 
         Game game = new DefaultGameFactory().createFrom(events);
         game.joinGame(UUID.randomUUID());
@@ -59,8 +57,7 @@ public class JoinGameTest {
     @Test(expected = FlexPokerException.class)
     public void testJoinGameAttemptToJoinTwice() {
         List<GameEvent> events = new ArrayList<>();
-        events.add(new GameCreatedEvent(UUID.randomUUID(), 1, "test", 2, 2,
-                UUID.randomUUID(), 10));
+        events.add(new GameCreatedEvent(UUID.randomUUID(), 1, "test", 2, 2, UUID.randomUUID(), 10, 20));
 
         UUID playerId = UUID.randomUUID();
 
@@ -72,8 +69,7 @@ public class JoinGameTest {
     @Test(expected = FlexPokerException.class)
     public void testJoinGameAttemptToJoinMoreThanMax() {
         List<GameEvent> events = new ArrayList<>();
-        events.add(new GameCreatedEvent(UUID.randomUUID(), 1, "test", 2, 2,
-                UUID.randomUUID(), 10));
+        events.add(new GameCreatedEvent(UUID.randomUUID(), 1, "test", 2, 2, UUID.randomUUID(), 10, 20));
 
         Game game = new DefaultGameFactory().createFrom(events);
         game.joinGame(UUID.randomUUID());

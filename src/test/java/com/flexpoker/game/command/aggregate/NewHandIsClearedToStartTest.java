@@ -36,8 +36,7 @@ public class NewHandIsClearedToStartTest {
         Set<UUID> tableIds = tableToPlayersMap.keySet();
 
         List<GameEvent> events = new ArrayList<>();
-        events.add(new GameCreatedEvent(gameId, 1, "test", 2, 2,
-                UUID.randomUUID(), 10));
+        events.add(new GameCreatedEvent(gameId, 1, "test", 2, 2, UUID.randomUUID(), 10, 20));
         events.add(new GameJoinedEvent(gameId, 2, player1Id));
         events.add(new GameJoinedEvent(gameId, 3, player2Id));
         events.add(new GameMovedToStartingStageEvent(gameId, 4));

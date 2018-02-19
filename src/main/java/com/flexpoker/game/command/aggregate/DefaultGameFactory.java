@@ -21,7 +21,8 @@ public class DefaultGameFactory implements GameFactory {
                 command.getNumberOfPlayers(),
                 command.getNumberOfPlayersPerTable(),
                 command.getCreatedByPlayerId(),
-                command.getNumberOfMinutesBetweenBlindLevels());
+                command.getNumberOfMinutesBetweenBlindLevels(),
+                command.getNumberOfSecondsForBlindTimer());
     }
 
     @Override
@@ -32,7 +33,8 @@ public class DefaultGameFactory implements GameFactory {
                 gameCreatedEvent.getNumberOfPlayers(),
                 gameCreatedEvent.getNumberOfPlayersPerTable(),
                 gameCreatedEvent.getCreatedByPlayerId(),
-                gameCreatedEvent.getNumberOfMinutesBetweenBlindLevels());
+                gameCreatedEvent.getNumberOfMinutesBetweenBlindLevels(),
+                gameCreatedEvent.getNumberOfSecondsForBlindTimer());
         game.applyAllHistoricalEvents(events);
         return game;
     }
@@ -40,12 +42,14 @@ public class DefaultGameFactory implements GameFactory {
     private Game createGame(boolean creatingFromEvents, UUID aggregateId,
             String gameName, int maxNumberOfPlayers,
             int numberOfPlayersPerTable, UUID createdById,
-            int numberOfMinutesBetweenBlindLevels) {
+            int numberOfMinutesBetweenBlindLevels,
+            int numberOfSecondsForBlindTimer) {
         BlindSchedule blindSchedule = new BlindSchedule(numberOfMinutesBetweenBlindLevels);
         TableBalancer tableBalancer = new TableBalancer(aggregateId,
                 numberOfPlayersPerTable);
         return new Game(creatingFromEvents, aggregateId, gameName,
-                maxNumberOfPlayers, numberOfPlayersPerTable, createdById,
+                maxNumberOfPlayers, numberOfPlayersPerTable,
+                numberOfSecondsForBlindTimer, createdById,
                 GameStage.REGISTERING, blindSchedule, tableBalancer);
     }
 

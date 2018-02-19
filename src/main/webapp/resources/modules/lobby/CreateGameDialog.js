@@ -6,16 +6,13 @@ export default ({showModal, hideDialog}) => {
 
   const createGameFormSubmitted = (evt) => {
     evt.preventDefault();
-    const nameElement = evt.target.elements[0];
-    const playersElement = evt.target.elements[1];
-    const playersPerTableElement = evt.target.elements[2];
-    const numberOfMinutesBetweenBlindLevelsElement = evt.target.elements[3];
 
     WebSocketService.send('/app/creategame', {
-      name: nameElement.value,
-      players: playersElement.value,
-      playersPerTable: playersPerTableElement.value,
-      numberOfMinutesBetweenBlindLevels: numberOfMinutesBetweenBlindLevelsElement.value
+      name: evt.target.elements.name.value,
+      players: evt.target.elements.players.value,
+      playersPerTable: evt.target.elements.playersPerTable.value,
+      numberOfMinutesBetweenBlindLevels: evt.target.elements.numberOfMinutesBetweenBlindLevels.value,
+      secondsForBlindTimer: evt.target.elements.secondsForBlindTimer.value
     });
 
     hideDialog();
@@ -44,6 +41,10 @@ export default ({showModal, hideDialog}) => {
           <FormGroup>
             <ControlLabel>Blind increment in minutes (1 - 60)</ControlLabel>
             <FormControl type="number" name="numberOfMinutesBetweenBlindLevels" min="1" max="60" />
+          </FormGroup>
+          <FormGroup>
+            <ControlLabel>Blind timer in seconds (1 - 60)</ControlLabel>
+            <FormControl type="number" name="secondsForBlindTimer" min="1" max="60" />
           </FormGroup>
         </Modal.Body>
         <Modal.Footer>

@@ -13,15 +13,19 @@ public class CreateGameDTO {
 
     private final int numberOfMinutesBetweenBlindLevels;
 
+    private final int numberOfSecondsForBlindTimer;
+
     @JsonCreator
     public CreateGameDTO(@JsonProperty(value = "name") String name,
             @JsonProperty(value = "players") int players,
             @JsonProperty(value = "playersPerTable") int playersPerTable,
-            @JsonProperty(value = "numberOfMinutesBetweenBlindLevels") int numberOfMinutesBetweenBlindLevels) {
+            @JsonProperty(value = "numberOfMinutesBetweenBlindLevels") int numberOfMinutesBetweenBlindLevels,
+            @JsonProperty(value = "numberOfSecondsForBlindTimer") int numberOfSecondsForBlindTimer) {
         this.name = name;
         this.players = players;
         this.playersPerTable = playersPerTable;
         this.numberOfMinutesBetweenBlindLevels = numberOfMinutesBetweenBlindLevels;
+        this.numberOfSecondsForBlindTimer= numberOfSecondsForBlindTimer;
     }
 
     public String getName() {
@@ -38,6 +42,10 @@ public class CreateGameDTO {
 
     public int getNumberOfMinutesBetweenBlindLevels() {
         return numberOfMinutesBetweenBlindLevels;
+    }
+
+    public int getNumberOfSecondsForBlindTimer() {
+        return numberOfSecondsForBlindTimer;
     }
 
 }

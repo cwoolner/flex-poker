@@ -61,7 +61,8 @@ public class GameManagementController {
         UUID playerId = loginRepository.fetchAggregateIdByUsername(principal.getName());
         CreateGameCommand command = new CreateGameCommand(model.getName(),
                 model.getPlayers(), model.getPlayersPerTable(), playerId,
-                model.getNumberOfMinutesBetweenBlindLevels());
+                model.getNumberOfMinutesBetweenBlindLevels(),
+                model.getNumberOfSecondsForBlindTimer());
         commandSender.send(command);
     }
 

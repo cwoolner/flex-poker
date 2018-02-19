@@ -23,7 +23,7 @@ public class PlayerBustedTest {
         UUID player1Id = UUID.randomUUID();
         UUID player2Id = UUID.randomUUID();
         UUID player3Id = UUID.randomUUID();
-        CreateGameCommand createGameCommand = new CreateGameCommand("test", 3, 3, player1Id, 1);
+        CreateGameCommand createGameCommand = new CreateGameCommand("test", 3, 3, player1Id, 1, 20);
         Game game = new DefaultGameFactory().createNew(createGameCommand);
         game.joinGame(player1Id);
         game.joinGame(player2Id);
@@ -52,7 +52,7 @@ public class PlayerBustedTest {
         UUID player1Id = UUID.randomUUID();
         UUID player2Id = UUID.randomUUID();
         UUID player3Id = UUID.randomUUID();
-        CreateGameCommand createGameCommand = new CreateGameCommand("test", 3, 3, player1Id, 1);
+        CreateGameCommand createGameCommand = new CreateGameCommand("test", 3, 3, player1Id, 1, 20);
         Game game = new DefaultGameFactory().createNew(createGameCommand);
         game.joinGame(player1Id);
         game.joinGame(player2Id);
@@ -80,7 +80,7 @@ public class PlayerBustedTest {
         UUID player1Id = UUID.randomUUID();
         UUID player2Id = UUID.randomUUID();
         UUID player3Id = UUID.randomUUID();
-        CreateGameCommand createGameCommand = new CreateGameCommand("test", 3, 3, player1Id, 1);
+        CreateGameCommand createGameCommand = new CreateGameCommand("test", 3, 3, player1Id, 1, 20);
         Game game = new DefaultGameFactory().createNew(createGameCommand);
         game.joinGame(player1Id);
         game.joinGame(player2Id);
@@ -117,7 +117,7 @@ public class PlayerBustedTest {
         UUID player2Id = UUID.randomUUID();
         UUID player3Id = UUID.randomUUID();
         UUID player4Id = UUID.randomUUID();
-        CreateGameCommand createGameCommand = new CreateGameCommand("test", 3, 3, player1Id, 1);
+        CreateGameCommand createGameCommand = new CreateGameCommand("test", 3, 3, player1Id, 1, 20);
         Game game = new DefaultGameFactory().createNew(createGameCommand);
         game.joinGame(player1Id);
         game.joinGame(player2Id);
@@ -142,7 +142,7 @@ public class PlayerBustedTest {
         UUID player1Id = UUID.randomUUID();
         UUID player2Id = UUID.randomUUID();
         UUID player3Id = UUID.randomUUID();
-        CreateGameCommand createGameCommand = new CreateGameCommand("test", 3, 3, player1Id, 1);
+        CreateGameCommand createGameCommand = new CreateGameCommand("test", 3, 3, player1Id, 1, 20);
         Game game = new DefaultGameFactory().createNew(createGameCommand);
         game.joinGame(player1Id);
         game.joinGame(player2Id);

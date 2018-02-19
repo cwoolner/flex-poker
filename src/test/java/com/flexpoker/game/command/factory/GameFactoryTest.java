@@ -29,7 +29,7 @@ public class GameFactoryTest {
     @Test
     public void testCreateNew() {
         CreateGameCommand createGameCommand = new CreateGameCommand("test", 5,
-                5, UUID.randomUUID(), 10);
+                5, UUID.randomUUID(), 10, 20);
         Game game = sut.createNew(createGameCommand);
         assertNotNull(game);
         assertFalse(game.fetchAppliedEvents().isEmpty());
@@ -39,7 +39,7 @@ public class GameFactoryTest {
     @Test
     public void testCreateFrom() {
         List<GameEvent> events = new ArrayList<>();
-        events.add(new GameCreatedEvent(null, 1, null, 0, 0, null, 10));
+        events.add(new GameCreatedEvent(null, 1, null, 0, 0, null, 10, 20));
         Game game = sut.createFrom(events);
         assertNotNull(game);
         assertFalse(game.fetchAppliedEvents().isEmpty());

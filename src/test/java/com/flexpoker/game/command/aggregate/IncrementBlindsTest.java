@@ -28,8 +28,7 @@ public class IncrementBlindsTest {
         Set<UUID> tableIds = tableIdToPlayerIdsMap.keySet();
 
         List<GameEvent> events = new ArrayList<>();
-        events.add(new GameCreatedEvent(gameId, 1, "test", 2, 2,
-                UUID.randomUUID(), 10));
+        events.add(new GameCreatedEvent(gameId, 1, "test", 2, 2, UUID.randomUUID(), 10, 20));
         events.add(new GameJoinedEvent(gameId, 2, UUID.randomUUID()));
         events.add(new GameJoinedEvent(gameId, 3, UUID.randomUUID()));
         events.add(new GameMovedToStartingStageEvent(gameId, 4));
@@ -51,8 +50,7 @@ public class IncrementBlindsTest {
         Set<UUID> tableIds = tableIdToPlayerIdsMap.keySet();
 
         List<GameEvent> events = new ArrayList<>();
-        events.add(new GameCreatedEvent(gameId, 1, "test", 2, 2,
-                UUID.randomUUID(), 10));
+        events.add(new GameCreatedEvent(gameId, 1, "test", 2, 2, UUID.randomUUID(), 10, 20));
         events.add(new GameJoinedEvent(gameId, 2, UUID.randomUUID()));
         events.add(new GameJoinedEvent(gameId, 3, UUID.randomUUID()));
         events.add(new GameMovedToStartingStageEvent(gameId, 4));
@@ -77,8 +75,7 @@ public class IncrementBlindsTest {
         Map<UUID, Set<UUID>> tableIdToPlayerIdsMap = new HashMap<>();
 
         List<GameEvent> events = new ArrayList<>();
-        events.add(new GameCreatedEvent(gameId, 1, "test", 2, 2,
-                UUID.randomUUID(), 10));
+        events.add(new GameCreatedEvent(gameId, 1, "test", 2, 2, UUID.randomUUID(), 10, 20));
         events.add(new GameJoinedEvent(gameId, 2, UUID.randomUUID()));
         events.add(new GameJoinedEvent(gameId, 3, UUID.randomUUID()));
         events.add(new GameMovedToStartingStageEvent(gameId, 4));

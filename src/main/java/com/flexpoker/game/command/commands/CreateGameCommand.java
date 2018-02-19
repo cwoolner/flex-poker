@@ -21,15 +21,19 @@ public class CreateGameCommand extends BaseCommand<GameCommandType> implements
 
     private final int numberOfMinutesBetweenBlindLevels;
 
+    private final int numberOfSecondsForBlindTimer;
+
     public CreateGameCommand(String gameName, int numberOfPlayers,
             int numberOfPlayersPerTable, UUID createdByPlayerId,
-            int numberOfMinutesBetweenBlindLevels) {
+            int numberOfMinutesBetweenBlindLevels,
+            int numberOfSecondsForBlindTimer) {
         super(TYPE);
         this.gameName = gameName;
         this.numberOfPlayers = numberOfPlayers;
         this.numberOfPlayersPerTable = numberOfPlayersPerTable;
         this.createdByPlayerId = createdByPlayerId;
         this.numberOfMinutesBetweenBlindLevels = numberOfMinutesBetweenBlindLevels;
+        this.numberOfSecondsForBlindTimer = numberOfSecondsForBlindTimer;
     }
 
     public String getGameName() {
@@ -50,6 +54,10 @@ public class CreateGameCommand extends BaseCommand<GameCommandType> implements
 
     public int getNumberOfMinutesBetweenBlindLevels() {
         return numberOfMinutesBetweenBlindLevels;
+    }
+
+    public int getNumberOfSecondsForBlindTimer() {
+        return numberOfSecondsForBlindTimer;
     }
 
 }

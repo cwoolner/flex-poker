@@ -57,7 +57,8 @@ public class Game extends AggregateRoot<GameEvent> {
     private final Set<UUID> pausedTablesForBalancing;
 
     protected Game(boolean creatingFromEvents, UUID aggregateId,
-            String gameName, int maxNumberOfPlayers, int numberOfPlayersPerTable,
+            String gameName, int maxNumberOfPlayers,
+            int numberOfPlayersPerTable, int numberOfSecondsForBlindTimer,
             UUID createdById, GameStage gameStage, BlindSchedule blindSchedule,
             TableBalancer tableBalancer) {
         this.aggregateId = aggregateId;
@@ -74,10 +75,11 @@ public class Game extends AggregateRoot<GameEvent> {
         populateMethodTable();
 
         if (!creatingFromEvents) {
-            GameCreatedEvent gameCreatedEvent = new GameCreatedEvent(aggregateId,
-                    ++aggregateVersion, gameName, maxNumberOfPlayers,
-                    numberOfPlayersPerTable, createdById,
-                    blindSchedule.getNumberOfMinutesBetweenLevels());
+            GameCreatedEvent gameCreatedEvent = new GameCreatedEvent(
+                    aggregateId, ++aggregateVersion, gameName,
+                    maxNumberOfPlayers, numberOfPlayersPerTable, createdById,
+                    blindSchedule.getNumberOfMinutesBetweenLevels(),
+                    numberOfSecondsForBlindTimer);
             addNewEvent(gameCreatedEvent);
             applyCommonEvent(gameCreatedEvent);
         }
