@@ -61,7 +61,7 @@ public class ActionOnCountdownProcessManager implements ProcessManager<ActionOnC
     private void addNewActionOnTimer(ActionOnChangedEvent event) {
         GameCreatedEvent gameCreatedEvent = gameEventRepository.fetchGameCreatedEvent(event.getGameId());
         ScheduledFuture<?> scheduledFuture = scheduledThreadPoolExecutor.scheduleAtFixedRate(
-                new ActionOnCounter(event, gameCreatedEvent.getNumberOfSecondsForBlindTimer()), 0, 1, TimeUnit.SECONDS);
+                new ActionOnCounter(event, gameCreatedEvent.getNumberOfSecondsForActionOnTimer()), 0, 1, TimeUnit.SECONDS);
         actionOnPlayerScheduledFutureMap.put(event.getAggregateId(), scheduledFuture);
     }
 

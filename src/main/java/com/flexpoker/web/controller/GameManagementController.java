@@ -62,7 +62,7 @@ public class GameManagementController {
         CreateGameCommand command = new CreateGameCommand(model.getName(),
                 model.getPlayers(), model.getPlayersPerTable(), playerId,
                 model.getNumberOfMinutesBetweenBlindLevels(),
-                model.getNumberOfSecondsForBlindTimer());
+                model.getNumberOfSecondsForActionOnTimer());
         commandSender.send(command);
     }
 

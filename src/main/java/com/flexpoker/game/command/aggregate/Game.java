@@ -58,7 +58,7 @@ public class Game extends AggregateRoot<GameEvent> {
 
     protected Game(boolean creatingFromEvents, UUID aggregateId,
             String gameName, int maxNumberOfPlayers,
-            int numberOfPlayersPerTable, int numberOfSecondsForBlindTimer,
+            int numberOfPlayersPerTable, int numberOfSecondsForActionOnTimer,
             UUID createdById, GameStage gameStage, BlindSchedule blindSchedule,
             TableBalancer tableBalancer) {
         this.aggregateId = aggregateId;
@@ -79,7 +79,7 @@ public class Game extends AggregateRoot<GameEvent> {
                     aggregateId, ++aggregateVersion, gameName,
                     maxNumberOfPlayers, numberOfPlayersPerTable, createdById,
                     blindSchedule.getNumberOfMinutesBetweenLevels(),
-                    numberOfSecondsForBlindTimer);
+                    numberOfSecondsForActionOnTimer);
             addNewEvent(gameCreatedEvent);
             applyCommonEvent(gameCreatedEvent);
         }

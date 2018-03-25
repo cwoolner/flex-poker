@@ -12,7 +12,7 @@ export default ({showModal, hideDialog}) => {
       players: evt.target.elements.players.value,
       playersPerTable: evt.target.elements.playersPerTable.value,
       numberOfMinutesBetweenBlindLevels: evt.target.elements.numberOfMinutesBetweenBlindLevels.value,
-      numberOfSecondsForBlindTimer: evt.target.elements.secondsForBlindTimer.value
+      numberOfSecondsForActionOnTimer: evt.target.elements.secondsForActionOnTimer.value
     });
 
     hideDialog();
@@ -44,7 +44,7 @@ export default ({showModal, hideDialog}) => {
           </FormGroup>
           <FormGroup>
             <ControlLabel>Blind timer in seconds (1 - 60)</ControlLabel>
-            <FormControl type="number" name="secondsForBlindTimer" min="1" max="60" />
+            <FormControl type="number" name="secondsForActionOnTimer" min="1" max="60" />
           </FormGroup>
         </Modal.Body>
         <Modal.Footer>
