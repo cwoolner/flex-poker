@@ -14,6 +14,8 @@ import org.springframework.stereotype.Component;
 
 import com.flexpoker.framework.command.CommandSender;
 import com.flexpoker.framework.processmanager.ProcessManager;
+import com.flexpoker.game.command.events.GameCreatedEvent;
+import com.flexpoker.game.command.repository.GameEventRepository;
 import com.flexpoker.table.command.commands.ExpireActionOnTimerCommand;
 import com.flexpoker.table.command.commands.TickActionOnTimerCommand;
 import com.flexpoker.table.command.events.ActionOnChangedEvent;
@@ -28,9 +30,14 @@ public class ActionOnCountdownProcessManager implements ProcessManager<ActionOnC
 
     private final ScheduledThreadPoolExecutor scheduledThreadPoolExecutor;
 
+    private final GameEventRepository gameEventRepository;
+
     @Inject
-    public ActionOnCountdownProcessManager(CommandSender<TableCommandType> tableCommandSender) {
+    public ActionOnCountdownProcessManager(
+            CommandSender<TableCommandType> tableCommandSender,
+            GameEventRepository gameEventRepository) {
         this.tableCommandSender = tableCommandSender;
+        this.gameEventRepository = gameEventRepository;
         this.actionOnPlayerScheduledFutureMap = new HashMap<>();
         this.scheduledThreadPoolExecutor = new ScheduledThreadPoolExecutor(16);
         scheduledThreadPoolExecutor.setRemoveOnCancelPolicy(true);
@@ -52,8 +59,9 @@ public class ActionOnCountdownProcessManager implements ProcessManager<ActionOnC
     }
 
     private void addNewActionOnTimer(ActionOnChangedEvent event) {
-        ScheduledFuture<?> scheduledFuture = scheduledThreadPoolExecutor
-                .scheduleAtFixedRate(new ActionOnCounter(event), 0, 1, TimeUnit.SECONDS);
+        GameCreatedEvent gameCreatedEvent = gameEventRepository.fetchGameCreatedEvent(event.getGameId());
+        ScheduledFuture<?> scheduledFuture = scheduledThreadPoolExecutor.scheduleAtFixedRate(
+                new ActionOnCounter(event, gameCreatedEvent.getNumberOfSecondsForBlindTimer()), 0, 1, TimeUnit.SECONDS);
         actionOnPlayerScheduledFutureMap.put(event.getAggregateId(), scheduledFuture);
     }
 
@@ -69,21 +77,25 @@ public class ActionOnCountdownProcessManager implements ProcessManager<ActionOnC
 
         private final UUID playerId;
 
-        public ActionOnCounter(ActionOnChangedEvent event) {
+        private final int numberOfSecondsForActionOnTimer;
+
+        public ActionOnCounter(ActionOnChangedEvent event, int numberOfSecondsForActionOnTimer) {
             this.gameId = event.getGameId();
             this.tableId = event.getAggregateId();
             this.handId = event.getHandId();
             this.playerId = event.getPlayerId();
+            this.numberOfSecondsForActionOnTimer = numberOfSecondsForActionOnTimer;
         }
 
         @Override
         public void run() {
-            if (runCount == 20) {
+            if (runCount == numberOfSecondsForActionOnTimer) {
                 clearExistingTimer(handId);
                 tableCommandSender.send(new ExpireActionOnTimerCommand(tableId, gameId, handId, playerId));
             } else {
                 runCount++;
-                tableCommandSender.send(new TickActionOnTimerCommand(tableId, gameId, handId, 20 - runCount));
+                tableCommandSender.send(new TickActionOnTimerCommand(tableId, gameId, handId,
+                        numberOfSecondsForActionOnTimer - runCount));
             }
         }
 

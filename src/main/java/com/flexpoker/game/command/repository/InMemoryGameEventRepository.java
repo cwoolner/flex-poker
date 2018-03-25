@@ -8,6 +8,7 @@ import java.util.UUID;
 
 import org.springframework.stereotype.Repository;
 
+import com.flexpoker.game.command.events.GameCreatedEvent;
 import com.flexpoker.game.command.framework.GameEvent;
 
 @Repository
@@ -30,6 +31,17 @@ public class InMemoryGameEventRepository implements GameEventRepository {
             gameEventMap.put(event.getAggregateId(), new ArrayList<>());
         }
         gameEventMap.get(event.getAggregateId()).add(event);
+    }
+
+    @Override
+    public GameCreatedEvent fetchGameCreatedEvent(UUID gameId) {
+        List<GameEvent> gameEvents = fetchAll(gameId);
+        for (GameEvent gameEvent : gameEvents) {
+            if (gameEvent.getClass() == GameCreatedEvent.class) {
+                return (GameCreatedEvent) gameEvent;
+            }
+        }
+        return null;
     }
 
 }
