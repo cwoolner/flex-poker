@@ -6,6 +6,7 @@ import JoinGameDialog from './JoinGameDialog';
 import GameList from './GameList';
 import Chat from '../common/Chat';
 import { Button } from 'react-bootstrap';
+import { connect } from 'react-redux'
 
 class Lobby extends React.Component {
 
@@ -13,16 +14,6 @@ class Lobby extends React.Component {
     super(props)
 
     this.displayChat = this.displayChat.bind(this)
-    this.openCreateGameModal = this.openCreateGameModal.bind(this)
-    this.openJoinGameModal = this.openJoinGameModal.bind(this)
-    this.hideCreateGameDialog = this.hideCreateGameDialog.bind(this)
-    this.hideJoinGameDialog = this.hideJoinGameDialog.bind(this)
-
-    this.state = {
-      createGameDialogOpen: false,
-      joinGameDialogOpen: false,
-      joinGameId: null,
-    }
   }
 
   componentDidMount() {
@@ -34,34 +25,6 @@ class Lobby extends React.Component {
 
   componentWillUnmount() {
     WebSocketSubscriptionManager.unsubscribe(this);
-  }
-
-  openCreateGameModal() {
-    this.setState({
-      createGameDialogOpen: true,
-      joinGameId: null
-    });
-  }
-
-  openJoinGameModal(gameId) {
-    this.setState({
-      joinGameDialogOpen: true,
-      joinGameId: gameId
-    });
-  }
-
-  hideCreateGameDialog() {
-    this.setState({
-      createGameDialogOpen: false,
-      joinGameId: null
-    });
-  }
-
-  hideJoinGameDialog() {
-    this.setState({
-      joinGameDialogOpen: false,
-      joinGameId: null
-    });
   }
 
   displayChat(message) {
@@ -81,17 +44,10 @@ class Lobby extends React.Component {
   render() {
     return (
       <div>
-        <GameList
-          gameOpenedCallback={this.openJoinGameModal}
-          openCreateGameModalCallback={this.openCreateGameModal} />
+        <GameList />
         <Chat ref="globalChat" sendChat={this.sendGlobalChat} />
-        <CreateGameDialog
-          hideDialog={this.hideCreateGameDialog}
-          showModal={this.state.createGameDialogOpen} />
-        <JoinGameDialog
-          hideDialog={this.hideJoinGameDialog}
-          showModal={this.state.joinGameDialogOpen}
-          gameId={this.state.joinGameId} />
+        <CreateGameDialog />
+        <JoinGameDialog />
       </div>
     )
   }

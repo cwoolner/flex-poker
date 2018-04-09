@@ -1,30 +1,14 @@
 import React from 'react';
-import WebSocketService from '../webSocket/WebSocketService';
 import { Modal, Button, FormControl, FormGroup, ControlLabel } from 'react-bootstrap';
 
-export default ({showModal, hideDialog}) => {
-
-  const createGameFormSubmitted = (evt) => {
-    evt.preventDefault();
-
-    WebSocketService.send('/app/creategame', {
-      name: evt.target.elements.name.value,
-      players: evt.target.elements.players.value,
-      playersPerTable: evt.target.elements.playersPerTable.value,
-      numberOfMinutesBetweenBlindLevels: evt.target.elements.numberOfMinutesBetweenBlindLevels.value,
-      numberOfSecondsForActionOnTimer: evt.target.elements.secondsForActionOnTimer.value
-    });
-
-    hideDialog();
-  };
-
+export default ({showModal, hideDialogCallback, submitFormCallback}) => {
  return (
-    <Modal bsSize="small" show={showModal} onHide={hideDialog}>
+    <Modal bsSize="small" show={showModal} onHide={hideDialogCallback}>
       <Modal.Header>
-        <button className={"close"} onClick={hideDialog}>X</button>
+        <button className={"close"} onClick={hideDialogCallback}>X</button>
         <Modal.Title>Create Game</Modal.Title>
       </Modal.Header>
-      <form id="create-game-form" onSubmit={createGameFormSubmitted}>
+      <form id="create-game-form" onSubmit={submitFormCallback}>
         <Modal.Body>
           <FormGroup>
             <ControlLabel>Name</ControlLabel>
@@ -48,11 +32,10 @@ export default ({showModal, hideDialog}) => {
           </FormGroup>
         </Modal.Body>
         <Modal.Footer>
-          <Button onClick={hideDialog}>Close</Button>
+          <Button onClick={hideDialogCallback}>Close</Button>
           <Button type="submit" bsStyle="primary">Create Game</Button>
         </Modal.Footer>
       </form>
     </Modal>
-  );
-
+  )
 }

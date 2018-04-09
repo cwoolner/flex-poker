@@ -1,22 +1,14 @@
 import React from 'react';
-import WebSocketService from '../webSocket/WebSocketService';
 import { Modal, Button, FormControl, FormGroup, ControlLabel } from 'react-bootstrap';
 
-export default ({gameId, showModal, hideDialog}) => {
-
-  const joinGameFormSubmitted = (evt) => {
-    evt.preventDefault();
-    WebSocketService.send('/app/joingame', gameId);
-    hideDialog();
-  };
-
+export default ({gameId, showModal, hideDialogCallback, submitFormCallback}) => {
   return (
-    <Modal bsSize="small" show={showModal} onHide={hideDialog}>
+    <Modal bsSize="small" show={showModal} onHide={hideDialogCallback}>
       <Modal.Header>
-        <button className={"close"} onClick={hideDialog}>X</button>
+        <button className={"close"} onClick={hideDialogCallback}>X</button>
         <Modal.Title>Join Game</Modal.Title>
       </Modal.Header>
-      <form id="join-game-form" onSubmit={joinGameFormSubmitted}>
+      <form id="join-game-form" onSubmit={submitFormCallback}>
         <Modal.Body>
           <FormGroup>
             <ControlLabel>Current Balance</ControlLabel>
@@ -32,10 +24,10 @@ export default ({gameId, showModal, hideDialog}) => {
           </FormGroup>
         </Modal.Body>
         <Modal.Footer>
-          <Button onClick={hideDialog}>Close</Button>
+          <Button onClick={hideDialogCallback}>Close</Button>
           <Button type="submit" bsStyle="primary" autoFocus>Join Game</Button>
         </Modal.Footer>
       </form>
     </Modal>
-  );
+  )
 }
