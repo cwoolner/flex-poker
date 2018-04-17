@@ -40,7 +40,11 @@ module.exports = {
           options: {
             presets: [
               'react',
-              ['es2015', {modules: false}]
+              'stage-3',
+              ['env', {
+                'useBuiltIns': true,
+                'modules': false
+              }]
             ]
           }
         }]

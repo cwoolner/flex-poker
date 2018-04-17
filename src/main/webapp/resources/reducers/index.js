@@ -24,19 +24,19 @@ export default (state = {
 
   switch (action.type) {
     case INIT_OPEN_GAME_TABS:
-      return Object.assign({}, state, { openGameTabs: action.openGameTabs })
+      return { ...state, openGameTabs: action.openGameTabs }
     case UPDATE_OPEN_GAME_TABS:
-      return Object.assign({}, state, { openGameTabs: action.openGameTabs })
+      return { ...state, openGameTabs: action.openGameTabs }
     case UPDATE_OPEN_GAME_LIST:
-      return Object.assign({}, state, { openGameList: action.openGameList })
+      return { ...state, openGameList: action.openGameList }
     case SHOW_JOIN_GAME_MODAL:
-      return Object.assign({}, state, { showJoinGameModal: true, joinGameId: action.joinGameId })
+      return { ...state, showJoinGameModal: true, joinGameId: action.joinGameId }
     case HIDE_JOIN_GAME_MODAL:
-      return Object.assign({}, state, { showJoinGameModal: false, joinGameId: null })
+      return { ...state, showJoinGameModal: false, joinGameId: null }
     case SHOW_CREATE_GAME_MODAL:
-      return Object.assign({}, state, { showCreateGameModal: true })
+      return {...state, showCreateGameModal: true }
     case HIDE_CREATE_GAME_MODAL:
-      return Object.assign({}, state, { showCreateGameModal: false })
+      return { ...state, showCreateGameModal: false }
     default:
       return state
   }
