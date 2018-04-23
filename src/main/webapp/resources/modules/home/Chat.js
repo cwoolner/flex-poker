@@ -36,12 +36,9 @@ class Chat extends React.Component {
     const tableId = '';
 
     WebSocketSubscriptionManager.subscribe(this, [
-      {location: '/topic/chat/global/user', subscription: this.acceptGlobalChatMsg},
-      {location: '/topic/chat/global/system', subscription: this.acceptGlobalChatMsg}
-//      {location: `/topic/chat/game/${gameId}/user`, subscription: this.displayChat},
-//      {location: `/topic/chat/game/${gameId}/system`, subscription: this.displayChat},
-//      {location: `/topic/chat/game/${gameId}/table/${tableId}/user`, subscription: this.displayChat},
-//      {location: `/topic/chat/game/${gameId}/table/${tableId}/system`, subscription: this.displayChat}
+      {location: '/topic/chat/global', subscription: this.acceptGlobalChatMsg}
+//      {location: `/topic/chat/game/${gameId}`, subscription: this.displayChat},
+//      {location: `/topic/chat/game/${gameId}/table/${tableId}`, subscription: this.displayChat}
     ])
   }
 

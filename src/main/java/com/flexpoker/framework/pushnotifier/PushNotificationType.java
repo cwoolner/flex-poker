@@ -9,6 +9,6 @@ public enum PushNotificationType {
 
     GameListUpdated, OpenGamesForPlayerUpdated, OpenTableForUser, //
 
-    TableUpdated, SendUserPocketCards, TickActionOnTimer
+    TableUpdated, SendUserPocketCards, TickActionOnTimer, ChatSent
 
 }

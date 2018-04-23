@@ -8,7 +8,6 @@ import javax.inject.Inject;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
-import com.flexpoker.core.api.chat.SendGameChatMessageCommand;
 import com.flexpoker.framework.event.EventHandler;
 import com.flexpoker.framework.pushnotifier.PushNotificationPublisher;
 import com.flexpoker.game.command.events.GameStartedEvent;
@@ -16,7 +15,7 @@ import com.flexpoker.game.query.dto.GameStage;
 import com.flexpoker.game.query.repository.GameListRepository;
 import com.flexpoker.game.query.repository.GamePlayerRepository;
 import com.flexpoker.game.query.repository.OpenGameForPlayerRepository;
-import com.flexpoker.model.chat.outgoing.GameChatMessage;
+import com.flexpoker.pushnotifications.ChatSentPushNotification;
 import com.flexpoker.pushnotifications.GameListUpdatedPushNotification;
 import com.flexpoker.pushnotifications.OpenGamesForPlayerUpdatedPushNotification;
 
@@ -31,19 +30,15 @@ public class GameStartedEventHandler implements EventHandler<GameStartedEvent> {
 
     private final PushNotificationPublisher pushNotificationPublisher;
 
-    private final SendGameChatMessageCommand sendGameChatMessageCommand;
-
     @Inject
     public GameStartedEventHandler(GameListRepository gameListRepository,
             GamePlayerRepository gamePlayerRepository,
             OpenGameForPlayerRepository openGameForUserRepository,
-            PushNotificationPublisher pushNotificationPublisher,
-            SendGameChatMessageCommand sendGameChatMessageCommand) {
+            PushNotificationPublisher pushNotificationPublisher) {
         this.gameListRepository = gameListRepository;
         this.gamePlayerRepository = gamePlayerRepository;
         this.openGameForUserRepository = openGameForUserRepository;
         this.pushNotificationPublisher = pushNotificationPublisher;
-        this.sendGameChatMessageCommand = sendGameChatMessageCommand;
     }
 
     @Async
@@ -74,7 +69,8 @@ public class GameStartedEventHandler implements EventHandler<GameStartedEvent> {
     }
 
     private void handleChat(GameStartedEvent event) {
-        sendGameChatMessageCommand.execute(new GameChatMessage("Game started", null,
-                true, event.getAggregateId()));
+        String message = "Game started";
+        pushNotificationPublisher
+                .publish(new ChatSentPushNotification(event.getAggregateId(), null, message, null, true));
     }
 }

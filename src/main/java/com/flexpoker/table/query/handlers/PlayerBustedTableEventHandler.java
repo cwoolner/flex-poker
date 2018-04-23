@@ -5,23 +5,23 @@ import javax.inject.Inject;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
-import com.flexpoker.core.api.chat.SendGameChatMessageCommand;
 import com.flexpoker.framework.event.EventHandler;
+import com.flexpoker.framework.pushnotifier.PushNotificationPublisher;
 import com.flexpoker.login.repository.LoginRepository;
-import com.flexpoker.model.chat.outgoing.GameChatMessage;
+import com.flexpoker.pushnotifications.ChatSentPushNotification;
 import com.flexpoker.table.command.events.PlayerBustedTableEvent;
 
 @Component
 public class PlayerBustedTableEventHandler implements EventHandler<PlayerBustedTableEvent> {
 
-    private final SendGameChatMessageCommand sendGameChatMessageCommand;
+    private final PushNotificationPublisher pushNotificationPublisher;
 
     private final LoginRepository loginRepository;
 
     @Inject
-    public PlayerBustedTableEventHandler(SendGameChatMessageCommand sendGameChatMessageCommand,
+    public PlayerBustedTableEventHandler(PushNotificationPublisher pushNotificationPublisher,
             LoginRepository loginRepository) {
-        this.sendGameChatMessageCommand = sendGameChatMessageCommand;
+        this.pushNotificationPublisher = pushNotificationPublisher;
         this.loginRepository = loginRepository;
     }
 
@@ -34,8 +34,8 @@ public class PlayerBustedTableEventHandler implements EventHandler<PlayerBustedT
     private void handleChat(PlayerBustedTableEvent event) {
         String username = loginRepository.fetchUsernameByAggregateId(event.getPlayerId());
         String message = username + " is out";
-        sendGameChatMessageCommand.execute(
-                new GameChatMessage(message, null, true, event.getAggregateId()));
+        pushNotificationPublisher
+                .publish(new ChatSentPushNotification(event.getGameId(), event.getAggregateId(), message, null, true));
     }
 
 }

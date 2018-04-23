@@ -7,12 +7,11 @@ import javax.inject.Inject;
 
 import org.springframework.stereotype.Component;
 
-import com.flexpoker.core.api.chat.SendTableChatMessageCommand;
 import com.flexpoker.framework.event.EventHandler;
 import com.flexpoker.framework.pushnotifier.PushNotification;
 import com.flexpoker.framework.pushnotifier.PushNotificationPublisher;
 import com.flexpoker.login.repository.LoginRepository;
-import com.flexpoker.model.chat.outgoing.TableChatMessage;
+import com.flexpoker.pushnotifications.ChatSentPushNotification;
 import com.flexpoker.pushnotifications.TableUpdatedPushNotification;
 import com.flexpoker.table.command.events.PlayerForceCheckedEvent;
 import com.flexpoker.table.query.repository.TableRepository;
@@ -26,18 +25,14 @@ public class PlayerForceCheckedEventHandler implements EventHandler<PlayerForceC
 
     private final TableRepository tableRepository;
 
-    private final SendTableChatMessageCommand sendTableChatMessageCommand;
-
     private final PushNotificationPublisher pushNotificationPublisher;
 
     @Inject
     public PlayerForceCheckedEventHandler(LoginRepository loginRepository,
             TableRepository tableRepository,
-            SendTableChatMessageCommand sendTableChatMessageCommand,
             PushNotificationPublisher pushNotificationPublisher) {
         this.loginRepository = loginRepository;
         this.tableRepository = tableRepository;
-        this.sendTableChatMessageCommand = sendTableChatMessageCommand;
         this.pushNotificationPublisher = pushNotificationPublisher;
     }
 
@@ -80,7 +75,7 @@ public class PlayerForceCheckedEventHandler implements EventHandler<PlayerForceC
     private void handleChat(PlayerForceCheckedEvent event) {
         String username = loginRepository.fetchUsernameByAggregateId(event.getPlayerId());
         String message = "Time expired - " + username + " checks";
-        sendTableChatMessageCommand.execute(new TableChatMessage(message, null, true,
-                event.getGameId(), event.getAggregateId()));
+        pushNotificationPublisher
+                .publish(new ChatSentPushNotification(event.getGameId(), event.getAggregateId(), message, null, true));
     }
 }

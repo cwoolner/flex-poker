@@ -5,7 +5,6 @@ import javax.inject.Inject;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
-import com.flexpoker.core.api.chat.SendGameChatMessageCommand;
 import com.flexpoker.framework.event.EventHandler;
 import com.flexpoker.framework.pushnotifier.PushNotificationPublisher;
 import com.flexpoker.game.command.events.GameJoinedEvent;
@@ -13,7 +12,7 @@ import com.flexpoker.game.query.repository.GameListRepository;
 import com.flexpoker.game.query.repository.GamePlayerRepository;
 import com.flexpoker.game.query.repository.OpenGameForPlayerRepository;
 import com.flexpoker.login.repository.LoginRepository;
-import com.flexpoker.model.chat.outgoing.GameChatMessage;
+import com.flexpoker.pushnotifications.ChatSentPushNotification;
 import com.flexpoker.pushnotifications.GameListUpdatedPushNotification;
 import com.flexpoker.pushnotifications.OpenGamesForPlayerUpdatedPushNotification;
 
@@ -28,8 +27,6 @@ public class GameJoinedEventHandler implements EventHandler<GameJoinedEvent> {
 
     private final GamePlayerRepository gamePlayerRepository;
 
-    private final SendGameChatMessageCommand sendGameChatMessageCommand;
-
     private final LoginRepository loginRepository;
 
     @Inject
@@ -37,13 +34,11 @@ public class GameJoinedEventHandler implements EventHandler<GameJoinedEvent> {
             PushNotificationPublisher pushNotificationPublisher,
             OpenGameForPlayerRepository openGameForUserRepository,
             GamePlayerRepository gamePlayerRepository,
-            SendGameChatMessageCommand sendGameChatMessageCommand,
             LoginRepository loginRepository) {
         this.gameListRepository = gameListRepository;
         this.pushNotificationPublisher = pushNotificationPublisher;
         this.openGameForUserRepository = openGameForUserRepository;
         this.gamePlayerRepository = gamePlayerRepository;
-        this.sendGameChatMessageCommand = sendGameChatMessageCommand;
         this.loginRepository = loginRepository;
     }
 
@@ -76,13 +71,11 @@ public class GameJoinedEventHandler implements EventHandler<GameJoinedEvent> {
         pushNotificationPublisher.publish(new GameListUpdatedPushNotification());
     }
 
-    // TODO: the event handler shouldn't be sending chat commands. this will be
-    // addressed in the chat refactoring
     private void handleChat(GameJoinedEvent event) {
         String username = loginRepository.fetchUsernameByAggregateId(event.getPlayerId());
         String message = username + " has joined the game";
-        sendGameChatMessageCommand.execute(new GameChatMessage(message, null, true, event
-                .getAggregateId()));
+        pushNotificationPublisher
+                .publish(new ChatSentPushNotification(event.getAggregateId(), null, message, null, true));
     }
 
 }

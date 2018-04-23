@@ -6,11 +6,6 @@ import WebSocketSubscriptionManager from './modules/webSocket/WebSocketSubscript
 import reducer from './reducers';
 import App from './App';
 
-WebSocketSubscriptionManager.subscribe(this, [
-  {location: '/user/topic/chat/personal/user', subscription: message => alert('personal' + message.body)},
-  {location: '/user/topic/chat/personal/system', subscription: message => alert('personal' + message.body)}
-]);
-
 const store = createStore(reducer);
 
 render((

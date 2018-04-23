@@ -7,12 +7,11 @@ import javax.inject.Inject;
 
 import org.springframework.stereotype.Component;
 
-import com.flexpoker.core.api.chat.SendTableChatMessageCommand;
 import com.flexpoker.framework.event.EventHandler;
 import com.flexpoker.framework.pushnotifier.PushNotification;
 import com.flexpoker.framework.pushnotifier.PushNotificationPublisher;
 import com.flexpoker.login.repository.LoginRepository;
-import com.flexpoker.model.chat.outgoing.TableChatMessage;
+import com.flexpoker.pushnotifications.ChatSentPushNotification;
 import com.flexpoker.pushnotifications.TableUpdatedPushNotification;
 import com.flexpoker.table.command.events.PlayerRaisedEvent;
 import com.flexpoker.table.query.repository.TableRepository;
@@ -26,18 +25,14 @@ public class PlayerRaisedEventHandler implements EventHandler<PlayerRaisedEvent>
 
     private final TableRepository tableRepository;
 
-    private final SendTableChatMessageCommand sendTableChatMessageCommand;
-
     private final PushNotificationPublisher pushNotificationPublisher;
 
     @Inject
     public PlayerRaisedEventHandler(LoginRepository loginRepository,
             TableRepository tableRepository,
-            SendTableChatMessageCommand sendTableChatMessageCommand,
             PushNotificationPublisher pushNotificationPublisher) {
         this.loginRepository = loginRepository;
         this.tableRepository = tableRepository;
-        this.sendTableChatMessageCommand = sendTableChatMessageCommand;
         this.pushNotificationPublisher = pushNotificationPublisher;
     }
 
@@ -94,8 +89,8 @@ public class PlayerRaisedEventHandler implements EventHandler<PlayerRaisedEvent>
     private void handleChat(PlayerRaisedEvent event) {
         String username = loginRepository.fetchUsernameByAggregateId(event.getPlayerId());
         String message = username + " raises to " + event.getRaiseToAmount();
-        sendTableChatMessageCommand.execute(new TableChatMessage(message, null, true,
-                event.getGameId(), event.getAggregateId()));
+        pushNotificationPublisher
+                .publish(new ChatSentPushNotification(event.getGameId(), event.getAggregateId(), message, null, true));
     }
 
 }

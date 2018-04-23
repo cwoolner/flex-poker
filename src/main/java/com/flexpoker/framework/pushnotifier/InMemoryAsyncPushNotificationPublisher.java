@@ -5,6 +5,7 @@ import javax.inject.Inject;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
+import com.flexpoker.pushnotifications.ChatSentPushNotification;
 import com.flexpoker.pushnotifications.GameListUpdatedPushNotification;
 import com.flexpoker.pushnotifications.OpenGamesForPlayerUpdatedPushNotification;
 import com.flexpoker.pushnotifications.OpenTableForUserPushNotification;
@@ -14,6 +15,8 @@ import com.flexpoker.pushnotifications.TickActionOnTimerPushNotification;
 
 @Component
 public class InMemoryAsyncPushNotificationPublisher implements PushNotificationPublisher {
+
+    private final PushNotificationHandler<ChatSentPushNotification> chatPushNotificationHandler;
 
     private final PushNotificationHandler<GameListUpdatedPushNotification> gameListUpdatedPushNotificationHandler;
 
@@ -29,12 +32,14 @@ public class InMemoryAsyncPushNotificationPublisher implements PushNotificationP
 
     @Inject
     public InMemoryAsyncPushNotificationPublisher(
+            PushNotificationHandler<ChatSentPushNotification> chatPushNotificationHandler,
             PushNotificationHandler<GameListUpdatedPushNotification> gameListUpdatedPushNotificationHandler,
             PushNotificationHandler<OpenGamesForPlayerUpdatedPushNotification> openGamesForPlayerUpdatedPushNotificationHandler,
             PushNotificationHandler<OpenTableForUserPushNotification> openTableForUserPushNotificationHandler,
             PushNotificationHandler<SendUserPocketCardsPushNotification> sendUserPocketCardsPushNotificationHandler,
             PushNotificationHandler<TableUpdatedPushNotification> tableUpdatedPushNotificationHandler,
             PushNotificationHandler<TickActionOnTimerPushNotification> tickActionOnTimerPushNotificationHandler) {
+        this.chatPushNotificationHandler = chatPushNotificationHandler;
         this.gameListUpdatedPushNotificationHandler = gameListUpdatedPushNotificationHandler;
         this.openGamesForPlayerUpdatedPushNotificationHandler = openGamesForPlayerUpdatedPushNotificationHandler;
         this.openTableForUserPushNotificationHandler = openTableForUserPushNotificationHandler;
@@ -47,6 +52,9 @@ public class InMemoryAsyncPushNotificationPublisher implements PushNotificationP
     @Override
     public void publish(PushNotification pushNotification) {
         switch (pushNotification.getType()) {
+        case ChatSent:
+            chatPushNotificationHandler.handle((ChatSentPushNotification) pushNotification);
+            break;
         case GameListUpdated:
             gameListUpdatedPushNotificationHandler
                     .handle((GameListUpdatedPushNotification) pushNotification);
