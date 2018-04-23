@@ -2,8 +2,6 @@ package com.flexpoker.pushnotifications;
 
 import java.util.UUID;
 
-import javax.inject.Inject;
-
 import com.flexpoker.framework.pushnotifier.BasePushNotification;
 import com.flexpoker.framework.pushnotifier.PushNotificationType;
 
@@ -17,7 +15,6 @@ public class OpenTableForUserPushNotification extends BasePushNotification {
 
     private final UUID playerId;
 
-    @Inject
     public OpenTableForUserPushNotification(UUID gameId, UUID tableId, UUID playerId) {
         super(TYPE);
         this.gameId = gameId;

@@ -2,8 +2,6 @@ package com.flexpoker.pushnotifications;
 
 import java.util.UUID;
 
-import javax.inject.Inject;
-
 import com.flexpoker.framework.pushnotifier.BasePushNotification;
 import com.flexpoker.framework.pushnotifier.PushNotificationType;
 
@@ -17,7 +15,6 @@ public class TickActionOnTimerPushNotification extends BasePushNotification {
 
     private final int number;
 
-    @Inject
     public TickActionOnTimerPushNotification(UUID gameId, UUID tableId, int number) {
         super(TYPE);
         this.gameId = gameId;
