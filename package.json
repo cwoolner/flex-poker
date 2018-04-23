@@ -12,6 +12,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "immutable": "3.8.2",
     "lodash": "4.17.5",
     "react": "16.3.2",
     "react-bootstrap": "0.32.1",

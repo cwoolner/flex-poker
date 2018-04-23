@@ -1,3 +1,5 @@
+import { List, Map } from 'immutable'
+
 const INIT_OPEN_GAME_TABS = 'INIT_OPEN_GAME_TABS'
 const UPDATE_OPEN_GAME_TABS = 'UPDATE_OPEN_GAME_TABS'
 const UPDATE_OPEN_GAME_LIST = 'UPDATE_OPEN_GAME_LIST'
@@ -5,6 +7,9 @@ const SHOW_JOIN_GAME_MODAL = 'SHOW_JOIN_GAME_MODAL'
 const HIDE_JOIN_GAME_MODAL = 'HIDE_JOIN_GAME_MODAL'
 const SHOW_CREATE_GAME_MODAL = 'SHOW_CREATE_GAME_MODAL'
 const HIDE_CREATE_GAME_MODAL = 'HIDE_CREATE_GAME_MODAL'
+const GLOBAL_CHAT_MSG_RECEIVED = 'GLOBAL_CHAT_MSG_RECEIVED'
+const GAME_CHAT_MSG_RECEIVED = 'GAME_CHAT_MSG_RECEIVED'
+const TABLE_CHAT_MSG_RECEIVED = 'TABLE_CHAT_MSG_RECEIVED'
 
 export const initOpenGameTabs = openGameTabs => ({ type: INIT_OPEN_GAME_TABS, openGameTabs })
 export const updateOpenGameTabs = openGameTabs => ({ type: UPDATE_OPEN_GAME_TABS, openGameTabs })
@@ -13,13 +18,21 @@ export const showJoinGameModal = joinGameId => ({ type: SHOW_JOIN_GAME_MODAL, jo
 export const hideJoinGameModal = () => ({ type: HIDE_JOIN_GAME_MODAL })
 export const showCreateGameModal = () => ({ type: SHOW_CREATE_GAME_MODAL })
 export const hideCreateGameModal = () => ({ type: HIDE_CREATE_GAME_MODAL })
+export const globalChatMsgReceived = msg => ({ type: GLOBAL_CHAT_MSG_RECEIVED, chatMessage: msg })
+export const gameChatMsgReceived = msg => ({ type: GAME_CHAT_MSG_RECEIVED, chatMessage: msg })
+export const tableChatMsgReceived = msg => ({ type: TABLE_CHAT_MSG_RECEIVED, chatMessage: msg })
 
 export default (state = {
   openGameTabs: [],
   openGameList: [],
   showJoinGameModal: false,
   joinGameId: null,
-  showCreateGameModal: false
+  showCreateGameModal: false,
+  chatMessages: {
+    globalMessages: List(),
+    gameMessages: Map(),
+    tableMessages: Map()
+  }
 }, action) => {
 
   switch (action.type) {
@@ -37,6 +50,17 @@ export default (state = {
       return {...state, showCreateGameModal: true }
     case HIDE_CREATE_GAME_MODAL:
       return { ...state, showCreateGameModal: false }
+    case GLOBAL_CHAT_MSG_RECEIVED:
+      const globalMessages = state.chatMessages.globalMessages.push(action.chatMessage)
+      return { ...state, chatMessages: { ...state.chatMessages, globalMessages }}
+    case GAME_CHAT_MSG_RECEIVED:
+      const singleGameMessages = state.chatMessages.gameMessages.get(action.gameId, List()).push(action.chatMessage)
+      const gameMessages = state.chatMessages.gameMessages.set(action.gameId, singleGameMessages)
+      return { ...state, chatMessages: { ...state.chatMessages, gameMessages }}
+    case TABLE_CHAT_MSG_RECEIVED:
+      const singleTableMessages = state.chatMessages.tableMessages.get(action.tableId, List()).push(action.chatMessage)
+      const tableMessages = state.chatMessages.tableMessages.set(action.tableId, singleTableMessages)
+      return { ...state, chatMessages: { ...state.chatMessages, tableMessages }}
     default:
       return state
   }

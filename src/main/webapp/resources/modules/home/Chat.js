@@ -2,6 +2,8 @@ import React from 'react';
 import { FormGroup, FormControl, FieldGroup, Button } from 'react-bootstrap';
 import WebSocketSubscriptionManager from '../webSocket/WebSocketSubscriptionManager';
 import WebSocketService from '../webSocket/WebSocketService';
+import { connect } from 'react-redux'
+import { globalChatMsgReceived } from '../../reducers';
 
 class Chat extends React.Component {
 
@@ -9,13 +11,15 @@ class Chat extends React.Component {
     super(props);
     this.chatFormSubmitted = this.chatFormSubmitted.bind(this);
     this.displayChat = this.displayChat.bind(this)
+    this.acceptGlobalChatMsg = this.acceptGlobalChatMsg.bind(this)
+  }
+
+  acceptGlobalChatMsg(message) {
+    this.props.dispatch(globalChatMsgReceived(message.body))
   }
 
   displayChat(message) {
-    const chatTextArea = document.querySelector('#chat-text');
-    const scrollHeight = chatTextArea['scrollHeight'];
-    chatTextArea['scrollTop'] = scrollHeight;
-    chatTextArea.value += message.body + '\n';
+    return message.toArray().join('\n')
   }
 
   chatFormSubmitted(evt) {
@@ -32,12 +36,12 @@ class Chat extends React.Component {
     const tableId = '';
 
     WebSocketSubscriptionManager.subscribe(this, [
-      {location: '/topic/chat/global/user', subscription: this.displayChat},
-      {location: '/topic/chat/global/system', subscription: this.displayChat},
-      {location: `/topic/chat/game/${gameId}/user`, subscription: this.displayChat},
-      {location: `/topic/chat/game/${gameId}/system`, subscription: this.displayChat},
-      {location: `/topic/chat/game/${gameId}/table/${tableId}/user`, subscription: this.displayChat},
-      {location: `/topic/chat/game/${gameId}/table/${tableId}/system`, subscription: this.displayChat}
+      {location: '/topic/chat/global/user', subscription: this.acceptGlobalChatMsg},
+      {location: '/topic/chat/global/system', subscription: this.acceptGlobalChatMsg}
+//      {location: `/topic/chat/game/${gameId}/user`, subscription: this.displayChat},
+//      {location: `/topic/chat/game/${gameId}/system`, subscription: this.displayChat},
+//      {location: `/topic/chat/game/${gameId}/table/${tableId}/user`, subscription: this.displayChat},
+//      {location: `/topic/chat/game/${gameId}/table/${tableId}/system`, subscription: this.displayChat}
     ])
   }
 
@@ -82,7 +86,7 @@ class Chat extends React.Component {
     return (
       <div className={'chat-area'}>
         <FormGroup>
-          <FormControl componentClass="textarea" id="chat-text" disabled="disabled" />
+          <FormControl componentClass="textarea" id="chat-text" disabled="disabled" value={this.displayChat(this.props.globalMessages)} />
         </FormGroup>
         <form onSubmit={this.chatFormSubmitted}>
           <FormGroup>
@@ -95,4 +99,6 @@ class Chat extends React.Component {
 
 }
 
-export default Chat
+const mapStateToProps = state => ({ globalMessages: state.chatMessages.globalMessages })
+
+export default connect(mapStateToProps)(Chat)
