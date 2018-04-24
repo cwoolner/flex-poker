@@ -1,9 +1,9 @@
 import React from 'react';
 import { FormGroup, FormControl, FieldGroup, Button } from 'react-bootstrap';
-import WebSocketSubscriptionManager from '../webSocket/WebSocketSubscriptionManager';
-import WebSocketService from '../webSocket/WebSocketService';
+import WebSocketSubscriptionManager from '../../webSocket/WebSocketSubscriptionManager';
+import WebSocketService from '../../webSocket/WebSocketService';
 import { connect } from 'react-redux'
-import { globalChatMsgReceived } from '../../reducers';
+import { globalChatMsgReceived } from '../../../reducers';
 
 class Chat extends React.Component {
 
