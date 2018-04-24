@@ -4,22 +4,31 @@ import WebSocketSubscriptionManager from '../../webSocket/WebSocketSubscriptionM
 import WebSocketService from '../../webSocket/WebSocketService';
 import { connect } from 'react-redux'
 import { globalChatMsgReceived } from '../../../reducers';
+import ChatLine from './ChatLine'
 
 class Chat extends React.Component {
 
   constructor(props) {
     super(props);
+
+    this.displayAreaMutationObserverCallback = this.displayAreaMutationObserverCallback.bind(this)
     this.chatFormSubmitted = this.chatFormSubmitted.bind(this);
-    this.displayChat = this.displayChat.bind(this)
     this.acceptGlobalChatMsg = this.acceptGlobalChatMsg.bind(this)
+
+    this.displayArea = React.createRef()
+    this.displayAreaMutationObserver = new MutationObserver(this.displayAreaMutationObserverCallback);
+  }
+
+  displayAreaMutationObserverCallback(mutations) {
+    for (let mutation of mutations) {
+      if (mutation.type == 'childList') {
+        this.displayArea.current.lastChild.scrollIntoView();
+      }
+    }
   }
 
   acceptGlobalChatMsg(message) {
-    this.props.dispatch(globalChatMsgReceived(message.body))
-  }
-
-  displayChat(message) {
-    return message.toArray().join('\n')
+    this.props.dispatch(globalChatMsgReceived(JSON.parse(message.body)))
   }
 
   chatFormSubmitted(evt) {
@@ -32,6 +41,8 @@ class Chat extends React.Component {
   }
 
   componentDidMount() {
+    this.displayAreaMutationObserver.observe(this.displayArea.current, { childList: true })
+
     const gameId = '';
     const tableId = '';
 
@@ -44,6 +55,7 @@ class Chat extends React.Component {
 
   componentWillUnmount() {
     WebSocketSubscriptionManager.unsubscribe(this);
+    this.displayAreaMutationObserver.disconnect();
   }
 
   sendGlobalChat(message) {
@@ -82,9 +94,9 @@ class Chat extends React.Component {
   render() {
     return (
       <div className={'chat-area'}>
-        <FormGroup>
-          <FormControl componentClass="textarea" id="chat-text" disabled="disabled" value={this.displayChat(this.props.globalMessages)} />
-        </FormGroup>
+        <div className={'chat-text-display-area form-control form-group'} ref={this.displayArea}>
+          {this.props.globalMessages.map(msg => <ChatLine chat={msg} />)}
+        </div>
         <form onSubmit={this.chatFormSubmitted}>
           <FormGroup>
             <FormControl type="text" placeholder="Chat..." />
