@@ -6,6 +6,8 @@ import Seat from './Seat';
 import PokerActions from './PokerActions';
 import SeatContainer from './SeatContainer';
 import _ from 'lodash';
+import { connect } from 'react-redux'
+import { changeChatMsgStream } from '../../reducers'
 
 class TablePage extends React.Component {
 
@@ -38,6 +40,7 @@ class TablePage extends React.Component {
       })
     });
 
+    this.props.dispatch(changeChatMsgStream(gameId, tableId))
   }
 
   componentWillUnmount() {
@@ -100,4 +103,4 @@ class TablePage extends React.Component {
 
 }
 
-export default TablePage
+export default connect()(TablePage)

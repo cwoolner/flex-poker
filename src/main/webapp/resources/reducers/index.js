@@ -7,6 +7,7 @@ const SHOW_JOIN_GAME_MODAL = 'SHOW_JOIN_GAME_MODAL'
 const HIDE_JOIN_GAME_MODAL = 'HIDE_JOIN_GAME_MODAL'
 const SHOW_CREATE_GAME_MODAL = 'SHOW_CREATE_GAME_MODAL'
 const HIDE_CREATE_GAME_MODAL = 'HIDE_CREATE_GAME_MODAL'
+const CHANGE_CHAT_MSG_STREAM = 'CHANGE_CHAT_MSG_STREAM'
 const GLOBAL_CHAT_MSG_RECEIVED = 'GLOBAL_CHAT_MSG_RECEIVED'
 const GAME_CHAT_MSG_RECEIVED = 'GAME_CHAT_MSG_RECEIVED'
 const TABLE_CHAT_MSG_RECEIVED = 'TABLE_CHAT_MSG_RECEIVED'
@@ -18,6 +19,7 @@ export const showJoinGameModal = joinGameId => ({ type: SHOW_JOIN_GAME_MODAL, jo
 export const hideJoinGameModal = () => ({ type: HIDE_JOIN_GAME_MODAL })
 export const showCreateGameModal = () => ({ type: SHOW_CREATE_GAME_MODAL })
 export const hideCreateGameModal = () => ({ type: HIDE_CREATE_GAME_MODAL })
+export const changeChatMsgStream = (gameId, tableId) => ({ type: CHANGE_CHAT_MSG_STREAM, gameId, tableId })
 export const globalChatMsgReceived = msg => ({ type: GLOBAL_CHAT_MSG_RECEIVED, chatMessage: msg })
 export const gameChatMsgReceived = msg => ({ type: GAME_CHAT_MSG_RECEIVED, chatMessage: msg })
 export const tableChatMsgReceived = msg => ({ type: TABLE_CHAT_MSG_RECEIVED, chatMessage: msg })
@@ -28,6 +30,7 @@ export default (state = {
   showJoinGameModal: false,
   joinGameId: null,
   showCreateGameModal: false,
+  activeChatStream: { gameId: null, tableId: null },
   chatMessages: {
     globalMessages: List(),
     gameMessages: Map(),
@@ -50,6 +53,8 @@ export default (state = {
       return {...state, showCreateGameModal: true }
     case HIDE_CREATE_GAME_MODAL:
       return { ...state, showCreateGameModal: false }
+    case CHANGE_CHAT_MSG_STREAM:
+      return { ...state, activeChatStream: { gameId: action.gameId, tableId: action.tableId }}
     case GLOBAL_CHAT_MSG_RECEIVED:
       const globalMessages = state.chatMessages.globalMessages.push(action.chatMessage)
       return { ...state, chatMessages: { ...state.chatMessages, globalMessages }}

@@ -6,6 +6,8 @@ import JoinGameDialog from './JoinGameDialog';
 import GameList from './GameList';
 import { Button } from 'react-bootstrap';
 import { connect } from 'react-redux'
+import { changeChatMsgStream } from '../../reducers'
+
 
 class Lobby extends React.Component {
 
@@ -17,6 +19,7 @@ class Lobby extends React.Component {
     WebSocketSubscriptionManager.subscribe(this, [
       {location: '/topic/availabletournaments', subscription: this.updateGameList}
     ]);
+    this.props.dispatch(changeChatMsgStream(null, null))
   }
 
   componentWillUnmount() {
@@ -35,4 +38,4 @@ class Lobby extends React.Component {
 
 }
 
-export default Lobby
+export default connect()(Lobby)

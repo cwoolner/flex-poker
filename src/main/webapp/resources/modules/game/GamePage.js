@@ -1,6 +1,8 @@
 import React from 'react';
 import WebSocketService from '../webSocket/WebSocketService';
 import WebSocketSubscriptionManager from '../webSocket/WebSocketSubscriptionManager';
+import { connect } from 'react-redux'
+import { changeChatMsgStream } from '../../reducers'
 
 class GamePage extends React.Component {
 
@@ -9,7 +11,9 @@ class GamePage extends React.Component {
   }
 
   componentDidMount() {
+    const { gameId } = this.props.match.params
     WebSocketSubscriptionManager.subscribe(this, []);
+    this.props.dispatch(changeChatMsgStream(gameId, null))
   }
 
   componentWillUnmount() {
@@ -22,4 +26,4 @@ class GamePage extends React.Component {
 
 }
 
-export default GamePage
+export default connect()(GamePage)

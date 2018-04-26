@@ -1,4 +1,5 @@
 import React from 'react';
+import { List, Map } from 'immutable'
 import { FormGroup, FormControl, FieldGroup, Button } from 'react-bootstrap';
 import WebSocketSubscriptionManager from '../../webSocket/WebSocketSubscriptionManager';
 import WebSocketService from '../../webSocket/WebSocketService';
@@ -95,7 +96,7 @@ class Chat extends React.Component {
     return (
       <div className={'chat-area'}>
         <div className={'chat-text-display-area form-control form-group'} ref={this.displayArea}>
-          {this.props.globalMessages.map(msg => <ChatLine chat={msg} />)}
+          {this.props.chats.map(msg => <ChatLine chat={msg} />)}
         </div>
         <form onSubmit={this.chatFormSubmitted}>
           <FormGroup>
@@ -108,6 +109,17 @@ class Chat extends React.Component {
 
 }
 
-const mapStateToProps = state => ({ globalMessages: state.chatMessages.globalMessages })
+const mapStateToProps = state => {
+  const { activeChatStream, chatMessages } = state
+  if (activeChatStream.gameId && activeChatStream.tableId) {
+    return { activeChatStream, chats: chatMessages.tableMessages
+      .get(activeChatStream.gameId, Map())
+      .get(activeChatStream.tableId, List()) }
+  } else if (activeChatStream.gameId) {
+    return { activeChatStream, chats: chatMessages.gameMessages
+      .get(activeChatStream.gameId, List()) }
+  } else {
+    return { activeChatStream, chats: chatMessages.globalMessages }
+  }}
 
 export default connect(mapStateToProps)(Chat)
