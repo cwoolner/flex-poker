@@ -13,7 +13,7 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <jetty.version>9.4.9.v20180320</jetty.version>
+    <jetty.version>9.4.10.RC0</jetty.version>
   </properties>
 
   <build>
@@ -24,8 +24,8 @@
         <artifactId>maven-compiler-plugin</artifactId>
         <version>3.7.0</version>
         <configuration>
-          <source>1.9</source>
-          <target>1.9</target>
+          <source>1.10</source>
+          <target>1.10</target>
         </configuration>
       </plugin>
       <plugin>
