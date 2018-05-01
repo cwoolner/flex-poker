@@ -4,7 +4,7 @@ import { FormGroup, FormControl, FieldGroup, Button } from 'react-bootstrap';
 import WebSocketSubscriptionManager from '../../webSocket/WebSocketSubscriptionManager';
 import WebSocketService from '../../webSocket/WebSocketService';
 import { connect } from 'react-redux'
-import { globalChatMsgReceived } from '../../../reducers';
+import { globalChatMsgReceived, gameChatMsgReceived, tableChatMsgReceived } from '../../../reducers';
 import ChatLine from './ChatLine'
 
 class Chat extends React.Component {
@@ -14,7 +14,7 @@ class Chat extends React.Component {
 
     this.displayAreaMutationObserverCallback = this.displayAreaMutationObserverCallback.bind(this)
     this.chatFormSubmitted = this.chatFormSubmitted.bind(this);
-    this.acceptGlobalChatMsg = this.acceptGlobalChatMsg.bind(this)
+    this.registerWebSocketSubs = this.registerWebSocketSubs.bind(this)
 
     this.displayArea = React.createRef()
     this.displayAreaMutationObserver = new MutationObserver(this.displayAreaMutationObserverCallback);
@@ -28,30 +28,53 @@ class Chat extends React.Component {
     }
   }
 
-  acceptGlobalChatMsg(message) {
-    this.props.dispatch(globalChatMsgReceived(JSON.parse(message.body)))
-  }
-
   chatFormSubmitted(evt) {
     evt.preventDefault();
     const messageTextBox = evt.target.elements[0];
     if (messageTextBox.value) {
-      this.sendGlobalChat(messageTextBox.value);
+      const message = {
+        message: messageTextBox.value,
+        ...this.props.activeChatStream
+      }
+      WebSocketService.send('/app/sendchatmessage', message);
       messageTextBox.value = '';
+    }
+  }
+
+  acceptGlobalChatMsg(dispatch, message) {
+    dispatch(globalChatMsgReceived(JSON.parse(message.body)))
+  }
+
+  acceptGameChatMsg(dispatch, gameId, message) {
+    dispatch(gameChatMsgReceived(gameId, JSON.parse(message.body)))
+  }
+
+  acceptTableChatMsg(dispatch, gameId, tableId, message) {
+    dispatch(tableChatMsgReceived(gameId, tableId, JSON.parse(message.body)))
+  }
+
+  registerWebSocketSubs(dispatch, activeChatStream) {
+    const { gameId, tableId } = activeChatStream || {}
+    if (gameId && tableId) {
+      WebSocketSubscriptionManager.subscribe(this, [{
+        location: `/topic/chat/game/${gameId}/table/${tableId}`,
+        subscription: this.acceptTableChatMsg.bind(this, dispatch, gameId, tableId)
+      }])
+    } else if (gameId) {
+      WebSocketSubscriptionManager.subscribe(this, [{
+        location: `/topic/chat/game/${gameId}`,
+        subscription: this.acceptGameChatMsg.bind(this, dispatch, gameId)
+      }])
+    } else {
+      WebSocketSubscriptionManager.subscribe(this, [{
+        location: '/topic/chat/global',
+        subscription: this.acceptGlobalChatMsg.bind(this, dispatch)
+      }])
     }
   }
 
   componentDidMount() {
     this.displayAreaMutationObserver.observe(this.displayArea.current, { childList: true })
-
-    const gameId = '';
-    const tableId = '';
-
-    WebSocketSubscriptionManager.subscribe(this, [
-      {location: '/topic/chat/global', subscription: this.acceptGlobalChatMsg}
-//      {location: `/topic/chat/game/${gameId}`, subscription: this.displayChat},
-//      {location: `/topic/chat/game/${gameId}/table/${tableId}`, subscription: this.displayChat}
-    ])
   }
 
   componentWillUnmount() {
@@ -59,40 +82,8 @@ class Chat extends React.Component {
     this.displayAreaMutationObserver.disconnect();
   }
 
-  sendGlobalChat(message) {
-    const globalMessage = {
-      message,
-      receiverUsernames: null,
-      gameId: null,
-      tableId: null
-    };
-
-    WebSocketService.send('/app/sendchatmessage', globalMessage);
-  }
-
-  sendGameChat(gameId, message) {
-    const gameMessage = {
-      message: message,
-      receiverUsernames: null,
-      gameId: gameId,
-      tableId: null
-    };
-
-    WebSocketService.send('/app/sendchatmessage', gameMessage);
-  }
-
-  sendTableChat(gameId, tableId, message) {
-    const tableMessage = {
-      message: message,
-      receiverUsernames: null,
-      gameId: gameId,
-      tableId: tableId
-    };
-
-    WebSocketService.send('/app/sendchatmessage', tableMessage);
-  }
-
   render() {
+    this.registerWebSocketSubs(this.props.dispatch, this.props.activeChatStream)
     return (
       <div className={'chat-area'}>
         <div className={'chat-text-display-area form-control form-group'} ref={this.displayArea}>
@@ -112,12 +103,11 @@ class Chat extends React.Component {
 const mapStateToProps = state => {
   const { activeChatStream, chatMessages } = state
   if (activeChatStream.gameId && activeChatStream.tableId) {
-    return { activeChatStream, chats: chatMessages.tableMessages
-      .get(activeChatStream.gameId, Map())
-      .get(activeChatStream.tableId, List()) }
+    const { gameId, tableId } = activeChatStream
+    return { activeChatStream, chats: chatMessages.tableMessages.get(tableId, List()) }
   } else if (activeChatStream.gameId) {
-    return { activeChatStream, chats: chatMessages.gameMessages
-      .get(activeChatStream.gameId, List()) }
+    const { gameId } = activeChatStream
+    return { activeChatStream, chats: chatMessages.gameMessages.get(gameId, List()) }
   } else {
     return { activeChatStream, chats: chatMessages.globalMessages }
   }}

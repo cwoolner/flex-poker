@@ -21,8 +21,8 @@ export const showCreateGameModal = () => ({ type: SHOW_CREATE_GAME_MODAL })
 export const hideCreateGameModal = () => ({ type: HIDE_CREATE_GAME_MODAL })
 export const changeChatMsgStream = (gameId, tableId) => ({ type: CHANGE_CHAT_MSG_STREAM, gameId, tableId })
 export const globalChatMsgReceived = msg => ({ type: GLOBAL_CHAT_MSG_RECEIVED, chatMessage: msg })
-export const gameChatMsgReceived = msg => ({ type: GAME_CHAT_MSG_RECEIVED, chatMessage: msg })
-export const tableChatMsgReceived = msg => ({ type: TABLE_CHAT_MSG_RECEIVED, chatMessage: msg })
+export const gameChatMsgReceived = (gameId, msg) => ({ type: GAME_CHAT_MSG_RECEIVED, gameId, chatMessage: msg })
+export const tableChatMsgReceived = (gameId, tableId, msg) => ({ type: TABLE_CHAT_MSG_RECEIVED, gameId, tableId, chatMessage: msg })
 
 export default (state = {
   openGameTabs: [],
