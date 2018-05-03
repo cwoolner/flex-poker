@@ -16,4 +16,10 @@ WORKDIR /flex-poker
 RUN npm install
 RUN mvn package
 
-ENTRYPOINT java -jar target/dependency/jetty-runner.jar target/*.war
+
+FROM openjdk:10.0.1-jre-slim-sid
+
+COPY --from=0 /flex-poker/target/flexpoker.war .
+COPY --from=0 /flex-poker/target/dependency/jetty-runner.jar .
+
+ENTRYPOINT java -jar jetty-runner.jar flexpoker.war
