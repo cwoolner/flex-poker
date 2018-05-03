@@ -1,0 +1,19 @@
+FROM openjdk:10.0.1-jdk-slim-sid
+
+RUN apt update
+RUN apt install maven curl -y
+
+RUN curl https://nodejs.org/dist/v8.9.4/node-v8.9.4-linux-x64.tar.xz > node-v8.9.4-linux-x64.tar.xz
+RUN tar xvf node-v8.9.4-linux-x64.tar.xz -C /
+ENV PATH="${PATH}:/node-v8.9.4-linux-x64/bin"
+
+RUN mkdir flex-poker
+
+COPY / /flex-poker/
+
+WORKDIR /flex-poker
+
+RUN npm install
+RUN mvn package
+
+ENTRYPOINT java -jar target/dependency/jetty-runner.jar target/*.war
