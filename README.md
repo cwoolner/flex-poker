@@ -2,6 +2,56 @@
 
 Flex Poker is a poker-playing (Texas hold 'em) web app.  It was originally written with Flex on the front-end, hence the name.  It's been rewritten many times since using various technologies.
 
+# Running the app
+
+### w/ Docker
+1. NOTE: Requires docker >= 17.05 due to using a multi-stage build.  This runs the default dev version, which just uses an in-memory database
+2. `docker build -t flex-poker:1.0-SNAPSHOT .`
+3. `docker run -d -p 8080:8080 flex-poker:1.0-SNAPSHOT`
+4. Hit [http://localhost:8080/](http://localhost:8080/)
+5. Users created by default: player1/player1, player2/player2, player3/player3, player4/player4
+
+### w/o Docker
+1. `npm install`
+2. Run the server:
+   * Default version: `mvn jetty:run`
+   * Prod version (Redis required): `mvn jetty:run -Dspring.profiles.active=prod`
+3. Hit [http://localhost:8080/](http://localhost:8080/)
+4. Users created by default: player1/player1, player2/player2, player3/player3, player4/player4
+
+# Technologies
+
+## Build/dev tools
+* Node.js/npm
+* Java 10
+* Maven
+* Redis - only required if using the "prod" Spring profile
+* Docker (>= 17.05) - if you want to use the provided Dockerfile to build/run
+
+## Front-end libraries/frameworks
+* SockJS
+* STOMP
+* React
+* Redux
+* React Router
+* React-Bootstrap
+
+## Back-end libraries/frameworks
+* Spring - MVC/WebSocket/etc.
+* Spring Data Redis
+* Spring Security
+
+# Dev environment setup
+
+* Just been using Eclipse, so to generate the .classpath file, from the top-level directory: `mvn eclipse:eclipse`
+* While developing, running `npm start` launches webpack in watch mode
+
+# Testing
+
+The basic unit tests run as part of a normal Maven lifecycle.  No external systems are hit.
+
+Been recently playing around with mutation testing.  The PIT plugin has been included.  To run (after building): `mvn org.pitest:pitest-maven:mutationCoverage`
+
 # Motivation
 
 It would be nice to actually make a fully usable product at some point, but so far the project has mostly served as a non-trivial project to learn new technologies and try out different design patterns.  That said, any contributions that move toward the goal of making something useful are most definitely welcomed.
@@ -65,46 +115,3 @@ NOTE: Since the app uses in-memory persistence, the entire state of the app is e
 * Logic to show more than just the winning hand
 * Ability to muck winning/losing hands
 * Winning hand determination, including split pots
-
-# Technologies
-
-## Required
-
-* Node.js/npm
-* Java 8
-* Maven
-
-## Optional
-
-* Redis - only required if using the "prod" Spring profile
-
-## Front-end libraries/frameworks
-
-* SockJS
-* STOMP
-* Web Components
-
-## Back-end libraries/frameworks
-
-* Spring - MVC/WebSocket/etc.
-* Spring Data Redis
-* Spring Security
-
-# Running the app
-
-1. Run the front-end build: `npm install`
-2. Run the server:
-   * Default version: `mvn jetty:run`
-   * Prod version (Redis required): `mvn jetty:run -Dspring.profiles.active=prod`
-3. Hit [http://localhost:8080/](http://localhost:8080/)
-
-# Dev environment setup
-
-* Just been using Eclipse, so to generate the .classpath file, from the top-level directory: `mvn eclipse:eclipse`
-* While developing, running `npm start` launches webpack in watch mode
-
-# Testing
-
-The basic unit tests run as part of a normal Maven lifecycle.  No external systems are hit.
-
-Been recently playing around with mutation testing.  The PIT plugin has been included.  To run (after building): `mvn org.pitest:pitest-maven:mutationCoverage`
