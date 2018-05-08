@@ -4,8 +4,6 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -23,11 +21,11 @@ public class IncrementBlindsTest {
 
     @Test
     public void testIncrementBlindsCreatesNewEvent() {
-        UUID gameId = UUID.randomUUID();
-        Map<UUID, Set<UUID>> tableIdToPlayerIdsMap = new HashMap<>();
-        Set<UUID> tableIds = tableIdToPlayerIdsMap.keySet();
+        var gameId = UUID.randomUUID();
+        var tableIdToPlayerIdsMap = new HashMap<UUID, Set<UUID>>();
+        var tableIds = tableIdToPlayerIdsMap.keySet();
 
-        List<GameEvent> events = new ArrayList<>();
+        var events = new ArrayList<GameEvent>();
         events.add(new GameCreatedEvent(gameId, 1, "test", 2, 2, UUID.randomUUID(), 10, 20));
         events.add(new GameJoinedEvent(gameId, 2, UUID.randomUUID()));
         events.add(new GameJoinedEvent(gameId, 3, UUID.randomUUID()));
@@ -35,7 +33,7 @@ public class IncrementBlindsTest {
         events.add(new GameTablesCreatedAndPlayersAssociatedEvent(gameId, 5, tableIdToPlayerIdsMap, 2));
         events.add(new GameStartedEvent(gameId, 6, tableIds, new BlindSchedule(10)));
 
-        Game game = new DefaultGameFactory().createFrom(events);
+        var game = new DefaultGameFactory().createFrom(events);
         game.increaseBlinds();
 
         assertEquals(7, game.fetchAppliedEvents().size());
@@ -45,11 +43,11 @@ public class IncrementBlindsTest {
 
     @Test
     public void testIncrementBlindsAlreadyAtMaxLevel() {
-        UUID gameId = UUID.randomUUID();
-        Map<UUID, Set<UUID>> tableIdToPlayerIdsMap = new HashMap<>();
-        Set<UUID> tableIds = tableIdToPlayerIdsMap.keySet();
+        var gameId = UUID.randomUUID();
+        var tableIdToPlayerIdsMap = new HashMap<UUID, Set<UUID>>();
+        var tableIds = tableIdToPlayerIdsMap.keySet();
 
-        List<GameEvent> events = new ArrayList<>();
+        var events = new ArrayList<GameEvent>();
         events.add(new GameCreatedEvent(gameId, 1, "test", 2, 2, UUID.randomUUID(), 10, 20));
         events.add(new GameJoinedEvent(gameId, 2, UUID.randomUUID()));
         events.add(new GameJoinedEvent(gameId, 3, UUID.randomUUID()));
@@ -57,7 +55,7 @@ public class IncrementBlindsTest {
         events.add(new GameTablesCreatedAndPlayersAssociatedEvent(gameId, 5, tableIdToPlayerIdsMap, 2));
         events.add(new GameStartedEvent(gameId, 6, tableIds, new BlindSchedule(10)));
 
-        Game game = new DefaultGameFactory().createFrom(events);
+        var game = new DefaultGameFactory().createFrom(events);
         game.increaseBlinds();
         game.increaseBlinds();
         game.increaseBlinds();
@@ -71,17 +69,17 @@ public class IncrementBlindsTest {
 
     @Test(expected = FlexPokerException.class)
     public void testFailureWhenNotInTheCorrectStage() {
-        UUID gameId = UUID.randomUUID();
-        Map<UUID, Set<UUID>> tableIdToPlayerIdsMap = new HashMap<>();
+        var gameId = UUID.randomUUID();
+        var tableIdToPlayerIdsMap = new HashMap<UUID, Set<UUID>>();
 
-        List<GameEvent> events = new ArrayList<>();
+        var events = new ArrayList<GameEvent>();
         events.add(new GameCreatedEvent(gameId, 1, "test", 2, 2, UUID.randomUUID(), 10, 20));
         events.add(new GameJoinedEvent(gameId, 2, UUID.randomUUID()));
         events.add(new GameJoinedEvent(gameId, 3, UUID.randomUUID()));
         events.add(new GameMovedToStartingStageEvent(gameId, 4));
         events.add(new GameTablesCreatedAndPlayersAssociatedEvent(gameId, 5, tableIdToPlayerIdsMap, 2));
 
-        Game game = new DefaultGameFactory().createFrom(events);
+        var game = new DefaultGameFactory().createFrom(events);
         game.increaseBlinds();
     }
 

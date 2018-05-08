@@ -61,13 +61,13 @@ public class InMemoryAsyncGameEventSubscriber
     }
 
     private Map<Class<? extends Event>, EventHandler<? extends Event>> createEventHandlerMap() {
-        Map<Class<? extends Event>, EventHandler<? extends Event>> eventHandlerMap = new HashMap<>();
+        var eventHandlerMap = new HashMap<Class<? extends Event>, EventHandler<? extends Event>>();
         eventHandlerMap.put(GameCreatedEvent.class, gameCreatedEventHandler);
         eventHandlerMap.put(GameJoinedEvent.class, gameJoinedEventHandler);
         eventHandlerMap.put(GameMovedToStartingStageEvent.class, gameMovedToStartingStageEventHandler);
         eventHandlerMap.put(GameStartedEvent.class, x -> {
-            final Timer timer = new Timer();
-            final TimerTask timerTask = new TimerTask() {
+            final var timer = new Timer();
+            final var timerTask = new TimerTask() {
                 @Override
                 public void run() {
                     gameStartedEventHandler.handle((GameStartedEvent) x);

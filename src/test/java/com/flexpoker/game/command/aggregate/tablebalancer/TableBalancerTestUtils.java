@@ -21,13 +21,11 @@ public class TableBalancerTestUtils {
     public static Map<UUID, Set<UUID>> createTableToPlayersMap(
             UUID subjectTableId, int numberOfSubjectTablePlayers,
             int... numberOfPlayersAtOtherTables) {
-        Map<UUID, Set<UUID>> tableToPlayersMap = new HashMap<>();
-        tableToPlayersMap.put(subjectTableId,
-                createRandomSetOfPlayerIds(numberOfSubjectTablePlayers));
+        var tableToPlayersMap = new HashMap<UUID, Set<UUID>>();
+        tableToPlayersMap.put(subjectTableId, createRandomSetOfPlayerIds(numberOfSubjectTablePlayers));
 
-        for (int i = 0; i < numberOfPlayersAtOtherTables.length; i++) {
-            tableToPlayersMap.put(UUID.randomUUID(), createRandomSetOfPlayerIds(
-                    numberOfPlayersAtOtherTables[i]));
+        for (var i = 0; i < numberOfPlayersAtOtherTables.length; i++) {
+            tableToPlayersMap.put(UUID.randomUUID(), createRandomSetOfPlayerIds(numberOfPlayersAtOtherTables[i]));
         }
 
         return tableToPlayersMap;

@@ -61,7 +61,7 @@ public class GameJoinedEventHandler implements EventHandler<GameJoinedEvent> {
     }
 
     private void handleOpenGameRepository(GameJoinedEvent event) {
-        String gameName = gameListRepository.fetchGameName(event.getAggregateId());
+        var gameName = gameListRepository.fetchGameName(event.getAggregateId());
         openGameForUserRepository.addOpenGameForUser(event.getPlayerId(), event.getAggregateId(), gameName);
     }
 
@@ -72,8 +72,8 @@ public class GameJoinedEventHandler implements EventHandler<GameJoinedEvent> {
     }
 
     private void handleChat(GameJoinedEvent event) {
-        String username = loginRepository.fetchUsernameByAggregateId(event.getPlayerId());
-        String message = username + " has joined the game";
+        var username = loginRepository.fetchUsernameByAggregateId(event.getPlayerId());
+        var message = username + " has joined the game";
         pushNotificationPublisher
                 .publish(new ChatSentPushNotification(event.getAggregateId(), null, message, null, true));
     }

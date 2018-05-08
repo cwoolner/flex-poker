@@ -2,7 +2,6 @@ package com.flexpoker.table.command.aggregate.pot;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
@@ -74,34 +73,32 @@ public class Pot {
     }
 
     private void recalculateWinners() {
-        List<HandEvaluation> relevantHandEvaluationsForPot = handEvaluations.stream()
+        var relevantHandEvaluationsForPot = handEvaluations.stream()
                 .filter(x -> playersInvolved.contains(x.getPlayerId()))
                 .sorted((x, y) -> y.compareTo(x))
                 .collect(Collectors.toList());
 
         HandEvaluation topAssignedHand = null;
-        List<UUID> winners = new ArrayList<>();
+        var winners = new ArrayList<UUID>();
 
-        for (HandEvaluation handEvaluation : relevantHandEvaluationsForPot) {
+        for (var handEvaluation : relevantHandEvaluationsForPot) {
             if (topAssignedHand == null || topAssignedHand.compareTo(handEvaluation) == 0) {
                 topAssignedHand = handEvaluation;
                 winners.add(topAssignedHand.getPlayerId());
             }
         }
 
-        int numberOfWinners = winners.size();
-        int baseNumberOfChips = amount / numberOfWinners;
-        int bonusChips = amount % numberOfWinners;
+        var numberOfWinners = winners.size();
+        var baseNumberOfChips = amount / numberOfWinners;
+        var bonusChips = amount % numberOfWinners;
 
         chipsForPlayerToWin.clear();
 
         winners.forEach(x -> chipsForPlayerToWin.put(x, baseNumberOfChips));
 
         if (bonusChips >= 1) {
-            int randomNumber = new Random(System.currentTimeMillis())
-                    .nextInt(winners.size());
-            chipsForPlayerToWin.compute(winners.get(randomNumber),
-                    (playerId, chips) -> chips + bonusChips);
+            var randomNumber = new Random(System.currentTimeMillis()).nextInt(winners.size());
+            chipsForPlayerToWin.compute(winners.get(randomNumber), (playerId, chips) -> chips + bonusChips);
         }
 
     }

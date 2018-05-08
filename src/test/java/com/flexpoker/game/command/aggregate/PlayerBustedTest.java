@@ -5,8 +5,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
 
 import org.junit.Test;
@@ -20,21 +18,23 @@ public class PlayerBustedTest {
 
     @Test
     public void testEventIsCreated() {
-        UUID player1Id = UUID.randomUUID();
-        UUID player2Id = UUID.randomUUID();
-        UUID player3Id = UUID.randomUUID();
-        CreateGameCommand createGameCommand = new CreateGameCommand("test", 3, 3, player1Id, 1, 20);
-        Game game = new DefaultGameFactory().createNew(createGameCommand);
+        var player1Id = UUID.randomUUID();
+        var player2Id = UUID.randomUUID();
+        var player3Id = UUID.randomUUID();
+        var createGameCommand = new CreateGameCommand("test", 3, 3, player1Id, 1, 20);
+        var game = new DefaultGameFactory().createNew(createGameCommand);
         game.joinGame(player1Id);
         game.joinGame(player2Id);
         game.joinGame(player3Id);
 
-        GameTablesCreatedAndPlayersAssociatedEvent gameTablesCreatedAndPlayersAssociatedEvent = (GameTablesCreatedAndPlayersAssociatedEvent) game
+        var gameTablesCreatedAndPlayersAssociatedEvent = (GameTablesCreatedAndPlayersAssociatedEvent) game
                 .fetchAppliedEvents().stream()
-                .filter(x -> x.getClass().equals(GameTablesCreatedAndPlayersAssociatedEvent.class)).findFirst().get();
-        UUID tableId = gameTablesCreatedAndPlayersAssociatedEvent.getTableIdToPlayerIdsMap().keySet().iterator().next();
+                .filter(x -> x.getClass().equals(GameTablesCreatedAndPlayersAssociatedEvent.class))
+                .findFirst().get();
+        var tableId = gameTablesCreatedAndPlayersAssociatedEvent.getTableIdToPlayerIdsMap()
+                .keySet().iterator().next();
 
-        Map<UUID, Integer> playerToChipsMap = new HashMap<>();
+        var playerToChipsMap = new HashMap<UUID, Integer>();
         playerToChipsMap.put(player1Id, 100);
         playerToChipsMap.put(player2Id, 0);
         playerToChipsMap.put(player3Id, 100);
@@ -49,21 +49,21 @@ public class PlayerBustedTest {
 
     @Test
     public void testRemovedUserFromTableCreatesEvent() {
-        UUID player1Id = UUID.randomUUID();
-        UUID player2Id = UUID.randomUUID();
-        UUID player3Id = UUID.randomUUID();
-        CreateGameCommand createGameCommand = new CreateGameCommand("test", 3, 3, player1Id, 1, 20);
-        Game game = new DefaultGameFactory().createNew(createGameCommand);
+        var player1Id = UUID.randomUUID();
+        var player2Id = UUID.randomUUID();
+        var player3Id = UUID.randomUUID();
+        var createGameCommand = new CreateGameCommand("test", 3, 3, player1Id, 1, 20);
+        var game = new DefaultGameFactory().createNew(createGameCommand);
         game.joinGame(player1Id);
         game.joinGame(player2Id);
         game.joinGame(player3Id);
 
-        GameTablesCreatedAndPlayersAssociatedEvent gameTablesCreatedAndPlayersAssociatedEvent = (GameTablesCreatedAndPlayersAssociatedEvent) game
+        var gameTablesCreatedAndPlayersAssociatedEvent = (GameTablesCreatedAndPlayersAssociatedEvent) game
                 .fetchAppliedEvents().stream()
                 .filter(x -> x.getClass().equals(GameTablesCreatedAndPlayersAssociatedEvent.class)).findFirst().get();
-        UUID tableId = gameTablesCreatedAndPlayersAssociatedEvent.getTableIdToPlayerIdsMap().keySet().iterator().next();
+        var tableId = gameTablesCreatedAndPlayersAssociatedEvent.getTableIdToPlayerIdsMap().keySet().iterator().next();
 
-        Map<UUID, Integer> playerToChipsMap = new HashMap<>();
+        var playerToChipsMap = new HashMap<UUID, Integer>();
         playerToChipsMap.put(player1Id, 100);
         playerToChipsMap.put(player3Id, 100);
         game.attemptToStartNewHand(tableId, playerToChipsMap);
@@ -77,21 +77,21 @@ public class PlayerBustedTest {
 
     @Test
     public void testMultiplePlayersBust() {
-        UUID player1Id = UUID.randomUUID();
-        UUID player2Id = UUID.randomUUID();
-        UUID player3Id = UUID.randomUUID();
-        CreateGameCommand createGameCommand = new CreateGameCommand("test", 3, 3, player1Id, 1, 20);
-        Game game = new DefaultGameFactory().createNew(createGameCommand);
+        var player1Id = UUID.randomUUID();
+        var player2Id = UUID.randomUUID();
+        var player3Id = UUID.randomUUID();
+        var createGameCommand = new CreateGameCommand("test", 3, 3, player1Id, 1, 20);
+        var game = new DefaultGameFactory().createNew(createGameCommand);
         game.joinGame(player1Id);
         game.joinGame(player2Id);
         game.joinGame(player3Id);
 
-        GameTablesCreatedAndPlayersAssociatedEvent gameTablesCreatedAndPlayersAssociatedEvent = (GameTablesCreatedAndPlayersAssociatedEvent) game
+        var gameTablesCreatedAndPlayersAssociatedEvent = (GameTablesCreatedAndPlayersAssociatedEvent) game
                 .fetchAppliedEvents().stream()
                 .filter(x -> x.getClass().equals(GameTablesCreatedAndPlayersAssociatedEvent.class)).findFirst().get();
-        UUID tableId = gameTablesCreatedAndPlayersAssociatedEvent.getTableIdToPlayerIdsMap().keySet().iterator().next();
+        var tableId = gameTablesCreatedAndPlayersAssociatedEvent.getTableIdToPlayerIdsMap().keySet().iterator().next();
 
-        Map<UUID, Integer> playerToChipsMap = new HashMap<>();
+        var playerToChipsMap = new HashMap<UUID, Integer>();
         playerToChipsMap.put(player1Id, 0);
         playerToChipsMap.put(player2Id, 0);
         playerToChipsMap.put(player3Id, 100);
@@ -103,7 +103,7 @@ public class PlayerBustedTest {
         assertEquals(PlayerBustedGameEvent.class, game.fetchAppliedEvents().get(7).getClass());
         assertEquals(PlayerBustedGameEvent.class, game.fetchAppliedEvents().get(8).getClass());
 
-        Set<UUID> bustedPlayers = new HashSet<>();
+        var bustedPlayers = new HashSet<>();
         bustedPlayers.add(((PlayerBustedGameEvent) game.fetchAppliedEvents().get(7)).getPlayerId());
         bustedPlayers.add(((PlayerBustedGameEvent) game.fetchAppliedEvents().get(8)).getPlayerId());
 
@@ -113,47 +113,47 @@ public class PlayerBustedTest {
 
     @Test(expected = FlexPokerException.class)
     public void testInvalidPlayer() {
-        UUID player1Id = UUID.randomUUID();
-        UUID player2Id = UUID.randomUUID();
-        UUID player3Id = UUID.randomUUID();
-        UUID player4Id = UUID.randomUUID();
-        CreateGameCommand createGameCommand = new CreateGameCommand("test", 3, 3, player1Id, 1, 20);
-        Game game = new DefaultGameFactory().createNew(createGameCommand);
+        var player1Id = UUID.randomUUID();
+        var player2Id = UUID.randomUUID();
+        var player3Id = UUID.randomUUID();
+        var player4Id = UUID.randomUUID();
+        var createGameCommand = new CreateGameCommand("test", 3, 3, player1Id, 1, 20);
+        var game = new DefaultGameFactory().createNew(createGameCommand);
         game.joinGame(player1Id);
         game.joinGame(player2Id);
         game.joinGame(player3Id);
 
-        Map<UUID, Integer> playerToChipsMap = new HashMap<>();
+        var playerToChipsMap = new HashMap<UUID, Integer>();
         playerToChipsMap.put(player1Id, 0);
         playerToChipsMap.put(player2Id, 0);
         playerToChipsMap.put(player3Id, 100);
         playerToChipsMap.put(player4Id, 0);
 
-        GameTablesCreatedAndPlayersAssociatedEvent gameTablesCreatedAndPlayersAssociatedEvent = (GameTablesCreatedAndPlayersAssociatedEvent) game
+        var gameTablesCreatedAndPlayersAssociatedEvent = (GameTablesCreatedAndPlayersAssociatedEvent) game
                 .fetchAppliedEvents().stream()
                 .filter(x -> x.getClass().equals(GameTablesCreatedAndPlayersAssociatedEvent.class)).findFirst().get();
-        UUID tableId = gameTablesCreatedAndPlayersAssociatedEvent.getTableIdToPlayerIdsMap().keySet().iterator().next();
+        var tableId = gameTablesCreatedAndPlayersAssociatedEvent.getTableIdToPlayerIdsMap().keySet().iterator().next();
 
         game.attemptToStartNewHand(tableId, playerToChipsMap);
     }
 
     @Test(expected = FlexPokerException.class)
     public void testPlayerBustsTwice() {
-        UUID player1Id = UUID.randomUUID();
-        UUID player2Id = UUID.randomUUID();
-        UUID player3Id = UUID.randomUUID();
-        CreateGameCommand createGameCommand = new CreateGameCommand("test", 3, 3, player1Id, 1, 20);
-        Game game = new DefaultGameFactory().createNew(createGameCommand);
+        var player1Id = UUID.randomUUID();
+        var player2Id = UUID.randomUUID();
+        var player3Id = UUID.randomUUID();
+        var createGameCommand = new CreateGameCommand("test", 3, 3, player1Id, 1, 20);
+        var game = new DefaultGameFactory().createNew(createGameCommand);
         game.joinGame(player1Id);
         game.joinGame(player2Id);
         game.joinGame(player3Id);
 
-        GameTablesCreatedAndPlayersAssociatedEvent gameTablesCreatedAndPlayersAssociatedEvent = (GameTablesCreatedAndPlayersAssociatedEvent) game
+        var gameTablesCreatedAndPlayersAssociatedEvent = (GameTablesCreatedAndPlayersAssociatedEvent) game
                 .fetchAppliedEvents().stream()
                 .filter(x -> x.getClass().equals(GameTablesCreatedAndPlayersAssociatedEvent.class)).findFirst().get();
-        UUID tableId = gameTablesCreatedAndPlayersAssociatedEvent.getTableIdToPlayerIdsMap().keySet().iterator().next();
+        var tableId = gameTablesCreatedAndPlayersAssociatedEvent.getTableIdToPlayerIdsMap().keySet().iterator().next();
 
-        Map<UUID, Integer> playerToChipsMap = new HashMap<>();
+        var playerToChipsMap = new HashMap<UUID, Integer>();
         playerToChipsMap.put(player1Id, 0);
         playerToChipsMap.put(player2Id, 0);
         playerToChipsMap.put(player3Id, 100);

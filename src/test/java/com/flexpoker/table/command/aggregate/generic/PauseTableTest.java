@@ -15,17 +15,14 @@ public class PauseTableTest {
 
     @Test
     public void testPauseSuccess() {
-        Table table = TableTestUtils.createBasicTable(UUID.randomUUID(),
-                UUID.randomUUID(), UUID.randomUUID());
+        var table = TableTestUtils.createBasicTable(UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID());
         table.pause();
-        assertEquals(TablePausedEvent.class,
-                table.fetchNewEvents().get(table.fetchNewEvents().size() - 1).getClass());
+        assertEquals(TablePausedEvent.class, table.fetchNewEvents().get(table.fetchNewEvents().size() - 1).getClass());
     }
 
     @Test(expected = FlexPokerException.class)
     public void testPauseTwice() {
-        Table table = TableTestUtils.createBasicTable(UUID.randomUUID(),
-                UUID.randomUUID(), UUID.randomUUID());
+        Table table = TableTestUtils.createBasicTable(UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID());
         table.pause();
         table.pause();
     }

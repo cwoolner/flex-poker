@@ -7,15 +7,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
 
 import org.junit.Test;
 
 import com.flexpoker.table.command.aggregate.HandDealerState;
-import com.flexpoker.table.command.aggregate.Table;
 import com.flexpoker.table.command.aggregate.testhelpers.TableTestUtils;
 import com.flexpoker.table.command.events.ActionOnChangedEvent;
 import com.flexpoker.table.command.events.CardsShuffledEvent;
@@ -27,35 +23,29 @@ import com.flexpoker.table.command.events.PotCreatedEvent;
 import com.flexpoker.table.command.events.RoundCompletedEvent;
 import com.flexpoker.table.command.events.TableCreatedEvent;
 import com.flexpoker.table.command.events.WinnersDeterminedEvent;
-import com.flexpoker.table.command.framework.TableEvent;
 
 public class TwoPlayerButtonFoldsDueToTimeoutTest {
 
     @Test
     public void test() {
-        UUID tableId = UUID.randomUUID();
+        var tableId = UUID.randomUUID();
 
-        Table table = TableTestUtils.createBasicTableAndStartHand(tableId, UUID.randomUUID(),
-                UUID.randomUUID());
+        var table = TableTestUtils.createBasicTableAndStartHand(tableId, UUID.randomUUID(), UUID.randomUUID());
 
         // use the info in action on event to simulate the expire
-        ActionOnChangedEvent actionOnChangedEvent = (ActionOnChangedEvent) table
-                .fetchNewEvents().get(4);
-        table.expireActionOn(actionOnChangedEvent.getHandId(),
-                actionOnChangedEvent.getPlayerId());
+        var actionOnChangedEvent = (ActionOnChangedEvent) table.fetchNewEvents().get(4);
+        table.expireActionOn(actionOnChangedEvent.getHandId(), actionOnChangedEvent.getPlayerId());
 
-        List<TableEvent> newEvents = table.fetchNewEvents();
-        TableCreatedEvent tableCreatedEvent = (TableCreatedEvent) newEvents.get(0);
-        HandDealtEvent handDealtEvent = (HandDealtEvent) newEvents.get(2);
-        PotCreatedEvent potCreatedEvent = (PotCreatedEvent) newEvents.get(3);
-        PotAmountIncreasedEvent smallBlindPotAmountIncreasedEvent = (PotAmountIncreasedEvent) newEvents.get(6);
-        PotAmountIncreasedEvent bigBlindPotAmountIncreasedEvent = (PotAmountIncreasedEvent) newEvents.get(7);
-        RoundCompletedEvent roundCompletedEvent = (RoundCompletedEvent) newEvents.get(8);
+        var newEvents = table.fetchNewEvents();
+        var tableCreatedEvent = (TableCreatedEvent) newEvents.get(0);
+        var handDealtEvent = (HandDealtEvent) newEvents.get(2);
+        var potCreatedEvent = (PotCreatedEvent) newEvents.get(3);
+        var smallBlindPotAmountIncreasedEvent = (PotAmountIncreasedEvent) newEvents.get(6);
+        var bigBlindPotAmountIncreasedEvent = (PotAmountIncreasedEvent) newEvents.get(7);
+        var roundCompletedEvent = (RoundCompletedEvent) newEvents.get(8);
 
-        UUID buttonPlayerId = fetchIdForButton(
-                tableCreatedEvent, handDealtEvent);
-        UUID bigBlindPlayerId = fetchIdForBigBlind(
-                tableCreatedEvent, handDealtEvent);
+        var buttonPlayerId = fetchIdForButton(tableCreatedEvent, handDealtEvent);
+        var bigBlindPlayerId = fetchIdForBigBlind(tableCreatedEvent, handDealtEvent);
 
         assertEquals(10, handDealtEvent.getCallAmountsMap().get(buttonPlayerId).intValue());
         assertEquals(0, handDealtEvent.getCallAmountsMap().get(bigBlindPlayerId).intValue());
@@ -74,9 +64,9 @@ public class TwoPlayerButtonFoldsDueToTimeoutTest {
 
         assertEquals(HandDealerState.COMPLETE, roundCompletedEvent.getNextHandDealerState());
 
-        WinnersDeterminedEvent winnersDeterminedEvent = ((WinnersDeterminedEvent) newEvents.get(9));
-        Map<UUID, Integer> playersToChipsWonMap = winnersDeterminedEvent.getPlayersToChipsWonMap();
-        Set<UUID> playersToShowCards = winnersDeterminedEvent.getPlayersToShowCards();
+        var winnersDeterminedEvent = ((WinnersDeterminedEvent) newEvents.get(9));
+        var playersToChipsWonMap = winnersDeterminedEvent.getPlayersToChipsWonMap();
+        var playersToShowCards = winnersDeterminedEvent.getPlayersToShowCards();
 
         assertNull(playersToChipsWonMap.get(buttonPlayerId));
         assertEquals(30, playersToChipsWonMap.get(bigBlindPlayerId).intValue());

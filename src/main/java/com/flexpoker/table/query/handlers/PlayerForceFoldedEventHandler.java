@@ -1,7 +1,5 @@
 package com.flexpoker.table.query.handlers;
 
-import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
@@ -9,7 +7,6 @@ import javax.inject.Inject;
 import org.springframework.stereotype.Component;
 
 import com.flexpoker.framework.event.EventHandler;
-import com.flexpoker.framework.pushnotifier.PushNotification;
 import com.flexpoker.framework.pushnotifier.PushNotificationPublisher;
 import com.flexpoker.login.repository.LoginRepository;
 import com.flexpoker.pushnotifications.ChatSentPushNotification;
@@ -46,10 +43,10 @@ public class PlayerForceFoldedEventHandler implements EventHandler<PlayerForceFo
     }
 
     private void handleUpdatingTable(PlayerForceFoldedEvent event) {
-        TableDTO currentTable = tableRepository.fetchById(event.getAggregateId());
-        String username = loginRepository.fetchUsernameByAggregateId(event.getPlayerId());
+        var currentTable = tableRepository.fetchById(event.getAggregateId());
+        var username = loginRepository.fetchUsernameByAggregateId(event.getPlayerId());
 
-        List<SeatDTO> updatedSeats = currentTable.getSeats().stream()
+        var updatedSeats = currentTable.getSeats().stream()
                 .map(seatDTO -> {
                     if (seatDTO.getName().equals(username)) {
                         return new SeatDTO(
@@ -68,9 +65,9 @@ public class PlayerForceFoldedEventHandler implements EventHandler<PlayerForceFo
                     return seatDTO;
                 }).collect(Collectors.toList());
 
-        Set<PotDTO> updatePots = currentTable.getPots().stream()
+        var updatePots = currentTable.getPots().stream()
                 .map(potDTO -> {
-                    Set<String> updatedPotSeats = potDTO.getSeats().stream()
+                    var updatedPotSeats = potDTO.getSeats().stream()
                             .filter(x -> !x.equals(username))
                             .collect(Collectors.toSet());
                     return new PotDTO(
@@ -80,7 +77,7 @@ public class PlayerForceFoldedEventHandler implements EventHandler<PlayerForceFo
                             potDTO.getWinners());
         }).collect(Collectors.toSet());
 
-        TableDTO updatedTable = new TableDTO(currentTable.getId(),
+        var updatedTable = new TableDTO(currentTable.getId(),
                 event.getVersion(), updatedSeats, currentTable.getTotalPot(),
                 updatePots, currentTable.getVisibleCommonCards(),
                 currentTable.getCurrentHandMinRaiseToAmount());
@@ -88,14 +85,13 @@ public class PlayerForceFoldedEventHandler implements EventHandler<PlayerForceFo
     }
 
     private void handlePushNotifications(PlayerForceFoldedEvent event) {
-        PushNotification pushNotification = new TableUpdatedPushNotification(
-                event.getGameId(), event.getAggregateId());
+        var pushNotification = new TableUpdatedPushNotification(event.getGameId(), event.getAggregateId());
         pushNotificationPublisher.publish(pushNotification);
     }
 
     private void handleChat(PlayerForceFoldedEvent event) {
-        String username = loginRepository.fetchUsernameByAggregateId(event.getPlayerId());
-        String message = "Time expired - " + username + " folds";
+        var username = loginRepository.fetchUsernameByAggregateId(event.getPlayerId());
+        var message = "Time expired - " + username + " folds";
         pushNotificationPublisher
                 .publish(new ChatSentPushNotification(event.getGameId(), event.getAggregateId(), message, null, true));
     }

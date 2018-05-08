@@ -3,8 +3,6 @@ package com.flexpoker.table.command.service;
 import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 import org.junit.Test;
@@ -18,8 +16,6 @@ import com.flexpoker.model.card.PocketCards;
 import com.flexpoker.model.card.RiverCard;
 import com.flexpoker.model.card.TurnCard;
 import com.flexpoker.table.command.aggregate.CommonCards;
-import com.flexpoker.table.command.aggregate.HandEvaluation;
-import com.flexpoker.table.command.service.DefaultHandEvaluatorService;
 
 public class DefaultHandEvaluatorServiceTest {
 
@@ -52,43 +48,42 @@ public class DefaultHandEvaluatorServiceTest {
     }
 
     private void testDetermineHandEvaluationScenario1() {
-        Card card1 = new Card(0, CardRank.FOUR, CardSuit.SPADES);
-        Card card2 = new Card(0, CardRank.JACK, CardSuit.SPADES);
-        Card card3 = new Card(0, CardRank.EIGHT, CardSuit.HEARTS);
-        Card card4 = new Card(0, CardRank.FOUR, CardSuit.HEARTS);
-        Card card5 = new Card(0, CardRank.QUEEN, CardSuit.HEARTS);
+        var card1 = new Card(0, CardRank.FOUR, CardSuit.SPADES);
+        var card2 = new Card(0, CardRank.JACK, CardSuit.SPADES);
+        var card3 = new Card(0, CardRank.EIGHT, CardSuit.HEARTS);
+        var card4 = new Card(0, CardRank.FOUR, CardSuit.HEARTS);
+        var card5 = new Card(0, CardRank.QUEEN, CardSuit.HEARTS);
 
-        FlopCards flopCards = new FlopCards(card1, card3, card4);
-        TurnCard turnCard = new TurnCard(card5);
-        RiverCard riverCard = new RiverCard(card2);
+        var flopCards = new FlopCards(card1, card3, card4);
+        var turnCard = new TurnCard(card5);
+        var riverCard = new RiverCard(card2);
 
-        List<HandRanking> possibleHandRankings = bso.determinePossibleHands(flopCards,
-                turnCard, riverCard);
+        var possibleHandRankings = bso.determinePossibleHands(flopCards, turnCard, riverCard);
 
-        UUID id1 = UUID.randomUUID();
-        UUID id2 = UUID.randomUUID();
-        UUID id3 = UUID.randomUUID();
-        UUID id4 = UUID.randomUUID();
-        UUID id5 = UUID.randomUUID();
-        UUID id6 = UUID.randomUUID();
-        UUID id8 = UUID.randomUUID();
+        var id1 = UUID.randomUUID();
+        var id2 = UUID.randomUUID();
+        var id3 = UUID.randomUUID();
+        var id4 = UUID.randomUUID();
+        var id5 = UUID.randomUUID();
+        var id6 = UUID.randomUUID();
+        var id8 = UUID.randomUUID();
 
-        List<PocketCards> pocketCardsList = new ArrayList<>();
+        var pocketCardsList = new ArrayList<PocketCards>();
 
-        PocketCards pocketCards1 = new PocketCards(new Card(0, CardRank.NINE,
-                CardSuit.HEARTS), new Card(0, CardRank.ACE, CardSuit.CLUBS));
-        PocketCards pocketCards2 = new PocketCards(new Card(0, CardRank.QUEEN,
-                CardSuit.HEARTS), new Card(0, CardRank.ACE, CardSuit.CLUBS));
-        PocketCards pocketCards3 = new PocketCards(new Card(0, CardRank.TWO,
-                CardSuit.HEARTS), new Card(0, CardRank.ACE, CardSuit.HEARTS));
-        PocketCards pocketCards4 = new PocketCards(new Card(0, CardRank.FOUR,
-                CardSuit.CLUBS), new Card(0, CardRank.FOUR, CardSuit.DIAMONDS));
-        PocketCards pocketCards5 = new PocketCards(new Card(0, CardRank.FIVE,
-                CardSuit.CLUBS), new Card(0, CardRank.FOUR, CardSuit.DIAMONDS));
-        PocketCards pocketCards6 = new PocketCards(new Card(0, CardRank.FOUR,
-                CardSuit.CLUBS), new Card(0, CardRank.EIGHT, CardSuit.CLUBS));
-        PocketCards pocketCards8 = new PocketCards(new Card(0, CardRank.QUEEN,
-                CardSuit.CLUBS), new Card(0, CardRank.QUEEN, CardSuit.DIAMONDS));
+        var pocketCards1 = new PocketCards(
+                new Card(0, CardRank.NINE, CardSuit.HEARTS), new Card(0, CardRank.ACE, CardSuit.CLUBS));
+        var pocketCards2 = new PocketCards(
+                new Card(0, CardRank.QUEEN, CardSuit.HEARTS), new Card(0, CardRank.ACE, CardSuit.CLUBS));
+        var pocketCards3 = new PocketCards(
+                new Card(0, CardRank.TWO, CardSuit.HEARTS), new Card(0, CardRank.ACE, CardSuit.HEARTS));
+        var pocketCards4 = new PocketCards(
+                new Card(0, CardRank.FOUR, CardSuit.CLUBS), new Card(0, CardRank.FOUR, CardSuit.DIAMONDS));
+        var pocketCards5 = new PocketCards(
+                new Card(0, CardRank.FIVE, CardSuit.CLUBS), new Card(0, CardRank.FOUR, CardSuit.DIAMONDS));
+        var pocketCards6 = new PocketCards(
+                new Card(0, CardRank.FOUR, CardSuit.CLUBS), new Card(0, CardRank.EIGHT, CardSuit.CLUBS));
+        var pocketCards8 = new PocketCards(
+                new Card(0, CardRank.QUEEN, CardSuit.CLUBS), new Card(0, CardRank.QUEEN, CardSuit.DIAMONDS));
 
         pocketCardsList.add(pocketCards1);
         pocketCardsList.add(pocketCards2);
@@ -98,16 +93,16 @@ public class DefaultHandEvaluatorServiceTest {
         pocketCardsList.add(pocketCards6);
         pocketCardsList.add(pocketCards8);
 
-        Map<PocketCards, HandEvaluation> handEvaluations = bso.determineHandEvaluation(
+        var handEvaluations = bso.determineHandEvaluation(
                 flopCards, turnCard, riverCard, pocketCardsList, possibleHandRankings);
 
-        HandEvaluation handEvaluation1 = handEvaluations.get(pocketCards1);
-        HandEvaluation handEvaluation2 = handEvaluations.get(pocketCards2);
-        HandEvaluation handEvaluation3 = handEvaluations.get(pocketCards3);
-        HandEvaluation handEvaluation4 = handEvaluations.get(pocketCards4);
-        HandEvaluation handEvaluation5 = handEvaluations.get(pocketCards5);
-        HandEvaluation handEvaluation6 = handEvaluations.get(pocketCards6);
-        HandEvaluation handEvaluation8 = handEvaluations.get(pocketCards8);
+        var handEvaluation1 = handEvaluations.get(pocketCards1);
+        var handEvaluation2 = handEvaluations.get(pocketCards2);
+        var handEvaluation3 = handEvaluations.get(pocketCards3);
+        var handEvaluation4 = handEvaluations.get(pocketCards4);
+        var handEvaluation5 = handEvaluations.get(pocketCards5);
+        var handEvaluation6 = handEvaluations.get(pocketCards6);
+        var handEvaluation8 = handEvaluations.get(pocketCards8);
 
         handEvaluation1.setPlayerId(id1);
         handEvaluation2.setPlayerId(id2);
@@ -161,42 +156,41 @@ public class DefaultHandEvaluatorServiceTest {
     }
 
     private void testDetermineHandEvaluationScenario2() {
-        Card card1 = new Card(0, CardRank.KING, CardSuit.HEARTS);
-        Card card2 = new Card(0, CardRank.JACK, CardSuit.HEARTS);
-        Card card3 = new Card(0, CardRank.NINE, CardSuit.HEARTS);
-        Card card4 = new Card(0, CardRank.TEN, CardSuit.HEARTS);
-        Card card5 = new Card(0, CardRank.QUEEN, CardSuit.HEARTS);
+        var card1 = new Card(0, CardRank.KING, CardSuit.HEARTS);
+        var card2 = new Card(0, CardRank.JACK, CardSuit.HEARTS);
+        var card3 = new Card(0, CardRank.NINE, CardSuit.HEARTS);
+        var card4 = new Card(0, CardRank.TEN, CardSuit.HEARTS);
+        var card5 = new Card(0, CardRank.QUEEN, CardSuit.HEARTS);
 
-        FlopCards flopCards = new FlopCards(card1, card3, card4);
-        TurnCard turnCard = new TurnCard(card5);
-        RiverCard riverCard = new RiverCard(card2);
+        var flopCards = new FlopCards(card1, card3, card4);
+        var turnCard = new TurnCard(card5);
+        var riverCard = new RiverCard(card2);
 
-        List<HandRanking> possibleHandRankings = bso.determinePossibleHands(flopCards,
-                turnCard, riverCard);
+        var possibleHandRankings = bso.determinePossibleHands(flopCards, turnCard, riverCard);
 
-        UUID id1 = UUID.randomUUID();
-        UUID id2 = UUID.randomUUID();
-        UUID id3 = UUID.randomUUID();
+        var id1 = UUID.randomUUID();
+        var id2 = UUID.randomUUID();
+        var id3 = UUID.randomUUID();
 
-        List<PocketCards> pocketCardsList = new ArrayList<>();
+        var pocketCardsList = new ArrayList<PocketCards>();
 
-        PocketCards pocketCards1 = new PocketCards(new Card(0, CardRank.EIGHT,
-                CardSuit.HEARTS), new Card(0, CardRank.ACE, CardSuit.CLUBS));
-        PocketCards pocketCards2 = new PocketCards(new Card(0, CardRank.QUEEN,
-                CardSuit.SPADES), new Card(0, CardRank.ACE, CardSuit.HEARTS));
-        PocketCards pocketCards3 = new PocketCards(new Card(0, CardRank.QUEEN,
-                CardSuit.SPADES), new Card(0, CardRank.ACE, CardSuit.DIAMONDS));
+        var pocketCards1 = new PocketCards(
+                new Card(0, CardRank.EIGHT, CardSuit.HEARTS), new Card(0, CardRank.ACE, CardSuit.CLUBS));
+        var pocketCards2 = new PocketCards(
+                new Card(0, CardRank.QUEEN, CardSuit.SPADES), new Card(0, CardRank.ACE, CardSuit.HEARTS));
+        var pocketCards3 = new PocketCards(
+                new Card(0, CardRank.QUEEN, CardSuit.SPADES), new Card(0, CardRank.ACE, CardSuit.DIAMONDS));
 
         pocketCardsList.add(pocketCards1);
         pocketCardsList.add(pocketCards2);
         pocketCardsList.add(pocketCards3);
 
-        Map<PocketCards, HandEvaluation> handEvaluations = bso.determineHandEvaluation(
+        var handEvaluations = bso.determineHandEvaluation(
                 flopCards, turnCard, riverCard, pocketCardsList, possibleHandRankings);
 
-        HandEvaluation handEvaluation1 = handEvaluations.get(pocketCards1);
-        HandEvaluation handEvaluation2 = handEvaluations.get(pocketCards2);
-        HandEvaluation handEvaluation3 = handEvaluations.get(pocketCards3);
+        var handEvaluation1 = handEvaluations.get(pocketCards1);
+        var handEvaluation2 = handEvaluations.get(pocketCards2);
+        var handEvaluation3 = handEvaluations.get(pocketCards3);
 
         handEvaluation1.setPlayerId(id1);
         handEvaluation2.setPlayerId(id2);
@@ -216,42 +210,41 @@ public class DefaultHandEvaluatorServiceTest {
     }
 
     private void testDetermineHandEvaluationScenario3() {
-        Card card1 = new Card(0, CardRank.ACE, CardSuit.CLUBS);
-        Card card2 = new Card(0, CardRank.TWO, CardSuit.CLUBS);
-        Card card3 = new Card(0, CardRank.THREE, CardSuit.CLUBS);
-        Card card4 = new Card(0, CardRank.FOUR, CardSuit.CLUBS);
-        Card card5 = new Card(0, CardRank.SIX, CardSuit.HEARTS);
+        var card1 = new Card(0, CardRank.ACE, CardSuit.CLUBS);
+        var card2 = new Card(0, CardRank.TWO, CardSuit.CLUBS);
+        var card3 = new Card(0, CardRank.THREE, CardSuit.CLUBS);
+        var card4 = new Card(0, CardRank.FOUR, CardSuit.CLUBS);
+        var card5 = new Card(0, CardRank.SIX, CardSuit.HEARTS);
 
-        FlopCards flopCards = new FlopCards(card1, card3, card4);
-        TurnCard turnCard = new TurnCard(card5);
-        RiverCard riverCard = new RiverCard(card2);
+        var flopCards = new FlopCards(card1, card3, card4);
+        var turnCard = new TurnCard(card5);
+        var riverCard = new RiverCard(card2);
 
-        List<HandRanking> possibleHandRankings = bso.determinePossibleHands(flopCards,
-                turnCard, riverCard);
+        var possibleHandRankings = bso.determinePossibleHands(flopCards, turnCard, riverCard);
 
-        UUID id1 = UUID.randomUUID();
-        UUID id2 = UUID.randomUUID();
-        UUID id3 = UUID.randomUUID();
+        var id1 = UUID.randomUUID();
+        var id2 = UUID.randomUUID();
+        var id3 = UUID.randomUUID();
 
-        List<PocketCards> pocketCardsList = new ArrayList<>();
+        var pocketCardsList = new ArrayList<PocketCards>();
 
-        PocketCards pocketCards1 = new PocketCards(new Card(0, CardRank.FIVE,
-                CardSuit.CLUBS), new Card(0, CardRank.ACE, CardSuit.CLUBS));
-        PocketCards pocketCards2 = new PocketCards(new Card(0, CardRank.FIVE,
-                CardSuit.SPADES), new Card(0, CardRank.ACE, CardSuit.HEARTS));
-        PocketCards pocketCards3 = new PocketCards(new Card(0, CardRank.QUEEN,
-                CardSuit.SPADES), new Card(0, CardRank.ACE, CardSuit.DIAMONDS));
+        var pocketCards1 = new PocketCards(
+                new Card(0, CardRank.FIVE, CardSuit.CLUBS), new Card(0, CardRank.ACE, CardSuit.CLUBS));
+        var pocketCards2 = new PocketCards(
+                new Card(0, CardRank.FIVE, CardSuit.SPADES), new Card(0, CardRank.ACE, CardSuit.HEARTS));
+        var pocketCards3 = new PocketCards(
+                new Card(0, CardRank.QUEEN, CardSuit.SPADES), new Card(0, CardRank.ACE, CardSuit.DIAMONDS));
 
         pocketCardsList.add(pocketCards1);
         pocketCardsList.add(pocketCards2);
         pocketCardsList.add(pocketCards3);
 
-        Map<PocketCards, HandEvaluation> handEvaluations = bso.determineHandEvaluation(
+        var handEvaluations = bso.determineHandEvaluation(
                 flopCards, turnCard, riverCard, pocketCardsList, possibleHandRankings);
 
-        HandEvaluation handEvaluation1 = handEvaluations.get(pocketCards1);
-        HandEvaluation handEvaluation2 = handEvaluations.get(pocketCards2);
-        HandEvaluation handEvaluation3 = handEvaluations.get(pocketCards3);
+        var handEvaluation1 = handEvaluations.get(pocketCards1);
+        var handEvaluation2 = handEvaluations.get(pocketCards2);
+        var handEvaluation3 = handEvaluations.get(pocketCards3);
 
         handEvaluation1.setPlayerId(id1);
         handEvaluation2.setPlayerId(id2);
@@ -274,37 +267,36 @@ public class DefaultHandEvaluatorServiceTest {
     }
 
     private void testDetermineHandEvaluationScenario4() {
-        Card card1 = new Card(0, CardRank.KING, CardSuit.SPADES);
-        Card card2 = new Card(0, CardRank.TWO, CardSuit.DIAMONDS);
-        Card card3 = new Card(0, CardRank.QUEEN, CardSuit.CLUBS);
-        Card card4 = new Card(0, CardRank.FOUR, CardSuit.CLUBS);
-        Card card5 = new Card(0, CardRank.SIX, CardSuit.HEARTS);
+        var card1 = new Card(0, CardRank.KING, CardSuit.SPADES);
+        var card2 = new Card(0, CardRank.TWO, CardSuit.DIAMONDS);
+        var card3 = new Card(0, CardRank.QUEEN, CardSuit.CLUBS);
+        var card4 = new Card(0, CardRank.FOUR, CardSuit.CLUBS);
+        var card5 = new Card(0, CardRank.SIX, CardSuit.HEARTS);
 
-        FlopCards flopCards = new FlopCards(card1, card3, card4);
-        TurnCard turnCard = new TurnCard(card5);
-        RiverCard riverCard = new RiverCard(card2);
+        var flopCards = new FlopCards(card1, card3, card4);
+        var turnCard = new TurnCard(card5);
+        var riverCard = new RiverCard(card2);
 
-        List<HandRanking> possibleHandRankings = bso.determinePossibleHands(flopCards,
-                turnCard, riverCard);
+        var possibleHandRankings = bso.determinePossibleHands(flopCards, turnCard, riverCard);
 
-        UUID id1 = UUID.randomUUID();
-        UUID id2 = UUID.randomUUID();
+        var id1 = UUID.randomUUID();
+        var id2 = UUID.randomUUID();
 
-        List<PocketCards> pocketCardsList = new ArrayList<>();
+        var pocketCardsList = new ArrayList<PocketCards>();
 
-        PocketCards pocketCards1 = new PocketCards(new Card(0, CardRank.FIVE,
-                CardSuit.CLUBS), new Card(0, CardRank.ACE, CardSuit.CLUBS));
-        PocketCards pocketCards2 = new PocketCards(new Card(0, CardRank.THREE,
-                CardSuit.SPADES), new Card(0, CardRank.SEVEN, CardSuit.HEARTS));
+        var pocketCards1 = new PocketCards(
+                new Card(0, CardRank.FIVE, CardSuit.CLUBS), new Card(0, CardRank.ACE, CardSuit.CLUBS));
+        var pocketCards2 = new PocketCards(
+                new Card(0, CardRank.THREE, CardSuit.SPADES), new Card(0, CardRank.SEVEN, CardSuit.HEARTS));
 
         pocketCardsList.add(pocketCards1);
         pocketCardsList.add(pocketCards2);
 
-        Map<PocketCards, HandEvaluation> handEvaluations = bso.determineHandEvaluation(
+        var handEvaluations = bso.determineHandEvaluation(
                 flopCards, turnCard, riverCard, pocketCardsList, possibleHandRankings);
 
-        HandEvaluation handEvaluation1 = handEvaluations.get(pocketCards1);
-        HandEvaluation handEvaluation2 = handEvaluations.get(pocketCards2);
+        var handEvaluation1 = handEvaluations.get(pocketCards1);
+        var handEvaluation2 = handEvaluations.get(pocketCards2);
 
         handEvaluation1.setPlayerId(id1);
         handEvaluation2.setPlayerId(id2);
@@ -327,18 +319,17 @@ public class DefaultHandEvaluatorServiceTest {
     }
 
     private void testDeterminePossibleHandsScenario1() {
-        Card card1 = new Card(0, CardRank.ACE, CardSuit.HEARTS);
-        Card card2 = new Card(0, CardRank.TWO, CardSuit.DIAMONDS);
-        Card card3 = new Card(0, CardRank.SEVEN, CardSuit.CLUBS);
-        Card card4 = new Card(0, CardRank.EIGHT, CardSuit.SPADES);
-        Card card5 = new Card(0, CardRank.KING, CardSuit.HEARTS);
+        var card1 = new Card(0, CardRank.ACE, CardSuit.HEARTS);
+        var card2 = new Card(0, CardRank.TWO, CardSuit.DIAMONDS);
+        var card3 = new Card(0, CardRank.SEVEN, CardSuit.CLUBS);
+        var card4 = new Card(0, CardRank.EIGHT, CardSuit.SPADES);
+        var card5 = new Card(0, CardRank.KING, CardSuit.HEARTS);
 
-        FlopCards flopCards = new FlopCards(card1, card3, card4);
-        TurnCard turnCard = new TurnCard(card5);
-        RiverCard riverCard = new RiverCard(card2);
+        var flopCards = new FlopCards(card1, card3, card4);
+        var turnCard = new TurnCard(card5);
+        var riverCard = new RiverCard(card2);
 
-        List<HandRanking> handRankings = bso.determinePossibleHands(flopCards, turnCard,
-                riverCard);
+        var handRankings = bso.determinePossibleHands(flopCards, turnCard, riverCard);
         assertEquals(4, handRankings.size());
         assertEquals(HandRanking.HIGH_CARD, handRankings.get(0));
         assertEquals(HandRanking.ONE_PAIR, handRankings.get(1));
@@ -347,18 +338,17 @@ public class DefaultHandEvaluatorServiceTest {
     }
 
     private void testDeterminePossibleHandsScenario2() {
-        Card card1 = new Card(0, CardRank.ACE, CardSuit.HEARTS);
-        Card card2 = new Card(0, CardRank.KING, CardSuit.HEARTS);
-        Card card3 = new Card(0, CardRank.SEVEN, CardSuit.CLUBS);
-        Card card4 = new Card(0, CardRank.EIGHT, CardSuit.SPADES);
-        Card card5 = new Card(0, CardRank.QUEEN, CardSuit.HEARTS);
+        var card1 = new Card(0, CardRank.ACE, CardSuit.HEARTS);
+        var card2 = new Card(0, CardRank.KING, CardSuit.HEARTS);
+        var card3 = new Card(0, CardRank.SEVEN, CardSuit.CLUBS);
+        var card4 = new Card(0, CardRank.EIGHT, CardSuit.SPADES);
+        var card5 = new Card(0, CardRank.QUEEN, CardSuit.HEARTS);
 
-        FlopCards flopCards = new FlopCards(card1, card3, card4);
-        TurnCard turnCard = new TurnCard(card5);
-        RiverCard riverCard = new RiverCard(card2);
+        var flopCards = new FlopCards(card1, card3, card4);
+        var turnCard = new TurnCard(card5);
+        var riverCard = new RiverCard(card2);
 
-        List<HandRanking> handRankings = bso.determinePossibleHands(flopCards, turnCard,
-                riverCard);
+        var handRankings = bso.determinePossibleHands(flopCards, turnCard, riverCard);
         assertEquals(7, handRankings.size());
         assertEquals(HandRanking.HIGH_CARD, handRankings.get(0));
         assertEquals(HandRanking.ONE_PAIR, handRankings.get(1));
@@ -370,18 +360,17 @@ public class DefaultHandEvaluatorServiceTest {
     }
 
     private void testDeterminePossibleHandsScenario3() {
-        Card card1 = new Card(0, CardRank.THREE, CardSuit.CLUBS);
-        Card card2 = new Card(0, CardRank.NINE, CardSuit.SPADES);
-        Card card3 = new Card(0, CardRank.TWO, CardSuit.CLUBS);
-        Card card4 = new Card(0, CardRank.SIX, CardSuit.CLUBS);
-        Card card5 = new Card(0, CardRank.THREE, CardSuit.HEARTS);
+        var card1 = new Card(0, CardRank.THREE, CardSuit.CLUBS);
+        var card2 = new Card(0, CardRank.NINE, CardSuit.SPADES);
+        var card3 = new Card(0, CardRank.TWO, CardSuit.CLUBS);
+        var card4 = new Card(0, CardRank.SIX, CardSuit.CLUBS);
+        var card5 = new Card(0, CardRank.THREE, CardSuit.HEARTS);
 
-        FlopCards flopCards = new FlopCards(card1, card3, card4);
-        TurnCard turnCard = new TurnCard(card5);
-        RiverCard riverCard = new RiverCard(card2);
+        var flopCards = new FlopCards(card1, card3, card4);
+        var turnCard = new TurnCard(card5);
+        var riverCard = new RiverCard(card2);
 
-        List<HandRanking> handRankings = bso.determinePossibleHands(flopCards, turnCard,
-                riverCard);
+        var handRankings = bso.determinePossibleHands(flopCards, turnCard, riverCard);
         assertEquals(8, handRankings.size());
         assertEquals(HandRanking.ONE_PAIR, handRankings.get(0));
         assertEquals(HandRanking.TWO_PAIR, handRankings.get(1));
@@ -394,18 +383,17 @@ public class DefaultHandEvaluatorServiceTest {
     }
 
     private void testDeterminePossibleHandsScenario4() {
-        Card card1 = new Card(0, CardRank.TEN, CardSuit.CLUBS);
-        Card card2 = new Card(0, CardRank.SIX, CardSuit.HEARTS);
-        Card card3 = new Card(0, CardRank.JACK, CardSuit.DIAMONDS);
-        Card card4 = new Card(0, CardRank.NINE, CardSuit.CLUBS);
-        Card card5 = new Card(0, CardRank.THREE, CardSuit.CLUBS);
+        var card1 = new Card(0, CardRank.TEN, CardSuit.CLUBS);
+        var card2 = new Card(0, CardRank.SIX, CardSuit.HEARTS);
+        var card3 = new Card(0, CardRank.JACK, CardSuit.DIAMONDS);
+        var card4 = new Card(0, CardRank.NINE, CardSuit.CLUBS);
+        var card5 = new Card(0, CardRank.THREE, CardSuit.CLUBS);
 
-        FlopCards flopCards = new FlopCards(card1, card3, card4);
-        TurnCard turnCard = new TurnCard(card5);
-        RiverCard riverCard = new RiverCard(card2);
+        var flopCards = new FlopCards(card1, card3, card4);
+        var turnCard = new TurnCard(card5);
+        var riverCard = new RiverCard(card2);
 
-        List<HandRanking> handRankings = bso.determinePossibleHands(flopCards, turnCard,
-                riverCard);
+        var handRankings = bso.determinePossibleHands(flopCards, turnCard, riverCard);
         assertEquals(6, handRankings.size());
         assertEquals(HandRanking.HIGH_CARD, handRankings.get(0));
         assertEquals(HandRanking.ONE_PAIR, handRankings.get(1));
@@ -416,18 +404,17 @@ public class DefaultHandEvaluatorServiceTest {
     }
 
     private void testDeterminePossibleHandsScenario5() {
-        Card card1 = new Card(0, CardRank.EIGHT, CardSuit.CLUBS);
-        Card card2 = new Card(0, CardRank.FOUR, CardSuit.DIAMONDS);
-        Card card3 = new Card(0, CardRank.ACE, CardSuit.DIAMONDS);
-        Card card4 = new Card(0, CardRank.EIGHT, CardSuit.DIAMONDS);
-        Card card5 = new Card(0, CardRank.FIVE, CardSuit.DIAMONDS);
+        var card1 = new Card(0, CardRank.EIGHT, CardSuit.CLUBS);
+        var card2 = new Card(0, CardRank.FOUR, CardSuit.DIAMONDS);
+        var card3 = new Card(0, CardRank.ACE, CardSuit.DIAMONDS);
+        var card4 = new Card(0, CardRank.EIGHT, CardSuit.DIAMONDS);
+        var card5 = new Card(0, CardRank.FIVE, CardSuit.DIAMONDS);
 
-        FlopCards flopCards = new FlopCards(card1, card3, card4);
-        TurnCard turnCard = new TurnCard(card5);
-        RiverCard riverCard = new RiverCard(card2);
+        var flopCards = new FlopCards(card1, card3, card4);
+        var turnCard = new TurnCard(card5);
+        var riverCard = new RiverCard(card2);
 
-        List<HandRanking> handRankings = bso.determinePossibleHands(flopCards, turnCard,
-                riverCard);
+        var handRankings = bso.determinePossibleHands(flopCards, turnCard, riverCard);
         assertEquals(8, handRankings.size());
         assertEquals(HandRanking.ONE_PAIR, handRankings.get(0));
         assertEquals(HandRanking.TWO_PAIR, handRankings.get(1));
@@ -478,18 +465,17 @@ public class DefaultHandEvaluatorServiceTest {
     }
 
     private void testDeterminePossibleHandsFlushOnBoard() {
-        Card card1 = new Card(0, CardRank.ACE, CardSuit.HEARTS);
-        Card card2 = new Card(0, CardRank.TWO, CardSuit.HEARTS);
-        Card card3 = new Card(0, CardRank.SIX, CardSuit.HEARTS);
-        Card card4 = new Card(0, CardRank.SEVEN, CardSuit.HEARTS);
-        Card card5 = new Card(0, CardRank.KING, CardSuit.HEARTS);
+        var card1 = new Card(0, CardRank.ACE, CardSuit.HEARTS);
+        var card2 = new Card(0, CardRank.TWO, CardSuit.HEARTS);
+        var card3 = new Card(0, CardRank.SIX, CardSuit.HEARTS);
+        var card4 = new Card(0, CardRank.SEVEN, CardSuit.HEARTS);
+        var card5 = new Card(0, CardRank.KING, CardSuit.HEARTS);
 
-        FlopCards flopCards = new FlopCards(card1, card2, card3);
-        TurnCard turnCard = new TurnCard(card4);
-        RiverCard riverCard = new RiverCard(card5);
+        var flopCards = new FlopCards(card1, card2, card3);
+        var turnCard = new TurnCard(card4);
+        var riverCard = new RiverCard(card5);
 
-        List<HandRanking> handRankings = bso.determinePossibleHands(flopCards, turnCard,
-                riverCard);
+        var handRankings = bso.determinePossibleHands(flopCards, turnCard, riverCard);
         assertEquals(1, handRankings.size());
         assertEquals(HandRanking.FLUSH, handRankings.get(0));
 
@@ -570,60 +556,52 @@ public class DefaultHandEvaluatorServiceTest {
     }
 
     private void verifyStraightFlushOnBoardHelper(CardRank cardRank) {
-        CommonCards commonCards = createStraightFlush(cardRank);
-        List<HandRanking> handRankings = bso.determinePossibleHands(
-                commonCards.getFlopCards(), commonCards.getTurnCard(),
-                commonCards.getRiverCard());
+        var commonCards = createStraightFlush(cardRank);
+        var handRankings = bso.determinePossibleHands(
+                commonCards.getFlopCards(), commonCards.getTurnCard(), commonCards.getRiverCard());
         assertEquals(1, handRankings.size());
         assertEquals(HandRanking.STRAIGHT_FLUSH, handRankings.get(0));
     }
 
     private void verifyFourOfAKindOnBoardHelper(CardRank cardRank) {
-        CommonCards commonCards = createFourOfAKind(cardRank);
-        List<HandRanking> handRankings = bso.determinePossibleHands(
-                commonCards.getFlopCards(), commonCards.getTurnCard(),
-                commonCards.getRiverCard());
+        var commonCards = createFourOfAKind(cardRank);
+        var handRankings = bso.determinePossibleHands(
+                commonCards.getFlopCards(), commonCards.getTurnCard(), commonCards.getRiverCard());
         assertEquals(1, handRankings.size());
         assertEquals(HandRanking.FOUR_OF_A_KIND, handRankings.get(0));
     }
 
-    private void verifyFullHouseOnBoardHelper(CardRank primaryCardRank,
-            CardRank secondaryCardRank) {
-        CommonCards commonCards = createFullHouse(primaryCardRank, secondaryCardRank);
-        List<HandRanking> handRankings = bso.determinePossibleHands(
-                commonCards.getFlopCards(), commonCards.getTurnCard(),
-                commonCards.getRiverCard());
+    private void verifyFullHouseOnBoardHelper(CardRank primaryCardRank, CardRank secondaryCardRank) {
+        var commonCards = createFullHouse(primaryCardRank, secondaryCardRank);
+        var handRankings = bso.determinePossibleHands(
+                commonCards.getFlopCards(), commonCards.getTurnCard(), commonCards.getRiverCard());
         assertEquals(2, handRankings.size());
         assertEquals(HandRanking.FULL_HOUSE, handRankings.get(0));
         assertEquals(HandRanking.FOUR_OF_A_KIND, handRankings.get(1));
     }
 
     private void verifyStraightOnBoardHelper(CardRank cardRank) {
-        CommonCards commonCards = createStraight(cardRank);
-        List<HandRanking> handRankings = bso.determinePossibleHands(
-                commonCards.getFlopCards(), commonCards.getTurnCard(),
-                commonCards.getRiverCard());
+        var commonCards = createStraight(cardRank);
+        var handRankings = bso.determinePossibleHands(
+                commonCards.getFlopCards(), commonCards.getTurnCard(), commonCards.getRiverCard());
         assertEquals(1, handRankings.size());
         assertEquals(HandRanking.STRAIGHT, handRankings.get(0));
     }
 
     private void verifyThreeOfAKindOnBoardHelper(CardRank cardRank) {
-        CommonCards commonCards = createThreeOfAKind(cardRank);
-        List<HandRanking> handRankings = bso.determinePossibleHands(
-                commonCards.getFlopCards(), commonCards.getTurnCard(),
-                commonCards.getRiverCard());
+        var commonCards = createThreeOfAKind(cardRank);
+        var handRankings = bso.determinePossibleHands(
+                commonCards.getFlopCards(), commonCards.getTurnCard(), commonCards.getRiverCard());
         assertEquals(3, handRankings.size());
         assertEquals(HandRanking.THREE_OF_A_KIND, handRankings.get(0));
         assertEquals(HandRanking.FULL_HOUSE, handRankings.get(1));
         assertEquals(HandRanking.FOUR_OF_A_KIND, handRankings.get(2));
     }
 
-    private void verifyTwoPairOnBoardHelper(CardRank primaryCardRank,
-            CardRank secondaryCardRank) {
-        CommonCards commonCards = createTwoPair(primaryCardRank, secondaryCardRank);
-        List<HandRanking> handRankings = bso.determinePossibleHands(
-                commonCards.getFlopCards(), commonCards.getTurnCard(),
-                commonCards.getRiverCard());
+    private void verifyTwoPairOnBoardHelper(CardRank primaryCardRank, CardRank secondaryCardRank) {
+        var commonCards = createTwoPair(primaryCardRank, secondaryCardRank);
+        var handRankings = bso.determinePossibleHands(
+                commonCards.getFlopCards(), commonCards.getTurnCard(), commonCards.getRiverCard());
         assertEquals(3, handRankings.size());
         assertEquals(HandRanking.TWO_PAIR, handRankings.get(0));
         assertEquals(HandRanking.FULL_HOUSE, handRankings.get(1));
@@ -631,10 +609,9 @@ public class DefaultHandEvaluatorServiceTest {
     }
 
     private void verifyOnePairOnBoardHelper(CardRank cardRank) {
-        CommonCards commonCards = createOnePair(cardRank);
-        List<HandRanking> handRankings = bso.determinePossibleHands(
-                commonCards.getFlopCards(), commonCards.getTurnCard(),
-                commonCards.getRiverCard());
+        var commonCards = createOnePair(cardRank);
+        var handRankings = bso.determinePossibleHands(
+                commonCards.getFlopCards(), commonCards.getTurnCard(), commonCards.getRiverCard());
         assertEquals(5, handRankings.size());
         assertEquals(HandRanking.ONE_PAIR, handRankings.get(0));
         assertEquals(HandRanking.TWO_PAIR, handRankings.get(1));
@@ -644,9 +621,9 @@ public class DefaultHandEvaluatorServiceTest {
     }
 
     private CommonCards createThreeOfAKind(CardRank cardRank) {
-        Card card1 = new Card(0, cardRank, CardSuit.CLUBS);
-        Card card4 = new Card(0, cardRank, CardSuit.SPADES);
-        Card card2 = new Card(0, cardRank, CardSuit.DIAMONDS);
+        var card1 = new Card(0, cardRank, CardSuit.CLUBS);
+        var card4 = new Card(0, cardRank, CardSuit.SPADES);
+        var card2 = new Card(0, cardRank, CardSuit.DIAMONDS);
 
         Card card3;
         Card card5;
@@ -659,18 +636,18 @@ public class DefaultHandEvaluatorServiceTest {
             card5 = new Card(0, CardRank.SIX, CardSuit.HEARTS);
         }
 
-        FlopCards flopCards = new FlopCards(card2, card4, card5);
-        TurnCard turnCard = new TurnCard(card3);
-        RiverCard riverCard = new RiverCard(card1);
+        var flopCards = new FlopCards(card2, card4, card5);
+        var turnCard = new TurnCard(card3);
+        var riverCard = new RiverCard(card1);
 
         return new CommonCards(flopCards, turnCard, riverCard);
     }
 
     private CommonCards createTwoPair(CardRank primaryCardRank, CardRank secondaryCardRank) {
-        Card card1 = new Card(0, primaryCardRank, CardSuit.CLUBS);
-        Card card4 = new Card(0, primaryCardRank, CardSuit.SPADES);
-        Card card2 = new Card(0, secondaryCardRank, CardSuit.HEARTS);
-        Card card3 = new Card(0, secondaryCardRank, CardSuit.SPADES);
+        var card1 = new Card(0, primaryCardRank, CardSuit.CLUBS);
+        var card4 = new Card(0, primaryCardRank, CardSuit.SPADES);
+        var card2 = new Card(0, secondaryCardRank, CardSuit.HEARTS);
+        var card3 = new Card(0, secondaryCardRank, CardSuit.SPADES);
 
         Card card5;
 
@@ -688,16 +665,16 @@ public class DefaultHandEvaluatorServiceTest {
             }
         }
 
-        FlopCards flopCards = new FlopCards(card2, card4, card5);
-        TurnCard turnCard = new TurnCard(card3);
-        RiverCard riverCard = new RiverCard(card1);
+        var flopCards = new FlopCards(card2, card4, card5);
+        var turnCard = new TurnCard(card3);
+        var riverCard = new RiverCard(card1);
 
         return new CommonCards(flopCards, turnCard, riverCard);
     }
 
     private CommonCards createOnePair(CardRank cardRank) {
-        Card card1 = new Card(0, cardRank, CardSuit.CLUBS);
-        Card card4 = new Card(0, cardRank, CardSuit.SPADES);
+        var card1 = new Card(0, cardRank, CardSuit.CLUBS);
+        var card4 = new Card(0, cardRank, CardSuit.SPADES);
 
         Card card2;
         Card card3;
@@ -721,15 +698,15 @@ public class DefaultHandEvaluatorServiceTest {
             card5 = new Card(0, CardRank.QUEEN, CardSuit.HEARTS);
         }
 
-        FlopCards flopCards = new FlopCards(card2, card4, card5);
-        TurnCard turnCard = new TurnCard(card3);
-        RiverCard riverCard = new RiverCard(card1);
+        var flopCards = new FlopCards(card2, card4, card5);
+        var turnCard = new TurnCard(card3);
+        var riverCard = new RiverCard(card1);
 
         return new CommonCards(flopCards, turnCard, riverCard);
     }
 
     private CommonCards createStraight(CardRank cardRank) {
-        CardRank[] cardRanks = CardRank.values();
+        var cardRanks = CardRank.values();
 
         Card card1;
 
@@ -740,20 +717,20 @@ public class DefaultHandEvaluatorServiceTest {
             card1 = new Card(0, cardRanks[cardRank.ordinal() - 4], CardSuit.HEARTS);
         }
 
-        Card card2 = new Card(0, cardRanks[cardRank.ordinal() - 3], CardSuit.CLUBS);
-        Card card3 = new Card(0, cardRanks[cardRank.ordinal() - 2], CardSuit.DIAMONDS);
-        Card card4 = new Card(0, cardRanks[cardRank.ordinal() - 1], CardSuit.SPADES);
-        Card card5 = new Card(0, cardRank, CardSuit.HEARTS);
+        var card2 = new Card(0, cardRanks[cardRank.ordinal() - 3], CardSuit.CLUBS);
+        var card3 = new Card(0, cardRanks[cardRank.ordinal() - 2], CardSuit.DIAMONDS);
+        var card4 = new Card(0, cardRanks[cardRank.ordinal() - 1], CardSuit.SPADES);
+        var card5 = new Card(0, cardRank, CardSuit.HEARTS);
 
-        FlopCards flopCards = new FlopCards(card2, card4, card5);
-        TurnCard turnCard = new TurnCard(card3);
-        RiverCard riverCard = new RiverCard(card1);
+        var flopCards = new FlopCards(card2, card4, card5);
+        var turnCard = new TurnCard(card3);
+        var riverCard = new RiverCard(card1);
 
         return new CommonCards(flopCards, turnCard, riverCard);
     }
 
     private CommonCards createStraightFlush(CardRank cardRank) {
-        CardRank[] cardRanks = CardRank.values();
+        var cardRanks = CardRank.values();
 
         Card card1;
 
@@ -764,23 +741,23 @@ public class DefaultHandEvaluatorServiceTest {
             card1 = new Card(0, cardRanks[cardRank.ordinal() - 4], CardSuit.HEARTS);
         }
 
-        Card card2 = new Card(0, cardRanks[cardRank.ordinal() - 3], CardSuit.HEARTS);
-        Card card3 = new Card(0, cardRanks[cardRank.ordinal() - 2], CardSuit.HEARTS);
-        Card card4 = new Card(0, cardRanks[cardRank.ordinal() - 1], CardSuit.HEARTS);
-        Card card5 = new Card(0, cardRank, CardSuit.HEARTS);
+        var card2 = new Card(0, cardRanks[cardRank.ordinal() - 3], CardSuit.HEARTS);
+        var card3 = new Card(0, cardRanks[cardRank.ordinal() - 2], CardSuit.HEARTS);
+        var card4 = new Card(0, cardRanks[cardRank.ordinal() - 1], CardSuit.HEARTS);
+        var card5 = new Card(0, cardRank, CardSuit.HEARTS);
 
-        FlopCards flopCards = new FlopCards(card1, card3, card4);
-        TurnCard turnCard = new TurnCard(card5);
-        RiverCard riverCard = new RiverCard(card2);
+        var flopCards = new FlopCards(card1, card3, card4);
+        var turnCard = new TurnCard(card5);
+        var riverCard = new RiverCard(card2);
 
         return new CommonCards(flopCards, turnCard, riverCard);
     }
 
     private CommonCards createFourOfAKind(CardRank cardRank) {
-        Card card1 = new Card(0, cardRank, CardSuit.HEARTS);
-        Card card2 = new Card(0, cardRank, CardSuit.CLUBS);
-        Card card3 = new Card(0, cardRank, CardSuit.DIAMONDS);
-        Card card4 = new Card(0, cardRank, CardSuit.SPADES);
+        var card1 = new Card(0, cardRank, CardSuit.HEARTS);
+        var card2 = new Card(0, cardRank, CardSuit.CLUBS);
+        var card3 = new Card(0, cardRank, CardSuit.DIAMONDS);
+        var card4 = new Card(0, cardRank, CardSuit.SPADES);
         Card card5;
 
         if (cardRank == CardRank.EIGHT) {
@@ -789,24 +766,24 @@ public class DefaultHandEvaluatorServiceTest {
             card5 = new Card(0, cardRank, CardSuit.HEARTS);
         }
 
-        FlopCards flopCards = new FlopCards(card1, card3, card4);
-        TurnCard turnCard = new TurnCard(card5);
-        RiverCard riverCard = new RiverCard(card2);
+        var flopCards = new FlopCards(card1, card3, card4);
+        var turnCard = new TurnCard(card5);
+        var riverCard = new RiverCard(card2);
 
         return new CommonCards(flopCards, turnCard, riverCard);
     }
 
     private CommonCards createFullHouse(CardRank primaryCardRank,
             CardRank secondaryCardRank) {
-        Card card1 = new Card(0, primaryCardRank, CardSuit.HEARTS);
-        Card card2 = new Card(0, secondaryCardRank, CardSuit.CLUBS);
-        Card card3 = new Card(0, secondaryCardRank, CardSuit.DIAMONDS);
-        Card card4 = new Card(0, primaryCardRank, CardSuit.SPADES);
-        Card card5 = new Card(0, primaryCardRank, CardSuit.HEARTS);
+        var card1 = new Card(0, primaryCardRank, CardSuit.HEARTS);
+        var card2 = new Card(0, secondaryCardRank, CardSuit.CLUBS);
+        var card3 = new Card(0, secondaryCardRank, CardSuit.DIAMONDS);
+        var card4 = new Card(0, primaryCardRank, CardSuit.SPADES);
+        var card5 = new Card(0, primaryCardRank, CardSuit.HEARTS);
 
-        FlopCards flopCards = new FlopCards(card1, card3, card4);
-        TurnCard turnCard = new TurnCard(card5);
-        RiverCard riverCard = new RiverCard(card2);
+        var flopCards = new FlopCards(card1, card3, card4);
+        var turnCard = new TurnCard(card5);
+        var riverCard = new RiverCard(card2);
 
         return new CommonCards(flopCards, turnCard, riverCard);
     }

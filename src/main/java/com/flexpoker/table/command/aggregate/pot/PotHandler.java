@@ -6,7 +6,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -57,8 +56,8 @@ public class PotHandler {
     }
 
     public void addNewPot(UUID potId, Set<UUID> playersInvolved) {
-        Set<HandEvaluation> handEvaluationsOfPlayersInPot = handEvaluationList
-                .stream().filter(x -> playersInvolved.contains(x.getPlayerId()))
+        var handEvaluationsOfPlayersInPot = handEvaluationList.stream()
+                .filter(x -> playersInvolved.contains(x.getPlayerId()))
                 .collect(Collectors.toSet());
         if (handEvaluationsOfPlayersInPot.isEmpty()) {
             throw new IllegalArgumentException(
@@ -68,7 +67,7 @@ public class PotHandler {
     }
 
     public Set<UUID> fetchPlayersRequriedToShowCards(Set<UUID> playersStillInHand) {
-        Set<UUID> playersToShowCards = new HashSet<>();
+        var playersToShowCards = new HashSet<UUID>();
         pots.forEach(pot -> {
             playersStillInHand.forEach(playerInHand -> {
                 if (pot.forcePlayerToShowCards(playerInHand)) {
@@ -80,12 +79,12 @@ public class PotHandler {
     }
 
     public Map<UUID, Integer> fetchChipsWon(Set<UUID> playersStillInHand) {
-        Map<UUID, Integer> playersToChipsWonMap = new HashMap<>();
+        var playersToChipsWonMap = new HashMap<UUID, Integer>();
         pots.forEach(pot -> {
             playersStillInHand.forEach(playerInHand -> {
-                int numberOfChipsWonForPlayer = pot.getChipsWon(playerInHand);
-                int existingChipsWon = playersToChipsWonMap.getOrDefault(playerInHand, 0);
-                int newTotalOfChipsWon = numberOfChipsWonForPlayer + existingChipsWon;
+                var numberOfChipsWonForPlayer = pot.getChipsWon(playerInHand);
+                var existingChipsWon = playersToChipsWonMap.getOrDefault(playerInHand, 0);
+                var newTotalOfChipsWon = numberOfChipsWonForPlayer + existingChipsWon;
                 playersToChipsWonMap.put(playerInHand, newTotalOfChipsWon);
             });
         });
@@ -118,48 +117,46 @@ public class PotHandler {
             Map<UUID, Integer> chipsInFrontMap,
             Map<UUID, Integer> chipsInBackMap,
             Set<UUID> playersStillInHand) {
-        List<TableEvent> newPotEvents = new ArrayList<>();
+        var newPotEvents = new ArrayList<TableEvent>();
 
-        List<Integer> distinctChipsInFrontAmounts = chipsInFrontMap.values().stream()
+        var distinctChipsInFrontAmounts = chipsInFrontMap.values().stream()
                 .filter(x -> x.intValue() != 0)
                 .distinct()
                 .sorted()
                 .collect(Collectors.toList());
 
-        int totalOfPreviousChipLevelIncreases = 0;
+        var totalOfPreviousChipLevelIncreases = 0;
         
-        for (int chipsPerLevel : distinctChipsInFrontAmounts) {
-            Optional<Pot> openPotOptional = pots.stream()
-                    .filter(x -> x.isOpen()).findAny();
+        for (var chipsPerLevel : distinctChipsInFrontAmounts) {
+            var openPotOptional = pots.stream()
+                    .filter(x -> x.isOpen())
+                    .findAny();
 
-            UUID openPotId = openPotOptional.isPresent()
+            var openPotId = openPotOptional.isPresent()
                     ? openPotOptional.get().getId() : UUID.randomUUID();
 
-            Set<UUID> playersAtThisChipLevel = chipsInFrontMap.entrySet().stream()
+            var playersAtThisChipLevel = chipsInFrontMap.entrySet().stream()
                     .filter(x -> x.getValue() >= chipsPerLevel)
                     .map(x -> x.getKey())
                     .collect(Collectors.toSet());
 
             if (!openPotOptional.isPresent()) {
-                PotCreatedEvent potCreatedEvent = new PotCreatedEvent(tableId,
-                        aggregateVersion, gameId, handId, openPotId, playersAtThisChipLevel);
+                var potCreatedEvent = new PotCreatedEvent(
+                        tableId, aggregateVersion, gameId, handId, openPotId, playersAtThisChipLevel);
                 newPotEvents.add(potCreatedEvent);
-                addNewPot(potCreatedEvent.getPotId(),
-                        potCreatedEvent.getPlayersInvolved());
+                addNewPot(potCreatedEvent.getPotId(), potCreatedEvent.getPlayersInvolved());
             }
 
             // subtract the total of the previous levels from the current level
             // before multiplying by the number of player, which will have the
             // same effect as actually reducing that amount from each player
-            int increaseInChips = (chipsPerLevel - totalOfPreviousChipLevelIncreases) * playersAtThisChipLevel.size();
+            var increaseInChips = (chipsPerLevel - totalOfPreviousChipLevelIncreases) * playersAtThisChipLevel.size();
             totalOfPreviousChipLevelIncreases += chipsPerLevel;
             
-            PotAmountIncreasedEvent potAmountIncreasedEvent = new PotAmountIncreasedEvent(
-                    tableId, aggregateVersion + newPotEvents.size(), gameId,
-                    handId, openPotId, increaseInChips);
+            var potAmountIncreasedEvent = new PotAmountIncreasedEvent(
+                    tableId, aggregateVersion + newPotEvents.size(), gameId, handId, openPotId, increaseInChips);
             newPotEvents.add(potAmountIncreasedEvent);
-            addToPot(potAmountIncreasedEvent.getPotId(),
-                    potAmountIncreasedEvent.getAmountIncreased());
+            addToPot(potAmountIncreasedEvent.getPotId(), potAmountIncreasedEvent.getAmountIncreased());
 
             // if a player bet, but no longer has any chips, then they are all
             // in and the pot should be closed
@@ -168,8 +165,8 @@ public class PotHandler {
                     .filter(player -> chipsInFrontMap.get(player) >= 1)
                     .filter(player -> chipsInBackMap.get(player) == 0)
                     .count() > 0) {
-                PotClosedEvent potClosedEvent = new PotClosedEvent(tableId,
-                        aggregateVersion + newPotEvents.size(), gameId, handId, openPotId);
+                var potClosedEvent = new PotClosedEvent(
+                        tableId, aggregateVersion + newPotEvents.size(), gameId, handId, openPotId);
                 newPotEvents.add(potClosedEvent);
                 closePot(potClosedEvent.getPotId());
             };

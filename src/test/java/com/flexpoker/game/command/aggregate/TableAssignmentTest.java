@@ -5,9 +5,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -23,14 +20,14 @@ public class TableAssignmentTest {
 
     @Test
     public void testAssignmentIsRandom() {
-        boolean player1AlwaysWithPlayer2 = true;
-        boolean player1SometimesWithPlayer2 = false;
+        var player1AlwaysWithPlayer2 = true;
+        var player1SometimesWithPlayer2 = false;
 
         for (int i = 0; i < 1000; i++) {
-            List<GameEvent> events = new ArrayList<>();
+            var events = new ArrayList<GameEvent>();
             events.add(new GameCreatedEvent(UUID.randomUUID(), 1, "test", 4, 2, UUID.randomUUID(), 10, 20));
 
-            Game game = new DefaultGameFactory().createFrom(events);
+            var game = new DefaultGameFactory().createFrom(events);
 
             // create a bunch of static UUIDs that will hash the same and will
             // thus be transformed into the same list before shuffling occurs
@@ -48,13 +45,11 @@ public class TableAssignmentTest {
             game.joinGame(player3Id);
             game.joinGame(player4Id);
 
-            GameTablesCreatedAndPlayersAssociatedEvent event = (GameTablesCreatedAndPlayersAssociatedEvent) game
-                    .fetchAppliedEvents().get(6);
+            var event = (GameTablesCreatedAndPlayersAssociatedEvent) game.fetchAppliedEvents().get(6);
 
-            Map<UUID, Set<UUID>> tableIdToPlayerIdsMap = event
-                    .getTableIdToPlayerIdsMap();
+            var tableIdToPlayerIdsMap = event.getTableIdToPlayerIdsMap();
 
-            Set<UUID> player1sTable = tableIdToPlayerIdsMap.values().stream()
+            var player1sTable = tableIdToPlayerIdsMap.values().stream()
                     .filter(y -> y.contains(player1Id)).findAny().get();
 
             if (player1sTable.contains(player2Id)) {
@@ -70,101 +65,101 @@ public class TableAssignmentTest {
 
     @Test
     public void testTwoPlayersOneTable() {
-        Game game = createGameAndJoinAllPlayers(2, 2);
+        var game = createGameAndJoinAllPlayers(2, 2);
         verifyTableDistribution(game, 2);
     }
 
     @Test
     public void testFourFitsAllInOneTable() {
-        Game game = createGameAndJoinAllPlayers(4, 9);
+        var game = createGameAndJoinAllPlayers(4, 9);
         verifyTableDistribution(game, 4);
     }
 
     @Test
     public void testFourFitsAllInASmallerTable() {
-        Game game = createGameAndJoinAllPlayers(4, 6);
+        var game = createGameAndJoinAllPlayers(4, 6);
         verifyTableDistribution(game, 4);
     }
 
     @Test
     public void testFourFitsPerfectlyInOneTable() {
-        Game game = createGameAndJoinAllPlayers(4, 4);
+        var game = createGameAndJoinAllPlayers(4, 4);
         verifyTableDistribution(game, 4);
     }
 
     @Test
     public void testFourFitsEvenlyInTwoTables() {
-        Game game = createGameAndJoinAllPlayers(4, 3);
+        var game = createGameAndJoinAllPlayers(4, 3);
         verifyTableDistribution(game, 2, 2);
     }
 
     @Test
     public void testTwentyFitsUnevenlyOverThreeTables() {
-        Game game = createGameAndJoinAllPlayers(20, 9);
+        var game = createGameAndJoinAllPlayers(20, 9);
         verifyTableDistribution(game, 6, 7, 7);
     }
 
     @Test
     public void testTwentyFitsFourEvenTablesNoneFull() {
-        Game game = createGameAndJoinAllPlayers(20, 6);
+        var game = createGameAndJoinAllPlayers(20, 6);
         verifyTableDistribution(game, 5, 5, 5, 5);
     }
 
     @Test
     public void testTwentyFitsFiveEvenTablesAllFull() {
-        Game game = createGameAndJoinAllPlayers(20, 4);
+        var game = createGameAndJoinAllPlayers(20, 4);
         verifyTableDistribution(game, 4, 4, 4, 4, 4);
     }
 
     @Test
     public void testTwentyFitsSevenTablesUnevenly() {
-        Game game = createGameAndJoinAllPlayers(20, 3);
+        var game = createGameAndJoinAllPlayers(20, 3);
         verifyTableDistribution(game, 2, 3, 3, 3, 3, 3, 3);
     }
 
     @Test
     public void testTwentyFitsTenTablesEvenly() {
-        Game game = createGameAndJoinAllPlayers(20, 2);
+        var game = createGameAndJoinAllPlayers(20, 2);
         verifyTableDistribution(game, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2);
     }
 
     @Test
     public void testTwoFitsOneTable1() {
-        Game game = createGameAndJoinAllPlayers(2, 9);
+        var game = createGameAndJoinAllPlayers(2, 9);
         verifyTableDistribution(game, 2);
     }
 
     @Test
     public void testTwoFitsOneTable2() {
-        Game game = createGameAndJoinAllPlayers(2, 6);
+        var game = createGameAndJoinAllPlayers(2, 6);
         verifyTableDistribution(game, 2);
     }
 
     @Test
     public void testTwoFitsOneTable3() {
-        Game game = createGameAndJoinAllPlayers(2, 4);
+        var game = createGameAndJoinAllPlayers(2, 4);
         verifyTableDistribution(game, 2);
     }
 
     @Test
     public void testTwoFitsOneTable4() {
-        Game game = createGameAndJoinAllPlayers(2, 3);
+        var game = createGameAndJoinAllPlayers(2, 3);
         verifyTableDistribution(game, 2);
     }
 
     @Test
     public void testTwoFitsOneTable5() {
-        Game game = createGameAndJoinAllPlayers(2, 2);
+        var game = createGameAndJoinAllPlayers(2, 2);
         verifyTableDistribution(game, 2);
     }
 
     private Game createGameAndJoinAllPlayers(int numberOfPlayers,
             int numberOfPlayersPerTable) {
-        List<GameEvent> events = new ArrayList<>();
+        var events = new ArrayList<GameEvent>();
         events.add(new GameCreatedEvent(UUID.randomUUID(), 1, "test", numberOfPlayers, numberOfPlayersPerTable,
                 UUID.randomUUID(), 10, 20));
 
-        Game game = new DefaultGameFactory().createFrom(events);
+        var game = new DefaultGameFactory().createFrom(events);
 
         Stream.iterate(1, e -> e + 1)
                 .limit(numberOfPlayers)
@@ -174,22 +169,20 @@ public class TableAssignmentTest {
     }
 
     private void verifyTableDistribution(Game game, int... expectedPlayersPerTable) {
-        int expectedNumberOfTables = expectedPlayersPerTable.length;
-        int totalNumberOfEvents = game.fetchNewEvents().size();
+        var expectedNumberOfTables = expectedPlayersPerTable.length;
+        var totalNumberOfEvents = game.fetchNewEvents().size();
 
         // this event will change locations depending on the number of players,
         // but it should be the 2nd to last every time
-        GameTablesCreatedAndPlayersAssociatedEvent gameTablesCreatedAndPlayersAssociatedEvent = (GameTablesCreatedAndPlayersAssociatedEvent) game
+        var gameTablesCreatedAndPlayersAssociatedEvent = (GameTablesCreatedAndPlayersAssociatedEvent) game
                 .fetchNewEvents().get(totalNumberOfEvents - 2);
-        Map<UUID, Set<UUID>> tableIdToPlayerIdsMap = gameTablesCreatedAndPlayersAssociatedEvent
-                .getTableIdToPlayerIdsMap();
+        var tableIdToPlayerIdsMap = gameTablesCreatedAndPlayersAssociatedEvent.getTableIdToPlayerIdsMap();
 
-        List<Integer> playerSizes = tableIdToPlayerIdsMap.values().stream()
+        var playerSizes = tableIdToPlayerIdsMap.values().stream()
                 .map(x -> x.size())
                 .sorted()
                 .collect(Collectors.toList());
-        List<Integer> playersPerTableList = IntStream.of(expectedPlayersPerTable)
-                .boxed()
+        var playersPerTableList = IntStream.of(expectedPlayersPerTable).boxed()
                 .collect(Collectors.toList());
 
         assertEquals(expectedNumberOfTables, tableIdToPlayerIdsMap.size());

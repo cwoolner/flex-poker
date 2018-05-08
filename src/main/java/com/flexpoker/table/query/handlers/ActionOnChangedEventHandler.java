@@ -1,6 +1,5 @@
 package com.flexpoker.table.query.handlers;
 
-import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
@@ -8,7 +7,6 @@ import javax.inject.Inject;
 import org.springframework.stereotype.Component;
 
 import com.flexpoker.framework.event.EventHandler;
-import com.flexpoker.framework.pushnotifier.PushNotification;
 import com.flexpoker.framework.pushnotifier.PushNotificationPublisher;
 import com.flexpoker.login.repository.LoginRepository;
 import com.flexpoker.pushnotifications.TableUpdatedPushNotification;
@@ -42,10 +40,10 @@ public class ActionOnChangedEventHandler implements EventHandler<ActionOnChanged
     }
 
     private void handleUpdatingTable(ActionOnChangedEvent event) {
-        TableDTO currentTable = tableRepository.fetchById(event.getAggregateId());
-        String username = loginRepository.fetchUsernameByAggregateId(event.getPlayerId());
+        var currentTable = tableRepository.fetchById(event.getAggregateId());
+        var username = loginRepository.fetchUsernameByAggregateId(event.getPlayerId());
 
-        List<SeatDTO> updatedSeats = currentTable.getSeats().stream()
+        var updatedSeats = currentTable.getSeats().stream()
                 .map(seatDTO -> {
                     return new SeatDTO(
                             seatDTO.getPosition(),
@@ -62,7 +60,7 @@ public class ActionOnChangedEventHandler implements EventHandler<ActionOnChanged
                     })
                 .collect(Collectors.toList());
 
-        TableDTO updatedTable = new TableDTO(currentTable.getId(),
+        var updatedTable = new TableDTO(currentTable.getId(),
                 event.getVersion(), updatedSeats, currentTable.getTotalPot(),
                 currentTable.getPots(), currentTable.getVisibleCommonCards(),
                 currentTable.getCurrentHandMinRaiseToAmount());
@@ -70,8 +68,7 @@ public class ActionOnChangedEventHandler implements EventHandler<ActionOnChanged
     }
 
     private void handlePushNotifications(ActionOnChangedEvent event) {
-        PushNotification pushNotification = new TableUpdatedPushNotification(
-                event.getGameId(), event.getAggregateId());
+        var pushNotification = new TableUpdatedPushNotification(event.getGameId(), event.getAggregateId());
         pushNotificationPublisher.publish(pushNotification);
     }
 

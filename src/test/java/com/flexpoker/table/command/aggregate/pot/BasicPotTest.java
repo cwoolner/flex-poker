@@ -18,36 +18,36 @@ public class BasicPotTest {
 
     @Test
     public void testPotIsOpenOnCreate() {
-        Pot pot = createGenericPot();
+        var pot = createGenericPot();
         assertTrue(pot.isOpen());
     }
 
     @Test
     public void testPotClosesAfterClosing() {
-        Pot pot = createGenericPot();
+        var pot = createGenericPot();
         pot.closePot();
         assertFalse(pot.isOpen());
     }
 
     @Test(expected = FlexPokerException.class)
     public void testPotCannotBeAddedToAfterClosing() {
-        Pot pot = createGenericPot();
+        var pot = createGenericPot();
         pot.closePot();
         pot.addChips(60);
     }
 
     @Test(expected = FlexPokerException.class)
     public void testPotCannotHaveAPlayerRemovedAfterClosing() {
-        Pot pot = createGenericPot();
+        var pot = createGenericPot();
         pot.closePot();
         pot.removePlayer(UUID.randomUUID());
     }
 
     private Pot createGenericPot() {
-        UUID player1 = UUID.randomUUID();
-        UUID player2 = UUID.randomUUID();
+        var player1 = UUID.randomUUID();
+        var player2 = UUID.randomUUID();
 
-        HandEvaluation handEvaluation1 = new HandEvaluation();
+        var handEvaluation1 = new HandEvaluation();
         handEvaluation1.setPlayerId(player1);
         handEvaluation1.setHandRanking(HandRanking.STRAIGHT);
         handEvaluation1.setPrimaryCardRank(CardRank.EIGHT);
@@ -56,8 +56,7 @@ public class BasicPotTest {
         handEvaluation2.setHandRanking(HandRanking.STRAIGHT);
         handEvaluation2.setPrimaryCardRank(CardRank.KING);
 
-        Pot pot = new Pot(UUID.randomUUID(), new HashSet<>(Arrays.asList(handEvaluation1,
-                handEvaluation2)));
+        var pot = new Pot(UUID.randomUUID(), new HashSet<>(Arrays.asList(handEvaluation1, handEvaluation2)));
         return pot;
     }
 

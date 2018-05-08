@@ -16,8 +16,7 @@ public class DefaultGameFactory implements GameFactory {
 
     @Override
     public Game createNew(CreateGameCommand command) {
-        UUID aggregateId = UUID.randomUUID();
-        return createGame(false, aggregateId, command.getGameName(),
+        return createGame(false, UUID.randomUUID(), command.getGameName(),
                 command.getNumberOfPlayers(),
                 command.getNumberOfPlayersPerTable(),
                 command.getCreatedByPlayerId(),
@@ -27,8 +26,8 @@ public class DefaultGameFactory implements GameFactory {
 
     @Override
     public Game createFrom(List<GameEvent> events) {
-        GameCreatedEvent gameCreatedEvent = (GameCreatedEvent) events.get(0);
-        Game game = createGame(true, gameCreatedEvent.getAggregateId(),
+        var gameCreatedEvent = (GameCreatedEvent) events.get(0);
+        var game = createGame(true, gameCreatedEvent.getAggregateId(),
                 gameCreatedEvent.getGameName(),
                 gameCreatedEvent.getNumberOfPlayers(),
                 gameCreatedEvent.getNumberOfPlayersPerTable(),
@@ -44,8 +43,8 @@ public class DefaultGameFactory implements GameFactory {
             int numberOfPlayersPerTable, UUID createdById,
             int numberOfMinutesBetweenBlindLevels,
             int numberOfSecondsForActionOnTimer) {
-        BlindSchedule blindSchedule = new BlindSchedule(numberOfMinutesBetweenBlindLevels);
-        TableBalancer tableBalancer = new TableBalancer(aggregateId,
+        var blindSchedule = new BlindSchedule(numberOfMinutesBetweenBlindLevels);
+        var tableBalancer = new TableBalancer(aggregateId,
                 numberOfPlayersPerTable);
         return new Game(creatingFromEvents, aggregateId, gameName,
                 maxNumberOfPlayers, numberOfPlayersPerTable,

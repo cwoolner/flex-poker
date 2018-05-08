@@ -1,7 +1,6 @@
 package com.flexpoker.table.query.handlers;
 
 import java.util.Collections;
-import java.util.List;
 import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
@@ -52,9 +51,9 @@ public class TableCreatedEventHandler implements EventHandler<TableCreatedEvent>
     }
 
     private void handleNewTableInsert(TableCreatedEvent event) {
-        List<SeatDTO> seats = event.getSeatPositionToPlayerMap().keySet().stream()
+        var seats = event.getSeatPositionToPlayerMap().keySet().stream()
                 .map(position -> {
-                    String displayName = loginRepository.fetchUsernameByAggregateId(event
+                    var displayName = loginRepository.fetchUsernameByAggregateId(event
                             .getSeatPositionToPlayerMap().get(Integer.valueOf(position)));
                     return SeatDTO.createForNewTable(
                             position,
@@ -62,7 +61,7 @@ public class TableCreatedEventHandler implements EventHandler<TableCreatedEvent>
                             event.getStartingNumberOfChips());
                 }).collect(Collectors.toList());
 
-        TableDTO tableDTO = new TableDTO(event.getAggregateId(),
+        var tableDTO = new TableDTO(event.getAggregateId(),
                 event.getVersion(), seats, 0, Collections.emptySet(),
                 Collections.emptyList(), 0);
         tableRepository.save(tableDTO);

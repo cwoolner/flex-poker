@@ -23,8 +23,8 @@ public class ForceHttpsFilter implements Filter {
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)
             throws IOException, ServletException {
-        HttpServletRequest request = (HttpServletRequest) servletRequest;
-        HttpServletResponse response = (HttpServletResponse) servletResponse;
+        var request = (HttpServletRequest) servletRequest;
+        var response = (HttpServletResponse) servletResponse;
 
         if (request.getHeader(X_FORWARDED_PROTO) != null //
                 && request.getHeader(X_FORWARDED_PROTO).indexOf("https") != 0 //

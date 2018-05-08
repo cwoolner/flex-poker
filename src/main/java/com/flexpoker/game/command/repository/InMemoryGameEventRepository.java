@@ -35,8 +35,8 @@ public class InMemoryGameEventRepository implements GameEventRepository {
 
     @Override
     public GameCreatedEvent fetchGameCreatedEvent(UUID gameId) {
-        List<GameEvent> gameEvents = fetchAll(gameId);
-        for (GameEvent gameEvent : gameEvents) {
+        var gameEvents = fetchAll(gameId);
+        for (var gameEvent : gameEvents) {
             if (gameEvent.getClass() == GameCreatedEvent.class) {
                 return (GameCreatedEvent) gameEvent;
             }

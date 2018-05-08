@@ -38,15 +38,15 @@ public class OpenGameForPlayerInMemoryRepository implements OpenGameForPlayerRep
     @Override
     public void addOpenGameForUser(UUID playerId, UUID gameId, String gameName) {
         openGameForUserMap.putIfAbsent(playerId, new HashMap<>());
-        OpenGameForUser openGameForUser = new OpenGameForUser(gameId, null, gameName, GameStage.REGISTERING,
+        var openGameForUser = new OpenGameForUser(gameId, null, gameName, GameStage.REGISTERING,
                 openGameForUserMap.get(playerId).size(), Collections.emptyList());
         openGameForUserMap.get(playerId).put(gameId, openGameForUser);
     }
 
     @Override
     public void changeGameStage(UUID playerId, UUID gameId, GameStage gameStage) {
-        OpenGameForUser openGameForUser = openGameForUserMap.get(playerId).get(gameId);
-        OpenGameForUser updatedOpenGameForUser = new OpenGameForUser(openGameForUser.getGameId(),
+        var openGameForUser = openGameForUserMap.get(playerId).get(gameId);
+        var updatedOpenGameForUser = new OpenGameForUser(openGameForUser.getGameId(),
                 openGameForUser.getMyTableId(), openGameForUser.getName(), gameStage, openGameForUser.getOrdinal(),
                 openGameForUser.getViewingTables());
         openGameForUserMap.get(playerId).put(gameId, updatedOpenGameForUser);
@@ -54,8 +54,8 @@ public class OpenGameForPlayerInMemoryRepository implements OpenGameForPlayerRep
 
     @Override
     public void assignTableToOpenGame(UUID playerId, UUID gameId, UUID tableId) {
-        OpenGameForUser openGameForUser = openGameForUserMap.get(playerId).get(gameId);
-        OpenGameForUser updatedOpenGameForUser = new OpenGameForUser(openGameForUser.getGameId(), tableId,
+        var openGameForUser = openGameForUserMap.get(playerId).get(gameId);
+        var updatedOpenGameForUser = new OpenGameForUser(openGameForUser.getGameId(), tableId,
                 openGameForUser.getName(), openGameForUser.getGameStage(), openGameForUser.getOrdinal(),
                 openGameForUser.getViewingTables());
         openGameForUserMap.get(playerId).put(gameId, updatedOpenGameForUser);

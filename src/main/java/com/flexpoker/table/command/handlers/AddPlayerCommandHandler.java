@@ -1,7 +1,5 @@
 package com.flexpoker.table.command.handlers;
 
-import java.util.List;
-
 import javax.inject.Inject;
 
 import org.springframework.scheduling.annotation.Async;
@@ -9,7 +7,6 @@ import org.springframework.stereotype.Component;
 
 import com.flexpoker.framework.command.CommandHandler;
 import com.flexpoker.framework.event.EventPublisher;
-import com.flexpoker.table.command.aggregate.Table;
 import com.flexpoker.table.command.commands.AddPlayerCommand;
 import com.flexpoker.table.command.factory.TableFactory;
 import com.flexpoker.table.command.framework.TableEvent;
@@ -37,9 +34,8 @@ public class AddPlayerCommandHandler
     @Async
     @Override
     public void handle(AddPlayerCommand command) {
-        List<TableEvent> tableEvents = tableEventRepository
-                .fetchAll(command.getTableId());
-        Table table = tableFactory.createFrom(tableEvents);
+        var tableEvents = tableEventRepository.fetchAll(command.getTableId());
+        var table = tableFactory.createFrom(tableEvents);
 
         table.addPlayer(command.getPlayerId(), command.getChips());
         table.fetchNewEvents().forEach(x -> tableEventRepository.save(x));

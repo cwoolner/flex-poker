@@ -7,7 +7,6 @@ import org.springframework.stereotype.Component;
 
 import com.flexpoker.framework.command.CommandHandler;
 import com.flexpoker.framework.event.EventPublisher;
-import com.flexpoker.game.command.aggregate.Game;
 import com.flexpoker.game.command.commands.CreateGameCommand;
 import com.flexpoker.game.command.factory.GameFactory;
 import com.flexpoker.game.command.framework.GameEvent;
@@ -34,8 +33,9 @@ public class CreateGameCommandHandler implements CommandHandler<CreateGameComman
     @Async
     @Override
     public void handle(CreateGameCommand command) {
-        Game game = gameFactory.createNew(command);
+        var game = gameFactory.createNew(command);
         game.fetchNewEvents().forEach(x -> gameEventRepository.save(x));
         game.fetchNewEvents().forEach(x -> eventPublisher.publish(x));
     }
+
 }

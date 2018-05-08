@@ -37,8 +37,7 @@ public class RedisLoginRepository implements LoginRepository {
     public UserDetails loadUserByUsername(String username)
             throws UsernameNotFoundException {
 
-        String encryptedPassword = redisTemplate.opsForValue().get(
-                LOGIN_PASSWORD_NAMESPACE + username);
+        var encryptedPassword = redisTemplate.opsForValue().get(LOGIN_PASSWORD_NAMESPACE + username);
 
         if (encryptedPassword == null) {
             return null;
@@ -46,7 +45,7 @@ public class RedisLoginRepository implements LoginRepository {
 
         // TODO: change these to not use default positive values, getting all of
         // the data from Redis instead
-        UserDetails userDetails = new UserDetails() {
+        var userDetails = new UserDetails() {
 
             private static final long serialVersionUID = 1L;
 

@@ -48,8 +48,7 @@ public class InMemoryThreadSafeEventSubscriberHelper<T extends Event> {
     }
 
     private boolean isExpectedEvent(Event event) {
-        int expectedEventVersion = nextExpectedEventVersion.get(event.getAggregateId())
-                .intValue();
+        var expectedEventVersion = nextExpectedEventVersion.get(event.getAggregateId()).intValue();
         return expectedEventVersion == event.getVersion();
     }
 
@@ -67,7 +66,7 @@ public class InMemoryThreadSafeEventSubscriberHelper<T extends Event> {
     }
 
     private void handleAnyPreviouslyUnhandledEvents(T event) {
-        T earliestUnrunTableEvent = listOfEventsNeededToProcess.get(event.getAggregateId()).peek();
+        var earliestUnrunTableEvent = listOfEventsNeededToProcess.get(event.getAggregateId()).peek();
         if (earliestUnrunTableEvent != null && isExpectedEvent(earliestUnrunTableEvent)) {
             handleEventAndRunAnyOthers(earliestUnrunTableEvent);
         }

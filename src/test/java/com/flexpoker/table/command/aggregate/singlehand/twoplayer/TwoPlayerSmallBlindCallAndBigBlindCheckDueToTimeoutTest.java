@@ -6,7 +6,6 @@ import java.util.UUID;
 
 import org.junit.Test;
 
-import com.flexpoker.table.command.aggregate.Table;
 import com.flexpoker.table.command.aggregate.testhelpers.TableTestUtils;
 import com.flexpoker.table.command.events.ActionOnChangedEvent;
 import com.flexpoker.table.command.events.CardsShuffledEvent;
@@ -29,19 +28,16 @@ public class TwoPlayerSmallBlindCallAndBigBlindCheckDueToTimeoutTest {
 
     @Test
     public void test() {
-        UUID tableId = UUID.randomUUID();
+        var tableId = UUID.randomUUID();
 
-        Table table = TableTestUtils.createBasicTableAndStartHand(tableId, UUID.randomUUID(),
-                UUID.randomUUID());
+        var table = TableTestUtils.createBasicTableAndStartHand(tableId, UUID.randomUUID(), UUID.randomUUID());
 
         // use the info in action on event to simulate the expire
-        UUID smallBlindAndButtonPlayerId = ((ActionOnChangedEvent) table.fetchNewEvents()
-                .get(4)).getPlayerId();
+        var smallBlindAndButtonPlayerId = ((ActionOnChangedEvent) table.fetchNewEvents().get(4)).getPlayerId();
         table.call(smallBlindAndButtonPlayerId);
 
-        ActionOnChangedEvent actionOnChangedEvent = (ActionOnChangedEvent) table
-                .fetchNewEvents().get(6);
-        UUID bigBlindPlayerId = actionOnChangedEvent.getPlayerId();
+        var actionOnChangedEvent = (ActionOnChangedEvent) table.fetchNewEvents().get(6);
+        var bigBlindPlayerId = actionOnChangedEvent.getPlayerId();
         table.expireActionOn(actionOnChangedEvent.getHandId(), bigBlindPlayerId);
 
         // post-flop

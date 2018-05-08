@@ -32,8 +32,8 @@ public class PlayerBustedTableEventHandler implements EventHandler<PlayerBustedT
     }
 
     private void handleChat(PlayerBustedTableEvent event) {
-        String username = loginRepository.fetchUsernameByAggregateId(event.getPlayerId());
-        String message = username + " is out";
+        var username = loginRepository.fetchUsernameByAggregateId(event.getPlayerId());
+        var message = username + " is out";
         pushNotificationPublisher
                 .publish(new ChatSentPushNotification(event.getGameId(), event.getAggregateId(), message, null, true));
     }

@@ -3,27 +3,22 @@ package com.flexpoker.table.command.service;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
-import java.util.List;
-
 import org.junit.Test;
-
-import com.flexpoker.model.card.Card;
-import com.flexpoker.model.card.CardsUsedInHand;
 
 public class DefaultCardServiceTest {
 
     @Test
     public void testCreateShuffledDeck() {
-        DefaultCardService service = new DefaultCardService();
-        List<Card> shuffledDeck = service.createShuffledDeck();
+        var service = new DefaultCardService();
+        var shuffledDeck = service.createShuffledDeck();
         assertEquals(52, shuffledDeck.size());
     }
 
     @Test
     public void testShuffledDecksAreDifferent() {
-        DefaultCardService service = new DefaultCardService();
-        List<Card> shuffledDeck1 = service.createShuffledDeck();
-        List<Card> shuffledDeck2 = service.createShuffledDeck();
+        var service = new DefaultCardService();
+        var shuffledDeck1 = service.createShuffledDeck();
+        var shuffledDeck2 = service.createShuffledDeck();
 
         assertFalse(shuffledDeck1 == shuffledDeck2);
         assertFalse(shuffledDeck1.equals(shuffledDeck2));
@@ -31,9 +26,9 @@ public class DefaultCardServiceTest {
 
     @Test
     public void testCreateCardsUsedInHand() {
-        DefaultCardService service = new DefaultCardService();
-        List<Card> fullDeckOfCards = service.createShuffledDeck();
-        CardsUsedInHand cardsUsedInHand = service.createCardsUsedInHand(fullDeckOfCards , 2);
+        var service = new DefaultCardService();
+        var fullDeckOfCards = service.createShuffledDeck();
+        var cardsUsedInHand = service.createCardsUsedInHand(fullDeckOfCards , 2);
 
         assertEquals(2, cardsUsedInHand.getPocketCards().size());
 

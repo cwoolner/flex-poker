@@ -1,6 +1,5 @@
 package com.flexpoker.table.query.handlers;
 
-import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
@@ -8,7 +7,6 @@ import javax.inject.Inject;
 import org.springframework.stereotype.Component;
 
 import com.flexpoker.framework.event.EventHandler;
-import com.flexpoker.framework.pushnotifier.PushNotification;
 import com.flexpoker.framework.pushnotifier.PushNotificationPublisher;
 import com.flexpoker.login.repository.LoginRepository;
 import com.flexpoker.pushnotifications.ChatSentPushNotification;
@@ -44,10 +42,10 @@ public class PlayerCheckedEventHandler implements EventHandler<PlayerCheckedEven
     }
 
     private void handleUpdatingTable(PlayerCheckedEvent event) {
-        TableDTO currentTable = tableRepository.fetchById(event.getAggregateId());
-        String username = loginRepository.fetchUsernameByAggregateId(event.getPlayerId());
+        var currentTable = tableRepository.fetchById(event.getAggregateId());
+        var username = loginRepository.fetchUsernameByAggregateId(event.getPlayerId());
 
-        List<SeatDTO> updatedSeats = currentTable.getSeats().stream()
+        var updatedSeats = currentTable.getSeats().stream()
                 .map(seatDTO -> {
                     if (seatDTO.getName().equals(username)) {
                         return new SeatDTO(seatDTO.getPosition(),
@@ -59,7 +57,7 @@ public class PlayerCheckedEventHandler implements EventHandler<PlayerCheckedEven
                     return seatDTO;
                 }).collect(Collectors.toList());
 
-        TableDTO updatedTable = new TableDTO(currentTable.getId(),
+        var updatedTable = new TableDTO(currentTable.getId(),
                 event.getVersion(), updatedSeats, currentTable.getTotalPot(),
                 currentTable.getPots(), currentTable.getVisibleCommonCards(),
                 currentTable.getCurrentHandMinRaiseToAmount());
@@ -67,14 +65,13 @@ public class PlayerCheckedEventHandler implements EventHandler<PlayerCheckedEven
     }
 
     private void handlePushNotifications(PlayerCheckedEvent event) {
-        PushNotification pushNotification = new TableUpdatedPushNotification(
-                event.getGameId(), event.getAggregateId());
+        var pushNotification = new TableUpdatedPushNotification(event.getGameId(), event.getAggregateId());
         pushNotificationPublisher.publish(pushNotification);
     }
 
     private void handleChat(PlayerCheckedEvent event) {
-        String username = loginRepository.fetchUsernameByAggregateId(event.getPlayerId());
-        String message = username + " checks";
+        var username = loginRepository.fetchUsernameByAggregateId(event.getPlayerId());
+        var message = username + " checks";
         pushNotificationPublisher
                 .publish(new ChatSentPushNotification(event.getGameId(), event.getAggregateId(), message, null, true));
     }

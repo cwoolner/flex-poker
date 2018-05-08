@@ -131,7 +131,7 @@ public class InMemoryAsyncTableEventSubscriber implements EventSubscriber<TableE
     }
 
     private Map<Class<? extends Event>, EventHandler<? extends Event>> createEventHandlerMap() {
-        Map<Class<? extends Event>, EventHandler<? extends Event>> eventHandlerMap = new HashMap<>();
+        var eventHandlerMap = new HashMap<Class<? extends Event>, EventHandler<? extends Event>>();
         eventHandlerMap.put(ActionOnChangedEvent.class, actionOnChangedEventHandler);
         eventHandlerMap.put(AutoMoveHandForwardEvent.class, x -> {});
         eventHandlerMap.put(CardsShuffledEvent.class, x -> {});

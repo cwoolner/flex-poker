@@ -5,8 +5,6 @@ import static org.junit.Assert.assertEquals;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -23,19 +21,19 @@ public class NewHandIsClearedToStartTest {
 
     @Test
     public void testJoinGameSuccessFirstPlayerJoins() {
-        UUID gameId = UUID.randomUUID();
-        UUID tableId = UUID.randomUUID();
-        UUID player1Id = UUID.randomUUID();
-        UUID player2Id = UUID.randomUUID();
+        var gameId = UUID.randomUUID();
+        var tableId = UUID.randomUUID();
+        var player1Id = UUID.randomUUID();
+        var player2Id = UUID.randomUUID();
 
-        Map<UUID, Set<UUID>> tableToPlayersMap = new HashMap<>();
-        Set<UUID> playerIds = new HashSet<>();
+        var tableToPlayersMap = new HashMap<UUID, Set<UUID>>();
+        var playerIds = new HashSet<UUID>();
         playerIds.add(player1Id);
         playerIds.add(player2Id);
         tableToPlayersMap.put(tableId, playerIds);
-        Set<UUID> tableIds = tableToPlayersMap.keySet();
+        var tableIds = tableToPlayersMap.keySet();
 
-        List<GameEvent> events = new ArrayList<>();
+        var events = new ArrayList<GameEvent>();
         events.add(new GameCreatedEvent(gameId, 1, "test", 2, 2, UUID.randomUUID(), 10, 20));
         events.add(new GameJoinedEvent(gameId, 2, player1Id));
         events.add(new GameJoinedEvent(gameId, 3, player2Id));
@@ -43,9 +41,9 @@ public class NewHandIsClearedToStartTest {
         events.add(new GameTablesCreatedAndPlayersAssociatedEvent(gameId, 5, tableToPlayersMap, 2));
         events.add(new GameStartedEvent(gameId, 6, tableIds, new BlindSchedule(10)));
 
-        Game game = new DefaultGameFactory().createFrom(events);
+        var game = new DefaultGameFactory().createFrom(events);
 
-        Map<UUID, Integer> playersToChipsMap = new HashMap<>();
+        var playersToChipsMap = new HashMap<UUID, Integer>();
         playersToChipsMap.put(player1Id, 100);
         playersToChipsMap.put(player2Id, 100);
 

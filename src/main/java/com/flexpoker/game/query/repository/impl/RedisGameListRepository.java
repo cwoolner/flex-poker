@@ -1,7 +1,6 @@
 package com.flexpoker.game.query.repository.impl;
 
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 
 import javax.inject.Inject;
@@ -28,26 +27,24 @@ public class RedisGameListRepository implements GameListRepository {
     public RedisGameListRepository(RedisTemplate<String, GameInListDTO> redisTemplate) {
         this.redisTemplate = redisTemplate;
         this.redisTemplate.setKeySerializer(new StringRedisSerializer());
-        this.redisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<>(
-                GameInListDTO.class));
+        this.redisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<>(GameInListDTO.class));
     }
 
     @Override
     public void saveNew(GameInListDTO gameInListDTO) {
-        redisTemplate.opsForValue().set(GAME_LIST_NAMESPACE + gameInListDTO.getId(),
-                gameInListDTO);
+        redisTemplate.opsForValue().set(GAME_LIST_NAMESPACE + gameInListDTO.getId(), gameInListDTO);
     }
 
     @Override
     public List<GameInListDTO> fetchAll() {
-        Set<String> allKeys = redisTemplate.keys(GAME_LIST_NAMESPACE + "*");
+        var allKeys = redisTemplate.keys(GAME_LIST_NAMESPACE + "*");
         return redisTemplate.opsForValue().multiGet(allKeys);
     }
 
     @Override
     public void incrementRegisteredPlayers(UUID aggregateId) {
-        GameInListDTO existingGameInListDTO = fetchById(aggregateId);
-        GameInListDTO updatedGameInListDTO = new GameInListDTO(
+        var existingGameInListDTO = fetchById(aggregateId);
+        var updatedGameInListDTO = new GameInListDTO(
                 existingGameInListDTO.getId(), existingGameInListDTO.getName(),
                 existingGameInListDTO.getStage(),
                 existingGameInListDTO.getNumberOfRegisteredPlayers() + 1,
@@ -63,14 +60,13 @@ public class RedisGameListRepository implements GameListRepository {
 
     @Override
     public String fetchGameName(UUID aggregateId) {
-        GameInListDTO existingGameInListDTO = fetchById(aggregateId);
-        return existingGameInListDTO.getName();
+        return fetchById(aggregateId).getName();
     }
 
     @Override
     public void changeGameStage(UUID aggregateId, GameStage gameStage) {
-        GameInListDTO existingGameInListDTO = fetchById(aggregateId);
-        GameInListDTO updatedGameInListDTO = new GameInListDTO(
+        var existingGameInListDTO = fetchById(aggregateId);
+        var updatedGameInListDTO = new GameInListDTO(
                 existingGameInListDTO.getId(), existingGameInListDTO.getName(),
                 gameStage.toString(),
                 existingGameInListDTO.getNumberOfRegisteredPlayers(),

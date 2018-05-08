@@ -27,7 +27,7 @@ public class RedisTableEventRepository implements TableEventRepository {
         this.redisTemplate = redisTemplate;
         this.redisTemplate.setKeySerializer(new StringRedisSerializer());
 
-        ObjectMapper objectMapper = new ObjectMapper();
+        var objectMapper = new ObjectMapper();
         objectMapper.findAndRegisterModules();
 
         Jackson2JsonRedisSerializer<TableEvent> valueSerializer = new Jackson2JsonRedisSerializer<>(

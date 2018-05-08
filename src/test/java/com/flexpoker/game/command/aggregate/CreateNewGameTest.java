@@ -14,17 +14,14 @@ public class CreateNewGameTest {
 
     @Test
     public void testCreateNewGameSuccess() {
-        CreateGameCommand createGameCommand = new CreateGameCommand("test", 2,
-                2, UUID.randomUUID(), 10, 20);
-        Game game = new DefaultGameFactory().createNew(createGameCommand);
+        var createGameCommand = new CreateGameCommand("test", 2, 2, UUID.randomUUID(), 10, 20);
+        var game = new DefaultGameFactory().createNew(createGameCommand);
 
         assertEquals(1, game.fetchAppliedEvents().size());
         assertEquals(1, game.fetchNewEvents().size());
-        assertEquals(GameCreatedEvent.class,
-                game.fetchNewEvents().get(0).getClass());
+        assertEquals(GameCreatedEvent.class, game.fetchNewEvents().get(0).getClass());
 
-        GameCreatedEvent gameCreatedEvent = (GameCreatedEvent) game
-                .fetchNewEvents().get(0);
+        var gameCreatedEvent = (GameCreatedEvent) game.fetchNewEvents().get(0);
         assertNotNull(gameCreatedEvent.getAggregateId());
         assertEquals(1, gameCreatedEvent.getVersion());
     }

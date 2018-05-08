@@ -32,15 +32,15 @@ public class TableBalancer {
             Map<UUID, Integer> playerToChipsAtTableMap) {
 
         // make sure at least two players exists. we're in a bad state if not
-        int totalNumberOfPlayers = getTotalNumberOfPlayers(tableToPlayersMap);
+        var totalNumberOfPlayers = getTotalNumberOfPlayers(tableToPlayersMap);
         if (totalNumberOfPlayers < 2) {
             throw new FlexPokerException(
                     "the game should be over since less than two players are left.  no balancing should be done");
         }
 
         // remove any empty tables first
-        Optional<Entry<UUID, Set<UUID>>> emptyTable = tableToPlayersMap
-                .entrySet().stream().filter(x -> x.getValue().isEmpty())
+        var emptyTable = tableToPlayersMap.entrySet().stream()
+                .filter(x -> x.getValue().isEmpty())
                 .findFirst();
         if (emptyTable.isPresent()) {
             return Optional.of(new TableRemovedEvent(gameId, version,
@@ -50,21 +50,19 @@ public class TableBalancer {
         // check to see if the number of tables is greater than the number it
         // should have. if so, move all the players from this table to other
         // tables starting with the one with the lowest number
-        if (tableToPlayersMap
-                .size() > getRequiredNumberOfTables(totalNumberOfPlayers)) {
+        if (tableToPlayersMap.size() > getRequiredNumberOfTables(totalNumberOfPlayers)) {
             return createEventToMoveUserFromSubjectTableToAnyMinTable(version,
                     subjectTableId, tableToPlayersMap, playerToChipsAtTableMap);
         }
 
         if (isTableOutOfBalance(subjectTableId, tableToPlayersMap)) {
-            int tableSize = tableToPlayersMap.get(subjectTableId).size();
+            var tableSize = tableToPlayersMap.get(subjectTableId).size();
 
             // in the min case, pause the table since it needs to get another
             // player
             if (tableSize == tableToPlayersMap.values().stream()
                     .map(x -> x.size()).min(Integer::compare).get()) {
-                return Optional.of(new TablePausedForBalancingEvent(gameId,
-                        version, subjectTableId));
+                return Optional.of(new TablePausedForBalancingEvent(gameId, version, subjectTableId));
             }
 
             // only move a player if the out of balance table has the max number
@@ -78,17 +76,16 @@ public class TableBalancer {
         }
 
         // re-examine the paused tables to see if they are still not balanced
-        Set<UUID> pausedTablesThatShouldStayPaused = pausedTablesForBalancing
-                .stream().filter(x -> isTableOutOfBalance(x, tableToPlayersMap))
+        var pausedTablesThatShouldStayPaused = pausedTablesForBalancing.stream()
+                .filter(x -> isTableOutOfBalance(x, tableToPlayersMap))
                 .collect(Collectors.toSet());
 
         // resume the first table that is currently paused, but are now balanced
-        Optional<UUID> tableToResume = pausedTablesForBalancing.stream()
+        var tableToResume = pausedTablesForBalancing.stream()
                 .filter(x -> !pausedTablesThatShouldStayPaused.contains(x))
                 .findFirst();
         if (tableToResume.isPresent()) {
-            return Optional.of(new TableResumedAfterBalancingEvent(gameId,
-                    version, tableToResume.get()));
+            return Optional.of(new TableResumedAfterBalancingEvent(gameId, version, tableToResume.get()));
         }
 
         return Optional.empty();
@@ -98,13 +95,11 @@ public class TableBalancer {
             int version, UUID subjectTableId,
             Map<UUID, Set<UUID>> tableToPlayersMap,
             Map<UUID, Integer> playerToChipsAtTableMap) {
-        UUID playerToMove = tableToPlayersMap.get(subjectTableId).stream()
+        var playerToMove = tableToPlayersMap.get(subjectTableId).stream()
                 .findFirst().get();
-        UUID toTableId = findNonSubjectMinTableId(subjectTableId,
-                tableToPlayersMap);
+        var toTableId = findNonSubjectMinTableId(subjectTableId, tableToPlayersMap);
         int chips = playerToChipsAtTableMap.get(playerToMove);
-        return Optional.of(new PlayerMovedToNewTableEvent(gameId, version,
-                subjectTableId, toTableId, playerToMove, chips));
+        return Optional.of(new PlayerMovedToNewTableEvent(gameId, version, subjectTableId, toTableId, playerToMove, chips));
     }
 
     private UUID findNonSubjectMinTableId(UUID subjectTableId,
@@ -116,32 +111,27 @@ public class TableBalancer {
 
     private boolean isTableOutOfBalance(UUID tableId,
             Map<UUID, Set<UUID>> tableToPlayersMap) {
-        int tableSize = tableToPlayersMap.get(tableId).size();
+        var tableSize = tableToPlayersMap.get(tableId).size();
 
         if (tableSize == 1) {
             return true;
         }
 
-        return tableToPlayersMap.values().stream() //
-                .anyMatch(x -> //
-                (x.size() >= tableSize + 2) //
-                        || (x.size() <= tableSize - 2));
-
+        return tableToPlayersMap.values().stream()
+                .anyMatch(x -> x.size() >= tableSize + 2 || x.size() <= tableSize - 2);
     }
 
     private Comparator<? super Entry<UUID, Set<UUID>>> setSizeComparator() {
-        return (x, y) -> Integer.compare(x.getValue().size(),
-                y.getValue().size());
+        return (x, y) -> Integer.compare(x.getValue().size(), y.getValue().size());
     }
 
-    private int getTotalNumberOfPlayers(
-            Map<UUID, Set<UUID>> tableToPlayersMap) {
+    private int getTotalNumberOfPlayers(Map<UUID, Set<UUID>> tableToPlayersMap) {
         return tableToPlayersMap.values().stream()
                 .collect(Collectors.summingInt(Set::size));
     }
 
     private int getRequiredNumberOfTables(int totalNumberOfPlayers) {
-        int numberOfRequiredTables = totalNumberOfPlayers / maxPlayersPerTable;
+        var numberOfRequiredTables = totalNumberOfPlayers / maxPlayersPerTable;
 
         if (totalNumberOfPlayers % maxPlayersPerTable != 0) {
             numberOfRequiredTables++;

@@ -4,8 +4,6 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 import org.junit.Test;
@@ -20,14 +18,14 @@ public class InMemoryThreadSafeEventSubscriberHelperTest {
 
     @Test
     public void testSentInOrderRunsInOrder() {
-        UUID tableId = UUID.randomUUID();
-        BlindsIncreasedEvent event1 = new BlindsIncreasedEvent(tableId, 1);
-        GameFinishedEvent event2 = new GameFinishedEvent(tableId, 2);
-        GameJoinedEvent event3 = new GameJoinedEvent(tableId, 3, UUID.randomUUID());
+        var tableId = UUID.randomUUID();
+        var event1 = new BlindsIncreasedEvent(tableId, 1);
+        var event2 = new GameFinishedEvent(tableId, 2);
+        var event3 = new GameJoinedEvent(tableId, 3, UUID.randomUUID());
 
-        Map<Class<? extends Event>, EventHandler<? extends Event>> handlerMap = new HashMap<>();
+        var handlerMap = new HashMap<Class<? extends Event>, EventHandler<? extends Event>>();
 
-        final List<Event> eventRunList = new ArrayList<>();
+        final var eventRunList = new ArrayList<>();
         handlerMap.put(event1.getClass(), x -> { eventRunList.add(event1); });
         handlerMap.put(event2.getClass(), x -> { eventRunList.add(event2); });
         handlerMap.put(event3.getClass(), x -> { eventRunList.add(event3); });
@@ -46,14 +44,14 @@ public class InMemoryThreadSafeEventSubscriberHelperTest {
 
     @Test
     public void testSentInSwappedOrderRunsInOrder() {
-        UUID tableId = UUID.randomUUID();
-        BlindsIncreasedEvent event1 = new BlindsIncreasedEvent(tableId, 1);
-        GameFinishedEvent event2 = new GameFinishedEvent(tableId, 2);
-        GameJoinedEvent event3 = new GameJoinedEvent(tableId, 3, UUID.randomUUID());
+        var tableId = UUID.randomUUID();
+        var event1 = new BlindsIncreasedEvent(tableId, 1);
+        var event2 = new GameFinishedEvent(tableId, 2);
+        var event3 = new GameJoinedEvent(tableId, 3, UUID.randomUUID());
 
-        Map<Class<? extends Event>, EventHandler<? extends Event>> handlerMap = new HashMap<>();
+        var handlerMap = new HashMap<Class<? extends Event>, EventHandler<? extends Event>>();
 
-        final List<Event> eventRunList = new ArrayList<>();
+        final var eventRunList = new ArrayList<>();
         handlerMap.put(event1.getClass(), x -> { eventRunList.add(event1); });
         handlerMap.put(event2.getClass(), x -> { eventRunList.add(event2); });
         handlerMap.put(event3.getClass(), x -> { eventRunList.add(event3); });

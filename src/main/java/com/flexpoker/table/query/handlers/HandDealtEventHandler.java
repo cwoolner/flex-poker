@@ -1,7 +1,6 @@
 package com.flexpoker.table.query.handlers;
 
 import java.util.Collections;
-import java.util.List;
 import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -12,7 +11,6 @@ import javax.inject.Inject;
 import org.springframework.stereotype.Component;
 
 import com.flexpoker.framework.event.EventHandler;
-import com.flexpoker.framework.pushnotifier.PushNotification;
 import com.flexpoker.framework.pushnotifier.PushNotificationPublisher;
 import com.flexpoker.login.repository.LoginRepository;
 import com.flexpoker.pushnotifications.SendUserPocketCardsPushNotification;
@@ -56,52 +54,54 @@ public class HandDealtEventHandler implements EventHandler<HandDealtEvent> {
         cardsUsedInHandRepository.saveFlopCards(event.getHandId(), event.getFlopCards());
         cardsUsedInHandRepository.saveTurnCard(event.getHandId(), event.getTurnCard());
         cardsUsedInHandRepository.saveRiverCard(event.getHandId(), event.getRiverCard());
-        cardsUsedInHandRepository.savePocketCards(event.getHandId(),
-                event.getPlayerToPocketCardsMap());
+        cardsUsedInHandRepository.savePocketCards(event.getHandId(), event.getPlayerToPocketCardsMap());
     }
 
     private void handleUpdatingTable(HandDealtEvent event) {
-        TableDTO currentTable = tableRepository.fetchById(event.getAggregateId());
+        var currentTable = tableRepository.fetchById(event.getAggregateId());
 
-        int totalPot = event.getChipsInFrontMap().values().stream()
+        var totalPot = event.getChipsInFrontMap().values().stream()
                 .mapToInt(x -> x.intValue()).sum();
 
         Function<UUID, SeatDTO> seatMapper = (UUID playerId) -> {
-            int position = event.getSeatMap().entrySet().stream()
-                    .filter(x -> x.getValue().equals(playerId)).findAny().get().getKey()
+            var position = event.getSeatMap().entrySet().stream()
+                    .filter(x -> x.getValue().equals(playerId))
+                    .findAny()
+                    .get()
+                    .getKey()
                     .intValue();
-            String name = loginRepository.fetchUsernameByAggregateId(playerId);
-            int chipsInBack = event.getChipsInBack().get(playerId);
-            int chipsInFront = event.getChipsInFrontMap().get(playerId);
-            int raiseTo = event.getRaiseToAmountsMap().get(playerId);
-            int callAmount = event.getCallAmountsMap().get(playerId);
-            boolean button = event.getButtonOnPosition() == position;
-            boolean smallBlind = event.getSmallBlindPosition() == position;
-            boolean bigBlind = event.getBigBlindPosition() == position;
+            var name = loginRepository.fetchUsernameByAggregateId(playerId);
+            var chipsInBack = event.getChipsInBack().get(playerId);
+            var chipsInFront = event.getChipsInFrontMap().get(playerId);
+            var raiseTo = event.getRaiseToAmountsMap().get(playerId);
+            var callAmount = event.getCallAmountsMap().get(playerId);
+            var button = event.getButtonOnPosition() == position;
+            var smallBlind = event.getSmallBlindPosition() == position;
+            var bigBlind = event.getBigBlindPosition() == position;
 
             return new SeatDTO(position, name, chipsInBack, chipsInFront, true,
                     raiseTo, callAmount, button, smallBlind, bigBlind, false);
         };
 
-        List<SeatDTO> seats = event.getPlayersStillInHand().stream()
-                .map(seatMapper).collect(Collectors.toList());
+        var seats = event.getPlayersStillInHand().stream()
+                .map(seatMapper)
+                .collect(Collectors.toList());
 
-        TableDTO updatedTable = new TableDTO(currentTable.getId(),
+        var updatedTable = new TableDTO(currentTable.getId(),
                 event.getVersion(), seats, totalPot, Collections.emptySet(),
                 Collections.emptyList(), event.getBigBlind());
         tableRepository.save(updatedTable);
     }
 
     private void handlePushNotifications(HandDealtEvent event) {
-        PushNotification pushNotification = new TableUpdatedPushNotification(
-                event.getGameId(), event.getAggregateId());
+        var pushNotification = new TableUpdatedPushNotification(event.getGameId(), event.getAggregateId());
         pushNotificationPublisher.publish(pushNotification);
 
         Consumer<UUID> pocketCardsConsumer = (UUID playerId) -> {
-            PushNotification pockCardsPushNotification = new SendUserPocketCardsPushNotification(
+            var pocketCardsPushNotification = new SendUserPocketCardsPushNotification(
                     playerId, event.getPlayerToPocketCardsMap().get(playerId),
                     event.getAggregateId());
-            pushNotificationPublisher.publish(pockCardsPushNotification);
+            pushNotificationPublisher.publish(pocketCardsPushNotification);
         };
         event.getPlayersStillInHand().forEach(pocketCardsConsumer);
     }

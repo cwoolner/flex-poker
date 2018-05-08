@@ -8,21 +8,21 @@ public class BlindAmountsTest {
 
     @Test
     public void testNormalSuccess() {
-        BlindAmounts blinds = new BlindAmounts(10, 20);
+        var blinds = new BlindAmounts(10, 20);
         assertEquals(10, blinds.getSmallBlind());
         assertEquals(20, blinds.getBigBlind());
     }
 
     @Test
     public void testLowNormalSuccess() {
-        BlindAmounts blinds = new BlindAmounts(1, 2);
+        var blinds = new BlindAmounts(1, 2);
         assertEquals(1, blinds.getSmallBlind());
         assertEquals(2, blinds.getBigBlind());
     }
 
     @Test
     public void testMaxValueSuccess() {
-        BlindAmounts blinds = new BlindAmounts(Integer.MAX_VALUE / 2, Integer.MAX_VALUE - 1);
+        var blinds = new BlindAmounts(Integer.MAX_VALUE / 2, Integer.MAX_VALUE - 1);
         assertEquals(Integer.MAX_VALUE / 2, blinds.getSmallBlind());
         assertEquals(Integer.MAX_VALUE - 1, blinds.getBigBlind());
     }

@@ -7,7 +7,6 @@ import org.springframework.stereotype.Component;
 
 import com.flexpoker.framework.command.CommandHandler;
 import com.flexpoker.framework.event.EventPublisher;
-import com.flexpoker.table.command.aggregate.Table;
 import com.flexpoker.table.command.commands.CreateTableCommand;
 import com.flexpoker.table.command.factory.TableFactory;
 import com.flexpoker.table.command.framework.TableEvent;
@@ -34,7 +33,7 @@ public class CreateTableCommandHandler implements CommandHandler<CreateTableComm
     @Async
     @Override
     public void handle(CreateTableCommand command) {
-        Table table = tableFactory.createNew(command);
+        var table = tableFactory.createNew(command);
         table.fetchNewEvents().forEach(x -> tableEventRepository.save(x));
         table.fetchNewEvents().forEach(x -> eventPublisher.publish(x));
     }

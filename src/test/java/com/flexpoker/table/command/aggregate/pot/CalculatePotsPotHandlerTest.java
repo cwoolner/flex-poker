@@ -8,9 +8,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
 
 import org.junit.Test;
@@ -18,34 +15,31 @@ import org.junit.Test;
 import com.flexpoker.table.command.events.PotAmountIncreasedEvent;
 import com.flexpoker.table.command.events.PotClosedEvent;
 import com.flexpoker.table.command.events.PotCreatedEvent;
-import com.flexpoker.table.command.framework.TableEvent;
 
 public class CalculatePotsPotHandlerTest {
 
     @Test
     public void testTwoPlayersSameBet() {
-        UUID player1 = UUID.randomUUID();
-        UUID player2 = UUID.randomUUID();
+        var player1 = UUID.randomUUID();
+        var player2 = UUID.randomUUID();
 
-        PotHandler potHandler = createBasicPotHandler(player1, player2);
+        var potHandler = createBasicPotHandler(player1, player2);
 
-        Map<UUID, Integer> chipsInFrontMap = new HashMap<>();
+        var chipsInFrontMap = new HashMap<UUID, Integer>();
         chipsInFrontMap.put(player1, 10);
         chipsInFrontMap.put(player2, 10);
 
-        Map<UUID, Integer> chipsInBackMap = new HashMap<>();
+        var chipsInBackMap = new HashMap<UUID, Integer>();
         chipsInBackMap.put(player1, 1490);
         chipsInBackMap.put(player2, 1490);
 
-        Set<UUID> playersStillInHand = new HashSet<>();
+        var playersStillInHand = new HashSet<UUID>();
         playersStillInHand.add(player1);
         playersStillInHand.add(player2);
 
-        List<TableEvent> potEvents = potHandler.calculatePots(1,
-                chipsInFrontMap, chipsInBackMap, playersStillInHand);
+        var potEvents = potHandler.calculatePots(1, chipsInFrontMap, chipsInBackMap, playersStillInHand);
 
-        verifyNumberOfEventsAndEntireOrderByType(potEvents,
-                PotCreatedEvent.class, PotAmountIncreasedEvent.class);
+        verifyNumberOfEventsAndEntireOrderByType(potEvents, PotCreatedEvent.class, PotAmountIncreasedEvent.class);
 
         assertTrue(((PotCreatedEvent) potEvents.get(0)).getPotId()
                 .equals(((PotAmountIncreasedEvent) potEvents.get(1)).getPotId()));
@@ -54,28 +48,26 @@ public class CalculatePotsPotHandlerTest {
 
     @Test
     public void testTwoPlayerDifferentBets() {
-        UUID player1 = UUID.randomUUID();
-        UUID player2 = UUID.randomUUID();
+        var player1 = UUID.randomUUID();
+        var player2 = UUID.randomUUID();
 
-        PotHandler potHandler = createBasicPotHandler(player1, player2);
+        var potHandler = createBasicPotHandler(player1, player2);
 
-        Map<UUID, Integer> chipsInFrontMap = new HashMap<>();
+        var chipsInFrontMap = new HashMap<UUID, Integer>();
         chipsInFrontMap.put(player1, 10);
         chipsInFrontMap.put(player2, 20);
 
-        Map<UUID, Integer> chipsInBackMap = new HashMap<>();
+        var chipsInBackMap = new HashMap<UUID, Integer>();
         chipsInBackMap.put(player1, 1490);
         chipsInBackMap.put(player2, 1480);
 
-        Set<UUID> playersStillInHand = new HashSet<>();
+        var playersStillInHand = new HashSet<UUID>();
         playersStillInHand.add(player1);
         playersStillInHand.add(player2);
 
-        List<TableEvent> potEvents = potHandler.calculatePots(1,
-                chipsInFrontMap, chipsInBackMap, playersStillInHand);
+        var potEvents = potHandler.calculatePots(1, chipsInFrontMap, chipsInBackMap, playersStillInHand);
 
-        verifyNumberOfEventsAndEntireOrderByType(potEvents,
-                PotCreatedEvent.class, PotAmountIncreasedEvent.class,
+        verifyNumberOfEventsAndEntireOrderByType(potEvents, PotCreatedEvent.class, PotAmountIncreasedEvent.class,
                 PotAmountIncreasedEvent.class);
 
         assertEquals(20, ((PotAmountIncreasedEvent) potEvents.get(1)).getAmountIncreased());
@@ -86,25 +78,24 @@ public class CalculatePotsPotHandlerTest {
 
     @Test
     public void testTwoPlayerOneAllIn() {
-        UUID player1 = UUID.randomUUID();
-        UUID player2 = UUID.randomUUID();
+        var player1 = UUID.randomUUID();
+        var player2 = UUID.randomUUID();
 
-        PotHandler potHandler = createBasicPotHandler(player1, player2);
+        var potHandler = createBasicPotHandler(player1, player2);
 
-        Map<UUID, Integer> chipsInFrontMap = new HashMap<>();
+        var chipsInFrontMap = new HashMap<UUID, Integer>();
         chipsInFrontMap.put(player1, 1000);
         chipsInFrontMap.put(player2, 20);
 
-        Map<UUID, Integer> chipsInBackMap = new HashMap<>();
+        var chipsInBackMap = new HashMap<UUID, Integer>();
         chipsInBackMap.put(player1, 500);
         chipsInBackMap.put(player2, 0);
 
-        Set<UUID> playersStillInHand = new HashSet<>();
+        var playersStillInHand = new HashSet<UUID>();
         playersStillInHand.add(player1);
         playersStillInHand.add(player2);
 
-        List<TableEvent> potEvents = potHandler.calculatePots(1,
-                chipsInFrontMap, chipsInBackMap, playersStillInHand);
+        var potEvents = potHandler.calculatePots(1, chipsInFrontMap, chipsInBackMap, playersStillInHand);
 
         verifyNumberOfEventsAndEntireOrderByType(potEvents,
                 PotCreatedEvent.class,
@@ -127,25 +118,24 @@ public class CalculatePotsPotHandlerTest {
 
     @Test
     public void testTwoPlayerChipAndAChair() {
-        UUID player1 = UUID.randomUUID();
-        UUID player2 = UUID.randomUUID();
+        var player1 = UUID.randomUUID();
+        var player2 = UUID.randomUUID();
 
-        PotHandler potHandler = createBasicPotHandler(player1, player2);
+        var potHandler = createBasicPotHandler(player1, player2);
 
-        Map<UUID, Integer> chipsInFrontMap = new HashMap<>();
+        var chipsInFrontMap = new HashMap<UUID, Integer>();
         chipsInFrontMap.put(player1, 2);
         chipsInFrontMap.put(player2, 1);
 
-        Map<UUID, Integer> chipsInBackMap = new HashMap<>();
+        var chipsInBackMap = new HashMap<UUID, Integer>();
         chipsInBackMap.put(player1, 1499);
         chipsInBackMap.put(player2, 0);
 
-        Set<UUID> playersStillInHand = new HashSet<>();
+        var playersStillInHand = new HashSet<UUID>();
         playersStillInHand.add(player1);
         playersStillInHand.add(player2);
 
-        List<TableEvent> potEvents = potHandler.calculatePots(1,
-                chipsInFrontMap, chipsInBackMap, playersStillInHand);
+        var potEvents = potHandler.calculatePots(1, chipsInFrontMap, chipsInBackMap, playersStillInHand);
 
         verifyNumberOfEventsAndEntireOrderByType(potEvents,
                 PotCreatedEvent.class,

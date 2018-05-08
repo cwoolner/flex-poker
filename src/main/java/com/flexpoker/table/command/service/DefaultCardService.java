@@ -22,7 +22,7 @@ public class DefaultCardService implements CardService {
 
     @Override
     public List<Card> createShuffledDeck() {
-        List<Card> deckOfCards = createDeckOfCards();
+        var deckOfCards = createDeckOfCards();
         Collections.shuffle(deckOfCards, new Random());
         return deckOfCards;
     }
@@ -30,18 +30,18 @@ public class DefaultCardService implements CardService {
     @Override
     public CardsUsedInHand createCardsUsedInHand(List<Card> fullDeckOfCards,
             int numberOfPlayers) {
-        int flopCardsIndex = (numberOfPlayers * 2) + 1;
-        FlopCards flopCards = new FlopCards(fullDeckOfCards.get(flopCardsIndex),
+        var flopCardsIndex = (numberOfPlayers * 2) + 1;
+        var flopCards = new FlopCards(fullDeckOfCards.get(flopCardsIndex),
                 fullDeckOfCards.get(flopCardsIndex + 1),
                 fullDeckOfCards.get(flopCardsIndex + 2));
-        TurnCard turnCard = new TurnCard(fullDeckOfCards.get(flopCardsIndex + 4));
-        RiverCard riverCard = new RiverCard(fullDeckOfCards.get(flopCardsIndex + 6));
+        var turnCard = new TurnCard(fullDeckOfCards.get(flopCardsIndex + 4));
+        var riverCard = new RiverCard(fullDeckOfCards.get(flopCardsIndex + 6));
 
-        List<PocketCards> pocketCards = new ArrayList<>();
+        var pocketCards = new ArrayList<PocketCards>();
 
         for (int i = 0; i < numberOfPlayers; i++) {
-            Card pocketCard1 = fullDeckOfCards.get(i);
-            Card pocketCard2 = fullDeckOfCards.get(i + numberOfPlayers);
+            var pocketCard1 = fullDeckOfCards.get(i);
+            var pocketCard2 = fullDeckOfCards.get(i + numberOfPlayers);
             pocketCards.add(new PocketCards(pocketCard1, pocketCard2));
         }
 

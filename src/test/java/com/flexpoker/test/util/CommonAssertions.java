@@ -13,7 +13,7 @@ public class CommonAssertions {
 
     public static void verifyEventIdsAndVersionNumbers(UUID tableId,
             List<? extends Event> events) {
-        int version = 0;
+        var version = 0;
         for (Event event : events) {
             assertEquals(tableId, event.getAggregateId());
             assertEquals(++version, event.getVersion());

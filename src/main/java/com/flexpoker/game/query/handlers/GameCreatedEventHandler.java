@@ -40,10 +40,8 @@ public class GameCreatedEventHandler implements EventHandler<GameCreatedEvent> {
     }
 
     private void handleGameListRepository(GameCreatedEvent event) {
-        String createdByUsername = loginRepository.fetchUsernameByAggregateId(event
-                .getCreatedByPlayerId());
-
-        GameInListDTO gameInListDTO = new GameInListDTO(event.getAggregateId(),
+        var createdByUsername = loginRepository.fetchUsernameByAggregateId(event.getCreatedByPlayerId());
+        var gameInListDTO = new GameInListDTO(event.getAggregateId(),
                 event.getGameName(), GameStage.REGISTERING.toString(), 0,
                 event.getNumberOfPlayers(), event.getNumberOfPlayersPerTable(),
                 event.getNumberOfMinutesBetweenBlindLevels(),

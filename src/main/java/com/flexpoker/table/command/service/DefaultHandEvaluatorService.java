@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.function.Consumer;
 
 import org.springframework.stereotype.Service;
@@ -27,13 +26,10 @@ import com.flexpoker.table.command.aggregate.HandEvaluation;
 public class DefaultHandEvaluatorService implements HandEvaluatorService {
 
     @Override
-    public List<HandRanking> determinePossibleHands(FlopCards flopCards,
-            TurnCard turnCard, RiverCard riverCard) {
+    public List<HandRanking> determinePossibleHands(FlopCards flopCards, TurnCard turnCard, RiverCard riverCard) {
+        var commonCards = new CommonCards(flopCards, turnCard, riverCard);
 
-        CommonCards commonCards = new CommonCards(flopCards, turnCard, riverCard);
-
-        List<HandRanking> possibleHandRankings = new ArrayList<>(
-                Arrays.asList(HandRanking.values()));
+        var possibleHandRankings = new ArrayList<>(Arrays.asList(HandRanking.values()));
 
         filterByStraightFlushStatus(commonCards, possibleHandRankings);
         filterByFourOfAKindStatus(commonCards, possibleHandRankings);
@@ -52,13 +48,13 @@ public class DefaultHandEvaluatorService implements HandEvaluatorService {
             TurnCard turnCard, RiverCard riverCard, List<PocketCards> pocketCardsList,
             List<HandRanking> possibleHandRankings) {
 
-        CommonCards commonCards = new CommonCards(flopCards, turnCard, riverCard);
-        Map<PocketCards, HandEvaluation> handEvaluations = new HashMap<>();
+        var commonCards = new CommonCards(flopCards, turnCard, riverCard);
+        var handEvaluations = new HashMap<PocketCards, HandEvaluation>();
 
         Consumer<PocketCards> evaluatePocketCardsConsumer = (PocketCards pocketCards) -> {
-            HandEvaluation handEvaluation = new HandEvaluation();
+            var handEvaluation = new HandEvaluation();
 
-            List<Card> cardList = new ArrayList<>(commonCards.getCards());
+            var cardList = new ArrayList<>(commonCards.getCards());
             cardList.add(pocketCards.getCard1());
             cardList.add(pocketCards.getCard2());
 
@@ -83,7 +79,7 @@ public class DefaultHandEvaluatorService implements HandEvaluatorService {
         Collections.sort(possibleHandRankings);
         Collections.reverse(possibleHandRankings);
 
-        for (HandRanking handRanking : possibleHandRankings) {
+        for (var handRanking : possibleHandRankings) {
             switch (handRanking) {
             case STRAIGHT_FLUSH:
                 if (evaluateStraightFlush(handEvaluation, cardList)) {
@@ -147,13 +143,13 @@ public class DefaultHandEvaluatorService implements HandEvaluatorService {
 
     private boolean evaluateStraightFlush(HandEvaluation handEvaluation,
             List<Card> cardList) {
-        List<Card> cardsInLargestSuit = findCardsInLargestSuit(cardList);
+        var cardsInLargestSuit = findCardsInLargestSuit(cardList);
 
         if (cardsInLargestSuit.size() < 5) {
             return false;
         }
 
-        CardRank cardRank = findCardRankOfHighestStraight(cardsInLargestSuit);
+        var cardRank = findCardRankOfHighestStraight(cardsInLargestSuit);
 
         if (cardRank == null) {
             return false;
@@ -166,13 +162,13 @@ public class DefaultHandEvaluatorService implements HandEvaluatorService {
     private boolean evaluateFourOfAKind(HandEvaluation handEvaluation, List<Card> cardList) {
         Collections.sort(cardList);
 
-        CardRank cardRank1 = cardList.get(0).getCardRank();
-        CardRank cardRank2 = cardList.get(1).getCardRank();
-        CardRank cardRank3 = cardList.get(2).getCardRank();
-        CardRank cardRank4 = cardList.get(3).getCardRank();
-        CardRank cardRank5 = cardList.get(4).getCardRank();
-        CardRank cardRank6 = cardList.get(5).getCardRank();
-        CardRank cardRank7 = cardList.get(6).getCardRank();
+        var cardRank1 = cardList.get(0).getCardRank();
+        var cardRank2 = cardList.get(1).getCardRank();
+        var cardRank3 = cardList.get(2).getCardRank();
+        var cardRank4 = cardList.get(3).getCardRank();
+        var cardRank5 = cardList.get(4).getCardRank();
+        var cardRank6 = cardList.get(5).getCardRank();
+        var cardRank7 = cardList.get(6).getCardRank();
 
         if (cardRank1 == cardRank4) {
             handEvaluation.setPrimaryCardRank(cardRank1);
@@ -201,13 +197,13 @@ public class DefaultHandEvaluatorService implements HandEvaluatorService {
     private boolean evaluateFullHouse(HandEvaluation handEvaluation, List<Card> cardList) {
         Collections.sort(cardList);
 
-        CardRank cardRank1 = cardList.get(0).getCardRank();
-        CardRank cardRank2 = cardList.get(1).getCardRank();
-        CardRank cardRank3 = cardList.get(2).getCardRank();
-        CardRank cardRank4 = cardList.get(3).getCardRank();
-        CardRank cardRank5 = cardList.get(4).getCardRank();
-        CardRank cardRank6 = cardList.get(5).getCardRank();
-        CardRank cardRank7 = cardList.get(6).getCardRank();
+        var cardRank1 = cardList.get(0).getCardRank();
+        var cardRank2 = cardList.get(1).getCardRank();
+        var cardRank3 = cardList.get(2).getCardRank();
+        var cardRank4 = cardList.get(3).getCardRank();
+        var cardRank5 = cardList.get(4).getCardRank();
+        var cardRank6 = cardList.get(5).getCardRank();
+        var cardRank7 = cardList.get(6).getCardRank();
 
         if (cardRank5 == cardRank7) {
             if (cardRank3 == cardRank4) {
@@ -284,7 +280,7 @@ public class DefaultHandEvaluatorService implements HandEvaluatorService {
     }
 
     private boolean evaluateFlush(HandEvaluation handEvaluation, List<Card> cardList) {
-        List<Card> cards = findCardsInLargestSuit(cardList);
+        var cards = findCardsInLargestSuit(cardList);
 
         if (cards.size() < 5) {
             return false;
@@ -301,7 +297,7 @@ public class DefaultHandEvaluatorService implements HandEvaluatorService {
     }
 
     private boolean evaluateStraight(HandEvaluation handEvaluation, List<Card> cardList) {
-        CardRank cardRank = findCardRankOfHighestStraight(cardList);
+        var cardRank = findCardRankOfHighestStraight(cardList);
 
         if (cardRank == null) {
             return false;
@@ -315,13 +311,13 @@ public class DefaultHandEvaluatorService implements HandEvaluatorService {
             List<Card> cardList) {
         Collections.sort(cardList);
 
-        CardRank cardRank1 = cardList.get(0).getCardRank();
-        CardRank cardRank2 = cardList.get(1).getCardRank();
-        CardRank cardRank3 = cardList.get(2).getCardRank();
-        CardRank cardRank4 = cardList.get(3).getCardRank();
-        CardRank cardRank5 = cardList.get(4).getCardRank();
-        CardRank cardRank6 = cardList.get(5).getCardRank();
-        CardRank cardRank7 = cardList.get(6).getCardRank();
+        var cardRank1 = cardList.get(0).getCardRank();
+        var cardRank2 = cardList.get(1).getCardRank();
+        var cardRank3 = cardList.get(2).getCardRank();
+        var cardRank4 = cardList.get(3).getCardRank();
+        var cardRank5 = cardList.get(4).getCardRank();
+        var cardRank6 = cardList.get(5).getCardRank();
+        var cardRank7 = cardList.get(6).getCardRank();
 
         if (cardRank5 == cardRank7) {
             handEvaluation.setPrimaryCardRank(cardRank5);
@@ -360,13 +356,13 @@ public class DefaultHandEvaluatorService implements HandEvaluatorService {
     private boolean evaluateTwoPair(HandEvaluation handEvaluation, List<Card> cardList) {
         Collections.sort(cardList);
 
-        CardRank cardRank1 = cardList.get(0).getCardRank();
-        CardRank cardRank2 = cardList.get(1).getCardRank();
-        CardRank cardRank3 = cardList.get(2).getCardRank();
-        CardRank cardRank4 = cardList.get(3).getCardRank();
-        CardRank cardRank5 = cardList.get(4).getCardRank();
-        CardRank cardRank6 = cardList.get(5).getCardRank();
-        CardRank cardRank7 = cardList.get(6).getCardRank();
+        var cardRank1 = cardList.get(0).getCardRank();
+        var cardRank2 = cardList.get(1).getCardRank();
+        var cardRank3 = cardList.get(2).getCardRank();
+        var cardRank4 = cardList.get(3).getCardRank();
+        var cardRank5 = cardList.get(4).getCardRank();
+        var cardRank6 = cardList.get(5).getCardRank();
+        var cardRank7 = cardList.get(6).getCardRank();
 
         if (cardRank6 == cardRank7) {
             if (cardRank4 == cardRank5) {
@@ -443,13 +439,13 @@ public class DefaultHandEvaluatorService implements HandEvaluatorService {
     private boolean evaluateOnePair(HandEvaluation handEvaluation, List<Card> cardList) {
         Collections.sort(cardList);
 
-        CardRank cardRank1 = cardList.get(0).getCardRank();
-        CardRank cardRank2 = cardList.get(1).getCardRank();
-        CardRank cardRank3 = cardList.get(2).getCardRank();
-        CardRank cardRank4 = cardList.get(3).getCardRank();
-        CardRank cardRank5 = cardList.get(4).getCardRank();
-        CardRank cardRank6 = cardList.get(5).getCardRank();
-        CardRank cardRank7 = cardList.get(6).getCardRank();
+        var cardRank1 = cardList.get(0).getCardRank();
+        var cardRank2 = cardList.get(1).getCardRank();
+        var cardRank3 = cardList.get(2).getCardRank();
+        var cardRank4 = cardList.get(3).getCardRank();
+        var cardRank5 = cardList.get(4).getCardRank();
+        var cardRank6 = cardList.get(5).getCardRank();
+        var cardRank7 = cardList.get(6).getCardRank();
 
         if (cardRank6 == cardRank7) {
             handEvaluation.setPrimaryCardRank(cardRank6);
@@ -509,9 +505,8 @@ public class DefaultHandEvaluatorService implements HandEvaluatorService {
         return true;
     }
 
-    private void filterByStraightFlushStatus(CommonCards commonCards,
-            List<HandRanking> possibleHandRankings) {
-        CommonCardStatus straightFlushStatus = determineStraightFlushStatus(commonCards);
+    private void filterByStraightFlushStatus(CommonCards commonCards, List<HandRanking> possibleHandRankings) {
+        var straightFlushStatus = determineStraightFlushStatus(commonCards);
 
         if (straightFlushStatus == CommonCardStatus.BOARD) {
             possibleHandRankings.remove(HandRanking.FOUR_OF_A_KIND);
@@ -527,10 +522,9 @@ public class DefaultHandEvaluatorService implements HandEvaluatorService {
         }
     }
 
-    private void filterByFourOfAKindStatus(CommonCards commonCards,
-            List<HandRanking> possibleHandRankings) {
+    private void filterByFourOfAKindStatus(CommonCards commonCards, List<HandRanking> possibleHandRankings) {
         if (possibleHandRankings.contains(HandRanking.FOUR_OF_A_KIND)) {
-            CommonCardStatus fourOfAKindStatus = determineFourOfAKindStatus(commonCards);
+            var fourOfAKindStatus = determineFourOfAKindStatus(commonCards);
 
             if (fourOfAKindStatus == CommonCardStatus.BOARD) {
                 possibleHandRankings.remove(HandRanking.STRAIGHT_FLUSH);
@@ -548,10 +542,9 @@ public class DefaultHandEvaluatorService implements HandEvaluatorService {
         }
     }
 
-    private void filterByFullHouseStatus(CommonCards commonCards,
-            List<HandRanking> possibleHandRankings) {
+    private void filterByFullHouseStatus(CommonCards commonCards, List<HandRanking> possibleHandRankings) {
         if (possibleHandRankings.contains(HandRanking.FULL_HOUSE)) {
-            CommonCardStatus fullHouseStatus = determineFullHouseStatus(commonCards);
+            var fullHouseStatus = determineFullHouseStatus(commonCards);
 
             if (fullHouseStatus == CommonCardStatus.BOARD) {
                 possibleHandRankings.remove(HandRanking.FLUSH);
@@ -564,10 +557,9 @@ public class DefaultHandEvaluatorService implements HandEvaluatorService {
         }
     }
 
-    private void filterByFlushStatus(CommonCards commonCards,
-            List<HandRanking> possibleHandRankings) {
+    private void filterByFlushStatus(CommonCards commonCards, List<HandRanking> possibleHandRankings) {
         if (possibleHandRankings.contains(HandRanking.FLUSH)) {
-            CommonCardStatus flushStatus = determineFlushStatus(commonCards);
+            var flushStatus = determineFlushStatus(commonCards);
 
             if (flushStatus == CommonCardStatus.BOARD) {
                 possibleHandRankings.remove(HandRanking.STRAIGHT);
@@ -581,10 +573,9 @@ public class DefaultHandEvaluatorService implements HandEvaluatorService {
         }
     }
 
-    private void filterByStraightStatus(CommonCards commonCards,
-            List<HandRanking> possibleHandRankings) {
+    private void filterByStraightStatus(CommonCards commonCards, List<HandRanking> possibleHandRankings) {
         if (possibleHandRankings.contains(HandRanking.STRAIGHT)) {
-            CommonCardStatus straightStatus = determineStraightStatus(commonCards);
+            var straightStatus = determineStraightStatus(commonCards);
 
             if (straightStatus == CommonCardStatus.BOARD) {
                 possibleHandRankings.remove(HandRanking.THREE_OF_A_KIND);
@@ -597,10 +588,9 @@ public class DefaultHandEvaluatorService implements HandEvaluatorService {
         }
     }
 
-    private void filterByThreeOfAKindStatus(CommonCards commonCards,
-            List<HandRanking> possibleHandRankings) {
+    private void filterByThreeOfAKindStatus(CommonCards commonCards, List<HandRanking> possibleHandRankings) {
         if (possibleHandRankings.contains(HandRanking.THREE_OF_A_KIND)) {
-            CommonCardStatus threeOfAKindStatus = determineThreeOfAKindStatus(commonCards);
+            var threeOfAKindStatus = determineThreeOfAKindStatus(commonCards);
 
             if (threeOfAKindStatus == CommonCardStatus.BOARD) {
                 possibleHandRankings.remove(HandRanking.TWO_PAIR);
@@ -610,10 +600,9 @@ public class DefaultHandEvaluatorService implements HandEvaluatorService {
         }
     }
 
-    private void filterByTwoPairStatus(CommonCards commonCards,
-            List<HandRanking> possibleHandRankings) {
+    private void filterByTwoPairStatus(CommonCards commonCards, List<HandRanking> possibleHandRankings) {
         if (possibleHandRankings.contains(HandRanking.TWO_PAIR)) {
-            CommonCardStatus twoPairStatus = determineTwoPairStatus(commonCards);
+            var twoPairStatus = determineTwoPairStatus(commonCards);
 
             if (twoPairStatus == CommonCardStatus.BOARD) {
                 possibleHandRankings.remove(HandRanking.THREE_OF_A_KIND);
@@ -623,10 +612,9 @@ public class DefaultHandEvaluatorService implements HandEvaluatorService {
         }
     }
 
-    private void filterByOnePairStatus(CommonCards commonCards,
-            List<HandRanking> possibleHandRankings) {
+    private void filterByOnePairStatus(CommonCards commonCards, List<HandRanking> possibleHandRankings) {
         if (possibleHandRankings.contains(HandRanking.ONE_PAIR)) {
-            CommonCardStatus onePairStatus = determineOnePairStatus(commonCards);
+            var onePairStatus = determineOnePairStatus(commonCards);
 
             if (onePairStatus == CommonCardStatus.BOARD) {
                 possibleHandRankings.remove(HandRanking.HIGH_CARD);
@@ -635,7 +623,7 @@ public class DefaultHandEvaluatorService implements HandEvaluatorService {
     }
 
     private CommonCardStatus determineStraightFlushStatus(CommonCards commonCards) {
-        List<Card> cards = findCardsInLargestSuit(commonCards.getCards());
+        var cards = findCardsInLargestSuit(commonCards.getCards());
 
         // we have a flush, check to see if it's a straight also
         if (cards.size() == 5 && isStraight(commonCards)) {
@@ -654,14 +642,14 @@ public class DefaultHandEvaluatorService implements HandEvaluatorService {
     }
 
     private CommonCardStatus determineFourOfAKindStatus(CommonCards commonCards) {
-        List<Card> cardList = commonCards.getCards();
+        var cardList = commonCards.getCards();
         Collections.sort(cardList);
 
-        CardRank cardRank1 = cardList.get(0).getCardRank();
-        CardRank cardRank2 = cardList.get(1).getCardRank();
-        CardRank cardRank3 = cardList.get(2).getCardRank();
-        CardRank cardRank4 = cardList.get(3).getCardRank();
-        CardRank cardRank5 = cardList.get(4).getCardRank();
+        var cardRank1 = cardList.get(0).getCardRank();
+        var cardRank2 = cardList.get(1).getCardRank();
+        var cardRank3 = cardList.get(2).getCardRank();
+        var cardRank4 = cardList.get(3).getCardRank();
+        var cardRank5 = cardList.get(4).getCardRank();
 
         if ((cardRank1 == cardRank2 && cardRank2 == cardRank3 && cardRank3 == cardRank4)
                 || (cardRank2 == cardRank3 && cardRank3 == cardRank4 && cardRank4 == cardRank5)) {
@@ -677,14 +665,14 @@ public class DefaultHandEvaluatorService implements HandEvaluatorService {
     }
 
     private CommonCardStatus determineFullHouseStatus(CommonCards commonCards) {
-        List<Card> cardList = commonCards.getCards();
+        var cardList = commonCards.getCards();
         Collections.sort(cardList);
 
-        CardRank cardRank1 = cardList.get(0).getCardRank();
-        CardRank cardRank2 = cardList.get(1).getCardRank();
-        CardRank cardRank3 = cardList.get(2).getCardRank();
-        CardRank cardRank4 = cardList.get(3).getCardRank();
-        CardRank cardRank5 = cardList.get(4).getCardRank();
+        var cardRank1 = cardList.get(0).getCardRank();
+        var cardRank2 = cardList.get(1).getCardRank();
+        var cardRank3 = cardList.get(2).getCardRank();
+        var cardRank4 = cardList.get(3).getCardRank();
+        var cardRank5 = cardList.get(4).getCardRank();
 
         if ((cardRank1 == cardRank2 && cardRank2 == cardRank3 && cardRank4 == cardRank5)
                 || (cardRank1 == cardRank2 && cardRank3 == cardRank4 && cardRank4 == cardRank5)) {
@@ -700,7 +688,7 @@ public class DefaultHandEvaluatorService implements HandEvaluatorService {
     }
 
     private CommonCardStatus determineFlushStatus(CommonCards commonCards) {
-        List<Card> cards = findCardsInLargestSuit(commonCards.getCards());
+        var cards = findCardsInLargestSuit(commonCards.getCards());
 
         switch (cards.size()) {
         case 5:
@@ -727,14 +715,14 @@ public class DefaultHandEvaluatorService implements HandEvaluatorService {
     }
 
     private CommonCardStatus determineThreeOfAKindStatus(CommonCards commonCards) {
-        List<Card> cardList = commonCards.getCards();
+        var cardList = commonCards.getCards();
         Collections.sort(cardList);
 
-        CardRank cardRank1 = cardList.get(0).getCardRank();
-        CardRank cardRank2 = cardList.get(1).getCardRank();
-        CardRank cardRank3 = cardList.get(2).getCardRank();
-        CardRank cardRank4 = cardList.get(3).getCardRank();
-        CardRank cardRank5 = cardList.get(4).getCardRank();
+        var cardRank1 = cardList.get(0).getCardRank();
+        var cardRank2 = cardList.get(1).getCardRank();
+        var cardRank3 = cardList.get(2).getCardRank();
+        var cardRank4 = cardList.get(3).getCardRank();
+        var cardRank5 = cardList.get(4).getCardRank();
 
         if ((cardRank1 == cardRank2 && cardRank2 == cardRank3)
                 || (cardRank2 == cardRank3 && cardRank3 == cardRank4)
@@ -746,14 +734,14 @@ public class DefaultHandEvaluatorService implements HandEvaluatorService {
     }
 
     private CommonCardStatus determineTwoPairStatus(CommonCards commonCards) {
-        List<Card> cardList = commonCards.getCards();
+        var cardList = commonCards.getCards();
         Collections.sort(cardList);
 
-        CardRank cardRank1 = cardList.get(0).getCardRank();
-        CardRank cardRank2 = cardList.get(1).getCardRank();
-        CardRank cardRank3 = cardList.get(2).getCardRank();
-        CardRank cardRank4 = cardList.get(3).getCardRank();
-        CardRank cardRank5 = cardList.get(4).getCardRank();
+        var cardRank1 = cardList.get(0).getCardRank();
+        var cardRank2 = cardList.get(1).getCardRank();
+        var cardRank3 = cardList.get(2).getCardRank();
+        var cardRank4 = cardList.get(3).getCardRank();
+        var cardRank5 = cardList.get(4).getCardRank();
 
         if ((cardRank1 == cardRank2 && cardRank3 == cardRank4)
                 || (cardRank1 == cardRank2 && cardRank4 == cardRank5)
@@ -765,14 +753,14 @@ public class DefaultHandEvaluatorService implements HandEvaluatorService {
     }
 
     private CommonCardStatus determineOnePairStatus(CommonCards commonCards) {
-        List<Card> cardList = commonCards.getCards();
+        var cardList = commonCards.getCards();
         Collections.sort(cardList);
 
-        CardRank cardRank1 = cardList.get(0).getCardRank();
-        CardRank cardRank2 = cardList.get(1).getCardRank();
-        CardRank cardRank3 = cardList.get(2).getCardRank();
-        CardRank cardRank4 = cardList.get(3).getCardRank();
-        CardRank cardRank5 = cardList.get(4).getCardRank();
+        var cardRank1 = cardList.get(0).getCardRank();
+        var cardRank2 = cardList.get(1).getCardRank();
+        var cardRank3 = cardList.get(2).getCardRank();
+        var cardRank4 = cardList.get(3).getCardRank();
+        var cardRank5 = cardList.get(4).getCardRank();
 
         if (cardRank1 == cardRank2 || cardRank2 == cardRank3 || cardRank3 == cardRank4
                 || cardRank4 == cardRank5) {
@@ -783,14 +771,14 @@ public class DefaultHandEvaluatorService implements HandEvaluatorService {
     }
 
     private boolean isStraight(CommonCards commonCards) {
-        List<Card> cardList = commonCards.getCards();
+        var cardList = commonCards.getCards();
         Collections.sort(cardList);
 
-        int cardRankOrdinal1 = cardList.get(0).getCardRank().ordinal();
-        int cardRankOrdinal2 = cardList.get(1).getCardRank().ordinal();
-        int cardRankOrdinal3 = cardList.get(2).getCardRank().ordinal();
-        int cardRankOrdinal4 = cardList.get(3).getCardRank().ordinal();
-        int cardRankOrdinal5 = cardList.get(4).getCardRank().ordinal();
+        var cardRankOrdinal1 = cardList.get(0).getCardRank().ordinal();
+        var cardRankOrdinal2 = cardList.get(1).getCardRank().ordinal();
+        var cardRankOrdinal3 = cardList.get(2).getCardRank().ordinal();
+        var cardRankOrdinal4 = cardList.get(3).getCardRank().ordinal();
+        var cardRankOrdinal5 = cardList.get(4).getCardRank().ordinal();
 
         if (cardRankOrdinal1 + 1 != cardRankOrdinal2
                 || cardRankOrdinal2 + 1 != cardRankOrdinal3
@@ -807,9 +795,9 @@ public class DefaultHandEvaluatorService implements HandEvaluatorService {
     }
 
     private boolean isStraightPossible(List<Card> cardList) {
-        List<CardRank> cardRanks = new ArrayList<>();
+        var cardRanks = new ArrayList<CardRank>();
 
-        for (Card card : cardList) {
+        for (var card : cardList) {
             cardRanks.add(card.getCardRank());
         }
 
@@ -877,14 +865,11 @@ public class DefaultHandEvaluatorService implements HandEvaluatorService {
         return false;
     }
 
-    private boolean doCardRanksMatch(List<CardRank> cardRanks,
-            List<CardRank> straightCardRanks, int numberToMatch) {
+    private boolean doCardRanksMatch(List<CardRank> cardRanks, List<CardRank> straightCardRanks, int numberToMatch) {
+        var cardRankSet = new HashSet<>(cardRanks);
+        var numberOfMatched = 0;
 
-        Set<CardRank> cardRankSet = new HashSet<>(cardRanks);
-
-        int numberOfMatched = 0;
-
-        for (CardRank cardRank : cardRankSet) {
+        for (var cardRank : cardRankSet) {
             if (straightCardRanks.contains(cardRank)) {
                 numberOfMatched++;
             }
@@ -900,24 +885,20 @@ public class DefaultHandEvaluatorService implements HandEvaluatorService {
      * HEARTS, CLUBS, DIAMONDS, SPADES
      */
     private List<Card> findCardsInLargestSuit(List<Card> cards) {
-        Map<CardSuit, List<Card>> suitMap = new HashMap<>();
+        var suitMap = new HashMap<CardSuit, List<Card>>();
 
-        for (Card card : cards) {
-            CardSuit cardSuit = card.getCardSuit();
+        for (var card : cards) {
+            var cardSuit = card.getCardSuit();
             if (suitMap.get(cardSuit) == null) {
-                suitMap.put(cardSuit, new ArrayList<Card>());
+                suitMap.put(cardSuit, new ArrayList<>());
             }
             suitMap.get(cardSuit).add(card);
         }
 
-        int numberOfHearts = suitMap.get(CardSuit.HEARTS) == null ? 0 : suitMap.get(
-                CardSuit.HEARTS).size();
-        int numberOfClubs = suitMap.get(CardSuit.CLUBS) == null ? 0 : suitMap.get(
-                CardSuit.CLUBS).size();
-        int numberOfDiamonds = suitMap.get(CardSuit.DIAMONDS) == null ? 0 : suitMap.get(
-                CardSuit.DIAMONDS).size();
-        int numberOfSpades = suitMap.get(CardSuit.SPADES) == null ? 0 : suitMap.get(
-                CardSuit.SPADES).size();
+        var numberOfHearts = suitMap.get(CardSuit.HEARTS) == null ? 0 : suitMap.get(CardSuit.HEARTS).size();
+        var numberOfClubs = suitMap.get(CardSuit.CLUBS) == null ? 0 : suitMap.get(CardSuit.CLUBS).size();
+        var numberOfDiamonds = suitMap.get(CardSuit.DIAMONDS) == null ? 0 : suitMap.get(CardSuit.DIAMONDS).size();
+        var numberOfSpades = suitMap.get(CardSuit.SPADES) == null ? 0 : suitMap.get(CardSuit.SPADES).size();
 
         if (numberOfHearts >= 3) {
             return suitMap.get(CardSuit.HEARTS);
@@ -945,8 +926,7 @@ public class DefaultHandEvaluatorService implements HandEvaluatorService {
             return suitMap.get(CardSuit.SPADES);
         }
 
-        throw new IllegalArgumentException("CommonCards must contain at least "
-                + "two instances of a suit.");
+        throw new IllegalArgumentException("CommonCards must contain at least two instances of a suit.");
     }
 
     private CardRank findCardRankOfHighestStraight(List<Card> cardList) {
@@ -954,9 +934,9 @@ public class DefaultHandEvaluatorService implements HandEvaluatorService {
             return null;
         }
 
-        List<CardRank> cardRanks = new ArrayList<>();
+        var cardRanks = new ArrayList<CardRank>();
 
-        for (Card card : cardList) {
+        for (var card : cardList) {
             cardRanks.add(card.getCardRank());
         }
 

@@ -1,7 +1,5 @@
 package com.flexpoker.table.command.handlers;
 
-import java.util.List;
-
 import javax.inject.Inject;
 
 import org.springframework.scheduling.annotation.Async;
@@ -9,7 +7,6 @@ import org.springframework.stereotype.Component;
 
 import com.flexpoker.framework.command.CommandHandler;
 import com.flexpoker.framework.event.EventPublisher;
-import com.flexpoker.table.command.aggregate.Table;
 import com.flexpoker.table.command.commands.FoldCommand;
 import com.flexpoker.table.command.factory.TableFactory;
 import com.flexpoker.table.command.framework.TableEvent;
@@ -36,9 +33,8 @@ public class FoldCommandHandler implements CommandHandler<FoldCommand> {
     @Async
     @Override
     public void handle(FoldCommand command) {
-        List<TableEvent> tableEvents = tableEventRepository
-                .fetchAll(command.getTableId());
-        Table table = tableFactory.createFrom(tableEvents);
+        var tableEvents = tableEventRepository.fetchAll(command.getTableId());
+        var table = tableFactory.createFrom(tableEvents);
 
         table.fold(command.getPlayerId());
         table.fetchNewEvents().forEach(x -> tableEventRepository.save(x));

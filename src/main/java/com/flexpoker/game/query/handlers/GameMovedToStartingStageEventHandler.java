@@ -45,17 +45,16 @@ public class GameMovedToStartingStageEventHandler implements
     @Async
     @Override
     public void handle(GameMovedToStartingStageEvent event) {
-        Set<UUID> playerIdsForGame = handleOpenGameRepository(event);
+        var playerIdsForGame = handleOpenGameRepository(event);
         handleGameListRepository(event);
         handlePushNotifications(playerIdsForGame);
         handleChat(event);
     }
 
     private Set<UUID> handleOpenGameRepository(GameMovedToStartingStageEvent event) {
-        Set<UUID> playerIdsForGame = gamePlayerRepository.fetchAllPlayerIdsForGame(event
-                .getAggregateId());
-        playerIdsForGame.forEach(x -> openGameForUserRepository.changeGameStage(x,
-                event.getAggregateId(), GameStage.STARTING));
+        var playerIdsForGame = gamePlayerRepository.fetchAllPlayerIdsForGame(event.getAggregateId());
+        playerIdsForGame.forEach(x -> openGameForUserRepository
+                .changeGameStage(x, event.getAggregateId(), GameStage.STARTING));
         return playerIdsForGame;
     }
 
@@ -70,7 +69,7 @@ public class GameMovedToStartingStageEventHandler implements
     }
 
     private void handleChat(GameMovedToStartingStageEvent event) {
-        String message = "Game will be starting shortly";
+        var message = "Game will be starting shortly";
         pushNotificationPublisher
                 .publish(new ChatSentPushNotification(event.getAggregateId(), null, message, null, true));
     }

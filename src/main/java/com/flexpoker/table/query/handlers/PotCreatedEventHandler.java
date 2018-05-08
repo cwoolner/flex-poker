@@ -2,7 +2,6 @@ package com.flexpoker.table.query.handlers;
 
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
@@ -10,7 +9,6 @@ import javax.inject.Inject;
 import org.springframework.stereotype.Component;
 
 import com.flexpoker.framework.event.EventHandler;
-import com.flexpoker.framework.pushnotifier.PushNotification;
 import com.flexpoker.framework.pushnotifier.PushNotificationPublisher;
 import com.flexpoker.login.repository.LoginRepository;
 import com.flexpoker.pushnotifications.TableUpdatedPushNotification;
@@ -44,16 +42,16 @@ public class PotCreatedEventHandler implements EventHandler<PotCreatedEvent> {
     }
 
     private void handleUpdatingTable(PotCreatedEvent event) {
-        TableDTO currentTable = tableRepository.fetchById(event.getAggregateId());
+        var currentTable = tableRepository.fetchById(event.getAggregateId());
 
-        Set<String> playerUsernames = event.getPlayersInvolved().stream()
+        var playerUsernames = event.getPlayersInvolved().stream()
                 .map(x -> loginRepository.fetchUsernameByAggregateId(x))
                 .collect(Collectors.toSet());
 
-        Set<PotDTO> pots = new HashSet<>(currentTable.getPots());
+        var pots = new HashSet<>(currentTable.getPots());
         pots.add(new PotDTO(playerUsernames, 0, true, Collections.emptySet()));
 
-        TableDTO updatedTable = new TableDTO(currentTable.getId(),
+        var updatedTable = new TableDTO(currentTable.getId(),
                 event.getVersion(), currentTable.getSeats(),
                 currentTable.getTotalPot(), pots,
                 currentTable.getVisibleCommonCards(),
@@ -62,8 +60,7 @@ public class PotCreatedEventHandler implements EventHandler<PotCreatedEvent> {
     }
 
     private void handlePushNotifications(PotCreatedEvent event) {
-        PushNotification pushNotification = new TableUpdatedPushNotification(
-                event.getGameId(), event.getAggregateId());
+        var pushNotification = new TableUpdatedPushNotification(event.getGameId(), event.getAggregateId());
         pushNotificationPublisher.publish(pushNotification);
     }
 

@@ -75,7 +75,7 @@ public class Game extends AggregateRoot<GameEvent> {
         populateMethodTable();
 
         if (!creatingFromEvents) {
-            GameCreatedEvent gameCreatedEvent = new GameCreatedEvent(
+            var gameCreatedEvent = new GameCreatedEvent(
                     aggregateId, ++aggregateVersion, gameName,
                     maxNumberOfPlayers, numberOfPlayersPerTable, createdById,
                     blindSchedule.getNumberOfMinutesBetweenLevels(),
@@ -107,26 +107,26 @@ public class Game extends AggregateRoot<GameEvent> {
         methodTable.put(NewHandIsClearedToStartEvent.class, x -> {});
         methodTable.put(BlindsIncreasedEvent.class, x -> blindSchedule.incrementLevel());
         methodTable.put(TableRemovedEvent.class, x -> {
-            UUID tableId = ((TableRemovedEvent) x).getTableId();
+            var tableId = ((TableRemovedEvent) x).getTableId();
             tableIdToPlayerIdsMap.remove(tableId);
             pausedTablesForBalancing.remove(tableId);
         });
         methodTable.put(TablePausedForBalancingEvent.class, x -> {
-            UUID tableId = ((TablePausedForBalancingEvent) x).getTableId();
+            var tableId = ((TablePausedForBalancingEvent) x).getTableId();
             pausedTablesForBalancing.add(tableId);
         });
         methodTable.put(TableResumedAfterBalancingEvent.class, x -> {
-            UUID tableId = ((TableResumedAfterBalancingEvent) x).getTableId();
+            var tableId = ((TableResumedAfterBalancingEvent) x).getTableId();
             pausedTablesForBalancing.remove(tableId);
         });
         methodTable.put(PlayerMovedToNewTableEvent.class, x -> {
-            PlayerMovedToNewTableEvent event = (PlayerMovedToNewTableEvent) x;
+            var event = (PlayerMovedToNewTableEvent) x;
             tableIdToPlayerIdsMap.get(event.getFromTableId()).remove(event.getPlayerId());
             tableIdToPlayerIdsMap.get(event.getToTableId()).add(event.getPlayerId());
         });
         methodTable.put(PlayerBustedGameEvent.class, x -> {
-            PlayerBustedGameEvent event = (PlayerBustedGameEvent) x;
-            UUID tableId = tableIdToPlayerIdsMap.entrySet().stream()
+            var event = (PlayerBustedGameEvent) x;
+            var tableId = tableIdToPlayerIdsMap.entrySet().stream()
                     .filter(y -> y.getValue().contains(event.getPlayerId()))
                     .findAny().get().getKey();
             tableIdToPlayerIdsMap.get(tableId).remove(event.getPlayerId());
@@ -160,9 +160,9 @@ public class Game extends AggregateRoot<GameEvent> {
             .map(x -> x.getKey())
             .forEach(x -> bustPlayer(x));
 
-        Set<UUID> bustedPlayers = tableIdToPlayerIdsMap.get(tableId).stream()
-            .filter(x -> !playerToChipsAtTableMap.keySet().contains(x))
-            .collect(Collectors.toSet());
+        var bustedPlayers = tableIdToPlayerIdsMap.get(tableId).stream()
+                .filter(x -> !playerToChipsAtTableMap.keySet().contains(x))
+                .collect(Collectors.toSet());
         bustedPlayers.forEach(x -> bustPlayer(x));
 
         if (tableIdToPlayerIdsMap.values().stream().flatMap(Collection::stream).count() == 1) {
@@ -180,7 +180,7 @@ public class Game extends AggregateRoot<GameEvent> {
             } while (singleBalancingEvent.isPresent());
 
             if (tableIdToPlayerIdsMap.containsKey(tableId) && !pausedTablesForBalancing.contains(tableId)) {
-                NewHandIsClearedToStartEvent event = new NewHandIsClearedToStartEvent(
+                var event = new NewHandIsClearedToStartEvent(
                         aggregateId, ++aggregateVersion, tableId,
                         blindSchedule.getCurrentBlindAmounts());
                 addNewEvent(event);
@@ -196,7 +196,7 @@ public class Game extends AggregateRoot<GameEvent> {
         }
 
         if (!blindSchedule.isMaxLevel()) {
-            BlindsIncreasedEvent event = new BlindsIncreasedEvent(aggregateId, ++aggregateVersion);
+            var event = new BlindsIncreasedEvent(aggregateId, ++aggregateVersion);
             addNewEvent(event);
             applyCommonEvent(event);
         }
@@ -209,7 +209,7 @@ public class Game extends AggregateRoot<GameEvent> {
             throw new FlexPokerException("player is not active in the game");
         }
 
-        PlayerBustedGameEvent event = new PlayerBustedGameEvent(aggregateId, ++aggregateVersion, playerId);
+        var event = new PlayerBustedGameEvent(aggregateId, ++aggregateVersion, playerId);
         addNewEvent(event);
         applyCommonEvent(event);
     }
@@ -227,8 +227,7 @@ public class Game extends AggregateRoot<GameEvent> {
             throw new FlexPokerException("You are already in this game.");
         }
 
-        GameJoinedEvent event = new GameJoinedEvent(aggregateId, ++aggregateVersion,
-                playerId);
+        var event = new GameJoinedEvent(aggregateId, ++aggregateVersion, playerId);
         addNewEvent(event);
         applyCommonEvent(event);
     }
@@ -238,8 +237,7 @@ public class Game extends AggregateRoot<GameEvent> {
             throw new FlexPokerException(
                     "to move to STARTING, the game stage must be REGISTERING");
         }
-        GameMovedToStartingStageEvent event = new GameMovedToStartingStageEvent(
-                aggregateId, ++aggregateVersion);
+        var event = new GameMovedToStartingStageEvent(aggregateId, ++aggregateVersion);
         addNewEvent(event);
         applyCommonEvent(event);
     }
@@ -249,9 +247,9 @@ public class Game extends AggregateRoot<GameEvent> {
             throw new FlexPokerException(
                     "tableToPlayerIdsMap should be empty when initializing the tables");
         }
-        Map<UUID, Set<UUID>> tableIdToPlayerIdsMap = createTableToPlayerMap();
+        var tableIdToPlayerIdsMap = createTableToPlayerMap();
 
-        GameTablesCreatedAndPlayersAssociatedEvent event = new GameTablesCreatedAndPlayersAssociatedEvent(
+        var event = new GameTablesCreatedAndPlayersAssociatedEvent(
                 aggregateId, ++aggregateVersion, tableIdToPlayerIdsMap,
                 numberOfPlayersPerTable);
         addNewEvent(event);
@@ -259,22 +257,22 @@ public class Game extends AggregateRoot<GameEvent> {
     }
 
     private Map<UUID, Set<UUID>> createTableToPlayerMap() {
-        List<UUID> randomizedListOfPlayerIds = new ArrayList<>(registeredPlayerIds);
+        var randomizedListOfPlayerIds = new ArrayList<>(registeredPlayerIds);
         Collections.shuffle(randomizedListOfPlayerIds);
 
-        Map<UUID, Set<UUID>> tableIdToPlayerIdsMap = new HashMap<>();
+        var tableIdToPlayerIdsMap = new HashMap<UUID, Set<UUID>>();
 
-        int numberOfTablesToCreate = determineNumberOfTablesToCreate();
+        var numberOfTablesToCreate = determineNumberOfTablesToCreate();
         Stream.iterate(0, e -> e)
                 .limit(numberOfTablesToCreate)
                 .forEach(x -> tableIdToPlayerIdsMap.put(UUID.randomUUID(), new HashSet<>()));
 
-        List<UUID> tableIdList = new ArrayList<>(tableIdToPlayerIdsMap.keySet());
+        var tableIdList = new ArrayList<>(tableIdToPlayerIdsMap.keySet());
 
         Stream.iterate(0, e -> e + 1)
                 .limit(randomizedListOfPlayerIds.size())
                 .forEach(x -> {
-                    int tableIndex = x % tableIdList.size();
+                    var tableIndex = x % tableIdList.size();
                     tableIdToPlayerIdsMap.get(tableIdList.get(tableIndex))
                             .add(randomizedListOfPlayerIds.get(x));
                 });
@@ -283,7 +281,7 @@ public class Game extends AggregateRoot<GameEvent> {
     }
 
     private int determineNumberOfTablesToCreate() {
-        int numberOfTables = registeredPlayerIds.size() / numberOfPlayersPerTable;
+        var numberOfTables = registeredPlayerIds.size() / numberOfPlayersPerTable;
 
         // if the number of people doesn't fit perfectly, then an additional
         // table is needed for the overflow
@@ -305,9 +303,7 @@ public class Game extends AggregateRoot<GameEvent> {
                     "tableToPlayerIdsMap should be filled at this point");
         }
 
-        GameStartedEvent event = new GameStartedEvent(aggregateId,
-                ++aggregateVersion, tableIdToPlayerIdsMap.keySet(),
-                blindSchedule);
+        var event = new GameStartedEvent(aggregateId, ++aggregateVersion, tableIdToPlayerIdsMap.keySet(), blindSchedule);
         addNewEvent(event);
         applyCommonEvent(event);
     }

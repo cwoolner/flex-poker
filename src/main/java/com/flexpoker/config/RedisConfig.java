@@ -16,7 +16,7 @@ public class RedisConfig {
 
     @Bean
     JedisConnectionFactory jedisConnectionFactory() {
-        JedisConnectionFactory factory = new JedisConnectionFactory();
+        var factory = new JedisConnectionFactory();
         factory.setHostName("localhost");
         factory.setPort(6379);
         factory.setUsePool(true);
@@ -25,21 +25,21 @@ public class RedisConfig {
 
     @Bean
     StringRedisTemplate redisTemplate() {
-        StringRedisTemplate redisTemplate = new StringRedisTemplate();
+        var redisTemplate = new StringRedisTemplate();
         redisTemplate.setConnectionFactory(jedisConnectionFactory());
         return redisTemplate;
     }
 
     @Bean
     RedisTemplate<String, GameInListDTO> redisTemplateGameInList() {
-        RedisTemplate<String, GameInListDTO> redisTemplate = new RedisTemplate<>();
+        var redisTemplate = new RedisTemplate<String, GameInListDTO>();
         redisTemplate.setConnectionFactory(jedisConnectionFactory());
         return redisTemplate;
     }
 
     @Bean
     RedisTemplate<String, TableEvent> redisTemplateTableEvent() {
-        RedisTemplate<String, TableEvent> redisTemplate = new RedisTemplate<>();
+        var redisTemplate = new RedisTemplate<String, TableEvent>();
         redisTemplate.setConnectionFactory(jedisConnectionFactory());
         return redisTemplate;
     }

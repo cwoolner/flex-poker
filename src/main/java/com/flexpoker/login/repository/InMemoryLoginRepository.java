@@ -32,7 +32,7 @@ public class InMemoryLoginRepository implements LoginRepository {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        UserDetails persistedUserDetails = loginUserMap.get(username);
+        var persistedUserDetails = loginUserMap.get(username);
         return new User(
                 persistedUserDetails.getUsername(),
                 persistedUserDetails.getPassword(),

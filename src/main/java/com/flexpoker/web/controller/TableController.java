@@ -49,28 +49,28 @@ public class TableController {
 
     @MessageMapping("/app/check")
     public void check(CheckTableActionDTO model, Principal principal) {
-        UUID playerId = loginRepository.fetchAggregateIdByUsername(principal.getName());
+        var playerId = loginRepository.fetchAggregateIdByUsername(principal.getName());
         commandSender.send(new CheckCommand(model.getTableId(), model.getGameId(),
                 playerId));
     }
 
     @MessageMapping("/app/fold")
     public void fold(FoldTableActionDTO model, Principal principal) {
-        UUID playerId = loginRepository.fetchAggregateIdByUsername(principal.getName());
+        var playerId = loginRepository.fetchAggregateIdByUsername(principal.getName());
         commandSender.send(new FoldCommand(model.getTableId(), model.getGameId(),
                 playerId));
     }
 
     @MessageMapping("/app/call")
     public void call(CallTableActionDTO model, Principal principal) {
-        UUID playerId = loginRepository.fetchAggregateIdByUsername(principal.getName());
+        var playerId = loginRepository.fetchAggregateIdByUsername(principal.getName());
         commandSender.send(new CallCommand(model.getTableId(), model.getTableId(),
                 playerId));
     }
 
     @MessageMapping("/app/raise")
     public void raise(RaiseTableActionDTO model, Principal principal) {
-        UUID playerId = loginRepository.fetchAggregateIdByUsername(principal.getName());
+        var playerId = loginRepository.fetchAggregateIdByUsername(principal.getName());
         commandSender.send(new RaiseCommand(model.getTableId(), model.getGameId(),
                 playerId, model.getRaiseToAmount()));
     }

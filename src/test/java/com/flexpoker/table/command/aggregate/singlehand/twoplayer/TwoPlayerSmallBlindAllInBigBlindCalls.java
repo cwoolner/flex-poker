@@ -6,7 +6,6 @@ import java.util.UUID;
 
 import org.junit.Test;
 
-import com.flexpoker.table.command.aggregate.Table;
 import com.flexpoker.table.command.aggregate.testhelpers.TableTestUtils;
 import com.flexpoker.table.command.events.ActionOnChangedEvent;
 import com.flexpoker.table.command.events.AutoMoveHandForwardEvent;
@@ -30,22 +29,18 @@ public class TwoPlayerSmallBlindAllInBigBlindCalls {
 
     @Test
     public void test() {
-        UUID tableId = UUID.randomUUID();
+        var tableId = UUID.randomUUID();
 
-        Table table = TableTestUtils.createBasicTableAndStartHand(tableId, UUID.randomUUID(),
-                UUID.randomUUID());
+        var table = TableTestUtils.createBasicTableAndStartHand(tableId, UUID.randomUUID(), UUID.randomUUID());
 
-        // use the info in action on event to get the player id of the small
-        // blind
-        UUID smallBlindAndButtonPlayerId = ((ActionOnChangedEvent) table.fetchNewEvents()
-                .get(4)).getPlayerId();
+        // use the info in action on event to get the player id of the small blind
+        var smallBlindAndButtonPlayerId = ((ActionOnChangedEvent) table.fetchNewEvents().get(4)).getPlayerId();
         table.raise(smallBlindAndButtonPlayerId, 1500);
 
-        UUID bigBlindPlayerId = ((ActionOnChangedEvent) table.fetchNewEvents().get(6))
-                .getPlayerId();
+        var bigBlindPlayerId = ((ActionOnChangedEvent) table.fetchNewEvents().get(6)).getPlayerId();
         table.call(bigBlindPlayerId);
 
-        UUID handId = ((HandDealtEvent) table.fetchNewEvents().get(2)).getHandId();
+        var handId = ((HandDealtEvent) table.fetchNewEvents().get(2)).getHandId();
         table.autoMoveHandForward();
         table.autoMoveHandForward();
         table.autoMoveHandForward();

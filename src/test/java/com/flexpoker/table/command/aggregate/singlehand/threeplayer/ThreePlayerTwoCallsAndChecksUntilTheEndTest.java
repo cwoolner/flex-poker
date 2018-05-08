@@ -6,7 +6,6 @@ import java.util.UUID;
 
 import org.junit.Test;
 
-import com.flexpoker.table.command.aggregate.Table;
 import com.flexpoker.table.command.aggregate.testhelpers.TableTestUtils;
 import com.flexpoker.table.command.events.ActionOnChangedEvent;
 import com.flexpoker.table.command.events.CardsShuffledEvent;
@@ -28,24 +27,20 @@ public class ThreePlayerTwoCallsAndChecksUntilTheEndTest {
 
     @Test
     public void test() {
-        UUID tableId = UUID.randomUUID();
-        UUID player1Id = UUID.randomUUID();
-        UUID player2Id = UUID.randomUUID();
-        UUID player3Id = UUID.randomUUID();
+        var tableId = UUID.randomUUID();
+        var player1Id = UUID.randomUUID();
+        var player2Id = UUID.randomUUID();
+        var player3Id = UUID.randomUUID();
 
-        Table table = TableTestUtils.createBasicTableAndStartHand(tableId, player1Id, player2Id,
-                player3Id);
+        var table = TableTestUtils.createBasicTableAndStartHand(tableId, player1Id, player2Id, player3Id);
 
-        UUID buttonOnPlayerId = ((ActionOnChangedEvent) table.fetchNewEvents().get(4))
-                .getPlayerId();
+        var buttonOnPlayerId = ((ActionOnChangedEvent) table.fetchNewEvents().get(4)).getPlayerId();
         table.call(buttonOnPlayerId);
 
-        UUID smallBlindPlayerId = ((ActionOnChangedEvent) table.fetchNewEvents().get(6))
-                .getPlayerId();
+        var smallBlindPlayerId = ((ActionOnChangedEvent) table.fetchNewEvents().get(6)).getPlayerId();
         table.call(smallBlindPlayerId);
 
-        UUID bigBlindPlayerId = ((ActionOnChangedEvent) table.fetchNewEvents().get(8))
-                .getPlayerId();
+        var bigBlindPlayerId = ((ActionOnChangedEvent) table.fetchNewEvents().get(8)).getPlayerId();
         table.check(bigBlindPlayerId);
 
         // post-flop

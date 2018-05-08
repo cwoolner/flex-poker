@@ -44,17 +44,16 @@ public class GameStartedEventHandler implements EventHandler<GameStartedEvent> {
     @Async
     @Override
     public void handle(GameStartedEvent event) {
-        Set<UUID> playerIdsForGame = handleOpenGameRepository(event);
+        var playerIdsForGame = handleOpenGameRepository(event);
         handleGameListRepository(event);
         handlePushNotifications(playerIdsForGame);
         handleChat(event);
     }
 
     private Set<UUID> handleOpenGameRepository(GameStartedEvent event) {
-        Set<UUID> playerIdsForGame = gamePlayerRepository.fetchAllPlayerIdsForGame(event
-                .getAggregateId());
-        playerIdsForGame.forEach(x -> openGameForUserRepository.changeGameStage(x,
-                event.getAggregateId(), GameStage.INPROGRESS));
+        var playerIdsForGame = gamePlayerRepository.fetchAllPlayerIdsForGame(event.getAggregateId());
+        playerIdsForGame.forEach(x -> openGameForUserRepository
+                .changeGameStage(x, event.getAggregateId(), GameStage.INPROGRESS));
         return playerIdsForGame;
     }
 
@@ -69,8 +68,8 @@ public class GameStartedEventHandler implements EventHandler<GameStartedEvent> {
     }
 
     private void handleChat(GameStartedEvent event) {
-        String message = "Game started";
-        pushNotificationPublisher
-                .publish(new ChatSentPushNotification(event.getAggregateId(), null, message, null, true));
+        var message = "Game started";
+        pushNotificationPublisher.publish(
+                new ChatSentPushNotification(event.getAggregateId(), null, message, null, true));
     }
 }

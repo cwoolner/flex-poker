@@ -40,12 +40,11 @@ public class InMemoryTableRepository implements TableRepository {
                     new ReentrantReadWriteLock());
             idToLockMap.get(tableDTO.getId()).writeLock().lock();
 
-            TableDTO existingTableDTO = idToTableDTOMap.get(tableDTO.getId());
+            var existingTableDTO = idToTableDTOMap.get(tableDTO.getId());
 
             // only save if it's a new DTO or if the version is greater than the
             // current
-            if (existingTableDTO == null
-                    || tableDTO.getVersion() > existingTableDTO.getVersion()) {
+            if (existingTableDTO == null || tableDTO.getVersion() > existingTableDTO.getVersion()) {
                 idToTableDTOMap.put(tableDTO.getId(), tableDTO);
             }
         } finally {

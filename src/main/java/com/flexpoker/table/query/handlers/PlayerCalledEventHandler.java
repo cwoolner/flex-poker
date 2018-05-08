@@ -1,6 +1,5 @@
 package com.flexpoker.table.query.handlers;
 
-import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
@@ -8,7 +7,6 @@ import javax.inject.Inject;
 import org.springframework.stereotype.Component;
 
 import com.flexpoker.framework.event.EventHandler;
-import com.flexpoker.framework.pushnotifier.PushNotification;
 import com.flexpoker.framework.pushnotifier.PushNotificationPublisher;
 import com.flexpoker.login.repository.LoginRepository;
 import com.flexpoker.pushnotifications.ChatSentPushNotification;
@@ -44,15 +42,15 @@ public class PlayerCalledEventHandler implements EventHandler<PlayerCalledEvent>
     }
 
     private void handleUpdatingTable(PlayerCalledEvent event) {
-        TableDTO currentTable = tableRepository.fetchById(event.getAggregateId());
-        String username = loginRepository.fetchUsernameByAggregateId(event.getPlayerId());
+        var currentTable = tableRepository.fetchById(event.getAggregateId());
+        var username = loginRepository.fetchUsernameByAggregateId(event.getPlayerId());
 
-        List<SeatDTO> updatedSeats = currentTable.getSeats().stream()
+        var updatedSeats = currentTable.getSeats().stream()
                 .map(seatDTO -> {
                     if (seatDTO.getName().equals(username)) {
-                        int callingAmount = seatDTO.getCallAmount();
-                        int updatedChipsInFront = seatDTO.getChipsInFront() + callingAmount;
-                        int updatedChipsInBack = seatDTO.getChipsInBack() - callingAmount;
+                        var callingAmount = seatDTO.getCallAmount();
+                        var updatedChipsInFront = seatDTO.getChipsInFront() + callingAmount;
+                        var updatedChipsInBack = seatDTO.getChipsInBack() - callingAmount;
                         return new SeatDTO(seatDTO.getPosition(),
                                 seatDTO.getName(), updatedChipsInBack, updatedChipsInFront,
                                 seatDTO.isStillInHand(), 0, 0, seatDTO.isButton(),
@@ -61,12 +59,13 @@ public class PlayerCalledEventHandler implements EventHandler<PlayerCalledEvent>
                     return seatDTO;
                 }).collect(Collectors.toList());
 
-        int callAmount = currentTable.getSeats().stream()
+        var callAmount = currentTable.getSeats().stream()
                 .filter(x -> x.getName().equals(username))
-                .findAny().get()
+                .findAny()
+                .get()
                 .getCallAmount();
 
-        TableDTO updatedTable = new TableDTO(currentTable.getId(),
+        var updatedTable = new TableDTO(currentTable.getId(),
                 event.getVersion(), updatedSeats, currentTable.getTotalPot() + callAmount,
                 currentTable.getPots(), currentTable.getVisibleCommonCards(),
                 currentTable.getCurrentHandMinRaiseToAmount());
@@ -74,14 +73,13 @@ public class PlayerCalledEventHandler implements EventHandler<PlayerCalledEvent>
     }
 
     private void handlePushNotifications(PlayerCalledEvent event) {
-        PushNotification pushNotification = new TableUpdatedPushNotification(
-                event.getGameId(), event.getAggregateId());
+        var pushNotification = new TableUpdatedPushNotification(event.getGameId(), event.getAggregateId());
         pushNotificationPublisher.publish(pushNotification);
     }
 
     private void handleChat(PlayerCalledEvent event) {
-        String username = loginRepository.fetchUsernameByAggregateId(event.getPlayerId());
-        String message = username + " calls";
+        var username = loginRepository.fetchUsernameByAggregateId(event.getPlayerId());
+        var message = username + " calls";
         pushNotificationPublisher
                 .publish(new ChatSentPushNotification(event.getGameId(), event.getAggregateId(), message, null, true));
     }

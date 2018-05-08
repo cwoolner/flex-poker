@@ -33,8 +33,8 @@ public class InMemoryGameListRepository implements GameListRepository {
 
     @Override
     public void incrementRegisteredPlayers(UUID aggregateId) {
-        GameInListDTO existingGameInListDTO = fetchById(aggregateId);
-        GameInListDTO updatedGameInListDTO = new GameInListDTO(
+        var existingGameInListDTO = fetchById(aggregateId);
+        var updatedGameInListDTO = new GameInListDTO(
                 existingGameInListDTO.getId(), existingGameInListDTO.getName(),
                 existingGameInListDTO.getStage(),
                 existingGameInListDTO.getNumberOfRegisteredPlayers() + 1,
@@ -50,14 +50,14 @@ public class InMemoryGameListRepository implements GameListRepository {
 
     @Override
     public String fetchGameName(UUID aggregateId) {
-        GameInListDTO existingGameInListDTO = fetchById(aggregateId);
+        var existingGameInListDTO = fetchById(aggregateId);
         return existingGameInListDTO.getName();
     }
 
     @Override
     public void changeGameStage(UUID aggregateId, GameStage gameStage) {
-        GameInListDTO existingGameInListDTO = fetchById(aggregateId);
-        GameInListDTO updatedGameInListDTO = new GameInListDTO(
+        var existingGameInListDTO = fetchById(aggregateId);
+        var updatedGameInListDTO = new GameInListDTO(
                 existingGameInListDTO.getId(), existingGameInListDTO.getName(),
                 gameStage.toString(),
                 existingGameInListDTO.getNumberOfRegisteredPlayers(),
@@ -72,7 +72,9 @@ public class InMemoryGameListRepository implements GameListRepository {
     }
 
     private GameInListDTO fetchById(UUID aggregateId) {
-        return gameInListDTOList.stream().filter(x -> x.getId() == aggregateId).findAny()
+        return gameInListDTOList.stream()
+                .filter(x -> x.getId() == aggregateId)
+                .findAny()
                 .get();
     }
 

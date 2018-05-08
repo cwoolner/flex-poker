@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
@@ -84,7 +83,7 @@ public class Table extends AggregateRoot<TableEvent> {
         populateMethodTable();
 
         if (!creatingFromEvents) {
-            TableCreatedEvent tableCreatedEvent = new TableCreatedEvent(
+            var tableCreatedEvent = new TableCreatedEvent(
                     aggregateId, ++aggregateVersion, gameId, seatMap.size(),
                     seatMap, startingNumberOfChips);
             addNewEvent(tableCreatedEvent);
@@ -122,7 +121,7 @@ public class Table extends AggregateRoot<TableEvent> {
         methodTable.put(LastToActChangedEvent.class, x -> currentHand.applyEvent((LastToActChangedEvent) x));
         methodTable.put(WinnersDeterminedEvent.class, x -> currentHand.applyEvent((WinnersDeterminedEvent) x));
         methodTable.put(HandCompletedEvent.class, x -> {
-            HandCompletedEvent event = (HandCompletedEvent) x;
+            var event = (HandCompletedEvent) x;
             currentHand = null;
             chipsInBack.clear();
             chipsInBack.putAll(new HashMap<>(event.getPlayerToChipsAtTableMap()));
@@ -130,21 +129,21 @@ public class Table extends AggregateRoot<TableEvent> {
         methodTable.put(TablePausedEvent.class, x -> paused = true);
         methodTable.put(TableResumedEvent.class, x -> paused = false);
         methodTable.put(PlayerAddedEvent.class, x -> {
-            PlayerAddedEvent event = (PlayerAddedEvent) x;
+            var event = (PlayerAddedEvent) x;
             seatMap.put(event.getPosition(), event.getPlayerId());
             chipsInBack.put(event.getPlayerId(), event.getChipsInBack());
         });
         methodTable.put(PlayerRemovedEvent.class, x -> {
-            PlayerRemovedEvent event = (PlayerRemovedEvent) x;
-            Integer position = seatMap.entrySet().stream()
+            var event = (PlayerRemovedEvent) x;
+            var position = seatMap.entrySet().stream()
                     .filter(y -> y.getValue().equals(event.getPlayerId()))
                     .findFirst().get().getKey();
             seatMap.remove(position);
             chipsInBack.remove(event.getPlayerId());
         });
         methodTable.put(PlayerBustedTableEvent.class, x -> {
-            PlayerBustedTableEvent event = (PlayerBustedTableEvent) x;
-            Integer position = seatMap.entrySet().stream()
+            var event = (PlayerBustedTableEvent) x;
+            var position = seatMap.entrySet().stream()
                     .filter(y -> y.getValue().equals(event.getPlayerId()))
                     .findFirst().get().getKey();
             seatMap.remove(position);
@@ -203,7 +202,7 @@ public class Table extends AggregateRoot<TableEvent> {
 
     private int assignButtonOnForNewGame() {
         while (true) {
-            int potentialButtonOnPosition = new Random().nextInt(seatMap.size());
+            var potentialButtonOnPosition = new Random().nextInt(seatMap.size());
             if (seatMap.get(Integer.valueOf(potentialButtonOnPosition)) != null) {
                 return potentialButtonOnPosition;
             }
@@ -237,13 +236,13 @@ public class Table extends AggregateRoot<TableEvent> {
     }
 
     private int findNextFilledSeat(int startingPosition) {
-        for (int i = startingPosition + 1; i < seatMap.size(); i++) {
+        for (var i = startingPosition + 1; i < seatMap.size(); i++) {
             if (seatMap.get(Integer.valueOf(i)) != null) {
                 return i;
             }
         }
 
-        for (int i = 0; i < startingPosition; i++) {
+        for (var i = 0; i < startingPosition; i++) {
             if (seatMap.get(Integer.valueOf(i)) != null) {
                 return i;
             }
@@ -256,13 +255,13 @@ public class Table extends AggregateRoot<TableEvent> {
             List<Card> shuffledDeckOfCards, CardsUsedInHand cardsUsedInHand,
             Map<PocketCards, HandEvaluation> handEvaluations,
             int actionOnPosition) {
-        CardsShuffledEvent cardsShuffledEvent = new CardsShuffledEvent(aggregateId,
+        var cardsShuffledEvent = new CardsShuffledEvent(aggregateId,
                 ++aggregateVersion, gameId, shuffledDeckOfCards);
         addNewEvent(cardsShuffledEvent);
         applyCommonEvent(cardsShuffledEvent);
 
-        int nextToReceivePocketCards = findNextFilledSeat(buttonOnPosition);
-        Map<UUID, PocketCards> playerToPocketCardsMap = new HashMap<>();
+        var nextToReceivePocketCards = findNextFilledSeat(buttonOnPosition);
+        var playerToPocketCardsMap = new HashMap<UUID, PocketCards>();
 
         for (PocketCards pocketCards : cardsUsedInHand.getPocketCards()) {
             UUID playerIdAtPosition = seatMap.get(Integer
@@ -272,21 +271,20 @@ public class Table extends AggregateRoot<TableEvent> {
             handEvaluations.get(pocketCards).setPlayerId(playerIdAtPosition);
         }
 
-        Set<UUID> playersStillInHand = seatMap.values().stream().filter(x -> x != null)
+        var playersStillInHand = seatMap.values().stream().filter(x -> x != null)
                 .collect(Collectors.toSet());
-        Map<UUID, Set<PlayerAction>> possibleSeatActionsMap = new HashMap<>();
+        var possibleSeatActionsMap = new HashMap<UUID, Set<PlayerAction>>();
         playersStillInHand.forEach(x -> possibleSeatActionsMap.put(x,
                 new HashSet<PlayerAction>()));
 
-        Hand hand = new Hand(gameId, aggregateId, UUID.randomUUID(), seatMap,
+        var hand = new Hand(gameId, aggregateId, UUID.randomUUID(), seatMap,
                 cardsUsedInHand.getFlopCards(), cardsUsedInHand.getTurnCard(),
                 cardsUsedInHand.getRiverCard(), buttonOnPosition, smallBlindPosition,
                 bigBlindPosition, null, playerToPocketCardsMap, possibleSeatActionsMap,
                 playersStillInHand, new ArrayList<>(handEvaluations.values()),
                 HandDealerState.NONE, chipsInBack, new HashMap<>(), new HashMap<>(),
                 new HashMap<>(), smallBlind, bigBlind);
-        List<TableEvent> eventsCreated = hand.dealHand(aggregateVersion + 1,
-                actionOnPosition);
+        var eventsCreated = hand.dealHand(aggregateVersion + 1, actionOnPosition);
         eventsCreated.forEach(x -> {
             addNewEvent(x);
             applyCommonEvent(x);
@@ -301,8 +299,7 @@ public class Table extends AggregateRoot<TableEvent> {
     public void check(UUID playerId) {
         checkHandIsBeingPlayed();
 
-        TableEvent playerCheckedEvent = currentHand.check(playerId, false,
-                ++aggregateVersion);
+        var playerCheckedEvent = currentHand.check(playerId, false, ++aggregateVersion);
         addNewEvent(playerCheckedEvent);
         applyCommonEvent(playerCheckedEvent);
 
@@ -312,8 +309,7 @@ public class Table extends AggregateRoot<TableEvent> {
     public void call(UUID playerId) {
         checkHandIsBeingPlayed();
 
-        PlayerCalledEvent playerCalledEvent = currentHand.call(playerId,
-                ++aggregateVersion);
+        var playerCalledEvent = currentHand.call(playerId, ++aggregateVersion);
         addNewEvent(playerCalledEvent);
         applyCommonEvent(playerCalledEvent);
 
@@ -323,8 +319,7 @@ public class Table extends AggregateRoot<TableEvent> {
     public void fold(UUID playerId) {
         checkHandIsBeingPlayed();
 
-        TableEvent playerFoldedEvent = currentHand.fold(playerId, false,
-                ++aggregateVersion);
+        var playerFoldedEvent = currentHand.fold(playerId, false, ++aggregateVersion);
         addNewEvent(playerFoldedEvent);
         applyCommonEvent(playerFoldedEvent);
 
@@ -334,8 +329,7 @@ public class Table extends AggregateRoot<TableEvent> {
     public void raise(UUID playerId, int raiseToAmount) {
         checkHandIsBeingPlayed();
 
-        PlayerRaisedEvent playerRaisedEvent = currentHand.raise(playerId,
-                ++aggregateVersion, raiseToAmount);
+        var playerRaisedEvent = currentHand.raise(playerId, ++aggregateVersion, raiseToAmount);
         addNewEvent(playerRaisedEvent);
         applyCommonEvent(playerRaisedEvent);
 
@@ -349,8 +343,7 @@ public class Table extends AggregateRoot<TableEvent> {
             return;
         }
 
-        TableEvent forcedActionOnExpiredEvent = currentHand.expireActionOn(playerId,
-                ++aggregateVersion);
+        var forcedActionOnExpiredEvent = currentHand.expireActionOn(playerId, ++aggregateVersion);
         addNewEvent(forcedActionOnExpiredEvent);
         applyCommonEvent(forcedActionOnExpiredEvent);
 
@@ -378,8 +371,7 @@ public class Table extends AggregateRoot<TableEvent> {
     }
 
     private void handlePotAndRoundCompleted() {
-        List<TableEvent> endOfRoundEvents = currentHand
-                .handlePotAndRoundCompleted(aggregateVersion + 1);
+        var endOfRoundEvents = currentHand.handlePotAndRoundCompleted(aggregateVersion + 1);
         endOfRoundEvents.forEach(x -> {
             addNewEvent(x);
             // TODO: not using applyCommonEvent() here because PotHandler is too
@@ -391,8 +383,7 @@ public class Table extends AggregateRoot<TableEvent> {
     }
 
     private void changeActionOnIfAppropriate() {
-        List<TableEvent> actionOnChangedEvents = currentHand
-                .changeActionOn(aggregateVersion + 1);
+        var actionOnChangedEvents = currentHand.changeActionOn(aggregateVersion + 1);
         actionOnChangedEvents.forEach(x -> {
             addNewEvent(x);
             applyCommonEvent(x);
@@ -422,8 +413,7 @@ public class Table extends AggregateRoot<TableEvent> {
         chipsInBack.entrySet().stream()
             .filter(x -> x.getValue() == 0)
             .forEach(x -> {
-                PlayerBustedTableEvent event = new PlayerBustedTableEvent(aggregateId,
-                        aggregateVersion, gameId, x.getKey());
+                var event = new PlayerBustedTableEvent(aggregateId, aggregateVersion, gameId, x.getKey());
                 addNewEvent(event);
                 applyCommonEvent(event);
                 aggregateVersion++;
@@ -431,7 +421,7 @@ public class Table extends AggregateRoot<TableEvent> {
     }
 
     private void finishHandIfAppropriate() {
-        Optional<TableEvent> handCompleteEvent = currentHand.finishHandIfAppropriate(aggregateVersion + 1);
+        var handCompleteEvent = currentHand.finishHandIfAppropriate(aggregateVersion + 1);
 
         if (handCompleteEvent.isPresent()) {
             addNewEvent(handCompleteEvent.get());
@@ -451,10 +441,10 @@ public class Table extends AggregateRoot<TableEvent> {
             throw new FlexPokerException("player already at this table");
         }
 
-        int newPlayerPosition = findRandomOpenSeat();
+        var newPlayerPosition = findRandomOpenSeat();
 
-        PlayerAddedEvent playerAddedEvent = new PlayerAddedEvent(aggregateId,
-                ++aggregateVersion, gameId, playerId, chips, newPlayerPosition);
+        var playerAddedEvent = new PlayerAddedEvent(
+                aggregateId, ++aggregateVersion, gameId, playerId, chips, newPlayerPosition);
         addNewEvent(playerAddedEvent);
         applyCommonEvent(playerAddedEvent);
     }
@@ -468,7 +458,7 @@ public class Table extends AggregateRoot<TableEvent> {
             throw new FlexPokerException("can't remove a player while in a hand");
         }
 
-        PlayerRemovedEvent playerRemovedEvent = new PlayerRemovedEvent(aggregateId, ++aggregateVersion, gameId, playerId);
+        var playerRemovedEvent = new PlayerRemovedEvent(aggregateId, ++aggregateVersion, gameId, playerId);
         addNewEvent(playerRemovedEvent);
         applyCommonEvent(playerRemovedEvent);
     }
@@ -478,7 +468,7 @@ public class Table extends AggregateRoot<TableEvent> {
             throw new FlexPokerException("table is already paused.  can't pause again.");
         }
 
-        TablePausedEvent tablePausedEvent = new TablePausedEvent(aggregateId, ++aggregateVersion, gameId);
+        var tablePausedEvent = new TablePausedEvent(aggregateId, ++aggregateVersion, gameId);
         addNewEvent(tablePausedEvent);
         applyCommonEvent(tablePausedEvent);
     }
@@ -488,14 +478,14 @@ public class Table extends AggregateRoot<TableEvent> {
             throw new FlexPokerException("table is not paused.  can't resume.");
         }
 
-        TableResumedEvent tableResumedEvent = new TableResumedEvent(aggregateId, ++aggregateVersion, gameId);
+        var tableResumedEvent = new TableResumedEvent(aggregateId, ++aggregateVersion, gameId);
         addNewEvent(tableResumedEvent);
         applyCommonEvent(tableResumedEvent);
     }
 
     private int findRandomOpenSeat() {
         while (true) {
-            int potentialNewPlayerPosition = new Random().nextInt(seatMap.size());
+            var potentialNewPlayerPosition = new Random().nextInt(seatMap.size());
             if (seatMap.get(potentialNewPlayerPosition) == null) {
                 return potentialNewPlayerPosition;
             }

@@ -66,13 +66,12 @@ public class InMemoryAsyncGameEventPublisher implements EventPublisher<GameEvent
             createInitialTablesForGameProcessManager
                     .handle((GameTablesCreatedAndPlayersAssociatedEvent) event);
         } else if (event.getClass() == GameStartedEvent.class) {
-            final ProcessManager<GameStartedEvent> localStartFirstHandProcessManager = this.startFirstHandProcessManager;
-            final Timer timer = new Timer();
-            final TimerTask timerTask = new TimerTask() {
+            final var localStartFirstHandProcessManager = this.startFirstHandProcessManager;
+            final var timer = new Timer();
+            final var timerTask = new TimerTask() {
                 @Override
                 public void run() {
-                    localStartFirstHandProcessManager
-                            .handle((GameStartedEvent) event);
+                    localStartFirstHandProcessManager.handle((GameStartedEvent) event);
                 }
             };
             timer.schedule(timerTask, 10000);

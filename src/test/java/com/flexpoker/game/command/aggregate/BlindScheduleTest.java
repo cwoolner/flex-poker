@@ -10,7 +10,7 @@ public class BlindScheduleTest {
 
     @Test
     public void testInitial() {
-        BlindSchedule blindSchedule = new BlindSchedule(10);
+        var blindSchedule = new BlindSchedule(10);
         assertEquals(1, blindSchedule.getCurrentLevel());
         assertEquals(10, blindSchedule.getNumberOfMinutesBetweenLevels());
         assertEquals(10, blindSchedule.getCurrentBlindAmounts().getSmallBlind());
@@ -19,7 +19,7 @@ public class BlindScheduleTest {
 
     @Test
     public void testIncrement() {
-        BlindSchedule blindSchedule = new BlindSchedule(10);
+        var blindSchedule = new BlindSchedule(10);
         blindSchedule.incrementLevel();
         assertFalse(blindSchedule.isMaxLevel());
         assertEquals(2, blindSchedule.getCurrentLevel());
@@ -29,7 +29,7 @@ public class BlindScheduleTest {
 
     @Test
     public void testMaxLevel() {
-        BlindSchedule blindSchedule = new BlindSchedule(10);
+        var blindSchedule = new BlindSchedule(10);
         blindSchedule.incrementLevel();
         blindSchedule.incrementLevel();
         blindSchedule.incrementLevel();

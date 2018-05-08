@@ -3,7 +3,6 @@ package com.flexpoker.game.command.aggregate;
 import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 import org.junit.Test;
@@ -19,10 +18,10 @@ public class JoinGameTest {
 
     @Test
     public void testJoinGameSuccessFirstPlayerJoins() {
-        List<GameEvent> events = new ArrayList<>();
+        var events = new ArrayList<GameEvent>();
         events.add(new GameCreatedEvent(UUID.randomUUID(), 1, "test", 2, 2, UUID.randomUUID(), 10, 20));
 
-        Game game = new DefaultGameFactory().createFrom(events);
+        var game = new DefaultGameFactory().createFrom(events);
         game.joinGame(UUID.randomUUID());
 
         assertEquals(2, game.fetchAppliedEvents().size());
@@ -32,10 +31,10 @@ public class JoinGameTest {
 
     @Test
     public void testJoinGameSuccessGameStarting() {
-        List<GameEvent> events = new ArrayList<>();
+        var events = new ArrayList<GameEvent>();
         events.add(new GameCreatedEvent(UUID.randomUUID(), 1, "test", 2, 2, UUID.randomUUID(), 10, 20));
 
-        Game game = new DefaultGameFactory().createFrom(events);
+        var game = new DefaultGameFactory().createFrom(events);
         game.joinGame(UUID.randomUUID());
         game.joinGame(UUID.randomUUID());
 
@@ -46,32 +45,29 @@ public class JoinGameTest {
         assertEquals(4, game.fetchNewEvents().get(2).getVersion());
         assertEquals(5, game.fetchNewEvents().get(3).getVersion());
         assertEquals(6, game.fetchNewEvents().get(4).getVersion());
-        assertEquals(GameMovedToStartingStageEvent.class,
-                game.fetchNewEvents().get(2).getClass());
-        assertEquals(GameTablesCreatedAndPlayersAssociatedEvent.class,
-                game.fetchNewEvents().get(3).getClass());
-        assertEquals(GameStartedEvent.class,
-                game.fetchNewEvents().get(4).getClass());
+        assertEquals(GameMovedToStartingStageEvent.class, game.fetchNewEvents().get(2).getClass());
+        assertEquals(GameTablesCreatedAndPlayersAssociatedEvent.class, game.fetchNewEvents().get(3).getClass());
+        assertEquals(GameStartedEvent.class, game.fetchNewEvents().get(4).getClass());
     }
 
     @Test(expected = FlexPokerException.class)
     public void testJoinGameAttemptToJoinTwice() {
-        List<GameEvent> events = new ArrayList<>();
+        var events = new ArrayList<GameEvent>();
         events.add(new GameCreatedEvent(UUID.randomUUID(), 1, "test", 2, 2, UUID.randomUUID(), 10, 20));
 
-        UUID playerId = UUID.randomUUID();
+        var playerId = UUID.randomUUID();
 
-        Game game = new DefaultGameFactory().createFrom(events);
+        var game = new DefaultGameFactory().createFrom(events);
         game.joinGame(playerId);
         game.joinGame(playerId);
     }
 
     @Test(expected = FlexPokerException.class)
     public void testJoinGameAttemptToJoinMoreThanMax() {
-        List<GameEvent> events = new ArrayList<>();
+        var events = new ArrayList<GameEvent>();
         events.add(new GameCreatedEvent(UUID.randomUUID(), 1, "test", 2, 2, UUID.randomUUID(), 10, 20));
 
-        Game game = new DefaultGameFactory().createFrom(events);
+        var game = new DefaultGameFactory().createFrom(events);
         game.joinGame(UUID.randomUUID());
         game.joinGame(UUID.randomUUID());
         game.joinGame(UUID.randomUUID());

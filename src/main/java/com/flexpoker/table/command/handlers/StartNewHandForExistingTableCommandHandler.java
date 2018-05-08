@@ -1,8 +1,5 @@
 package com.flexpoker.table.command.handlers;
 
-import java.util.List;
-import java.util.Map;
-
 import javax.inject.Inject;
 
 import org.springframework.scheduling.annotation.Async;
@@ -10,12 +7,6 @@ import org.springframework.stereotype.Component;
 
 import com.flexpoker.framework.command.CommandHandler;
 import com.flexpoker.framework.event.EventPublisher;
-import com.flexpoker.model.HandRanking;
-import com.flexpoker.model.card.Card;
-import com.flexpoker.model.card.CardsUsedInHand;
-import com.flexpoker.model.card.PocketCards;
-import com.flexpoker.table.command.aggregate.HandEvaluation;
-import com.flexpoker.table.command.aggregate.Table;
 import com.flexpoker.table.command.commands.StartNewHandForExistingTableCommand;
 import com.flexpoker.table.command.factory.TableFactory;
 import com.flexpoker.table.command.framework.TableEvent;
@@ -52,21 +43,17 @@ public class StartNewHandForExistingTableCommandHandler implements
     @Async
     @Override
     public void handle(StartNewHandForExistingTableCommand command) {
-        List<TableEvent> tableEvents = tableEventRepository
-                .fetchAll(command.getTableId());
-        Table table = tableFactory.createFrom(tableEvents);
+        var tableEvents = tableEventRepository.fetchAll(command.getTableId());
+        var table = tableFactory.createFrom(tableEvents);
 
-        List<Card> shuffledDeckOfCards = cardService.createShuffledDeck();
-        CardsUsedInHand cardsUsedInHand = cardService.createCardsUsedInHand(
-                shuffledDeckOfCards, table.getNumberOfPlayersAtTable());
+        var shuffledDeckOfCards = cardService.createShuffledDeck();
+        var cardsUsedInHand = cardService.createCardsUsedInHand(shuffledDeckOfCards, table.getNumberOfPlayersAtTable());
 
-        List<HandRanking> possibleHandRankings = handEvaluatorService
-                .determinePossibleHands(cardsUsedInHand.getFlopCards(),
-                        cardsUsedInHand.getTurnCard(), cardsUsedInHand.getRiverCard());
-        Map<PocketCards, HandEvaluation> handEvaluations = handEvaluatorService
-                .determineHandEvaluation(cardsUsedInHand.getFlopCards(),
-                        cardsUsedInHand.getTurnCard(), cardsUsedInHand.getRiverCard(),
-                        cardsUsedInHand.getPocketCards(), possibleHandRankings);
+        var possibleHandRankings = handEvaluatorService.determinePossibleHands(
+                cardsUsedInHand.getFlopCards(), cardsUsedInHand.getTurnCard(), cardsUsedInHand.getRiverCard());
+        var handEvaluations = handEvaluatorService.determineHandEvaluation(
+                cardsUsedInHand.getFlopCards(), cardsUsedInHand.getTurnCard(), cardsUsedInHand.getRiverCard(),
+                cardsUsedInHand.getPocketCards(), possibleHandRankings);
 
         table.startNewHandForExistingTable(command.getSmallBlind(),
                 command.getBigBlind(), shuffledDeckOfCards, cardsUsedInHand,

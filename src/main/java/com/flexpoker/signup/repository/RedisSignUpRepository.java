@@ -9,7 +9,6 @@ import javax.inject.Inject;
 import org.springframework.context.annotation.Profile;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.redis.connection.RedisConnection;
-import org.springframework.data.redis.core.Cursor;
 import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.ScanOptions;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -56,15 +55,14 @@ public class RedisSignUpRepository implements SignUpRepository {
 
     @Override
     public UUID findAggregateIdByUsernameAndSignUpCode(String username, UUID signUpCode) {
-        String signUpCodeKey = SIGN_UP_CODE_NAMESPACE + signUpCode.toString();
-        Object objectFromQuery = redisTemplate.opsForHash()
-                .get(signUpCodeKey, "username");
+        var signUpCodeKey = SIGN_UP_CODE_NAMESPACE + signUpCode.toString();
+        var objectFromQuery = redisTemplate.opsForHash().get(signUpCodeKey, "username");
 
         if (objectFromQuery == null) {
             return null;
         }
 
-        String usernameFromQuery = (String) objectFromQuery;
+        var usernameFromQuery = (String) objectFromQuery;
 
         if (usernameFromQuery.equals(username)) {
             return UUID.fromString((String) redisTemplate.opsForHash().get(signUpCodeKey,
@@ -76,7 +74,7 @@ public class RedisSignUpRepository implements SignUpRepository {
 
     @Override
     public void storeSignUpInformation(UUID aggregateId, String username, UUID signUpCode) {
-        String signUpCodeKey = SIGN_UP_CODE_NAMESPACE + signUpCode.toString();
+        var signUpCodeKey = SIGN_UP_CODE_NAMESPACE + signUpCode.toString();
 
         redisTemplate.multi();
         redisTemplate.opsForHash().put(signUpCodeKey, "username", username);
@@ -93,14 +91,13 @@ public class RedisSignUpRepository implements SignUpRepository {
 
     @Override
     public UUID findSignUpCodeByUsername(String username) {
-        String foundSignUpCodeKey = redisTemplate.execute(new RedisCallback<String>() {
+        var foundSignUpCodeKey = redisTemplate.execute(new RedisCallback<String>() {
             @Override
             public String doInRedis(RedisConnection connection) throws DataAccessException {
-                try (Cursor<byte[]> cursor = connection.scan(
-                        ScanOptions.scanOptions().match("signup:signupcode*").build())) {
+                try (var cursor = connection.scan(ScanOptions.scanOptions().match("signup:signupcode*").build())) {
                     while (cursor.hasNext()) {
-                        String key = new String(cursor.next(), "UTF-8");
-                        String usernameFromRedis = (String) redisTemplate.opsForHash().get(key, "username");
+                        var key = new String(cursor.next(), "UTF-8");
+                        var usernameFromRedis = (String) redisTemplate.opsForHash().get(key, "username");
                         if (username.equals(usernameFromRedis)) {
                             return key;
                         }
@@ -124,15 +121,14 @@ public class RedisSignUpRepository implements SignUpRepository {
 
     @Override
     public SignUpUser fetchSignUpUser(UUID signUpUserId) {
-        String signUpCodeKey = SIGN_UP_USER_NAMESPACE + signUpUserId;
-        Object objectFromQuery = redisTemplate.opsForHash()
-                .get(signUpCodeKey, "username");
+        var signUpCodeKey = SIGN_UP_USER_NAMESPACE + signUpUserId;
+        var objectFromQuery = redisTemplate.opsForHash().get(signUpCodeKey, "username");
 
         if (objectFromQuery == null) {
             return null;
         }
 
-        String usernameFromQuery = (String) objectFromQuery;
+        var usernameFromQuery = (String) objectFromQuery;
 
 //        if (usernameFromQuery.equals(username)) {
 //            return UUID.fromString((String) redisTemplate.opsForHash().get(signUpCodeKey,

@@ -52,24 +52,22 @@ public class GameManagementController {
 
     @SubscribeMapping("/app/opengamesforuser")
     public List<OpenGameForUser> displayOpenGames(Principal principal) {
-        UUID playerId = loginRepository.fetchAggregateIdByUsername(principal.getName());
+        var playerId = loginRepository.fetchAggregateIdByUsername(principal.getName());
         return openGameForUserRepository.fetchAllOpenGamesForPlayer(playerId);
     }
 
     @MessageMapping("/app/creategame")
     public void createGame(CreateGameDTO model, Principal principal) {
-        UUID playerId = loginRepository.fetchAggregateIdByUsername(principal.getName());
-        CreateGameCommand command = new CreateGameCommand(model.getName(),
-                model.getPlayers(), model.getPlayersPerTable(), playerId,
-                model.getNumberOfMinutesBetweenBlindLevels(),
-                model.getNumberOfSecondsForActionOnTimer());
+        var playerId = loginRepository.fetchAggregateIdByUsername(principal.getName());
+        var command = new CreateGameCommand(model.getName(), model.getPlayers(), model.getPlayersPerTable(), playerId,
+                model.getNumberOfMinutesBetweenBlindLevels(), model.getNumberOfSecondsForActionOnTimer());
         commandSender.send(command);
     }
 
     @MessageMapping("/app/joingame")
     public void joinGame(UUID gameId, Principal principal) {
-        UUID playerId = loginRepository.fetchAggregateIdByUsername(principal.getName());
-        JoinGameCommand command = new JoinGameCommand(gameId, playerId);
+        var playerId = loginRepository.fetchAggregateIdByUsername(principal.getName());
+        var command = new JoinGameCommand(gameId, playerId);
         commandSender.send(command);
     }
 
