@@ -21,6 +21,7 @@
     "react-router": "4.2.0",
     "react-router-dom": "4.2.2",
     "redux": "4.0.0",
+    "reselect": "3.0.1",
     "sockjs-client": "1.1.4",
     "webstomp-client": "1.2.0"
   },
