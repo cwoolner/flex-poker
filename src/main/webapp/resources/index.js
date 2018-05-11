@@ -9,7 +9,7 @@ import chatMessageSubscriber from './modules/home/Chat/chatMessageSubscriber'
 
 const store = createStore(reducer);
 
-store.subscribe(chatMessageSubscriber(store))
+store.subscribe(chatMessageSubscriber(store.dispatch)(store))
 
 render((
   <Provider store={store}>
