@@ -4,6 +4,7 @@ import { FormGroup, FormControl, FieldGroup, Button } from 'react-bootstrap';
 import WebSocketService from '../../webSocket/WebSocketService';
 import { connect } from 'react-redux'
 import ChatLine from './ChatLine'
+import { getChats } from './selectors'
 
 class Chat extends React.Component {
 
@@ -63,16 +64,9 @@ class Chat extends React.Component {
 
 }
 
-const mapStateToProps = state => {
-  const { activeChatStream, chatMessages } = state
-  if (activeChatStream.gameId && activeChatStream.tableId) {
-    const { gameId, tableId } = activeChatStream
-    return { activeChatStream, chats: chatMessages.tableMessages.get(tableId, List()) }
-  } else if (activeChatStream.gameId) {
-    const { gameId } = activeChatStream
-    return { activeChatStream, chats: chatMessages.gameMessages.get(gameId, List()) }
-  } else {
-    return { activeChatStream, chats: chatMessages.globalMessages }
-  }}
+const mapStateToProps = state => ({
+   activeChatStream: state.activeChatStream,
+   chats: getChats(state)
+ })
 
 export default connect(mapStateToProps)(Chat)
