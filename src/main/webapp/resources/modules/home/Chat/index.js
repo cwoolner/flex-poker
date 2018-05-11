@@ -19,7 +19,7 @@ class Chat extends React.Component {
 
   displayAreaMutationObserverCallback(mutations) {
     for (let mutation of mutations) {
-      if (mutation.type == 'childList') {
+      if (mutation.type == 'childList' && this.displayArea.current.lastChild) {
         this.displayArea.current.lastChild.scrollIntoView();
       }
     }
