@@ -40,7 +40,7 @@ class TablePage extends React.Component {
       })
     });
 
-    this.props.dispatch(changeChatMsgStream(gameId, tableId))
+    this.props.changeChatMsgStream(gameId, tableId)
   }
 
   componentWillUnmount() {
@@ -103,4 +103,8 @@ class TablePage extends React.Component {
 
 }
 
-export default connect()(TablePage)
+const mapDispatchToProps = dispatch => ({
+  changeChatMsgStream: (gameId, tableId) => dispatch(changeChatMsgStream(gameId, tableId))
+})
+
+export default connect(null, mapDispatchToProps)(TablePage)

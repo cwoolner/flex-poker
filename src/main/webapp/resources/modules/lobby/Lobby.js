@@ -1,5 +1,4 @@
 import React from 'react';
-import WebSocketService from '../webSocket/WebSocketService';
 import WebSocketSubscriptionManager from '../webSocket/WebSocketSubscriptionManager';
 import CreateGameDialog from './CreateGameDialog';
 import JoinGameDialog from './JoinGameDialog';
@@ -19,7 +18,7 @@ class Lobby extends React.Component {
     WebSocketSubscriptionManager.subscribe(this, [
       {location: '/topic/availabletournaments', subscription: this.updateGameList}
     ]);
-    this.props.dispatch(changeChatMsgStream(null, null))
+    this.props.changeChatMsgStream()
   }
 
   componentWillUnmount() {
@@ -38,4 +37,8 @@ class Lobby extends React.Component {
 
 }
 
-export default connect()(Lobby)
+const mapDispatchToProps = dispatch => ({
+  changeChatMsgStream: () => dispatch(changeChatMsgStream(null, null))
+})
+
+export default connect(null, mapDispatchToProps)(Lobby)

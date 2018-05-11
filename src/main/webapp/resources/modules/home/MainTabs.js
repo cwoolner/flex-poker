@@ -2,7 +2,6 @@ import React from 'react';
 import WebSocketSubscriptionManager from '../webSocket/WebSocketSubscriptionManager';
 import { HashRouter } from 'react-router-dom';
 import { Redirect, Route, Switch } from 'react-router';
-import WebSocketService from '../webSocket/WebSocketService';
 import { Nav, NavItem, NavDropdown, MenuItem } from 'react-bootstrap';
 import _ from 'lodash';
 import { connect } from 'react-redux';
