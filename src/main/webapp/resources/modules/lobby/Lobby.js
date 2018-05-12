@@ -1,5 +1,4 @@
 import React from 'react';
-import WebSocketSubscriptionManager from '../webSocket/WebSocketSubscriptionManager';
 import CreateGameDialog from './CreateGameDialog';
 import JoinGameDialog from './JoinGameDialog';
 import GameList from './GameList';
@@ -15,14 +14,7 @@ class Lobby extends React.Component {
   }
 
   componentDidMount() {
-    WebSocketSubscriptionManager.subscribe(this, [
-      {location: '/topic/availabletournaments', subscription: this.updateGameList}
-    ]);
     this.props.changeChatMsgStream()
-  }
-
-  componentWillUnmount() {
-    WebSocketSubscriptionManager.unsubscribe(this);
   }
 
   render() {
