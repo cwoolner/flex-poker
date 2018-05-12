@@ -13,6 +13,15 @@ class GamePage extends React.Component {
     this.props.changeChatMsgStream(gameId)
   }
 
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    const prevGameId = prevProps.match.params.gameId
+    const currentGameId = this.props.match.params.gameId
+
+    if (prevGameId !== currentGameId) {
+      this.props.changeChatMsgStream(currentGameId)
+    }
+  }
+
   render() {
     return <div>Game page</div>
   }

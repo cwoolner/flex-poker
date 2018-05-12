@@ -43,6 +43,16 @@ class TablePage extends React.Component {
     this.props.changeChatMsgStream(gameId, tableId)
   }
 
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    const prevTableId = prevProps.match.params.tableId
+    const currentTableId = this.props.match.params.tableId
+
+    if (prevTableId !== currentTableId) {
+      const { gameId, tableId } = this.props.match.params
+      this.props.changeChatMsgStream(gameId, tableId)
+    }
+  }
+
   componentWillUnmount() {
     WebSocketSubscriptionManager.unsubscribe(this);
   }
