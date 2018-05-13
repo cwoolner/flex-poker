@@ -1,8 +1,9 @@
 import React from 'react';
 import { Nav, NavItem } from 'react-bootstrap';
+import { connect } from 'react-redux';
 import GameTab from './GameTab';
 
-export default ({openGameTabs}) => {
+const GameTabs = ({openGameTabs}) => {
   return (
     <Nav bsStyle="tabs">
       <NavItem href="/#">Lobby</NavItem>
@@ -10,3 +11,7 @@ export default ({openGameTabs}) => {
     </Nav>
   );
 }
+
+const mapStateToProps = state => ({ openGameTabs: state.openGameTabs })
+
+export default connect(mapStateToProps)(GameTabs);
