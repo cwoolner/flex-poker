@@ -5,10 +5,12 @@ import { Provider } from 'react-redux';
 import reducer from './reducers';
 import App from './App';
 import chatMessageSubscriber from './modules/home/Chat/chatMessageSubscriber'
+import tableStateSubscriber from './modules/table/tableStateSubscriber'
 
 const store = createStore(reducer);
 
 store.subscribe(chatMessageSubscriber(store.dispatch)(store))
+store.subscribe(tableStateSubscriber(store.dispatch)(store))
 
 render((
   <Provider store={store}>

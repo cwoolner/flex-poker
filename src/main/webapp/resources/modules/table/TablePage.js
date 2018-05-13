@@ -1,5 +1,5 @@
 import React from 'react';
-import WebSocketSubscriptionManager from '../webSocket/WebSocketSubscriptionManager';
+import { Map } from 'immutable'
 import CommonCards from './CommonCards';
 import MyCards from './MyCards';
 import Seat from './Seat';
@@ -7,31 +7,21 @@ import PokerActions from './PokerActions';
 import SeatContainer from './SeatContainer';
 import _ from 'lodash';
 import { connect } from 'react-redux'
-import { changeChatMsgStream } from '../../reducers'
+import { changeChatMsgStream, changeTable } from '../../reducers'
 
 class TablePage extends React.Component {
 
   constructor(props) {
     super(props)
 
-    this.receiveTableUpdate = this.receiveTableUpdate.bind(this)
-
     this.state = {
       myLeftCardId: null,
-      myRightCardId: null,
-      totalPot: 0,
-      visibleCommonCards: [],
-      seats: [],
-      tableVersion: 0,
-      pots: []
+      myRightCardId: null
     }
   }
 
   componentDidMount() {
     const { gameId, tableId } = this.props.match.params
-    WebSocketSubscriptionManager.subscribe(this, [
-      {location: `/topic/game/${gameId}/table/${tableId}`, subscription: this.receiveTableUpdate}
-    ]);
 
     document.addEventListener(`pocketCardsReceived-${tableId}`, evt => {
       this.setState({
@@ -41,6 +31,7 @@ class TablePage extends React.Component {
     });
 
     this.props.changeChatMsgStream(gameId, tableId)
+    this.props.changeTable(gameId, tableId)
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
@@ -50,41 +41,24 @@ class TablePage extends React.Component {
     if (prevTableId !== currentTableId) {
       const { gameId, tableId } = this.props.match.params
       this.props.changeChatMsgStream(gameId, tableId)
-    }
-  }
-
-  componentWillUnmount() {
-    WebSocketSubscriptionManager.unsubscribe(this);
-  }
-
-  receiveTableUpdate(message) {
-    let table = JSON.parse(message.body);
-
-    if (table.version > this.state.tableVersion) {
-      this.setState({
-        totalPot: table.totalPot,
-        visibleCommonCards: table.visibleCommonCards,
-        seats: table.seats,
-        tableVersion: table.version,
-        pots: table.pots
-      });
+      this.props.changeTable(gameId, tableId)
     }
   }
 
   render() {
     const { gameId, tableId } = this.props.match.params
     const username = window.username;
-    const mySeat = this.state.seats.find(seat => seat.name === username);
+    const mySeat = this.props.seats.find(seat => seat.name === username);
 
     return (
       <div>
         <div className={"poker-table"}>
-          <div>{this.state.totalPot}</div>
-          <CommonCards visibleCommonCards={this.state.visibleCommonCards} />
-          <SeatContainer gameId={gameId} tableId={tableId} mySeat={mySeat} seats={this.state.seats} />
+          <div>{this.props.totalPot}</div>
+          <CommonCards visibleCommonCards={this.props.visibleCommonCards} />
+          <SeatContainer gameId={gameId} tableId={tableId} mySeat={mySeat} seats={this.props.seats} />
         </div>
 
-        {this.state.pots.map(pot => {
+        {this.props.pots.map(pot => {
           return(
             <div>
               <div>{pot.seats}</div>
@@ -113,8 +87,25 @@ class TablePage extends React.Component {
 
 }
 
+const mapStateToProps = state => {
+  const tableData = state.tables.get(state.activeTable.gameId, Map()).get(state.activeTable.tableId)
+  if (tableData) {
+    return { ...tableData }
+  } else {
+    return {
+      myRightCardId: null,
+      totalPot: 0,
+      visibleCommonCards: [],
+      seats: [],
+      tableVersion: 0,
+      pots: []
+    }
+  }
+}
+
 const mapDispatchToProps = dispatch => ({
-  changeChatMsgStream: (gameId, tableId) => dispatch(changeChatMsgStream(gameId, tableId))
+  changeChatMsgStream: (gameId, tableId) => dispatch(changeChatMsgStream(gameId, tableId)),
+  changeTable: (gameId, tableId) => dispatch(changeTable(gameId, tableId))
 })
 
-export default connect(null, mapDispatchToProps)(TablePage)
+export default connect(mapStateToProps, mapDispatchToProps)(TablePage)

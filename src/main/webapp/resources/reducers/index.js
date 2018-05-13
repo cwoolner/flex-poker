@@ -11,6 +11,8 @@ const CHANGE_CHAT_MSG_STREAM = 'CHANGE_CHAT_MSG_STREAM'
 const GLOBAL_CHAT_MSG_RECEIVED = 'GLOBAL_CHAT_MSG_RECEIVED'
 const GAME_CHAT_MSG_RECEIVED = 'GAME_CHAT_MSG_RECEIVED'
 const TABLE_CHAT_MSG_RECEIVED = 'TABLE_CHAT_MSG_RECEIVED'
+const CHANGE_TABLE = 'CHANGE_TABLE'
+const TABLE_UPDATE_RECEIVED = 'TABLE_UPDATE_RECEIVED'
 
 export const initOpenGameTabs = openGameTabs => ({ type: INIT_OPEN_GAME_TABS, openGameTabs })
 export const updateOpenGameTabs = openGameTabs => ({ type: UPDATE_OPEN_GAME_TABS, openGameTabs })
@@ -23,6 +25,8 @@ export const changeChatMsgStream = (gameId, tableId) => ({ type: CHANGE_CHAT_MSG
 export const globalChatMsgReceived = msg => ({ type: GLOBAL_CHAT_MSG_RECEIVED, chatMessage: msg })
 export const gameChatMsgReceived = (gameId, msg) => ({ type: GAME_CHAT_MSG_RECEIVED, gameId, chatMessage: msg })
 export const tableChatMsgReceived = (gameId, tableId, msg) => ({ type: TABLE_CHAT_MSG_RECEIVED, gameId, tableId, chatMessage: msg })
+export const changeTable = (gameId, tableId) => ({ type: CHANGE_TABLE, gameId, tableId })
+export const tableUpdateReceived = (gameId, tableId, tableState) => ({ type: TABLE_UPDATE_RECEIVED, gameId, tableId, tableState })
 
 export default (state = {
   openGameTabs: [],
@@ -35,7 +39,9 @@ export default (state = {
     globalMessages: List(),
     gameMessages: Map(),
     tableMessages: Map()
-  }
+  },
+  activeTable: { gameId: null, tableId: null },
+  tables: Map()
 }, action) => {
 
   switch (action.type) {
@@ -66,6 +72,18 @@ export default (state = {
       const singleTableMessages = state.chatMessages.tableMessages.get(action.tableId, List()).push(action.chatMessage)
       const tableMessages = state.chatMessages.tableMessages.set(action.tableId, singleTableMessages)
       return { ...state, chatMessages: { ...state.chatMessages, tableMessages }}
+    case CHANGE_TABLE:
+      return { ...state, activeTable: { gameId: action.gameId, tableId: action.tableId }}
+    case TABLE_UPDATE_RECEIVED:
+      const currentVersion = state.tables.get(action.gameId, Map()).get(action.tableId, {}).version || 0
+      const updatedVersion = action.tableState.version
+      if (updatedVersion > currentVersion) {
+        const gameTables = state.tables.get(action.gameId, Map()).set(action.tableId, action.tableState)
+        const updatedTables = state.tables.set(action.gameId, gameTables)
+        return { ...state, tables: updatedTables }
+      } else {
+        return state
+      }
     default:
       return state
   }
