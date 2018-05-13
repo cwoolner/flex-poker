@@ -13,23 +13,10 @@ class TablePage extends React.Component {
 
   constructor(props) {
     super(props)
-
-    this.state = {
-      myLeftCardId: null,
-      myRightCardId: null
-    }
   }
 
   componentDidMount() {
     const { gameId, tableId } = this.props.match.params
-
-    document.addEventListener(`pocketCardsReceived-${tableId}`, evt => {
-      this.setState({
-        myLeftCardId: evt.detail.cardId1,
-        myRightCardId: evt.detail.cardId2
-      })
-    });
-
     this.props.changeChatMsgStream(gameId, tableId)
     this.props.changeTable(gameId, tableId)
   }
@@ -69,7 +56,7 @@ class TablePage extends React.Component {
           )
         })}
 
-        <MyCards myLeftCardId={this.state.myLeftCardId} myRightCardId={this.state.myRightCardId} />
+        <MyCards myLeftCardId={this.props.cardId1} myRightCardId={this.props.cardId2} />
         {
           _.isNil(mySeat)
             ? null
@@ -89,8 +76,12 @@ class TablePage extends React.Component {
 
 const mapStateToProps = state => {
   const tableData = state.tables.get(state.activeTable.gameId, Map()).get(state.activeTable.tableId)
+  const pocketCardData = state.pocketCards.get(state.activeTable.tableId)
   if (tableData) {
-    return { ...tableData }
+    return {
+      ...tableData,
+      ...pocketCardData
+    }
   } else {
     return {
       myRightCardId: null,
@@ -98,7 +89,9 @@ const mapStateToProps = state => {
       visibleCommonCards: [],
       seats: [],
       tableVersion: 0,
-      pots: []
+      pots: [],
+      cardId1: null,
+      cardId2: null
     }
   }
 }

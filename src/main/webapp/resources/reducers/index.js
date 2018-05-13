@@ -13,6 +13,7 @@ const GAME_CHAT_MSG_RECEIVED = 'GAME_CHAT_MSG_RECEIVED'
 const TABLE_CHAT_MSG_RECEIVED = 'TABLE_CHAT_MSG_RECEIVED'
 const CHANGE_TABLE = 'CHANGE_TABLE'
 const TABLE_UPDATE_RECEIVED = 'TABLE_UPDATE_RECEIVED'
+const POCKET_CARDS_RECEIVED = 'POCKET_CARDS_RECEIVED'
 
 export const initOpenGameTabs = openGameTabs => ({ type: INIT_OPEN_GAME_TABS, openGameTabs })
 export const updateOpenGameTabs = openGameTabs => ({ type: UPDATE_OPEN_GAME_TABS, openGameTabs })
@@ -27,6 +28,7 @@ export const gameChatMsgReceived = (gameId, msg) => ({ type: GAME_CHAT_MSG_RECEI
 export const tableChatMsgReceived = (gameId, tableId, msg) => ({ type: TABLE_CHAT_MSG_RECEIVED, gameId, tableId, chatMessage: msg })
 export const changeTable = (gameId, tableId) => ({ type: CHANGE_TABLE, gameId, tableId })
 export const tableUpdateReceived = (gameId, tableId, tableState) => ({ type: TABLE_UPDATE_RECEIVED, gameId, tableId, tableState })
+export const pocketCardsReceived = (tableId, pocketCards) => ({ type: POCKET_CARDS_RECEIVED, tableId, pocketCards })
 
 export default (state = {
   openGameTabs: [],
@@ -41,7 +43,8 @@ export default (state = {
     tableMessages: Map()
   },
   activeTable: { gameId: null, tableId: null },
-  tables: Map()
+  tables: Map(),
+  pocketCards: Map()
 }, action) => {
 
   switch (action.type) {
@@ -84,6 +87,8 @@ export default (state = {
       } else {
         return state
       }
+    case POCKET_CARDS_RECEIVED:
+      return { ...state, pocketCards: state.pocketCards.set(action.tableId, action.pocketCards)}
     default:
       return state
   }

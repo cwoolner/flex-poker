@@ -21,7 +21,6 @@ class MainTabs extends React.Component {
     this.openGameTab = this.openGameTab.bind(this)
     this.openTable = this.openTable.bind(this)
     this.displayGameTabs = this.displayGameTabs.bind(this)
-    this.displayPocketCards = this.displayPocketCards.bind(this)
     this.updateGameList = this.updateGameList.bind(this)
 
     this.state = {
@@ -38,7 +37,6 @@ class MainTabs extends React.Component {
       {location: '/user/queue/opengamesforuser', subscription: this.openGameTab},
       {location: '/user/queue/opentable', subscription: this.openTable},
       {location: '/user/queue/personaltablestatus', subscription: message => alert(JSON.parse(message.body))},
-      {location: '/user/queue/pocketcards', subscription: this.displayPocketCards},
       {location: '/topic/availabletournaments', subscription: this.updateGameList}
     ]);
   }
@@ -73,20 +71,6 @@ class MainTabs extends React.Component {
       tableToRedirectTo: `/game/${openTable.gameId}/table/${openTable.tableId}`,
       gameToRedirectTo: null
     })
-  }
-
-  displayPocketCards(message) {
-    const parsedData = JSON.parse(message.body);
-    const pocketCards = {
-      cardId1: parsedData.cardId1,
-      cardId2: parsedData.cardId2
-    };
-
-    const pocketCardsReceivedEvent = new CustomEvent(`pocketCardsReceived-${parsedData.tableId}`, {
-      detail: pocketCards,
-      bubbles: true
-    });
-    document.dispatchEvent(pocketCardsReceivedEvent);
   }
 
   updateGameList(message) {
