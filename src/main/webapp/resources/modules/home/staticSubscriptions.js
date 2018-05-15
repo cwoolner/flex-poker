@@ -1,5 +1,5 @@
 import WebSocketSubscriptionManager from '../webSocket/WebSocketSubscriptionManager'
-import { initOpenGameTabs, pocketCardsReceived, updateOpenGameList, updateOpenGameTabs } from '../../reducers'
+import { initOpenGameTabs, pocketCardsReceived, updateOpenGameList, updateOpenGameTabs, redirectToTable } from '../../reducers'
 
 export default dispatch => {
 
@@ -21,11 +21,16 @@ export default dispatch => {
   }
 
   const openGameTab = message => {
-    dispatch(updateOpenGameTabs(JSON.parse(message.body)));
+    dispatch(updateOpenGameTabs(JSON.parse(message.body)))
+  }
+
+  const openTable = message => {
+    const openTable = JSON.parse(message.body)
+    dispatch(redirectToTable(openTable.gameId, openTable.tableId))
   }
 
   const updateGameList = message => {
-    dispatch(updateOpenGameList(JSON.parse(message.body)));
+    dispatch(updateOpenGameList(JSON.parse(message.body)))
   }
 
   WebSocketSubscriptionManager.subscribe(constObj, [
@@ -33,6 +38,7 @@ export default dispatch => {
     { location: '/user/queue/errors', subscription: message => alert("Error " + message.body) },
     { location: '/app/opengamesforuser', subscription: displayGameTabs },
     { location: '/user/queue/opengamesforuser', subscription: openGameTab },
+    { location: '/user/queue/opentable', subscription: openTable },
     { location: '/user/queue/personaltablestatus', subscription: message => alert(JSON.parse(message.body)) },
     { location: '/topic/availabletournaments', subscription: updateGameList }
   ])

@@ -14,6 +14,8 @@ const TABLE_CHAT_MSG_RECEIVED = 'TABLE_CHAT_MSG_RECEIVED'
 const CHANGE_TABLE = 'CHANGE_TABLE'
 const TABLE_UPDATE_RECEIVED = 'TABLE_UPDATE_RECEIVED'
 const POCKET_CARDS_RECEIVED = 'POCKET_CARDS_RECEIVED'
+const REDIRECT_TO_GAME = 'REDIRECT_TO_GAME'
+const REDIRECT_TO_TABLE = 'REDIRECT_TO_TABLE'
 
 export const initOpenGameTabs = openGameTabs => ({ type: INIT_OPEN_GAME_TABS, openGameTabs })
 export const updateOpenGameTabs = openGameTabs => ({ type: UPDATE_OPEN_GAME_TABS, openGameTabs })
@@ -29,6 +31,8 @@ export const tableChatMsgReceived = (gameId, tableId, msg) => ({ type: TABLE_CHA
 export const changeTable = (gameId, tableId) => ({ type: CHANGE_TABLE, gameId, tableId })
 export const tableUpdateReceived = (gameId, tableId, tableState) => ({ type: TABLE_UPDATE_RECEIVED, gameId, tableId, tableState })
 export const pocketCardsReceived = (tableId, pocketCards) => ({ type: POCKET_CARDS_RECEIVED, tableId, pocketCards })
+export const redirectToGame = gameId => ({ type: REDIRECT_TO_GAME, gameId })
+export const redirectToTable = (gameId, tableId) => ({ type: REDIRECT_TO_TABLE, gameId, tableId })
 
 export default (state = {
   openGameTabs: [],
@@ -44,7 +48,8 @@ export default (state = {
   },
   activeTable: { gameId: null, tableId: null },
   tables: Map(),
-  pocketCards: Map()
+  pocketCards: Map(),
+  redirectUrl: null
 }, action) => {
 
   switch (action.type) {
@@ -89,6 +94,10 @@ export default (state = {
       }
     case POCKET_CARDS_RECEIVED:
       return { ...state, pocketCards: state.pocketCards.set(action.tableId, action.pocketCards)}
+    case REDIRECT_TO_GAME:
+      return { ...state, redirectUrl: `/game/${action.gameId}` }
+    case REDIRECT_TO_TABLE:
+      return { ...state, redirectUrl: `/game/${action.gameId}/table/${action.tableId}` }
     default:
       return state
   }

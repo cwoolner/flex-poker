@@ -1,15 +1,16 @@
 import React from 'react';
-import WebSocketSubscriptionManager from '../webSocket/WebSocketSubscriptionManager';
-import { HashRouter } from 'react-router-dom';
-import { Route, Switch } from 'react-router';
-import GameTabs from './GameTabs';
-import Lobby from '../lobby/Lobby';
-import GamePage from '../game/GamePage';
-import TablePage from '../table/TablePage';
-import Logout from './Logout';
-import Chat from './Chat';
+import { connect } from 'react-redux'
+import _ from 'lodash'
+import { HashRouter } from 'react-router-dom'
+import { Redirect, Route, Switch } from 'react-router'
+import GameTabs from './GameTabs'
+import Lobby from '../lobby/Lobby'
+import GamePage from '../game/GamePage'
+import TablePage from '../table/TablePage'
+import Logout from './Logout'
+import Chat from './Chat'
 
-export default (props) => {
+const MainTabs = ({ redirectUrl }) => {
   return (
     <HashRouter>
       <div>
@@ -20,8 +21,13 @@ export default (props) => {
           <Route exact path="/game/:gameId/table/:tableId" component={TablePage} />
           <Route exact path="/logout" component={Logout} />
         </Switch>
+        {_.isNil(redirectUrl) ? null : <Redirect to={redirectUrl} />}
         <Chat />
       </div>
     </HashRouter>
   )
 }
+
+const mapStateToProps = state => ({ redirectUrl: state.redirectUrl })
+
+export default connect(mapStateToProps)(MainTabs)
