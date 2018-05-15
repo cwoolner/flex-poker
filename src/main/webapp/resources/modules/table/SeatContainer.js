@@ -1,48 +1,18 @@
-import React from 'react';
-import Seat from './Seat';
-import WebSocketSubscriptionManager from '../webSocket/WebSocketSubscriptionManager';
+import React from 'react'
+import { connect } from 'react-redux'
+import { Map } from 'immutable'
+import Seat from './Seat'
 
-class SeatContainer extends React.Component {
-
-  constructor(props) {
-    super(props)
-    this.receiveActionOnTick = this.receiveActionOnTick.bind(this)
-    this.state = {
-      actionOnTick: 0
+const SeatContainer = ({ seats, mySeat, actionOnTick }) => {
+  return (
+    <div className={"seat-holder"}>
+    {
+      seats.map((seat, index) => <Seat seat={seat} mySeat={seat === mySeat} key={index} actionOnTick={actionOnTick} />)
     }
-  }
-
-  componentDidMount() {
-    const gameId = this.props.gameId;
-    const tableId = this.props.tableId;
-
-    WebSocketSubscriptionManager.subscribe(this, [
-      {location: `/topic/game/${gameId}/table/${tableId}/action-on-tick`, subscription: this.receiveActionOnTick}
-    ]);
-  }
-
-  componentWillUnmount() {
-    WebSocketSubscriptionManager.unsubscribe(this);
-  }
-
-  receiveActionOnTick(message) {
-    this.setState({
-      actionOnTick: message.body
-    });
-  }
-
-  render() {
-    return (
-      <div className={"seat-holder"}>
-        {
-          this.props.seats.map((seat, index) =>
-            <Seat seat={seat} mySeat={seat === this.props.mySeat} key={index} actionOnTick={this.state.actionOnTick} />
-          )
-        }
-      </div>
-    )
-  }
-
+    </div>
+  )
 }
 
-export default SeatContainer
+const mapStateToProps = state => ({ actionOnTick: state.actionOnTicks.get(state.activeTable.gameId, Map()).get(state.activeTable.tableId) })
+
+export default connect(mapStateToProps)(SeatContainer)

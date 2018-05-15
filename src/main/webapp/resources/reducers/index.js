@@ -13,6 +13,7 @@ const GAME_CHAT_MSG_RECEIVED = 'GAME_CHAT_MSG_RECEIVED'
 const TABLE_CHAT_MSG_RECEIVED = 'TABLE_CHAT_MSG_RECEIVED'
 const CHANGE_TABLE = 'CHANGE_TABLE'
 const TABLE_UPDATE_RECEIVED = 'TABLE_UPDATE_RECEIVED'
+const ACTION_ON_TICK_RECEIVED = 'ACTION_ON_TICK_RECEIVED'
 const POCKET_CARDS_RECEIVED = 'POCKET_CARDS_RECEIVED'
 const REDIRECT_TO_GAME = 'REDIRECT_TO_GAME'
 const REDIRECT_TO_TABLE = 'REDIRECT_TO_TABLE'
@@ -30,6 +31,7 @@ export const gameChatMsgReceived = (gameId, msg) => ({ type: GAME_CHAT_MSG_RECEI
 export const tableChatMsgReceived = (gameId, tableId, msg) => ({ type: TABLE_CHAT_MSG_RECEIVED, gameId, tableId, chatMessage: msg })
 export const changeTable = (gameId, tableId) => ({ type: CHANGE_TABLE, gameId, tableId })
 export const tableUpdateReceived = (gameId, tableId, tableState) => ({ type: TABLE_UPDATE_RECEIVED, gameId, tableId, tableState })
+export const actionOnTickReceived = (gameId, tableId, actionOnTick) => ({ type: ACTION_ON_TICK_RECEIVED, gameId, tableId, actionOnTick })
 export const pocketCardsReceived = (tableId, pocketCards) => ({ type: POCKET_CARDS_RECEIVED, tableId, pocketCards })
 export const redirectToGame = gameId => ({ type: REDIRECT_TO_GAME, gameId })
 export const redirectToTable = (gameId, tableId) => ({ type: REDIRECT_TO_TABLE, gameId, tableId })
@@ -48,6 +50,7 @@ export default (state = {
   },
   activeTable: { gameId: null, tableId: null },
   tables: Map(),
+  actionOnTicks: Map(),
   pocketCards: Map(),
   redirectUrl: null
 }, action) => {
@@ -92,6 +95,10 @@ export default (state = {
       } else {
         return state
       }
+    case ACTION_ON_TICK_RECEIVED:
+      const gameTicks = state.actionOnTicks.get(action.gameId, Map()).set(action.tableId, action.actionOnTick)
+      const updatedActionOnTicks = state.actionOnTicks.set(action.gameId, gameTicks)
+      return { ...state, actionOnTicks: updatedActionOnTicks }
     case POCKET_CARDS_RECEIVED:
       return { ...state, pocketCards: state.pocketCards.set(action.tableId, action.pocketCards)}
     case REDIRECT_TO_GAME:

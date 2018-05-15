@@ -1,6 +1,6 @@
 import { createSelector } from 'reselect'
 import WebSocketSubscriptionManager from '../webSocket/WebSocketSubscriptionManager'
-import { tableUpdateReceived } from '../../reducers'
+import { tableUpdateReceived, actionOnTickReceived } from '../../reducers'
 
 export default dispatch => {
 
@@ -15,13 +15,16 @@ export default dispatch => {
   const acceptTableData = (gameId, tableId, message) =>
     dispatch(tableUpdateReceived(gameId, tableId, JSON.parse(message.body)))
 
+  const receiveActionOnTick = (gameId, tableId, message) =>
+    dispatch(actionOnTickReceived(gameId, tableId, JSON.parse(message.body)))
+
   const registerWebSocketSubs = activeTable => {
     const { gameId, tableId } = activeTable || {}
     if (gameId && tableId) {
-      WebSocketSubscriptionManager.subscribe(constObj, [{
-        location: `/topic/game/${gameId}/table/${tableId}`,
-        subscription: acceptTableData.bind(null, gameId, tableId)
-      }])
+      WebSocketSubscriptionManager.subscribe(constObj, [
+        { location: `/topic/game/${gameId}/table/${tableId}`, subscription: acceptTableData.bind(null, gameId, tableId) },
+        { location: `/topic/game/${gameId}/table/${tableId}/action-on-tick`, subscription: receiveActionOnTick.bind(null, gameId, tableId) }
+      ])
     }
   }
 
