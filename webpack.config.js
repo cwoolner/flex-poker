@@ -1,34 +1,29 @@
 const webpack = require('webpack');
+const path = require('path');
 
 module.exports = {
   entry: {
-    app: './src/main/webapp/resources/index.js',
-    vendor: [
-      'lodash',
-      'react',
-      'react-bootstrap',
-      'react-dom',
-      'react-router',
-      'react-redux',
-      'redux',
-      'sockjs-client',
-      'webstomp-client'
-    ]
+    app: './src/main/webapp/resources/index.js'
   },
 
   output: {
-    filename: 'src/main/webapp/resources/bundle.js',
-    publicPath: ''
+    path: path.join(__dirname, "src/main/webapp/resources"),
+    filename: '[name].bundle.js'
   },
 
-  plugins: [
-    new webpack.optimize.CommonsChunkPlugin({
-        'name': 'vendor',
-        'filename': 'src/main/webapp/resources/vendor.bundle.js'
-    }),
-    new webpack.optimize.ModuleConcatenationPlugin(),
-    new webpack.DefinePlugin({"process.env": {NODE_ENV: JSON.stringify("production")}})
-  ],
+  optimization: {
+    splitChunks: {
+      cacheGroups: {
+        vendor: {
+          test: /node_modules/,
+          chunks: 'initial',
+          name: 'vendor',
+          priority: 10,
+          enforce: true
+        }
+      }
+    }
+  },
 
   module: {
     rules: [

@@ -8,7 +8,7 @@
 <jsp:include page="common-header-tags.jsp"></jsp:include>
 
 <script src="/resources/vendor.bundle.js" defer></script>
-<script src="/resources/bundle.js" defer></script>
+<script src="/resources/app.bundle.js" defer></script>
 <script>window.username = '<sec:authentication property="principal.username" />'</script>
 
 <title>Home</title>

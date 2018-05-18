@@ -6,14 +6,14 @@
     "node": "8.9.4"
   },
   "scripts": {
-    "start": "webpack --watch",
-    "postinstall": "webpack --optimize-minimize"
+    "start": "webpack --mode=development --watch",
+    "postinstall": "webpack --mode=production"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "immutable": "3.8.2",
-    "lodash": "4.17.5",
+    "lodash": "4.17.10",
     "react": "16.3.2",
     "react-bootstrap": "0.32.1",
     "react-dom": "16.3.2",
@@ -26,12 +26,13 @@
     "webstomp-client": "1.2.0"
   },
   "devDependencies": {
-    "babel-core": "6.26.0",
+    "babel-core": "6.26.3",
     "babel-loader": "7.1.4",
-    "babel-preset-env": "1.6.1",
+    "babel-preset-env": "1.7.0",
     "babel-preset-react": "6.24.1",
     "babel-preset-stage-3": "6.24.1",
     "http-server": "0.11.1",
-    "webpack": "3.11.0"
+    "webpack": "4.8.3",
+    "webpack-cli": "2.1.3"
   }
 }
