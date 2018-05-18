@@ -12,24 +12,21 @@ import com.flexpoker.table.command.commands.StartNewHandForExistingTableCommand;
 import com.flexpoker.table.command.framework.TableCommandType;
 
 @Component
-public class StartNewHandForExistingTableProcessManager implements
-        ProcessManager<NewHandIsClearedToStartEvent> {
+public class StartNewHandForExistingTableProcessManager implements ProcessManager<NewHandIsClearedToStartEvent> {
 
     private final CommandSender<TableCommandType> tableCommandSender;
 
     @Inject
-    public StartNewHandForExistingTableProcessManager(
-            CommandSender<TableCommandType> tableCommandSender) {
+    public StartNewHandForExistingTableProcessManager(CommandSender<TableCommandType> tableCommandSender) {
         this.tableCommandSender = tableCommandSender;
     }
 
     @Async
     @Override
     public void handle(NewHandIsClearedToStartEvent event) {
-        StartNewHandForExistingTableCommand command = new StartNewHandForExistingTableCommand(
-                event.getTableId(), event.getAggregateId(),
-                event.getBlinds().getSmallBlind(),
-                event.getBlinds().getBigBlind());
+        var command = new StartNewHandForExistingTableCommand(event.getTableId(), event.getAggregateId(),
+                event.getBlinds().getSmallBlind(), event.getBlinds().getBigBlind());
         tableCommandSender.send(command);
     }
+
 }

@@ -12,23 +12,21 @@ import com.flexpoker.game.command.framework.GameCommandType;
 import com.flexpoker.table.command.events.HandCompletedEvent;
 
 @Component
-public class AttemptToStartNewHandForExistingTableProcessManager
-        implements ProcessManager<HandCompletedEvent> {
+public class AttemptToStartNewHandForExistingTableProcessManager implements ProcessManager<HandCompletedEvent> {
 
     private final CommandSender<GameCommandType> gameCommandSender;
 
     @Inject
-    public AttemptToStartNewHandForExistingTableProcessManager(
-            CommandSender<GameCommandType> gameCommandSender) {
+    public AttemptToStartNewHandForExistingTableProcessManager(CommandSender<GameCommandType> gameCommandSender) {
         this.gameCommandSender = gameCommandSender;
     }
 
     @Async
     @Override
     public void handle(HandCompletedEvent event) {
-        AttemptToStartNewHandCommand command = new AttemptToStartNewHandCommand(
-                event.getGameId(), event.getAggregateId(),
+        var command = new AttemptToStartNewHandCommand(event.getGameId(), event.getAggregateId(),
                 event.getPlayerToChipsAtTableMap());
         gameCommandSender.send(command);
     }
+
 }

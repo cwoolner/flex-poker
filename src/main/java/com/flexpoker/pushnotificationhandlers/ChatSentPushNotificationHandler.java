@@ -24,11 +24,11 @@ public class ChatSentPushNotificationHandler implements PushNotificationHandler<
     @Override
     public void handle(ChatSentPushNotification pushNotification) {
         if (pushNotification.getGameId() != null && pushNotification.getTableId() != null) {
-            String topic = String.format(MessagingConstants.CHAT_TABLE, pushNotification.getGameId(),
+            var topic = String.format(MessagingConstants.CHAT_TABLE, pushNotification.getGameId(),
                     pushNotification.getTableId());
             messagingTemplate.convertAndSend(topic, pushNotification);
         } else if (pushNotification.getGameId() != null) {
-            String topic = String.format(MessagingConstants.CHAT_GAME, pushNotification.getGameId());
+            var topic = String.format(MessagingConstants.CHAT_GAME, pushNotification.getGameId());
             messagingTemplate.convertAndSend(topic, pushNotification);
         } else {
             messagingTemplate.convertAndSend(MessagingConstants.CHAT_GLOBAL, pushNotification);

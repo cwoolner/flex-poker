@@ -15,8 +15,8 @@ import com.flexpoker.pushnotifications.OpenTableForUserPushNotification;
 import com.flexpoker.util.MessagingConstants;
 
 @Component
-public class OpenTableForUserPushNotificationHandler implements
-        PushNotificationHandler<OpenTableForUserPushNotification> {
+public class OpenTableForUserPushNotificationHandler
+        implements PushNotificationHandler<OpenTableForUserPushNotification> {
 
     private final LoginRepository loginRepository;
 
@@ -32,12 +32,9 @@ public class OpenTableForUserPushNotificationHandler implements
     @Async
     @Override
     public void handle(OpenTableForUserPushNotification pushNotification) {
-        String username = loginRepository.fetchUsernameByAggregateId(pushNotification
-                .getPlayerId());
-        OpenTableForUserDTO dto = new OpenTableForUserDTO(pushNotification.getGameId(),
-                pushNotification.getTableId());
-        messagingTemplate.convertAndSendToUser(username,
-                MessagingConstants.OPEN_TABLE_FOR_USER, dto);
+        var username = loginRepository.fetchUsernameByAggregateId(pushNotification.getPlayerId());
+        var dto = new OpenTableForUserDTO(pushNotification.getGameId(), pushNotification.getTableId());
+        messagingTemplate.convertAndSendToUser(username, MessagingConstants.OPEN_TABLE_FOR_USER, dto);
     }
 
     private class OpenTableForUserDTO {

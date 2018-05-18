@@ -13,8 +13,8 @@ import com.flexpoker.util.MessagingConstants;
 import com.flexpoker.web.dto.outgoing.PocketCardsDTO;
 
 @Component
-public class SendUserPocketCardsPushNotificationHandler implements
-        PushNotificationHandler<SendUserPocketCardsPushNotification> {
+public class SendUserPocketCardsPushNotificationHandler
+        implements PushNotificationHandler<SendUserPocketCardsPushNotification> {
 
     private final LoginRepository loginRepository;
 
@@ -30,13 +30,10 @@ public class SendUserPocketCardsPushNotificationHandler implements
     @Async
     @Override
     public void handle(SendUserPocketCardsPushNotification pushNotification) {
-        String username = loginRepository.fetchUsernameByAggregateId(pushNotification
-                .getPlayerId());
-        PocketCardsDTO pocketCardsDTO = new PocketCardsDTO(pushNotification
-                .getPocketCards().getCard1().getId(), pushNotification.getPocketCards()
-                .getCard2().getId(), pushNotification.getTableId());
-        messagingTemplate.convertAndSendToUser(username, MessagingConstants.POCKET_CARDS,
-                pocketCardsDTO);
+        var username = loginRepository.fetchUsernameByAggregateId(pushNotification.getPlayerId());
+        var pocketCardsDTO = new PocketCardsDTO(pushNotification.getPocketCards().getCard1().getId(),
+                pushNotification.getPocketCards().getCard2().getId(), pushNotification.getTableId());
+        messagingTemplate.convertAndSendToUser(username, MessagingConstants.POCKET_CARDS, pocketCardsDTO);
     }
 
 }

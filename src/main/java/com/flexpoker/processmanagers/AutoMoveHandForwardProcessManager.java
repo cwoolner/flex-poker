@@ -15,16 +15,14 @@ import com.flexpoker.table.command.events.AutoMoveHandForwardEvent;
 import com.flexpoker.table.command.framework.TableCommandType;
 
 @Component
-public class AutoMoveHandForwardProcessManager implements
-        ProcessManager<AutoMoveHandForwardEvent> {
+public class AutoMoveHandForwardProcessManager implements ProcessManager<AutoMoveHandForwardEvent> {
 
     private final CommandSender<TableCommandType> tableCommandSender;
 
     private final ScheduledThreadPoolExecutor scheduledThreadPoolExecutor;
 
     @Inject
-    public AutoMoveHandForwardProcessManager(
-            CommandSender<TableCommandType> tableCommandSender) {
+    public AutoMoveHandForwardProcessManager(CommandSender<TableCommandType> tableCommandSender) {
         this.tableCommandSender = tableCommandSender;
         this.scheduledThreadPoolExecutor = new ScheduledThreadPoolExecutor(16);
     }
@@ -33,9 +31,9 @@ public class AutoMoveHandForwardProcessManager implements
     @Override
     public void handle(AutoMoveHandForwardEvent event) {
         scheduledThreadPoolExecutor.schedule(() -> {
-            AutoMoveHandForwardCommand command = new AutoMoveHandForwardCommand(
-                    event.getAggregateId(), event.getGameId());
+            var command = new AutoMoveHandForwardCommand(event.getAggregateId(), event.getGameId());
             tableCommandSender.send(command);
         }, 2, TimeUnit.SECONDS);
     }
+
 }

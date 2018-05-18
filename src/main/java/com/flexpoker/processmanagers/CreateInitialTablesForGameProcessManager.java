@@ -15,27 +15,25 @@ import com.flexpoker.table.command.commands.CreateTableCommand;
 import com.flexpoker.table.command.framework.TableCommandType;
 
 @Component
-public class CreateInitialTablesForGameProcessManager implements
-        ProcessManager<GameTablesCreatedAndPlayersAssociatedEvent> {
+public class CreateInitialTablesForGameProcessManager
+        implements ProcessManager<GameTablesCreatedAndPlayersAssociatedEvent> {
 
     private final CommandSender<TableCommandType> tableCommandSender;
 
     @Inject
-    public CreateInitialTablesForGameProcessManager(
-            CommandSender<TableCommandType> tableCommandSender) {
+    public CreateInitialTablesForGameProcessManager(CommandSender<TableCommandType> tableCommandSender) {
         this.tableCommandSender = tableCommandSender;
     }
 
     @Async
     @Override
     public void handle(GameTablesCreatedAndPlayersAssociatedEvent event) {
-        Consumer<UUID> tableIdConsumer = (UUID tableId) -> {
-            CreateTableCommand command = new CreateTableCommand(tableId,
-                    event.getAggregateId(),
-                    event.getTableIdToPlayerIdsMap().get(tableId),
-                    event.getNumberOfPlayersPerTable());
+        Consumer<UUID> tableIdConsumer = tableId -> {
+            var command = new CreateTableCommand(tableId, event.getAggregateId(),
+                    event.getTableIdToPlayerIdsMap().get(tableId), event.getNumberOfPlayersPerTable());
             tableCommandSender.send(command);
         };
         event.getTableIdToPlayerIdsMap().keySet().forEach(tableIdConsumer);
     }
+
 }

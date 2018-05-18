@@ -10,19 +10,16 @@ import com.flexpoker.framework.pushnotifier.PushNotificationHandler;
 import com.flexpoker.pushnotifications.TableUpdatedPushNotification;
 import com.flexpoker.table.query.repository.TableRepository;
 import com.flexpoker.util.MessagingConstants;
-import com.flexpoker.web.dto.outgoing.TableDTO;
 
 @Component
-public class TableUpdatedPushNotificationHandler implements
-        PushNotificationHandler<TableUpdatedPushNotification> {
+public class TableUpdatedPushNotificationHandler implements PushNotificationHandler<TableUpdatedPushNotification> {
 
     private final SimpMessageSendingOperations messagingTemplate;
 
     private final TableRepository tableRepository;
 
     @Inject
-    public TableUpdatedPushNotificationHandler(
-            SimpMessageSendingOperations messagingTemplate,
+    public TableUpdatedPushNotificationHandler(SimpMessageSendingOperations messagingTemplate,
             TableRepository tableRepository) {
         this.messagingTemplate = messagingTemplate;
         this.tableRepository = tableRepository;
@@ -31,11 +28,9 @@ public class TableUpdatedPushNotificationHandler implements
     @Async
     @Override
     public void handle(TableUpdatedPushNotification pushNotification) {
-        TableDTO tableDTO = tableRepository.fetchById(pushNotification.getTableId());
-        messagingTemplate.convertAndSend(
-                String.format(MessagingConstants.TABLE_STATUS,
-                        pushNotification.getGameId(), pushNotification.getTableId()),
-                tableDTO);
+        var tableDTO = tableRepository.fetchById(pushNotification.getTableId());
+        messagingTemplate.convertAndSend(String.format(MessagingConstants.TABLE_STATUS, pushNotification.getGameId(),
+                pushNotification.getTableId()), tableDTO);
     }
 
 }

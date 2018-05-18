@@ -15,14 +15,12 @@ import com.flexpoker.game.command.events.GameStartedEvent;
 import com.flexpoker.game.command.framework.GameCommandType;
 
 @Component
-public class IncrementBlindsCountdownProcessManager
-        implements ProcessManager<GameStartedEvent> {
+public class IncrementBlindsCountdownProcessManager implements ProcessManager<GameStartedEvent> {
 
     private final CommandSender<GameCommandType> gameCommandSender;
 
     @Inject
-    public IncrementBlindsCountdownProcessManager(
-            CommandSender<GameCommandType> gameCommandSender) {
+    public IncrementBlindsCountdownProcessManager(CommandSender<GameCommandType> gameCommandSender) {
         this.gameCommandSender = gameCommandSender;
     }
 
@@ -33,19 +31,17 @@ public class IncrementBlindsCountdownProcessManager
     }
 
     private void addNewBlindIncrementTimer(GameStartedEvent event) {
-        Timer actionOnTimer = new Timer();
-        TimerTask timerTask = new TimerTask() {
+        var actionOnTimer = new Timer();
+        var timerTask = new TimerTask() {
             @Override
             public void run() {
-                IncrementBlindsCommand command = new IncrementBlindsCommand(
-                        event.getAggregateId());
+                var command = new IncrementBlindsCommand(event.getAggregateId());
                 gameCommandSender.send(command);
             }
         };
 
-        long blindIncrementInMilliseconds = event.getBlindSchedule()
-                .getNumberOfMinutesBetweenLevels() * 60000;
-        actionOnTimer.scheduleAtFixedRate(timerTask,
-                blindIncrementInMilliseconds, blindIncrementInMilliseconds);
+        var blindIncrementInMilliseconds = event.getBlindSchedule().getNumberOfMinutesBetweenLevels() * 60000;
+        actionOnTimer.scheduleAtFixedRate(timerTask, blindIncrementInMilliseconds, blindIncrementInMilliseconds);
     }
+
 }
