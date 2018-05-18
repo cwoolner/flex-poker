@@ -8,12 +8,23 @@ export default dispatch => {
 
   const displayPocketCards = message => {
     const parsedData = JSON.parse(message.body)
-    const tableId = parsedData.tableId
-    const pocketCards = {
-      cardId1: parsedData.cardId1,
-      cardId2: parsedData.cardId2
+    if (Array.isArray(parsedData)) {
+      parsedData.forEach(x => {
+        const handId = x.handId
+        const pocketCards = {
+          cardId1: x.cardId1,
+          cardId2: x.cardId2
+        }
+        dispatch(pocketCardsReceived(handId, pocketCards))
+      })
+    } else {
+      const handId = parsedData.handId
+      const pocketCards = {
+        cardId1: parsedData.cardId1,
+        cardId2: parsedData.cardId2
+      }
+      dispatch(pocketCardsReceived(handId, pocketCards))
     }
-    dispatch(pocketCardsReceived(tableId, pocketCards))
   }
 
   const displayGameTabs = message => {

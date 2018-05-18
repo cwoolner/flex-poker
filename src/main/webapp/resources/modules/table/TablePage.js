@@ -76,8 +76,8 @@ class TablePage extends React.Component {
 
 const mapStateToProps = state => {
   const tableData = state.tables.get(state.activeTable.gameId, Map()).get(state.activeTable.tableId)
-  const pocketCardData = state.pocketCards.get(state.activeTable.tableId)
   if (tableData) {
+    const pocketCardData = state.pocketCards.get(tableData.currentHandId)
     return {
       ...tableData,
       ...pocketCardData

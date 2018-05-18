@@ -32,7 +32,7 @@ export const tableChatMsgReceived = (gameId, tableId, msg) => ({ type: TABLE_CHA
 export const changeTable = (gameId, tableId) => ({ type: CHANGE_TABLE, gameId, tableId })
 export const tableUpdateReceived = (gameId, tableId, tableState) => ({ type: TABLE_UPDATE_RECEIVED, gameId, tableId, tableState })
 export const actionOnTickReceived = (gameId, tableId, actionOnTick) => ({ type: ACTION_ON_TICK_RECEIVED, gameId, tableId, actionOnTick })
-export const pocketCardsReceived = (tableId, pocketCards) => ({ type: POCKET_CARDS_RECEIVED, tableId, pocketCards })
+export const pocketCardsReceived = (handId, pocketCards) => ({ type: POCKET_CARDS_RECEIVED, handId, pocketCards })
 export const redirectToGame = gameId => ({ type: REDIRECT_TO_GAME, gameId })
 export const redirectToTable = (gameId, tableId) => ({ type: REDIRECT_TO_TABLE, gameId, tableId })
 
@@ -100,7 +100,7 @@ export default (state = {
       const updatedActionOnTicks = state.actionOnTicks.set(action.gameId, gameTicks)
       return { ...state, actionOnTicks: updatedActionOnTicks }
     case POCKET_CARDS_RECEIVED:
-      return { ...state, pocketCards: state.pocketCards.set(action.tableId, action.pocketCards)}
+      return { ...state, pocketCards: state.pocketCards.set(action.handId, action.pocketCards)}
     case REDIRECT_TO_GAME:
       return { ...state, redirectUrl: `/game/${action.gameId}` }
     case REDIRECT_TO_TABLE:
