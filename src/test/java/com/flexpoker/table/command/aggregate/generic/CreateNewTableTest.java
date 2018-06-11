@@ -5,7 +5,7 @@ import static com.flexpoker.test.util.CommonAssertions.verifyAppliedAndNewEvents
 import java.util.HashSet;
 import java.util.UUID;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.flexpoker.exception.FlexPokerException;
 import com.flexpoker.table.command.aggregate.DefaultTableFactory;

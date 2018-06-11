@@ -1,11 +1,11 @@
 package com.flexpoker.game.command.aggregate;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.UUID;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.flexpoker.game.command.commands.CreateGameCommand;
 import com.flexpoker.game.command.events.GameCreatedEvent;

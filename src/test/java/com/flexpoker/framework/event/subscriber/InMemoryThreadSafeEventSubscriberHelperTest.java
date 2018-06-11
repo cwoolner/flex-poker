@@ -1,12 +1,12 @@
 package com.flexpoker.framework.event.subscriber;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.flexpoker.framework.event.Event;
 import com.flexpoker.framework.event.EventHandler;

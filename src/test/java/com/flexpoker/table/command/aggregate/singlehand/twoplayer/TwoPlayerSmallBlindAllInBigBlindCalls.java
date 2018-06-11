@@ -4,7 +4,7 @@ import static com.flexpoker.test.util.CommonAssertions.verifyAppliedAndNewEvents
 
 import java.util.UUID;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.flexpoker.table.command.aggregate.testhelpers.TableTestUtils;
 import com.flexpoker.table.command.events.ActionOnChangedEvent;

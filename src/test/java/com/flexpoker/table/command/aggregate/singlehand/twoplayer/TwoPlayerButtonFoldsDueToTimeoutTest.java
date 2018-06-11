@@ -3,13 +3,13 @@ package com.flexpoker.table.command.aggregate.singlehand.twoplayer;
 import static com.flexpoker.table.command.aggregate.testhelpers.TableTestUtils.fetchIdForBigBlind;
 import static com.flexpoker.table.command.aggregate.testhelpers.TableTestUtils.fetchIdForButton;
 import static com.flexpoker.test.util.CommonAssertions.verifyAppliedAndNewEventsForAggregate;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.UUID;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.flexpoker.table.command.aggregate.HandDealerState;
 import com.flexpoker.table.command.aggregate.testhelpers.TableTestUtils;

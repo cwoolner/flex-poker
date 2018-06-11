@@ -1,11 +1,11 @@
 package com.flexpoker.table.command.aggregate.singlehand.twoplayer;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.flexpoker.table.command.aggregate.testhelpers.TableTestUtils;
 import com.flexpoker.table.command.events.HandDealtEvent;

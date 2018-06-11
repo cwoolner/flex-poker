@@ -6,7 +6,7 @@ import static com.flexpoker.game.command.aggregate.tablebalancer.TableBalancerTe
 import java.util.Collections;
 import java.util.UUID;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.flexpoker.exception.FlexPokerException;
 import com.flexpoker.game.command.aggregate.TableBalancer;

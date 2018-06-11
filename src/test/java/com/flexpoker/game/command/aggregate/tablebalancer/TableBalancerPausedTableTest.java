@@ -2,12 +2,12 @@ package com.flexpoker.game.command.aggregate.tablebalancer;
 
 import static com.flexpoker.game.command.aggregate.tablebalancer.TableBalancerTestUtils.createDefaultChipMapForSubjectTable;
 import static com.flexpoker.game.command.aggregate.tablebalancer.TableBalancerTestUtils.createTableToPlayersMap;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Collections;
 import java.util.UUID;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.flexpoker.game.command.aggregate.TableBalancer;
 import com.flexpoker.game.command.events.PlayerMovedToNewTableEvent;

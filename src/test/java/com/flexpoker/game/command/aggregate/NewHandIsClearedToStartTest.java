@@ -1,6 +1,6 @@
 package com.flexpoker.game.command.aggregate;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -8,7 +8,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.flexpoker.game.command.events.GameCreatedEvent;
 import com.flexpoker.game.command.events.GameJoinedEvent;
