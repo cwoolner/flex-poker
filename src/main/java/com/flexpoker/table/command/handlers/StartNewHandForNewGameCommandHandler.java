@@ -15,8 +15,7 @@ import com.flexpoker.table.command.service.CardService;
 import com.flexpoker.table.command.service.HandEvaluatorService;
 
 @Component
-public class StartNewHandForNewGameCommandHandler implements
-        CommandHandler<StartNewHandForNewGameCommand> {
+public class StartNewHandForNewGameCommandHandler implements CommandHandler<StartNewHandForNewGameCommand> {
 
     private final TableFactory tableFactory;
 
@@ -29,8 +28,7 @@ public class StartNewHandForNewGameCommandHandler implements
     private final HandEvaluatorService handEvaluatorService;
 
     @Inject
-    public StartNewHandForNewGameCommandHandler(TableFactory tableFactory,
-            EventPublisher<TableEvent> eventPublisher,
+    public StartNewHandForNewGameCommandHandler(TableFactory tableFactory, EventPublisher<TableEvent> eventPublisher,
             TableEventRepository tableEventRepository, CardService cardService,
             HandEvaluatorService handEvaluatorService) {
         this.tableFactory = tableFactory;
@@ -43,22 +41,24 @@ public class StartNewHandForNewGameCommandHandler implements
     @Async
     @Override
     public void handle(StartNewHandForNewGameCommand command) {
-        var tableEvents = tableEventRepository.fetchAll(command.getTableId());
-        var table = tableFactory.createFrom(tableEvents);
+        var existingEvents = tableEventRepository.fetchAll(command.getTableId());
+        var table = tableFactory.createFrom(existingEvents);
 
         var shuffledDeckOfCards = cardService.createShuffledDeck();
         var cardsUsedInHand = cardService.createCardsUsedInHand(shuffledDeckOfCards, table.getNumberOfPlayersAtTable());
 
-        var possibleHandRankings = handEvaluatorService.determinePossibleHands(
-                cardsUsedInHand.getFlopCards(), cardsUsedInHand.getTurnCard(), cardsUsedInHand.getRiverCard());
-        var handEvaluations = handEvaluatorService.determineHandEvaluation(
-                cardsUsedInHand.getFlopCards(), cardsUsedInHand.getTurnCard(), cardsUsedInHand.getRiverCard(),
-                cardsUsedInHand.getPocketCards(), possibleHandRankings);
+        var possibleHandRankings = handEvaluatorService.determinePossibleHands(cardsUsedInHand.getFlopCards(),
+                cardsUsedInHand.getTurnCard(), cardsUsedInHand.getRiverCard());
+        var handEvaluations = handEvaluatorService.determineHandEvaluation(cardsUsedInHand.getFlopCards(),
+                cardsUsedInHand.getTurnCard(), cardsUsedInHand.getRiverCard(), cardsUsedInHand.getPocketCards(),
+                possibleHandRankings);
 
         table.startNewHandForNewGame(command.getSmallBlind(), command.getBigBlind(), shuffledDeckOfCards,
                 cardsUsedInHand, handEvaluations);
-        table.fetchNewEvents().forEach(x -> tableEventRepository.save(x));
-        table.fetchNewEvents().forEach(x -> eventPublisher.publish(x));
+        var newEvents = table.fetchNewEvents();
+        var newlySavedEventsWithVersions = tableEventRepository.setEventVersionsAndSave(existingEvents.size(),
+                newEvents);
+        newlySavedEventsWithVersions.forEach(x -> eventPublisher.publish(x));
     }
 
 }

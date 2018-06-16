@@ -36,8 +36,8 @@ public class IncrementBlindsCommandHandler implements CommandHandler<IncrementBl
         var gameEvents = gameEventRepository.fetchAll(command.getAggregateId());
         var game = gameFactory.createFrom(gameEvents);
         game.increaseBlinds();
-        game.fetchNewEvents().forEach(x -> gameEventRepository.save(x));
-        game.fetchNewEvents().forEach(x -> eventPublisher.publish(x));
+        var eventsWithVersions = gameEventRepository.setEventVersionsAndSave(gameEvents.size(), game.fetchNewEvents());
+        eventsWithVersions.forEach(x -> eventPublisher.publish(x));
     }
 
 }

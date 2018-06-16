@@ -22,8 +22,7 @@ public class CreateTableCommandHandler implements CommandHandler<CreateTableComm
     private final TableEventRepository tableEventRepository;
 
     @Inject
-    public CreateTableCommandHandler(TableFactory tableFactory,
-            EventPublisher<TableEvent> eventPublisher,
+    public CreateTableCommandHandler(TableFactory tableFactory, EventPublisher<TableEvent> eventPublisher,
             TableEventRepository tableEventRepository) {
         this.tableFactory = tableFactory;
         this.eventPublisher = eventPublisher;
@@ -34,8 +33,9 @@ public class CreateTableCommandHandler implements CommandHandler<CreateTableComm
     @Override
     public void handle(CreateTableCommand command) {
         var table = tableFactory.createNew(command);
-        table.fetchNewEvents().forEach(x -> tableEventRepository.save(x));
-        table.fetchNewEvents().forEach(x -> eventPublisher.publish(x));
+        var newEvents = table.fetchNewEvents();
+        var newlySavedEventsWithVersions = tableEventRepository.setEventVersionsAndSave(0, newEvents);
+        newlySavedEventsWithVersions.forEach(x -> eventPublisher.publish(x));
     }
 
 }

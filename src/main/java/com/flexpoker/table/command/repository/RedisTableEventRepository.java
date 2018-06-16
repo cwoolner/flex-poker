@@ -12,6 +12,7 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.stereotype.Repository;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.flexpoker.exception.FlexPokerException;
 import com.flexpoker.table.command.framework.TableEvent;
 
 @Profile("prod")
@@ -44,9 +45,21 @@ public class RedisTableEventRepository implements TableEventRepository {
     }
 
     @Override
-    public void save(TableEvent event) {
-        redisTemplate.opsForList().rightPush(
-                TABLE_EVENT_NAMESPACE + event.getAggregateId(), event);
+    public List<TableEvent> setEventVersionsAndSave(int basedOnVersion, List<TableEvent> events) {
+        var aggregateId = events.get(0).getAggregateId();
+
+        var existingEvents = fetchAll(aggregateId);
+        if (existingEvents.size() != basedOnVersion) {
+            throw new FlexPokerException("events to save are based on a different version of the aggregate");
+        }
+
+        for (int i = 0; i < events.size(); i++) {
+            events.get(i).setVersion(basedOnVersion + i + 1);
+        }
+
+        redisTemplate.opsForList().rightPushAll(TABLE_EVENT_NAMESPACE + aggregateId, events);
+
+        return events;
     }
 
 }

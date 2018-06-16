@@ -33,12 +33,13 @@ public class PauseCommandHandler implements CommandHandler<PauseCommand> {
     @Async
     @Override
     public void handle(PauseCommand command) {
-        var tableEvents = tableEventRepository.fetchAll(command.getTableId());
-        var table = tableFactory.createFrom(tableEvents);
-
+        var existingEvents = tableEventRepository.fetchAll(command.getTableId());
+        var table = tableFactory.createFrom(existingEvents);
         table.pause();
-        table.fetchNewEvents().forEach(x -> tableEventRepository.save(x));
-        table.fetchNewEvents().forEach(x -> eventPublisher.publish(x));
+        var newEvents = table.fetchNewEvents();
+        var newlySavedEventsWithVersions = tableEventRepository.setEventVersionsAndSave(existingEvents.size(),
+                newEvents);
+        newlySavedEventsWithVersions.forEach(x -> eventPublisher.publish(x));
     }
 
 }

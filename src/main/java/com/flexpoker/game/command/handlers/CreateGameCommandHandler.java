@@ -34,8 +34,8 @@ public class CreateGameCommandHandler implements CommandHandler<CreateGameComman
     @Override
     public void handle(CreateGameCommand command) {
         var game = gameFactory.createNew(command);
-        game.fetchNewEvents().forEach(x -> gameEventRepository.save(x));
-        game.fetchNewEvents().forEach(x -> eventPublisher.publish(x));
+        var eventsWithVersions = gameEventRepository.setEventVersionsAndSave(0, game.fetchNewEvents());
+        eventsWithVersions.forEach(x -> eventPublisher.publish(x));
     }
 
 }

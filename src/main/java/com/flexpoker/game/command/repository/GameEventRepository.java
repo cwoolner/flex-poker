@@ -10,7 +10,7 @@ public interface GameEventRepository {
 
     List<GameEvent> fetchAll(UUID id);
 
-    void save(GameEvent event);
+    List<GameEvent> setEventVersionsAndSave(int basedOnVersion, List<GameEvent> events);
 
     GameCreatedEvent fetchGameCreatedEvent(UUID aggregateId);
 

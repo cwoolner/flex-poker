@@ -23,8 +23,7 @@ public class ExpireActionOnTimerCommandHandler implements
     private final TableEventRepository tableEventRepository;
 
     @Inject
-    public ExpireActionOnTimerCommandHandler(TableFactory tableFactory,
-            EventPublisher<TableEvent> eventPublisher,
+    public ExpireActionOnTimerCommandHandler(TableFactory tableFactory, EventPublisher<TableEvent> eventPublisher,
             TableEventRepository tableEventRepository) {
         this.tableFactory = tableFactory;
         this.eventPublisher = eventPublisher;
@@ -34,12 +33,13 @@ public class ExpireActionOnTimerCommandHandler implements
     @Async
     @Override
     public void handle(ExpireActionOnTimerCommand command) {
-        var tableEvents = tableEventRepository.fetchAll(command.getTableId());
-        var table = tableFactory.createFrom(tableEvents);
-
+        var existingEvents = tableEventRepository.fetchAll(command.getTableId());
+        var table = tableFactory.createFrom(existingEvents);
         table.expireActionOn(command.getHandId(), command.getPlayerId());
-        table.fetchNewEvents().forEach(x -> tableEventRepository.save(x));
-        table.fetchNewEvents().forEach(x -> eventPublisher.publish(x));
+        var newEvents = table.fetchNewEvents();
+        var newlySavedEventsWithVersions = tableEventRepository.setEventVersionsAndSave(existingEvents.size(),
+                newEvents);
+        newlySavedEventsWithVersions.forEach(x -> eventPublisher.publish(x));
     }
 
 }

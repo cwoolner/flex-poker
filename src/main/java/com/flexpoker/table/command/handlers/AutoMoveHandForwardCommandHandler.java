@@ -22,8 +22,7 @@ public class AutoMoveHandForwardCommandHandler implements CommandHandler<AutoMov
     private final TableEventRepository tableEventRepository;
 
     @Inject
-    public AutoMoveHandForwardCommandHandler(TableFactory tableFactory,
-            EventPublisher<TableEvent> eventPublisher,
+    public AutoMoveHandForwardCommandHandler(TableFactory tableFactory, EventPublisher<TableEvent> eventPublisher,
             TableEventRepository tableEventRepository) {
         this.tableFactory = tableFactory;
         this.eventPublisher = eventPublisher;
@@ -33,12 +32,13 @@ public class AutoMoveHandForwardCommandHandler implements CommandHandler<AutoMov
     @Async
     @Override
     public void handle(AutoMoveHandForwardCommand command) {
-        var tableEvents = tableEventRepository.fetchAll(command.getTableId());
-        var table = tableFactory.createFrom(tableEvents);
-
+        var existingEvents = tableEventRepository.fetchAll(command.getTableId());
+        var table = tableFactory.createFrom(existingEvents);
         table.autoMoveHandForward();
-        table.fetchNewEvents().forEach(x -> tableEventRepository.save(x));
-        table.fetchNewEvents().forEach(x -> eventPublisher.publish(x));
+        var newEvents = table.fetchNewEvents();
+        var newlySavedEventsWithVersions = tableEventRepository.setEventVersionsAndSave(existingEvents.size(),
+                newEvents);
+        newlySavedEventsWithVersions.forEach(x -> eventPublisher.publish(x));
     }
 
 }

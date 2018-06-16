@@ -9,6 +9,7 @@ import java.util.UUID;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Repository;
 
+import com.flexpoker.exception.FlexPokerException;
 import com.flexpoker.table.command.framework.TableEvent;
 
 @Profile("default")
@@ -27,11 +28,25 @@ public class InMemoryTableEventRepository implements TableEventRepository {
     }
 
     @Override
-    public void save(TableEvent event) {
-        if (!tableEventMap.containsKey(event.getAggregateId())) {
-            tableEventMap.put(event.getAggregateId(), new ArrayList<>());
+    public List<TableEvent> setEventVersionsAndSave(int basedOnVersion, List<TableEvent> events) {
+        var aggregateId = events.get(0).getAggregateId();
+
+        if (!tableEventMap.containsKey(aggregateId)) {
+            tableEventMap.put(aggregateId, new ArrayList<>());
         }
-        tableEventMap.get(event.getAggregateId()).add(event);
+
+        var existingEvents = tableEventMap.get(aggregateId);
+        if (existingEvents.size() != basedOnVersion) {
+            throw new FlexPokerException("events to save are based on a different version of the aggregate");
+        }
+
+        for (int i = 0; i < events.size(); i++) {
+            events.get(i).setVersion(basedOnVersion + i + 1);
+        }
+
+        tableEventMap.get(aggregateId).addAll(events);
+
+        return events;
     }
 
 }

@@ -13,8 +13,7 @@ import com.flexpoker.table.command.framework.TableEvent;
 import com.flexpoker.table.command.repository.TableEventRepository;
 
 @Component
-public class AddPlayerCommandHandler
-        implements CommandHandler<AddPlayerCommand> {
+public class AddPlayerCommandHandler implements CommandHandler<AddPlayerCommand> {
 
     private final TableFactory tableFactory;
 
@@ -23,8 +22,7 @@ public class AddPlayerCommandHandler
     private final TableEventRepository tableEventRepository;
 
     @Inject
-    public AddPlayerCommandHandler(TableFactory tableFactory,
-            EventPublisher<TableEvent> eventPublisher,
+    public AddPlayerCommandHandler(TableFactory tableFactory, EventPublisher<TableEvent> eventPublisher,
             TableEventRepository tableEventRepository) {
         this.tableFactory = tableFactory;
         this.eventPublisher = eventPublisher;
@@ -34,12 +32,13 @@ public class AddPlayerCommandHandler
     @Async
     @Override
     public void handle(AddPlayerCommand command) {
-        var tableEvents = tableEventRepository.fetchAll(command.getTableId());
-        var table = tableFactory.createFrom(tableEvents);
-
+        var existingEvents = tableEventRepository.fetchAll(command.getTableId());
+        var table = tableFactory.createFrom(existingEvents);
         table.addPlayer(command.getPlayerId(), command.getChips());
-        table.fetchNewEvents().forEach(x -> tableEventRepository.save(x));
-        table.fetchNewEvents().forEach(x -> eventPublisher.publish(x));
+        var newEvents = table.fetchNewEvents();
+        var newlySavedEventsWithVersions = tableEventRepository.setEventVersionsAndSave(existingEvents.size(),
+                newEvents);
+        newlySavedEventsWithVersions.forEach(x -> eventPublisher.publish(x));
     }
 
 }

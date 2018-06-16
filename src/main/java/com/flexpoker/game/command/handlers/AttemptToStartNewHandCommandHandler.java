@@ -1,7 +1,5 @@
 package com.flexpoker.game.command.handlers;
 
-import java.util.List;
-
 import javax.inject.Inject;
 
 import org.springframework.scheduling.annotation.Async;
@@ -36,12 +34,11 @@ public class AttemptToStartNewHandCommandHandler implements
     @Async
     @Override
     public void handle(AttemptToStartNewHandCommand command) {
-        List<GameEvent> gameEvents = gameEventRepository.fetchAll(command
-                .getAggregateId());
+        var gameEvents = gameEventRepository.fetchAll(command.getAggregateId());
         var game = gameFactory.createFrom(gameEvents);
         game.attemptToStartNewHand(command.getTableId(), command.getPlayerToChipsAtTableMap());
-        game.fetchNewEvents().forEach(x -> gameEventRepository.save(x));
-        game.fetchNewEvents().forEach(x -> eventPublisher.publish(x));
+        var eventsWithVersions = gameEventRepository.setEventVersionsAndSave(gameEvents.size(), game.fetchNewEvents());
+        eventsWithVersions.forEach(x -> eventPublisher.publish(x));
     }
 
 }

@@ -9,6 +9,6 @@ public interface TableEventRepository {
 
     List<TableEvent> fetchAll(UUID id);
 
-    void save(TableEvent event);
+    List<TableEvent> setEventVersionsAndSave(int basedOnVersion, List<TableEvent> events);
 
 }
