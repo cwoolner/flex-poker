@@ -4,6 +4,7 @@ import java.time.Instant;
 import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.flexpoker.exception.FlexPokerException;
 import com.flexpoker.util.StringUtils;
 
 /**
@@ -32,6 +33,9 @@ public abstract class BaseEvent implements Event {
     @JsonProperty
     @Override
     public int getVersion() {
+        if (version == 0) {
+            throw new FlexPokerException("should be calling getVersion() in situations where it's already been set");
+        }
         return version;
     }
 
