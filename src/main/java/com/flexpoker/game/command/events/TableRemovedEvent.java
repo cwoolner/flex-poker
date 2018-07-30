@@ -9,8 +9,8 @@ public class TableRemovedEvent extends BaseEvent implements GameEvent {
 
     private final UUID tableId;
 
-    public TableRemovedEvent(UUID aggregateId, int version, UUID tableId) {
-        super(aggregateId, version);
+    public TableRemovedEvent(UUID aggregateId, UUID tableId) {
+        super(aggregateId);
         this.tableId = tableId;
     }
 

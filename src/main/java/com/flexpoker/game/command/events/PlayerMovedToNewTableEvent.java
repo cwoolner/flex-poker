@@ -15,9 +15,8 @@ public class PlayerMovedToNewTableEvent extends BaseEvent implements GameEvent {
 
     private final int chips;
 
-    public PlayerMovedToNewTableEvent(UUID aggregateId, int version,
-            UUID fromTableId, UUID toTableId, UUID playerId, int chips) {
-        super(aggregateId, version);
+    public PlayerMovedToNewTableEvent(UUID aggregateId, UUID fromTableId, UUID toTableId, UUID playerId, int chips) {
+        super(aggregateId);
         this.fromTableId = fromTableId;
         this.toTableId = toTableId;
         this.playerId = playerId;

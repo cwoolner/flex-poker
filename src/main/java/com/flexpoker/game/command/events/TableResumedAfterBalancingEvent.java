@@ -9,8 +9,8 @@ public class TableResumedAfterBalancingEvent extends BaseEvent implements GameEv
 
     private final UUID tableId;
 
-    public TableResumedAfterBalancingEvent(UUID aggregateId, int version, UUID tableId) {
-        super(aggregateId, version);
+    public TableResumedAfterBalancingEvent(UUID aggregateId, UUID tableId) {
+        super(aggregateId);
         this.tableId = tableId;
     }
 

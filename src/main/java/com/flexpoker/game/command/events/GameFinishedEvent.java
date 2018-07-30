@@ -7,8 +7,8 @@ import com.flexpoker.game.command.framework.GameEvent;
 
 public class GameFinishedEvent extends BaseEvent implements GameEvent {
 
-    public GameFinishedEvent(UUID aggregateId, int version) {
-        super(aggregateId, version);
+    public GameFinishedEvent(UUID aggregateId) {
+        super(aggregateId);
     }
 
 }

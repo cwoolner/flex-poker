@@ -7,8 +7,8 @@ import com.flexpoker.game.command.framework.GameEvent;
 
 public class BlindsIncreasedEvent extends BaseEvent implements GameEvent {
 
-    public BlindsIncreasedEvent(UUID aggregateId, int version) {
-        super(aggregateId, version);
+    public BlindsIncreasedEvent(UUID aggregateId) {
+        super(aggregateId);
     }
 
 }

@@ -14,9 +14,8 @@ public class GameStartedEvent extends BaseEvent implements GameEvent {
 
     private final BlindSchedule blindSchedule;
 
-    public GameStartedEvent(UUID aggregateId, int version, Set<UUID> tableIds,
-            BlindSchedule blindSchedule) {
-        super(aggregateId, version);
+    public GameStartedEvent(UUID aggregateId, Set<UUID> tableIds, BlindSchedule blindSchedule) {
+        super(aggregateId);
         this.tableIds = new HashSet<>(tableIds);
         this.blindSchedule = blindSchedule;
     }

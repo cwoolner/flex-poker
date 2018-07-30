@@ -6,16 +6,14 @@ import com.flexpoker.framework.event.BaseEvent;
 import com.flexpoker.game.command.aggregate.BlindAmounts;
 import com.flexpoker.game.command.framework.GameEvent;
 
-public class NewHandIsClearedToStartEvent extends BaseEvent implements
-        GameEvent {
+public class NewHandIsClearedToStartEvent extends BaseEvent implements GameEvent {
 
     private final UUID tableId;
 
     private final BlindAmounts blinds;
 
-    public NewHandIsClearedToStartEvent(UUID aggregateId, int version, UUID tableId,
-            BlindAmounts blinds) {
-        super(aggregateId, version);
+    public NewHandIsClearedToStartEvent(UUID aggregateId, UUID tableId, BlindAmounts blinds) {
+        super(aggregateId);
         this.tableId = tableId;
         this.blinds = blinds;
     }

@@ -9,8 +9,8 @@ public class TablePausedForBalancingEvent extends BaseEvent implements GameEvent
 
     private final UUID tableId;
 
-    public TablePausedForBalancingEvent(UUID aggregateId, int version, UUID tableId) {
-        super(aggregateId, version);
+    public TablePausedForBalancingEvent(UUID aggregateId, UUID tableId) {
+        super(aggregateId);
         this.tableId = tableId;
     }
 

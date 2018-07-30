@@ -9,8 +9,8 @@ public class PlayerBustedGameEvent extends BaseEvent implements GameEvent {
 
     private final UUID playerId;
 
-    public PlayerBustedGameEvent(UUID aggregateId, int version, UUID playerId) {
-        super(aggregateId, version);
+    public PlayerBustedGameEvent(UUID aggregateId, UUID playerId) {
+        super(aggregateId);
         this.playerId = playerId;
     }
 

@@ -19,10 +19,9 @@ public class GameCreatedEvent extends BaseEvent implements GameEvent {
 
     private final int numberOfSecondsForActionOnTimer;
 
-    public GameCreatedEvent(UUID aggregateId, int version, String gameName,
-            int numberOfPlayers, int numberOfPlayersPerTable, UUID createdByPlayerId,
-            int numberOfMinutesBetweenBlindLevels, int numberOfSecondsForActionOnTimer) {
-        super(aggregateId, version);
+    public GameCreatedEvent(UUID aggregateId, String gameName, int numberOfPlayers, int numberOfPlayersPerTable,
+            UUID createdByPlayerId, int numberOfMinutesBetweenBlindLevels, int numberOfSecondsForActionOnTimer) {
+        super(aggregateId);
         this.gameName = gameName;
         this.numberOfPlayers = numberOfPlayers;
         this.numberOfPlayersPerTable = numberOfPlayersPerTable;
