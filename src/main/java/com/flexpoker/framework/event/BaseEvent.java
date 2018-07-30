@@ -3,6 +3,7 @@ package com.flexpoker.framework.event;
 import java.time.Instant;
 import java.util.UUID;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.flexpoker.util.StringUtils;
 
 /**
@@ -13,26 +14,32 @@ public abstract class BaseEvent implements Event {
 
     private final UUID aggregateId;
 
-    private final int version;
+    private int version;
 
     private final Instant time;
 
-    public BaseEvent(UUID aggregateId, int version) {
+    public BaseEvent(UUID aggregateId) {
         this.aggregateId = aggregateId;
-        this.version = version;
         this.time = Instant.now();
     }
 
+    @JsonProperty
     @Override
     public UUID getAggregateId() {
         return aggregateId;
     }
 
+    @JsonProperty
     @Override
     public int getVersion() {
         return version;
     }
 
+    public void setVersion(int version) {
+        this.version = version;
+    }
+
+    @JsonProperty
     @Override
     public Instant getTime() {
         return time;

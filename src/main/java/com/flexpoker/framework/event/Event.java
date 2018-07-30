@@ -9,6 +9,8 @@ public interface Event {
 
     int getVersion();
 
+    void setVersion(int version);
+
     Instant getTime();
 
 }
