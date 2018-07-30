@@ -26,7 +26,6 @@ public class JoinGameTest {
 
         assertEquals(2, game.fetchAppliedEvents().size());
         assertEquals(1, game.fetchNewEvents().size());
-        assertEquals(2, game.fetchNewEvents().get(0).getVersion());
     }
 
     @Test
@@ -40,11 +39,6 @@ public class JoinGameTest {
 
         assertEquals(6, game.fetchAppliedEvents().size());
         assertEquals(5, game.fetchNewEvents().size());
-        assertEquals(2, game.fetchNewEvents().get(0).getVersion());
-        assertEquals(3, game.fetchNewEvents().get(1).getVersion());
-        assertEquals(4, game.fetchNewEvents().get(2).getVersion());
-        assertEquals(5, game.fetchNewEvents().get(3).getVersion());
-        assertEquals(6, game.fetchNewEvents().get(4).getVersion());
         assertEquals(GameMovedToStartingStageEvent.class, game.fetchNewEvents().get(2).getClass());
         assertEquals(GameTablesCreatedAndPlayersAssociatedEvent.class, game.fetchNewEvents().get(3).getClass());
         assertEquals(GameStartedEvent.class, game.fetchNewEvents().get(4).getClass());

@@ -42,7 +42,6 @@ public class PlayerBustedTest {
 
         assertEquals(9, game.fetchAppliedEvents().size());
         assertEquals(9, game.fetchNewEvents().size());
-        assertEquals(9, game.fetchNewEvents().get(8).getVersion());
         assertEquals(PlayerBustedGameEvent.class, game.fetchAppliedEvents().get(7).getClass());
         assertEquals(player2Id, ((PlayerBustedGameEvent) game.fetchAppliedEvents().get(7)).getPlayerId());
     }
@@ -70,7 +69,6 @@ public class PlayerBustedTest {
 
         assertEquals(9, game.fetchAppliedEvents().size());
         assertEquals(9, game.fetchNewEvents().size());
-        assertEquals(9, game.fetchNewEvents().get(8).getVersion());
         assertEquals(PlayerBustedGameEvent.class, game.fetchAppliedEvents().get(7).getClass());
         assertEquals(player2Id, ((PlayerBustedGameEvent) game.fetchAppliedEvents().get(7)).getPlayerId());
     }
@@ -99,7 +97,6 @@ public class PlayerBustedTest {
 
         assertEquals(9, game.fetchAppliedEvents().size());
         assertEquals(9, game.fetchNewEvents().size());
-        assertEquals(9, game.fetchNewEvents().get(8).getVersion());
         assertEquals(PlayerBustedGameEvent.class, game.fetchAppliedEvents().get(7).getClass());
         assertEquals(PlayerBustedGameEvent.class, game.fetchAppliedEvents().get(8).getClass());
 

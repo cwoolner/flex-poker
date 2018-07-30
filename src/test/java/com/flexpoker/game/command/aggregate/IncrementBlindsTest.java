@@ -38,7 +38,6 @@ public class IncrementBlindsTest {
 
         assertEquals(7, game.fetchAppliedEvents().size());
         assertEquals(1, game.fetchNewEvents().size());
-        assertEquals(7, game.fetchNewEvents().get(0).getVersion());
     }
 
     @Test
@@ -64,7 +63,6 @@ public class IncrementBlindsTest {
 
         assertEquals(10, game.fetchAppliedEvents().size());
         assertEquals(4, game.fetchNewEvents().size());
-        assertEquals(10, game.fetchNewEvents().get(3).getVersion());
     }
 
     @Test(expected = FlexPokerException.class)

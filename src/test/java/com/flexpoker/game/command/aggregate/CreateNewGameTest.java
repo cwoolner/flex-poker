@@ -23,7 +23,6 @@ public class CreateNewGameTest {
 
         var gameCreatedEvent = (GameCreatedEvent) game.fetchNewEvents().get(0);
         assertNotNull(gameCreatedEvent.getAggregateId());
-        assertEquals(1, gameCreatedEvent.getVersion());
     }
 
 }

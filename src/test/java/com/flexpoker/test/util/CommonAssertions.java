@@ -11,12 +11,10 @@ import com.flexpoker.table.command.aggregate.Table;
 
 public class CommonAssertions {
 
-    public static void verifyEventIdsAndVersionNumbers(UUID tableId,
-            List<? extends Event> events) {
+    public static void verifyEventIds(UUID tableId, List<? extends Event> events) {
         var version = 0;
         for (Event event : events) {
             assertEquals(tableId, event.getAggregateId());
-            assertEquals(++version, event.getVersion());
         }
     }
 
@@ -27,8 +25,8 @@ public class CommonAssertions {
     }
 
     public static void verifyAppliedAndNewEventsForAggregate(Table table, Class<? extends Event>... eventClasses) {
-        verifyEventIdsAndVersionNumbers(table.getAggregateId(), table.fetchAppliedEvents());
-        verifyEventIdsAndVersionNumbers(table.getAggregateId(), table.fetchNewEvents());
+        verifyEventIds(table.getAggregateId(), table.fetchAppliedEvents());
+        verifyEventIds(table.getAggregateId(), table.fetchNewEvents());
         verifyNumberOfEventsAndEntireOrderByType(table.fetchAppliedEvents(), eventClasses);
         verifyNumberOfEventsAndEntireOrderByType(table.fetchNewEvents(), eventClasses);
     }

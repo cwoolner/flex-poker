@@ -51,7 +51,6 @@ public class NewHandIsClearedToStartTest {
         
         assertEquals(7, game.fetchAppliedEvents().size());
         assertEquals(1, game.fetchNewEvents().size());
-        assertEquals(7, game.fetchNewEvents().get(0).getVersion());
     }
 
 }
