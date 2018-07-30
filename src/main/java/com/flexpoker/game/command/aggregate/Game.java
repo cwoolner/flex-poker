@@ -36,8 +36,6 @@ public class Game extends AggregateRoot<GameEvent> {
 
     private final UUID aggregateId;
 
-    private int aggregateVersion;
-
     private final Map<Class<? extends GameEvent>, EventApplier<? super GameEvent>> methodTable;
 
     private GameStage gameStage;
@@ -75,10 +73,8 @@ public class Game extends AggregateRoot<GameEvent> {
         populateMethodTable();
 
         if (!creatingFromEvents) {
-            var gameCreatedEvent = new GameCreatedEvent(
-                    aggregateId, ++aggregateVersion, gameName,
-                    maxNumberOfPlayers, numberOfPlayersPerTable, createdById,
-                    blindSchedule.getNumberOfMinutesBetweenLevels(),
+            var gameCreatedEvent = new GameCreatedEvent(aggregateId, gameName, maxNumberOfPlayers,
+                    numberOfPlayersPerTable, createdById, blindSchedule.getNumberOfMinutesBetweenLevels(),
                     numberOfSecondsForActionOnTimer);
             addNewEvent(gameCreatedEvent);
             applyCommonEvent(gameCreatedEvent);
@@ -88,7 +84,6 @@ public class Game extends AggregateRoot<GameEvent> {
     @Override
     public void applyAllHistoricalEvents(List<GameEvent> events) {
         for (GameEvent event : events) {
-            aggregateVersion++;
             applyCommonEvent(event);
         }
     }
@@ -170,18 +165,16 @@ public class Game extends AggregateRoot<GameEvent> {
         } else {
             Optional<GameEvent> singleBalancingEvent;
             do {
-                singleBalancingEvent = tableBalancer.createSingleBalancingEvent(aggregateVersion + 1,
-                        tableId, pausedTablesForBalancing, tableIdToPlayerIdsMap, playerToChipsAtTableMap);
+                singleBalancingEvent = tableBalancer.createSingleBalancingEvent(tableId, pausedTablesForBalancing,
+                        tableIdToPlayerIdsMap, playerToChipsAtTableMap);
                 if (singleBalancingEvent.isPresent()) {
-                    aggregateVersion++;
                     addNewEvent(singleBalancingEvent.get());
                     applyCommonEvent(singleBalancingEvent.get());
                 }
             } while (singleBalancingEvent.isPresent());
 
             if (tableIdToPlayerIdsMap.containsKey(tableId) && !pausedTablesForBalancing.contains(tableId)) {
-                var event = new NewHandIsClearedToStartEvent(
-                        aggregateId, ++aggregateVersion, tableId,
+                var event = new NewHandIsClearedToStartEvent(aggregateId, tableId,
                         blindSchedule.getCurrentBlindAmounts());
                 addNewEvent(event);
                 applyCommonEvent(event);
@@ -196,7 +189,7 @@ public class Game extends AggregateRoot<GameEvent> {
         }
 
         if (!blindSchedule.isMaxLevel()) {
-            var event = new BlindsIncreasedEvent(aggregateId, ++aggregateVersion);
+            var event = new BlindsIncreasedEvent(aggregateId);
             addNewEvent(event);
             applyCommonEvent(event);
         }
@@ -209,7 +202,7 @@ public class Game extends AggregateRoot<GameEvent> {
             throw new FlexPokerException("player is not active in the game");
         }
 
-        var event = new PlayerBustedGameEvent(aggregateId, ++aggregateVersion, playerId);
+        var event = new PlayerBustedGameEvent(aggregateId, playerId);
         addNewEvent(event);
         applyCommonEvent(event);
     }
@@ -227,7 +220,7 @@ public class Game extends AggregateRoot<GameEvent> {
             throw new FlexPokerException("You are already in this game.");
         }
 
-        var event = new GameJoinedEvent(aggregateId, ++aggregateVersion, playerId);
+        var event = new GameJoinedEvent(aggregateId, playerId);
         addNewEvent(event);
         applyCommonEvent(event);
     }
@@ -237,7 +230,7 @@ public class Game extends AggregateRoot<GameEvent> {
             throw new FlexPokerException(
                     "to move to STARTING, the game stage must be REGISTERING");
         }
-        var event = new GameMovedToStartingStageEvent(aggregateId, ++aggregateVersion);
+        var event = new GameMovedToStartingStageEvent(aggregateId);
         addNewEvent(event);
         applyCommonEvent(event);
     }
@@ -249,8 +242,7 @@ public class Game extends AggregateRoot<GameEvent> {
         }
         var tableIdToPlayerIdsMap = createTableToPlayerMap();
 
-        var event = new GameTablesCreatedAndPlayersAssociatedEvent(
-                aggregateId, ++aggregateVersion, tableIdToPlayerIdsMap,
+        var event = new GameTablesCreatedAndPlayersAssociatedEvent(aggregateId, tableIdToPlayerIdsMap,
                 numberOfPlayersPerTable);
         addNewEvent(event);
         applyCommonEvent(event);
@@ -303,7 +295,7 @@ public class Game extends AggregateRoot<GameEvent> {
                     "tableToPlayerIdsMap should be filled at this point");
         }
 
-        var event = new GameStartedEvent(aggregateId, ++aggregateVersion, tableIdToPlayerIdsMap.keySet(), blindSchedule);
+        var event = new GameStartedEvent(aggregateId, tableIdToPlayerIdsMap.keySet(), blindSchedule);
         addNewEvent(event);
         applyCommonEvent(event);
     }

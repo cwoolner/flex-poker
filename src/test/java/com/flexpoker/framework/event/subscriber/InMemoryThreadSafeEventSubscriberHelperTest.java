@@ -19,9 +19,9 @@ public class InMemoryThreadSafeEventSubscriberHelperTest {
     @Test
     public void testSentInOrderRunsInOrder() {
         var tableId = UUID.randomUUID();
-        var event1 = new BlindsIncreasedEvent(tableId, 1);
-        var event2 = new GameFinishedEvent(tableId, 2);
-        var event3 = new GameJoinedEvent(tableId, 3, UUID.randomUUID());
+        var event1 = new BlindsIncreasedEvent(tableId);
+        var event2 = new GameFinishedEvent(tableId);
+        var event3 = new GameJoinedEvent(tableId, UUID.randomUUID());
 
         var handlerMap = new HashMap<Class<? extends Event>, EventHandler<? extends Event>>();
 
@@ -45,9 +45,9 @@ public class InMemoryThreadSafeEventSubscriberHelperTest {
     @Test
     public void testSentInSwappedOrderRunsInOrder() {
         var tableId = UUID.randomUUID();
-        var event1 = new BlindsIncreasedEvent(tableId, 1);
-        var event2 = new GameFinishedEvent(tableId, 2);
-        var event3 = new GameJoinedEvent(tableId, 3, UUID.randomUUID());
+        var event1 = new BlindsIncreasedEvent(tableId);
+        var event2 = new GameFinishedEvent(tableId);
+        var event3 = new GameJoinedEvent(tableId, UUID.randomUUID());
 
         var handlerMap = new HashMap<Class<? extends Event>, EventHandler<? extends Event>>();
 

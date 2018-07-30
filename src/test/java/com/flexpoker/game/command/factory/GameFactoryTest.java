@@ -36,7 +36,7 @@ public class GameFactoryTest {
     @Test
     public void testCreateFrom() {
         var events = new ArrayList<GameEvent>();
-        events.add(new GameCreatedEvent(null, 1, null, 0, 0, null, 10, 20));
+        events.add(new GameCreatedEvent(null, null, 0, 0, null, 10, 20));
         var game = sut.createFrom(events);
         assertNotNull(game);
         assertFalse(game.fetchAppliedEvents().isEmpty());

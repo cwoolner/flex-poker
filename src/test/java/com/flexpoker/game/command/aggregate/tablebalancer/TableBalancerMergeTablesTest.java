@@ -22,7 +22,7 @@ public class TableBalancerMergeTablesTest {
                 .filter(x -> !x.equals(subjectTableId)).findFirst().get();
 
         var tableBalancer = new TableBalancer(UUID.randomUUID(), 2);
-        var event = tableBalancer.createSingleBalancingEvent(1, subjectTableId, Collections.singleton(otherTableId),
+        var event = tableBalancer.createSingleBalancingEvent(subjectTableId, Collections.singleton(otherTableId),
                 tableToPlayersMap, createDefaultChipMapForSubjectTable(subjectTableId, tableToPlayersMap));
         assertEquals(PlayerMovedToNewTableEvent.class, event.get().getClass());
         assertEquals(subjectTableId, ((PlayerMovedToNewTableEvent) event.get()).getFromTableId());
@@ -34,7 +34,7 @@ public class TableBalancerMergeTablesTest {
         var tableToPlayersMap = createTableToPlayersMap(subjectTableId, 1, 2);
 
         var tableBalancer = new TableBalancer(UUID.randomUUID(), 3);
-        var event = tableBalancer.createSingleBalancingEvent(1, subjectTableId, Collections.emptySet(),
+        var event = tableBalancer.createSingleBalancingEvent(subjectTableId, Collections.emptySet(),
                 tableToPlayersMap, createDefaultChipMapForSubjectTable(subjectTableId, tableToPlayersMap));
         assertEquals(PlayerMovedToNewTableEvent.class, event.get().getClass());
         assertEquals(subjectTableId, ((PlayerMovedToNewTableEvent) event.get()).getFromTableId());
@@ -49,7 +49,7 @@ public class TableBalancerMergeTablesTest {
                 .getKey();
 
         var tableBalancer = new TableBalancer(UUID.randomUUID(), 3);
-        var event = tableBalancer.createSingleBalancingEvent(1, subjectTableId, Collections.emptySet(),
+        var event = tableBalancer.createSingleBalancingEvent(subjectTableId, Collections.emptySet(),
                 tableToPlayersMap, createDefaultChipMapForSubjectTable(subjectTableId, tableToPlayersMap));
         assertEquals(PlayerMovedToNewTableEvent.class, event.get().getClass());
         assertEquals(subjectTableId, ((PlayerMovedToNewTableEvent) event.get()).getFromTableId());

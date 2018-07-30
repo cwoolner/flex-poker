@@ -26,12 +26,12 @@ public class IncrementBlindsTest {
         var tableIds = tableIdToPlayerIdsMap.keySet();
 
         var events = new ArrayList<GameEvent>();
-        events.add(new GameCreatedEvent(gameId, 1, "test", 2, 2, UUID.randomUUID(), 10, 20));
-        events.add(new GameJoinedEvent(gameId, 2, UUID.randomUUID()));
-        events.add(new GameJoinedEvent(gameId, 3, UUID.randomUUID()));
-        events.add(new GameMovedToStartingStageEvent(gameId, 4));
-        events.add(new GameTablesCreatedAndPlayersAssociatedEvent(gameId, 5, tableIdToPlayerIdsMap, 2));
-        events.add(new GameStartedEvent(gameId, 6, tableIds, new BlindSchedule(10)));
+        events.add(new GameCreatedEvent(gameId, "test", 2, 2, UUID.randomUUID(), 10, 20));
+        events.add(new GameJoinedEvent(gameId, UUID.randomUUID()));
+        events.add(new GameJoinedEvent(gameId, UUID.randomUUID()));
+        events.add(new GameMovedToStartingStageEvent(gameId));
+        events.add(new GameTablesCreatedAndPlayersAssociatedEvent(gameId, tableIdToPlayerIdsMap, 2));
+        events.add(new GameStartedEvent(gameId, tableIds, new BlindSchedule(10)));
 
         var game = new DefaultGameFactory().createFrom(events);
         game.increaseBlinds();
@@ -48,12 +48,12 @@ public class IncrementBlindsTest {
         var tableIds = tableIdToPlayerIdsMap.keySet();
 
         var events = new ArrayList<GameEvent>();
-        events.add(new GameCreatedEvent(gameId, 1, "test", 2, 2, UUID.randomUUID(), 10, 20));
-        events.add(new GameJoinedEvent(gameId, 2, UUID.randomUUID()));
-        events.add(new GameJoinedEvent(gameId, 3, UUID.randomUUID()));
-        events.add(new GameMovedToStartingStageEvent(gameId, 4));
-        events.add(new GameTablesCreatedAndPlayersAssociatedEvent(gameId, 5, tableIdToPlayerIdsMap, 2));
-        events.add(new GameStartedEvent(gameId, 6, tableIds, new BlindSchedule(10)));
+        events.add(new GameCreatedEvent(gameId, "test", 2, 2, UUID.randomUUID(), 10, 20));
+        events.add(new GameJoinedEvent(gameId, UUID.randomUUID()));
+        events.add(new GameJoinedEvent(gameId, UUID.randomUUID()));
+        events.add(new GameMovedToStartingStageEvent(gameId));
+        events.add(new GameTablesCreatedAndPlayersAssociatedEvent(gameId, tableIdToPlayerIdsMap, 2));
+        events.add(new GameStartedEvent(gameId, tableIds, new BlindSchedule(10)));
 
         var game = new DefaultGameFactory().createFrom(events);
         game.increaseBlinds();
@@ -73,11 +73,11 @@ public class IncrementBlindsTest {
         var tableIdToPlayerIdsMap = new HashMap<UUID, Set<UUID>>();
 
         var events = new ArrayList<GameEvent>();
-        events.add(new GameCreatedEvent(gameId, 1, "test", 2, 2, UUID.randomUUID(), 10, 20));
-        events.add(new GameJoinedEvent(gameId, 2, UUID.randomUUID()));
-        events.add(new GameJoinedEvent(gameId, 3, UUID.randomUUID()));
-        events.add(new GameMovedToStartingStageEvent(gameId, 4));
-        events.add(new GameTablesCreatedAndPlayersAssociatedEvent(gameId, 5, tableIdToPlayerIdsMap, 2));
+        events.add(new GameCreatedEvent(gameId, "test", 2, 2, UUID.randomUUID(), 10, 20));
+        events.add(new GameJoinedEvent(gameId, UUID.randomUUID()));
+        events.add(new GameJoinedEvent(gameId, UUID.randomUUID()));
+        events.add(new GameMovedToStartingStageEvent(gameId));
+        events.add(new GameTablesCreatedAndPlayersAssociatedEvent(gameId, tableIdToPlayerIdsMap, 2));
 
         var game = new DefaultGameFactory().createFrom(events);
         game.increaseBlinds();

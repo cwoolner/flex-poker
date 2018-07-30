@@ -26,10 +26,8 @@ public class TableBalancer {
         this.gameId = gameId;
     }
 
-    public Optional<GameEvent> createSingleBalancingEvent(int version,
-            UUID subjectTableId, Set<UUID> pausedTablesForBalancing,
-            Map<UUID, Set<UUID>> tableToPlayersMap,
-            Map<UUID, Integer> playerToChipsAtTableMap) {
+    public Optional<GameEvent> createSingleBalancingEvent(UUID subjectTableId, Set<UUID> pausedTablesForBalancing,
+            Map<UUID, Set<UUID>> tableToPlayersMap, Map<UUID, Integer> playerToChipsAtTableMap) {
 
         // make sure at least two players exists. we're in a bad state if not
         var totalNumberOfPlayers = getTotalNumberOfPlayers(tableToPlayersMap);
@@ -43,16 +41,15 @@ public class TableBalancer {
                 .filter(x -> x.getValue().isEmpty())
                 .findFirst();
         if (emptyTable.isPresent()) {
-            return Optional.of(new TableRemovedEvent(gameId, version,
-                    emptyTable.get().getKey()));
+            return Optional.of(new TableRemovedEvent(gameId, emptyTable.get().getKey()));
         }
 
         // check to see if the number of tables is greater than the number it
         // should have. if so, move all the players from this table to other
         // tables starting with the one with the lowest number
         if (tableToPlayersMap.size() > getRequiredNumberOfTables(totalNumberOfPlayers)) {
-            return createEventToMoveUserFromSubjectTableToAnyMinTable(version,
-                    subjectTableId, tableToPlayersMap, playerToChipsAtTableMap);
+            return createEventToMoveUserFromSubjectTableToAnyMinTable(subjectTableId, tableToPlayersMap,
+                    playerToChipsAtTableMap);
         }
 
         if (isTableOutOfBalance(subjectTableId, tableToPlayersMap)) {
@@ -62,7 +59,7 @@ public class TableBalancer {
             // player
             if (tableSize == tableToPlayersMap.values().stream()
                     .map(x -> x.size()).min(Integer::compare).get()) {
-                return Optional.of(new TablePausedForBalancingEvent(gameId, version, subjectTableId));
+                return Optional.of(new TablePausedForBalancingEvent(gameId, subjectTableId));
             }
 
             // only move a player if the out of balance table has the max number
@@ -70,8 +67,8 @@ public class TableBalancer {
             // any players
             if (tableSize == tableToPlayersMap.values().stream()
                     .map(x -> x.size()).max(Integer::compare).get()) {
-                return createEventToMoveUserFromSubjectTableToAnyMinTable(
-                        version, subjectTableId, tableToPlayersMap, playerToChipsAtTableMap);
+                return createEventToMoveUserFromSubjectTableToAnyMinTable(subjectTableId, tableToPlayersMap,
+                        playerToChipsAtTableMap);
             }
         }
 
@@ -85,21 +82,19 @@ public class TableBalancer {
                 .filter(x -> !pausedTablesThatShouldStayPaused.contains(x))
                 .findFirst();
         if (tableToResume.isPresent()) {
-            return Optional.of(new TableResumedAfterBalancingEvent(gameId, version, tableToResume.get()));
+            return Optional.of(new TableResumedAfterBalancingEvent(gameId, tableToResume.get()));
         }
 
         return Optional.empty();
     }
 
-    private Optional<GameEvent> createEventToMoveUserFromSubjectTableToAnyMinTable(
-            int version, UUID subjectTableId,
-            Map<UUID, Set<UUID>> tableToPlayersMap,
-            Map<UUID, Integer> playerToChipsAtTableMap) {
+    private Optional<GameEvent> createEventToMoveUserFromSubjectTableToAnyMinTable(UUID subjectTableId,
+            Map<UUID, Set<UUID>> tableToPlayersMap, Map<UUID, Integer> playerToChipsAtTableMap) {
         var playerToMove = tableToPlayersMap.get(subjectTableId).stream()
                 .findFirst().get();
         var toTableId = findNonSubjectMinTableId(subjectTableId, tableToPlayersMap);
         int chips = playerToChipsAtTableMap.get(playerToMove);
-        return Optional.of(new PlayerMovedToNewTableEvent(gameId, version, subjectTableId, toTableId, playerToMove, chips));
+        return Optional.of(new PlayerMovedToNewTableEvent(gameId, subjectTableId, toTableId, playerToMove, chips));
     }
 
     private UUID findNonSubjectMinTableId(UUID subjectTableId,

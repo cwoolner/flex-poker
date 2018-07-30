@@ -17,7 +17,7 @@ public class InMemoryGameEventRepositoryTest {
     public void testFetchAll() {
         var repository = new InMemoryGameEventRepository();
         var gameId = UUID.randomUUID();
-        repository.save(new GameCreatedEvent(gameId , 1, "test", 2, 2, UUID.randomUUID(), 10, 10));
+        repository.save(new GameCreatedEvent(gameId, "test", 2, 2, UUID.randomUUID(), 10, 10));
         var events = repository.fetchAll(gameId);
         assertEquals(1, events.size());
     }
@@ -26,8 +26,8 @@ public class InMemoryGameEventRepositoryTest {
     public void testFetchGameCreatedEventSuccess() {
         var repository = new InMemoryGameEventRepository();
         var gameId = UUID.randomUUID();
-        repository.save(new GameCreatedEvent(gameId , 1, "test", 2, 2, UUID.randomUUID(), 10, 10));
-        repository.save(new GameJoinedEvent(gameId, 2, UUID.randomUUID()));
+        repository.save(new GameCreatedEvent(gameId, "test", 2, 2, UUID.randomUUID(), 10, 10));
+        repository.save(new GameJoinedEvent(gameId, UUID.randomUUID()));
         var event = repository.fetchGameCreatedEvent(gameId);
         assertNotNull(event);
     }
@@ -36,7 +36,7 @@ public class InMemoryGameEventRepositoryTest {
     public void testFetchGameCreatedEventFail() {
         var repository = new InMemoryGameEventRepository();
         var gameId = UUID.randomUUID();
-        repository.save(new GameJoinedEvent(gameId, 1, UUID.randomUUID()));
+        repository.save(new GameJoinedEvent(gameId, UUID.randomUUID()));
         var event = repository.fetchGameCreatedEvent(gameId);
         assertNull(event);
     }

@@ -25,7 +25,7 @@ public class TableAssignmentTest {
 
         for (int i = 0; i < 1000; i++) {
             var events = new ArrayList<GameEvent>();
-            events.add(new GameCreatedEvent(UUID.randomUUID(), 1, "test", 4, 2, UUID.randomUUID(), 10, 20));
+            events.add(new GameCreatedEvent(UUID.randomUUID(), "test", 4, 2, UUID.randomUUID(), 10, 20));
 
             var game = new DefaultGameFactory().createFrom(events);
 
@@ -156,7 +156,7 @@ public class TableAssignmentTest {
     private Game createGameAndJoinAllPlayers(int numberOfPlayers,
             int numberOfPlayersPerTable) {
         var events = new ArrayList<GameEvent>();
-        events.add(new GameCreatedEvent(UUID.randomUUID(), 1, "test", numberOfPlayers, numberOfPlayersPerTable,
+        events.add(new GameCreatedEvent(UUID.randomUUID(), "test", numberOfPlayers, numberOfPlayersPerTable,
                 UUID.randomUUID(), 10, 20));
 
         var game = new DefaultGameFactory().createFrom(events);

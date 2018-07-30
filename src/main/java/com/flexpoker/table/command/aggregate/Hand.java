@@ -133,7 +133,7 @@ public class Hand {
                 handEvaluationList);
     }
 
-    public List<TableEvent> dealHand(int aggregateVersion, int actionOnPosition) {
+    public List<TableEvent> dealHand(int actionOnPosition) {
         var eventsCreated = new ArrayList<TableEvent>();
 
         seatMap.keySet().stream().filter(x -> seatMap.get(x) != null)
@@ -144,22 +144,18 @@ public class Hand {
         lastToActPlayerId = seatMap.get(Integer.valueOf(bigBlindPosition));
         handDealerState = HandDealerState.POCKET_CARDS_DEALT;
 
-        var handDealtEvent = new HandDealtEvent(tableId, aggregateVersion,
-                gameId, entityId, flopCards, turnCard, riverCard, buttonOnPosition,
-                smallBlindPosition, bigBlindPosition, lastToActPlayerId, seatMap,
-                playerToPocketCardsMap, possibleSeatActionsMap, playersStillInHand,
-                handEvaluationList, handDealerState, chipsInBackMap, chipsInFrontMap,
-                callAmountsMap, raiseToAmountsMap, smallBlind, bigBlind);
+        var handDealtEvent = new HandDealtEvent(tableId, gameId, entityId, flopCards, turnCard, riverCard,
+                buttonOnPosition, smallBlindPosition, bigBlindPosition, lastToActPlayerId, seatMap,
+                playerToPocketCardsMap, possibleSeatActionsMap, playersStillInHand, handEvaluationList, handDealerState,
+                chipsInBackMap, chipsInFrontMap, callAmountsMap, raiseToAmountsMap, smallBlind, bigBlind);
         eventsCreated.add(handDealtEvent);
 
         // creat an initial empty pot for the table
-        eventsCreated.add(new PotCreatedEvent(tableId, aggregateVersion + 1,
-                gameId, entityId, UUID.randomUUID(), playersStillInHand));
+        eventsCreated.add(new PotCreatedEvent(tableId, gameId, entityId, UUID.randomUUID(), playersStillInHand));
 
         var actionOnPlayerId = seatMap.get(Integer.valueOf(actionOnPosition));
 
-        var actionOnChangedEvent = new ActionOnChangedEvent(tableId,
-                aggregateVersion + 2, gameId, entityId, actionOnPlayerId);
+        var actionOnChangedEvent = new ActionOnChangedEvent(tableId, gameId, entityId, actionOnPlayerId);
         eventsCreated.add(actionOnChangedEvent);
 
         return eventsCreated;
@@ -217,48 +213,48 @@ public class Hand {
         }
     }
 
-    public TableEvent check(UUID playerId, boolean forced, int aggregateVersion) {
+    public TableEvent check(UUID playerId, boolean forced) {
         checkActionOnPlayer(playerId);
         checkPerformAction(playerId, PlayerAction.CHECK);
 
         return forced
-                ? new PlayerForceCheckedEvent(tableId, aggregateVersion, gameId, entityId, playerId)
-                : new PlayerCheckedEvent(tableId, aggregateVersion, gameId, entityId, playerId);
+                ? new PlayerForceCheckedEvent(tableId, gameId, entityId, playerId)
+                : new PlayerCheckedEvent(tableId, gameId, entityId, playerId);
     }
 
-    public PlayerCalledEvent call(UUID playerId, int aggregateVersion) {
+    public PlayerCalledEvent call(UUID playerId) {
         checkActionOnPlayer(playerId);
         checkPerformAction(playerId, PlayerAction.CALL);
 
-        return new PlayerCalledEvent(tableId, aggregateVersion, gameId, entityId, playerId);
+        return new PlayerCalledEvent(tableId, gameId, entityId, playerId);
     }
 
-    public TableEvent fold(UUID playerId, boolean forced, int aggregateVersion) {
+    public TableEvent fold(UUID playerId, boolean forced) {
         checkActionOnPlayer(playerId);
         checkPerformAction(playerId, PlayerAction.FOLD);
 
         return forced
-                ? new PlayerForceFoldedEvent(tableId, aggregateVersion, gameId, entityId, playerId)
-                : new PlayerFoldedEvent(tableId, aggregateVersion, gameId, entityId, playerId);
+                ? new PlayerForceFoldedEvent(tableId, gameId, entityId, playerId)
+                : new PlayerFoldedEvent(tableId, gameId, entityId, playerId);
     }
 
-    public PlayerRaisedEvent raise(UUID playerId, int aggregateVersion, int raiseToAmount) {
+    public PlayerRaisedEvent raise(UUID playerId, int raiseToAmount) {
         checkActionOnPlayer(playerId);
         checkPerformAction(playerId, PlayerAction.RAISE);
         checkRaiseAmountValue(playerId, raiseToAmount);
 
-        return new PlayerRaisedEvent(tableId,aggregateVersion, gameId, entityId, playerId, raiseToAmount);
+        return new PlayerRaisedEvent(tableId, gameId, entityId, playerId, raiseToAmount);
     }
 
-    TableEvent expireActionOn(UUID playerId, int aggregateVersion) {
+    TableEvent expireActionOn(UUID playerId) {
         if (callAmountsMap.get(playerId).intValue() == 0) {
-            return check(playerId, true, aggregateVersion);
+            return check(playerId, true);
         }
 
-        return fold(playerId, true, aggregateVersion);
+        return fold(playerId, true);
     }
 
-    public List<TableEvent> changeActionOn(int aggregateVersion) {
+    public List<TableEvent> changeActionOn() {
         if (chipsInBackMap.values().stream().allMatch(x -> x == 0)) {
             return Collections.emptyList();
         }
@@ -278,10 +274,8 @@ public class Hand {
             var nextPlayerToAct = findNextToAct();
             var lastPlayerToAct = seatMap.get(Integer.valueOf(determineLastToAct()));
 
-            var actionOnChangedEvent = new ActionOnChangedEvent(tableId,
-                    aggregateVersion, gameId, entityId, nextPlayerToAct);
-            var lastToActChangedEvent = new LastToActChangedEvent(
-                    tableId, aggregateVersion + 1, gameId, entityId, lastPlayerToAct);
+            var actionOnChangedEvent = new ActionOnChangedEvent(tableId, gameId, entityId, nextPlayerToAct);
+            var lastToActChangedEvent = new LastToActChangedEvent(tableId, gameId, entityId, lastPlayerToAct);
 
             eventsCreated.add(actionOnChangedEvent);
             eventsCreated.add(lastToActChangedEvent);
@@ -292,69 +286,59 @@ public class Hand {
             var nextPlayerToAct = findActionOnPlayerIdForNewRound();
             var newRoundLastPlayerToAct = seatMap.get(Integer.valueOf(determineLastToAct()));
 
-            var actionOnChangedEvent = new ActionOnChangedEvent(tableId,
-                    aggregateVersion, gameId, entityId, nextPlayerToAct);
-            var lastToActChangedEvent = new LastToActChangedEvent(
-                    tableId, aggregateVersion + 1, gameId, entityId,
-                    newRoundLastPlayerToAct);
+            var actionOnChangedEvent = new ActionOnChangedEvent(tableId, gameId, entityId, nextPlayerToAct);
+            var lastToActChangedEvent = new LastToActChangedEvent(tableId, gameId, entityId, newRoundLastPlayerToAct);
             eventsCreated.add(actionOnChangedEvent);
             eventsCreated.add(lastToActChangedEvent);
         }
         // just a normal transition mid-round
         else {
             var nextPlayerToAct = findNextToAct();
-            var actionOnChangedEvent = new ActionOnChangedEvent(tableId,
-                    aggregateVersion, gameId, entityId, nextPlayerToAct);
+            var actionOnChangedEvent = new ActionOnChangedEvent(tableId, gameId, entityId, nextPlayerToAct);
             eventsCreated.add(actionOnChangedEvent);
         }
 
         return eventsCreated;
     }
 
-    Optional<TableEvent> dealCommonCardsIfAppropriate(int aggregateVersion) {
+    Optional<TableEvent> dealCommonCardsIfAppropriate() {
         if (handDealerState == HandDealerState.FLOP_DEALT && !flopDealt) {
-            return Optional.of(new FlopCardsDealtEvent(tableId, aggregateVersion, gameId,
-                    entityId));
+            return Optional.of(new FlopCardsDealtEvent(tableId, gameId, entityId));
         }
 
         if (handDealerState == HandDealerState.TURN_DEALT && !turnDealt) {
-            return Optional.of(new TurnCardDealtEvent(tableId, aggregateVersion, gameId,
-                    entityId));
+            return Optional.of(new TurnCardDealtEvent(tableId, gameId, entityId));
         }
 
         if (handDealerState == HandDealerState.RIVER_DEALT && !riverDealt) {
-            return Optional.of(new RiverCardDealtEvent(tableId, aggregateVersion, gameId,
-                    entityId));
+            return Optional.of(new RiverCardDealtEvent(tableId, gameId, entityId));
         }
 
         return Optional.empty();
     }
 
-    List<TableEvent> handlePotAndRoundCompleted(int aggregateVersion) {
+    List<TableEvent> handlePotAndRoundCompleted() {
         if (!seatMap.get(Integer.valueOf(actionOnPosition)).equals(lastToActPlayerId)
                 && playersStillInHand.size() > 1) {
             return Collections.emptyList();
         }
 
         var tableEvents = new ArrayList<TableEvent>();
-        tableEvents.addAll(potHandler.calculatePots(aggregateVersion,
-                chipsInFrontMap, chipsInBackMap, playersStillInHand));
+        tableEvents.addAll(potHandler.calculatePots(chipsInFrontMap, chipsInBackMap, playersStillInHand));
 
         var nextHandDealerState = playersStillInHand.size() == 1 ? HandDealerState.COMPLETE
                 : HandDealerState.values()[handDealerState.ordinal() + 1];
 
-        var roundCompletedEvent = new RoundCompletedEvent(tableId, aggregateVersion
-                + tableEvents.size(), gameId, entityId, nextHandDealerState);
+        var roundCompletedEvent = new RoundCompletedEvent(tableId, gameId, entityId, nextHandDealerState);
         tableEvents.add(roundCompletedEvent);
         applyEvent(roundCompletedEvent);
 
         return tableEvents;
     }
 
-    Optional<TableEvent> finishHandIfAppropriate(int aggregateVersion) {
+    Optional<TableEvent> finishHandIfAppropriate() {
         if (handDealerState == HandDealerState.COMPLETE) {
-            return Optional.of(new HandCompletedEvent(tableId, aggregateVersion,
-                    gameId, entityId, chipsInBackMap));
+            return Optional.of(new HandCompletedEvent(tableId, gameId, entityId, chipsInBackMap));
         }
 
         return Optional.empty();
@@ -544,12 +528,12 @@ public class Hand {
         throw new IllegalStateException("unable to find next to act");
     }
 
-    Optional<WinnersDeterminedEvent> determineWinnersIfAppropriate(int aggregateVersion) {
+    Optional<WinnersDeterminedEvent> determineWinnersIfAppropriate() {
         if (handDealerState == HandDealerState.COMPLETE) {
             var playersRequiredToShowCards = potHandler.fetchPlayersRequriedToShowCards(playersStillInHand);
             var playersToChipsWonMap = potHandler.fetchChipsWon(playersStillInHand);
-            return Optional.of(new WinnersDeterminedEvent(tableId, aggregateVersion,
-                    gameId, entityId, playersRequiredToShowCards, playersToChipsWonMap));
+            return Optional.of(new WinnersDeterminedEvent(tableId, gameId, entityId, playersRequiredToShowCards,
+                    playersToChipsWonMap));
         }
 
         return Optional.empty();
@@ -662,9 +646,9 @@ public class Hand {
         });
     }
 
-    Optional<TableEvent> autoMoveHandForward(int aggregateVersion) {
+    Optional<TableEvent> autoMoveHandForward() {
         return chipsInBackMap.values().stream().allMatch(x -> x == 0)
-                ? Optional.of(new AutoMoveHandForwardEvent(tableId, aggregateVersion, gameId, entityId))
+                ? Optional.of(new AutoMoveHandForwardEvent(tableId, gameId, entityId))
                 : Optional.empty();
     }
 

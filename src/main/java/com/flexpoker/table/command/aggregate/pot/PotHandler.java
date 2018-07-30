@@ -109,13 +109,10 @@ public class PotHandler {
      * player's all-in should be closed. Multiple closed pots can exist, but
      * only one open pot should ever exist at any given time.
      * 
-     * @param aggregateVersion
      * @param playersStillInHand
      * @param chipsInFrontMap
      */
-    public List<TableEvent> calculatePots(int aggregateVersion,
-            Map<UUID, Integer> chipsInFrontMap,
-            Map<UUID, Integer> chipsInBackMap,
+    public List<TableEvent> calculatePots(Map<UUID, Integer> chipsInFrontMap, Map<UUID, Integer> chipsInBackMap,
             Set<UUID> playersStillInHand) {
         var newPotEvents = new ArrayList<TableEvent>();
 
@@ -141,8 +138,7 @@ public class PotHandler {
                     .collect(Collectors.toSet());
 
             if (!openPotOptional.isPresent()) {
-                var potCreatedEvent = new PotCreatedEvent(
-                        tableId, aggregateVersion, gameId, handId, openPotId, playersAtThisChipLevel);
+                var potCreatedEvent = new PotCreatedEvent(tableId, gameId, handId, openPotId, playersAtThisChipLevel);
                 newPotEvents.add(potCreatedEvent);
                 addNewPot(potCreatedEvent.getPotId(), potCreatedEvent.getPlayersInvolved());
             }
@@ -153,8 +149,8 @@ public class PotHandler {
             var increaseInChips = (chipsPerLevel - totalOfPreviousChipLevelIncreases) * playersAtThisChipLevel.size();
             totalOfPreviousChipLevelIncreases += chipsPerLevel;
             
-            var potAmountIncreasedEvent = new PotAmountIncreasedEvent(
-                    tableId, aggregateVersion + newPotEvents.size(), gameId, handId, openPotId, increaseInChips);
+            var potAmountIncreasedEvent = new PotAmountIncreasedEvent(tableId, gameId, handId, openPotId,
+                    increaseInChips);
             newPotEvents.add(potAmountIncreasedEvent);
             addToPot(potAmountIncreasedEvent.getPotId(), potAmountIncreasedEvent.getAmountIncreased());
 
@@ -165,8 +161,7 @@ public class PotHandler {
                     .filter(player -> chipsInFrontMap.get(player) >= 1)
                     .filter(player -> chipsInBackMap.get(player) == 0)
                     .count() > 0) {
-                var potClosedEvent = new PotClosedEvent(
-                        tableId, aggregateVersion + newPotEvents.size(), gameId, handId, openPotId);
+                var potClosedEvent = new PotClosedEvent(tableId, gameId, handId, openPotId);
                 newPotEvents.add(potClosedEvent);
                 closePot(potClosedEvent.getPotId());
             };

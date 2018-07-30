@@ -34,12 +34,12 @@ public class NewHandIsClearedToStartTest {
         var tableIds = tableToPlayersMap.keySet();
 
         var events = new ArrayList<GameEvent>();
-        events.add(new GameCreatedEvent(gameId, 1, "test", 2, 2, UUID.randomUUID(), 10, 20));
-        events.add(new GameJoinedEvent(gameId, 2, player1Id));
-        events.add(new GameJoinedEvent(gameId, 3, player2Id));
-        events.add(new GameMovedToStartingStageEvent(gameId, 4));
-        events.add(new GameTablesCreatedAndPlayersAssociatedEvent(gameId, 5, tableToPlayersMap, 2));
-        events.add(new GameStartedEvent(gameId, 6, tableIds, new BlindSchedule(10)));
+        events.add(new GameCreatedEvent(gameId, "test", 2, 2, UUID.randomUUID(), 10, 20));
+        events.add(new GameJoinedEvent(gameId, player1Id));
+        events.add(new GameJoinedEvent(gameId, player2Id));
+        events.add(new GameMovedToStartingStageEvent(gameId));
+        events.add(new GameTablesCreatedAndPlayersAssociatedEvent(gameId, tableToPlayersMap, 2));
+        events.add(new GameStartedEvent(gameId, tableIds, new BlindSchedule(10)));
 
         var game = new DefaultGameFactory().createFrom(events);
 

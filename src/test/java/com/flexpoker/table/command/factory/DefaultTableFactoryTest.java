@@ -67,8 +67,7 @@ public class DefaultTableFactoryTest {
     @Test
     public void testCreateFrom() {
         var events = new ArrayList<TableEvent>();
-        events.add(new TableCreatedEvent(null, 1, UUID.randomUUID(), 6, new HashMap<>(),
-                1500));
+        events.add(new TableCreatedEvent(null, UUID.randomUUID(), 6, new HashMap<>(), 1500));
         var table = sut.createFrom(events);
         assertNotNull(table);
         assertFalse(table.fetchAppliedEvents().isEmpty());

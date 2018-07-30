@@ -19,7 +19,7 @@ public class TableBalancerExceptionTest {
         var tableToPlayersMap = createTableToPlayersMap(subjectTableId, 1);
 
         var tableBalancer = new TableBalancer(UUID.randomUUID(), 2);
-        tableBalancer.createSingleBalancingEvent(1, subjectTableId, Collections.emptySet(), tableToPlayersMap,
+        tableBalancer.createSingleBalancingEvent(subjectTableId, Collections.emptySet(), tableToPlayersMap,
                 createDefaultChipMapForSubjectTable(subjectTableId, tableToPlayersMap));
     }
 
@@ -29,7 +29,7 @@ public class TableBalancerExceptionTest {
         var tableToPlayersMap = createTableToPlayersMap(subjectTableId, 1, 0);
 
         var tableBalancer = new TableBalancer(UUID.randomUUID(), 2);
-        tableBalancer.createSingleBalancingEvent(1, subjectTableId, Collections.emptySet(), tableToPlayersMap,
+        tableBalancer.createSingleBalancingEvent(subjectTableId, Collections.emptySet(), tableToPlayersMap,
                 createDefaultChipMapForSubjectTable(subjectTableId, tableToPlayersMap));
     }
 
@@ -39,7 +39,7 @@ public class TableBalancerExceptionTest {
         var tableToPlayersMap = createTableToPlayersMap(subjectTableId, 0, 0);
 
         var tableBalancer = new TableBalancer(UUID.randomUUID(), 2);
-        tableBalancer.createSingleBalancingEvent(1, subjectTableId, Collections.emptySet(), tableToPlayersMap,
+        tableBalancer.createSingleBalancingEvent(subjectTableId, Collections.emptySet(), tableToPlayersMap,
                 createDefaultChipMapForSubjectTable(subjectTableId, tableToPlayersMap));
     }
 

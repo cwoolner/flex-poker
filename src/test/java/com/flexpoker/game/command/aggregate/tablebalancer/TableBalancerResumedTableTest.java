@@ -20,7 +20,7 @@ public class TableBalancerResumedTableTest {
         var tableToPlayersMap = createTableToPlayersMap(subjectTableId, 2);
 
         var tableBalancer = new TableBalancer(UUID.randomUUID(), 2);
-        var event = tableBalancer.createSingleBalancingEvent(1, subjectTableId, Collections.singleton(subjectTableId),
+        var event = tableBalancer.createSingleBalancingEvent(subjectTableId, Collections.singleton(subjectTableId),
                 tableToPlayersMap, createDefaultChipMapForSubjectTable(subjectTableId, tableToPlayersMap));
         assertEquals(TableResumedAfterBalancingEvent.class, event.get().getClass());
         assertEquals(subjectTableId, ((TableResumedAfterBalancingEvent) event.get()).getTableId());
@@ -34,7 +34,7 @@ public class TableBalancerResumedTableTest {
                 .filter(x -> !x.equals(subjectTableId)).findFirst().get();
 
         var tableBalancer = new TableBalancer(UUID.randomUUID(), 9);
-        var event = tableBalancer.createSingleBalancingEvent(1, subjectTableId, Collections.singleton(otherTableId),
+        var event = tableBalancer.createSingleBalancingEvent(subjectTableId, Collections.singleton(otherTableId),
                 tableToPlayersMap, createDefaultChipMapForSubjectTable(subjectTableId, tableToPlayersMap));
         assertEquals(TableResumedAfterBalancingEvent.class, event.get().getClass());
         assertEquals(otherTableId, ((TableResumedAfterBalancingEvent) event.get()).getTableId());

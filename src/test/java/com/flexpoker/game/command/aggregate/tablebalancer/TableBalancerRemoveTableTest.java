@@ -23,7 +23,7 @@ public class TableBalancerRemoveTableTest {
         var tableToPlayersMap = createTableToPlayersMap(subjectTableId, 0, 2);
 
         var tableBalancer = new TableBalancer(UUID.randomUUID(), 2);
-        var event = tableBalancer.createSingleBalancingEvent(1, subjectTableId, Collections.emptySet(),
+        var event = tableBalancer.createSingleBalancingEvent(subjectTableId, Collections.emptySet(),
                 tableToPlayersMap, createDefaultChipMapForSubjectTable(subjectTableId, tableToPlayersMap));
         assertEquals(TableRemovedEvent.class, event.get().getClass());
         assertEquals(subjectTableId, ((TableRemovedEvent) event.get()).getTableId());
@@ -37,7 +37,7 @@ public class TableBalancerRemoveTableTest {
                 .filter(x -> !x.equals(subjectTableId)).findFirst().get();
 
         var tableBalancer = new TableBalancer(UUID.randomUUID(), 2);
-        var event = tableBalancer.createSingleBalancingEvent(1, subjectTableId, Collections.emptySet(),
+        var event = tableBalancer.createSingleBalancingEvent(subjectTableId, Collections.emptySet(),
                 tableToPlayersMap, createDefaultChipMapForSubjectTable(subjectTableId, tableToPlayersMap));
         assertEquals(TableRemovedEvent.class, event.get().getClass());
         assertEquals(otherTableId, ((TableRemovedEvent) event.get()).getTableId());
@@ -52,7 +52,7 @@ public class TableBalancerRemoveTableTest {
                 .collect(Collectors.toSet());
 
         var tableBalancer = new TableBalancer(UUID.randomUUID(), 2);
-        var event = tableBalancer.createSingleBalancingEvent(1, subjectTableId, Collections.emptySet(),
+        var event = tableBalancer.createSingleBalancingEvent(subjectTableId, Collections.emptySet(),
                 tableToPlayersMap, createDefaultChipMapForSubjectTable(subjectTableId, tableToPlayersMap));
         assertEquals(TableRemovedEvent.class, event.get().getClass());
         assertTrue(otherTableIds.contains(((TableRemovedEvent) event.get()).getTableId()));
@@ -64,7 +64,7 @@ public class TableBalancerRemoveTableTest {
         var tableToPlayersMap = createTableToPlayersMap(subjectTableId, 2, 2);
 
         var tableBalancer = new TableBalancer(UUID.randomUUID(), 2);
-        var event = tableBalancer.createSingleBalancingEvent(1, subjectTableId, Collections.emptySet(),
+        var event = tableBalancer.createSingleBalancingEvent(subjectTableId, Collections.emptySet(),
                 tableToPlayersMap, createDefaultChipMapForSubjectTable(subjectTableId, tableToPlayersMap));
         assertFalse(event.isPresent());
     }

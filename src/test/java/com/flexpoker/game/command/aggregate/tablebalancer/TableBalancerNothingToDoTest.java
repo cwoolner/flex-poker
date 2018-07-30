@@ -19,7 +19,7 @@ public class TableBalancerNothingToDoTest {
         var tableToPlayersMap = createTableToPlayersMap(subjectTableId, 2);
 
         var tableBalancer = new TableBalancer(UUID.randomUUID(), 2);
-        var event = tableBalancer.createSingleBalancingEvent(1, subjectTableId, Collections.emptySet(),
+        var event = tableBalancer.createSingleBalancingEvent(subjectTableId, Collections.emptySet(),
                 tableToPlayersMap, createDefaultChipMapForSubjectTable(subjectTableId, tableToPlayersMap));
         assertFalse(event.isPresent());
     }
@@ -30,7 +30,7 @@ public class TableBalancerNothingToDoTest {
         var tableToPlayersMap = createTableToPlayersMap(subjectTableId, 2, 2);
 
         var tableBalancer = new TableBalancer(UUID.randomUUID(), 2);
-        var event = tableBalancer.createSingleBalancingEvent(1, subjectTableId, Collections.emptySet(),
+        var event = tableBalancer.createSingleBalancingEvent(subjectTableId, Collections.emptySet(),
                 tableToPlayersMap, createDefaultChipMapForSubjectTable(subjectTableId, tableToPlayersMap));
         assertFalse(event.isPresent());
     }
@@ -43,7 +43,7 @@ public class TableBalancerNothingToDoTest {
                 .filter(x -> !x.equals(subjectTableId)).findFirst().get();
 
         var tableBalancer = new TableBalancer(UUID.randomUUID(), 2);
-        var event = tableBalancer.createSingleBalancingEvent(1, subjectTableId, Collections.singleton(otherTableId),
+        var event = tableBalancer.createSingleBalancingEvent(subjectTableId, Collections.singleton(otherTableId),
                 tableToPlayersMap, createDefaultChipMapForSubjectTable(subjectTableId, tableToPlayersMap));
         assertFalse(event.isPresent());
     }
@@ -54,7 +54,7 @@ public class TableBalancerNothingToDoTest {
         var tableToPlayersMap = createTableToPlayersMap(subjectTableId, 6, 7);
 
         var tableBalancer = new TableBalancer(UUID.randomUUID(), 9);
-        var event = tableBalancer.createSingleBalancingEvent(1, subjectTableId, Collections.emptySet(),
+        var event = tableBalancer.createSingleBalancingEvent(subjectTableId, Collections.emptySet(),
                 tableToPlayersMap, createDefaultChipMapForSubjectTable(subjectTableId, tableToPlayersMap));
         assertFalse(event.isPresent());
     }
@@ -65,7 +65,7 @@ public class TableBalancerNothingToDoTest {
         var tableToPlayersMap = createTableToPlayersMap(subjectTableId, 7, 7, 7);
 
         var tableBalancer = new TableBalancer(UUID.randomUUID(), 9);
-        var event = tableBalancer.createSingleBalancingEvent(1, subjectTableId, Collections.emptySet(),
+        var event = tableBalancer.createSingleBalancingEvent(subjectTableId, Collections.emptySet(),
                 tableToPlayersMap, createDefaultChipMapForSubjectTable(subjectTableId, tableToPlayersMap));
         assertFalse(event.isPresent());
     }
@@ -76,7 +76,7 @@ public class TableBalancerNothingToDoTest {
         var tableToPlayersMap = createTableToPlayersMap(subjectTableId, 6, 6, 6);
 
         var tableBalancer = new TableBalancer(UUID.randomUUID(), 6);
-        var event = tableBalancer.createSingleBalancingEvent(1, subjectTableId, Collections.emptySet(),
+        var event = tableBalancer.createSingleBalancingEvent(subjectTableId, Collections.emptySet(),
                 tableToPlayersMap, createDefaultChipMapForSubjectTable(subjectTableId, tableToPlayersMap));
         assertFalse(event.isPresent());
     }
@@ -90,7 +90,7 @@ public class TableBalancerNothingToDoTest {
                 .getKey();
 
         var tableBalancer = new TableBalancer(UUID.randomUUID(), 9);
-        var event = tableBalancer.createSingleBalancingEvent(1, subjectTableId,
+        var event = tableBalancer.createSingleBalancingEvent(subjectTableId,
                 Collections.singleton(smallestOtherTableId), tableToPlayersMap,
                 createDefaultChipMapForSubjectTable(subjectTableId, tableToPlayersMap));
         assertFalse(event.isPresent());
@@ -105,7 +105,7 @@ public class TableBalancerNothingToDoTest {
                 .getKey();
 
         var tableBalancer = new TableBalancer(UUID.randomUUID(), 9);
-        var event = tableBalancer.createSingleBalancingEvent(1, subjectTableId,
+        var event = tableBalancer.createSingleBalancingEvent(subjectTableId,
                 Collections.singleton(smallestOtherTableId), tableToPlayersMap,
                 createDefaultChipMapForSubjectTable(subjectTableId, tableToPlayersMap));
         assertFalse(event.isPresent());
