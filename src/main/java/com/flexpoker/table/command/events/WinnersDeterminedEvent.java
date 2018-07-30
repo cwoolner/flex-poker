@@ -6,13 +6,11 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.flexpoker.framework.event.BaseEvent;
 import com.flexpoker.table.command.framework.TableEvent;
 
-public class WinnersDeterminedEvent extends BaseEvent implements
-        TableEvent {
+public class WinnersDeterminedEvent extends BaseEvent implements TableEvent {
 
     private final UUID gameId;
 
@@ -22,34 +20,32 @@ public class WinnersDeterminedEvent extends BaseEvent implements
 
     private final Map<UUID, Integer> playersToChipsWonMap;
 
-    @JsonCreator
-    public WinnersDeterminedEvent(
-            @JsonProperty(value = "aggregateId") UUID aggregateId,
-            @JsonProperty(value = "version") int version,
-            @JsonProperty(value = "gameId") UUID gameId,
-            @JsonProperty(value = "handId") UUID handId,
-            @JsonProperty(value = "playersToShowCards") Set<UUID> playersToShowCards,
-            @JsonProperty(value = "playersToChipsWonMap") Map<UUID, Integer> playersToChipsWonMap) {
-        super(aggregateId, version);
+    public WinnersDeterminedEvent(UUID aggregateId, UUID gameId, UUID handId, Set<UUID> playersToShowCards,
+            Map<UUID, Integer> playersToChipsWonMap) {
+        super(aggregateId);
         this.gameId = gameId;
         this.handId = handId;
         this.playersToShowCards = new HashSet<>(playersToShowCards);
         this.playersToChipsWonMap = new HashMap<>(playersToChipsWonMap);
     }
 
+    @JsonProperty
     @Override
     public UUID getGameId() {
         return gameId;
     }
 
+    @JsonProperty
     public UUID getHandId() {
         return handId;
     }
 
+    @JsonProperty
     public Set<UUID> getPlayersToShowCards() {
         return new HashSet<>(playersToShowCards);
     }
 
+    @JsonProperty
     public Map<UUID, Integer> getPlayersToChipsWonMap() {
         return new HashMap<>(playersToChipsWonMap);
     }

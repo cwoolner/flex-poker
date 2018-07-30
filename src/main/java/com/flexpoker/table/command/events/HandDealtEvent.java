@@ -8,7 +8,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.flexpoker.framework.event.BaseEvent;
 import com.flexpoker.model.PlayerAction;
@@ -64,32 +63,14 @@ public class HandDealtEvent extends BaseEvent implements TableEvent {
 
     private final int bigBlind;
 
-    @JsonCreator
-    public HandDealtEvent(
-            @JsonProperty(value = "aggregateId") UUID aggregateId,
-            @JsonProperty(value = "version") int version,
-            @JsonProperty(value = "gameId") UUID gameId,
-            @JsonProperty(value = "handId") UUID handId,
-            @JsonProperty(value = "flopCards") FlopCards flopCards,
-            @JsonProperty(value = "turnCard") TurnCard turnCard,
-            @JsonProperty(value = "riverCard") RiverCard riverCard,
-            @JsonProperty(value = "buttonOnPosition") int buttonOnPosition,
-            @JsonProperty(value = "smallBlindPosition") int smallBlindPosition,
-            @JsonProperty(value = "bigBlindPosition") int bigBlindPosition,
-            @JsonProperty(value = "lastToActPlayerId") UUID lastToActPlayerId,
-            @JsonProperty(value = "seatMap") Map<Integer, UUID> seatMap,
-            @JsonProperty(value = "playerToPocketCardsMap") Map<UUID, PocketCards> playerToPocketCardsMap,
-            @JsonProperty(value = "possibleSeatActionsMap") Map<UUID, Set<PlayerAction>> possibleSeatActionsMap,
-            @JsonProperty(value = "playersStillInHand") Set<UUID> playersStillInHand,
-            @JsonProperty(value = "handEvaluations") List<HandEvaluation> handEvaluations,
-            @JsonProperty(value = "handDealerState") HandDealerState handDealerState,
-            @JsonProperty(value = "chipsInBack") Map<UUID, Integer> chipsInBack,
-            @JsonProperty(value = "chipsInFrontMap") Map<UUID, Integer> chipsInFrontMap,
-            @JsonProperty(value = "callAmountsMap") Map<UUID, Integer> callAmountsMap,
-            @JsonProperty(value = "raiseToAmountsMap") Map<UUID, Integer> raiseToAmountsMap,
-            @JsonProperty(value = "smallBlind") int smallBlind,
-            @JsonProperty(value = "bigBlind") int bigBlind) {
-        super(aggregateId, version);
+    public HandDealtEvent(UUID aggregateId, UUID gameId, UUID handId, FlopCards flopCards, TurnCard turnCard,
+            RiverCard riverCard, int buttonOnPosition, int smallBlindPosition, int bigBlindPosition,
+            UUID lastToActPlayerId, Map<Integer, UUID> seatMap, Map<UUID, PocketCards> playerToPocketCardsMap,
+            Map<UUID, Set<PlayerAction>> possibleSeatActionsMap, Set<UUID> playersStillInHand,
+            List<HandEvaluation> handEvaluations, HandDealerState handDealerState, Map<UUID, Integer> chipsInBack,
+            Map<UUID, Integer> chipsInFrontMap, Map<UUID, Integer> callAmountsMap, Map<UUID, Integer> raiseToAmountsMap,
+            int smallBlind, int bigBlind) {
+        super(aggregateId);
         this.gameId = gameId;
         this.handId = handId;
         this.flopCards = flopCards;
@@ -113,87 +94,108 @@ public class HandDealtEvent extends BaseEvent implements TableEvent {
         this.bigBlind = bigBlind;
     }
 
+    @JsonProperty
     @Override
     public UUID getGameId() {
         return gameId;
     }
 
+    @JsonProperty
     public UUID getHandId() {
         return handId;
     }
 
+    @JsonProperty
     public FlopCards getFlopCards() {
         return flopCards;
     }
 
+    @JsonProperty
     public TurnCard getTurnCard() {
         return turnCard;
     }
 
+    @JsonProperty
     public RiverCard getRiverCard() {
         return riverCard;
     }
 
+    @JsonProperty
     public int getButtonOnPosition() {
         return buttonOnPosition;
     }
 
+    @JsonProperty
     public int getSmallBlindPosition() {
         return smallBlindPosition;
     }
 
+    @JsonProperty
     public int getBigBlindPosition() {
         return bigBlindPosition;
     }
 
+    @JsonProperty
     public UUID getLastToActPlayerId() {
         return lastToActPlayerId;
     }
 
+    @JsonProperty
     public Map<Integer, UUID> getSeatMap() {
         return new HashMap<>(seatMap);
     }
 
+    @JsonProperty
     public Map<UUID, PocketCards> getPlayerToPocketCardsMap() {
         return new HashMap<>(playerToPocketCardsMap);
     }
 
+    @JsonProperty
     public Map<UUID, Set<PlayerAction>> getPossibleSeatActionsMap() {
         return new HashMap<>(possibleSeatActionsMap);
     }
 
+    @JsonProperty
     public Set<UUID> getPlayersStillInHand() {
         return new HashSet<>(playersStillInHand);
     }
 
+    @JsonProperty
     public List<HandEvaluation> getHandEvaluations() {
         return new ArrayList<>(handEvaluations);
     }
 
+    @JsonProperty
     public HandDealerState getHandDealerState() {
         return handDealerState;
     }
 
+    @JsonProperty
     public Map<UUID, Integer> getChipsInBack() {
         return new HashMap<>(chipsInBack);
     }
 
+    @JsonProperty
     public Map<UUID, Integer> getChipsInFrontMap() {
         return new HashMap<>(chipsInFrontMap);
     }
 
+    @JsonProperty
     public Map<UUID, Integer> getCallAmountsMap() {
         return new HashMap<>(callAmountsMap);
     }
 
+    @JsonProperty
     public Map<UUID, Integer> getRaiseToAmountsMap() {
         return new HashMap<>(raiseToAmountsMap);
     }
 
+    @JsonProperty
     public int getSmallBlind() {
         return smallBlind;
     }
 
+    @JsonProperty
     public int getBigBlind() {
         return bigBlind;
     }

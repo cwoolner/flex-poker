@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.flexpoker.framework.event.BaseEvent;
 import com.flexpoker.table.command.framework.TableEvent;
@@ -17,27 +16,25 @@ public class HandCompletedEvent extends BaseEvent implements TableEvent {
 
     private final Map<UUID, Integer> playerToChipsAtTableMap;
 
-    @JsonCreator
-    public HandCompletedEvent(@JsonProperty(value = "aggregateId") UUID aggregateId,
-            @JsonProperty(value = "version") int version,
-            @JsonProperty(value = "gameId") UUID gameId,
-            @JsonProperty(value = "handId") UUID handId,
-            @JsonProperty(value = "playerToChipsAtTableMap") Map<UUID, Integer> playerToChipsAtTableMap) {
-        super(aggregateId, version);
+    public HandCompletedEvent(UUID aggregateId, UUID gameId, UUID handId, Map<UUID, Integer> playerToChipsAtTableMap) {
+        super(aggregateId);
         this.gameId = gameId;
         this.handId = handId;
         this.playerToChipsAtTableMap = new HashMap<>(playerToChipsAtTableMap);
     }
 
+    @JsonProperty
     @Override
     public UUID getGameId() {
         return gameId;
     }
 
+    @JsonProperty
     public UUID getHandId() {
         return handId;
     }
 
+    @JsonProperty
     public Map<UUID, Integer> getPlayerToChipsAtTableMap() {
         return new HashMap<>(playerToChipsAtTableMap);
     }
