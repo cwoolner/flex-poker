@@ -5,7 +5,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.UUID;
 
 import org.junit.Test;
-import org.springframework.security.authentication.encoding.ShaPasswordEncoder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import com.flexpoker.exception.FlexPokerException;
 import com.flexpoker.signup.SignUpUser;
@@ -18,8 +18,7 @@ public class SignUpUserTest {
 
     private static final String VALID_PASSWORD = "123456";
 
-    private static final String VALID_ENCRYPTED_PASSWORD = new ShaPasswordEncoder()
-            .encodePassword(VALID_PASSWORD, null);
+    private static final String VALID_ENCRYPTED_PASSWORD = new BCryptPasswordEncoder().encode(VALID_PASSWORD);
 
     private static final UUID VALID_AGGREGATE_ID = UUID.randomUUID();
 
