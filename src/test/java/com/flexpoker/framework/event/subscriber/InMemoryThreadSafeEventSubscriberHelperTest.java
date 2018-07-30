@@ -20,8 +20,11 @@ public class InMemoryThreadSafeEventSubscriberHelperTest {
     public void testSentInOrderRunsInOrder() {
         var tableId = UUID.randomUUID();
         var event1 = new BlindsIncreasedEvent(tableId);
+        event1.setVersion(1);
         var event2 = new GameFinishedEvent(tableId);
+        event2.setVersion(2);
         var event3 = new GameJoinedEvent(tableId, UUID.randomUUID());
+        event3.setVersion(3);
 
         var handlerMap = new HashMap<Class<? extends Event>, EventHandler<? extends Event>>();
 
@@ -46,8 +49,11 @@ public class InMemoryThreadSafeEventSubscriberHelperTest {
     public void testSentInSwappedOrderRunsInOrder() {
         var tableId = UUID.randomUUID();
         var event1 = new BlindsIncreasedEvent(tableId);
+        event1.setVersion(1);
         var event2 = new GameFinishedEvent(tableId);
+        event2.setVersion(2);
         var event3 = new GameJoinedEvent(tableId, UUID.randomUUID());
+        event3.setVersion(3);
 
         var handlerMap = new HashMap<Class<? extends Event>, EventHandler<? extends Event>>();
 
