@@ -1,6 +1,7 @@
 package com.flexpoker.game.command.aggregate;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,7 +21,7 @@ import com.flexpoker.game.command.framework.GameEvent;
 public class IncrementBlindsTest {
 
     @Test
-    public void testIncrementBlindsCreatesNewEvent() {
+    void testIncrementBlindsCreatesNewEvent() {
         var gameId = UUID.randomUUID();
         var tableIdToPlayerIdsMap = new HashMap<UUID, Set<UUID>>();
         var tableIds = tableIdToPlayerIdsMap.keySet();
@@ -41,7 +42,7 @@ public class IncrementBlindsTest {
     }
 
     @Test
-    public void testIncrementBlindsAlreadyAtMaxLevel() {
+    void testIncrementBlindsAlreadyAtMaxLevel() {
         var gameId = UUID.randomUUID();
         var tableIdToPlayerIdsMap = new HashMap<UUID, Set<UUID>>();
         var tableIds = tableIdToPlayerIdsMap.keySet();
@@ -65,8 +66,8 @@ public class IncrementBlindsTest {
         assertEquals(4, game.fetchNewEvents().size());
     }
 
-    @Test(expected = FlexPokerException.class)
-    public void testFailureWhenNotInTheCorrectStage() {
+    @Test
+    void testFailureWhenNotInTheCorrectStage() {
         var gameId = UUID.randomUUID();
         var tableIdToPlayerIdsMap = new HashMap<UUID, Set<UUID>>();
 
@@ -78,7 +79,7 @@ public class IncrementBlindsTest {
         events.add(new GameTablesCreatedAndPlayersAssociatedEvent(gameId, tableIdToPlayerIdsMap, 2));
 
         var game = new DefaultGameFactory().createFrom(events);
-        game.increaseBlinds();
+        assertThrows(FlexPokerException.class, () -> game.increaseBlinds());
     }
 
 }

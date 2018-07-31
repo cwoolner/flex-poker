@@ -26,7 +26,7 @@ import com.flexpoker.table.command.events.WinnersDeterminedEvent;
 public class ThreePlayerTwoCallsAndChecksUntilTheEndTest {
 
     @Test
-    public void test() {
+    void test() {
         var tableId = UUID.randomUUID();
         var player1Id = UUID.randomUUID();
         var player2Id = UUID.randomUUID();

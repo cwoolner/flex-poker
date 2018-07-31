@@ -7,7 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.ArrayList;
 import java.util.UUID;
 
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import com.flexpoker.game.command.aggregate.DefaultGameFactory;
@@ -19,13 +19,13 @@ public class GameFactoryTest {
 
     private DefaultGameFactory sut;
 
-    @Before
-    public void setup() {
+    @BeforeEach
+    void setup() {
         sut = new DefaultGameFactory();
     }
 
     @Test
-    public void testCreateNew() {
+    void testCreateNew() {
         var createGameCommand = new CreateGameCommand("test", 5, 5, UUID.randomUUID(), 10, 20);
         var game = sut.createNew(createGameCommand);
         assertNotNull(game);
@@ -34,7 +34,7 @@ public class GameFactoryTest {
     }
 
     @Test
-    public void testCreateFrom() {
+    void testCreateFrom() {
         var events = new ArrayList<GameEvent>();
         events.add(new GameCreatedEvent(null, null, 0, 0, null, 10, 20));
         var game = sut.createFrom(events);

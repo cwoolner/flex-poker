@@ -14,7 +14,7 @@ import com.flexpoker.game.command.aggregate.TableBalancer;
 public class TableBalancerNothingToDoTest {
 
     @Test
-    public void testSingleTableTwoPlayers() {
+    void testSingleTableTwoPlayers() {
         var subjectTableId = UUID.randomUUID();
         var tableToPlayersMap = createTableToPlayersMap(subjectTableId, 2);
 
@@ -25,7 +25,7 @@ public class TableBalancerNothingToDoTest {
     }
 
     @Test
-    public void testTwoTablesTwoPlayersEach() {
+    void testTwoTablesTwoPlayersEach() {
         var subjectTableId = UUID.randomUUID();
         var tableToPlayersMap = createTableToPlayersMap(subjectTableId, 2, 2);
 
@@ -36,7 +36,7 @@ public class TableBalancerNothingToDoTest {
     }
 
     @Test
-    public void testTwoTablesOneAlreadyPausedWaitingForMerge() {
+    void testTwoTablesOneAlreadyPausedWaitingForMerge() {
         var subjectTableId = UUID.randomUUID();
         var tableToPlayersMap = createTableToPlayersMap(subjectTableId, 2, 1);
         var otherTableId = tableToPlayersMap.keySet().stream()
@@ -49,7 +49,7 @@ public class TableBalancerNothingToDoTest {
     }
 
     @Test
-    public void testTwoTablesWithinOneOfEachOtherAndUnderMergeThreshold() {
+    void testTwoTablesWithinOneOfEachOtherAndUnderMergeThreshold() {
         var subjectTableId = UUID.randomUUID();
         var tableToPlayersMap = createTableToPlayersMap(subjectTableId, 6, 7);
 
@@ -60,7 +60,7 @@ public class TableBalancerNothingToDoTest {
     }
 
     @Test
-    public void testThreeTablesPerfectlyInBalanceAndUnderMergeThreshold() {
+    void testThreeTablesPerfectlyInBalanceAndUnderMergeThreshold() {
         var subjectTableId = UUID.randomUUID();
         var tableToPlayersMap = createTableToPlayersMap(subjectTableId, 7, 7, 7);
 
@@ -71,7 +71,7 @@ public class TableBalancerNothingToDoTest {
     }
 
     @Test
-    public void testThreeTablesAllAtMax() {
+    void testThreeTablesAllAtMax() {
         var subjectTableId = UUID.randomUUID();
         var tableToPlayersMap = createTableToPlayersMap(subjectTableId, 6, 6, 6);
 
@@ -82,7 +82,7 @@ public class TableBalancerNothingToDoTest {
     }
 
     @Test
-    public void testThreeTablesTwoImbalancedByTwoCantMergeSubjectIsMediumTableSmallestPaused() {
+    void testThreeTablesTwoImbalancedByTwoCantMergeSubjectIsMediumTableSmallestPaused() {
         var subjectTableId = UUID.randomUUID();
         var tableToPlayersMap = createTableToPlayersMap(subjectTableId, 8, 7, 9);
         var smallestOtherTableId = tableToPlayersMap.entrySet().stream()
@@ -97,7 +97,7 @@ public class TableBalancerNothingToDoTest {
     }
 
     @Test
-    public void testThreeTablesAllImbalancedCantMergeSubjectIsMediumTableSmallestPaused() {
+    void testThreeTablesAllImbalancedCantMergeSubjectIsMediumTableSmallestPaused() {
         var subjectTableId = UUID.randomUUID();
         var tableToPlayersMap = createTableToPlayersMap(subjectTableId, 7, 6, 9);
         var smallestOtherTableId = tableToPlayersMap.entrySet().stream()

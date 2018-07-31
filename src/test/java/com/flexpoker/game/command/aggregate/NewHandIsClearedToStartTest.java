@@ -20,7 +20,7 @@ import com.flexpoker.game.command.framework.GameEvent;
 public class NewHandIsClearedToStartTest {
 
     @Test
-    public void testJoinGameSuccessFirstPlayerJoins() {
+    void testJoinGameSuccessFirstPlayerJoins() {
         var gameId = UUID.randomUUID();
         var tableId = UUID.randomUUID();
         var player1Id = UUID.randomUUID();

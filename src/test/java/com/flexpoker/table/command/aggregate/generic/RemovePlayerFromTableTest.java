@@ -1,6 +1,7 @@
 package com.flexpoker.table.command.aggregate.generic;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.UUID;
 
@@ -13,24 +14,24 @@ import com.flexpoker.table.command.events.PlayerRemovedEvent;
 public class RemovePlayerFromTableTest {
 
     @Test
-    public void testRemovePlayerSuccess() {
+    void testRemovePlayerSuccess() {
         var existingPlayer = UUID.randomUUID();
         var table = TableTestUtils.createBasicTable(UUID.randomUUID(), UUID.randomUUID(), existingPlayer);
         table.removePlayer(existingPlayer);
         assertEquals(PlayerRemovedEvent.class, table.fetchNewEvents().get(table.fetchNewEvents().size() - 1).getClass());
     }
 
-    @Test(expected = FlexPokerException.class)
-    public void testRemovingNonExistingPlayer() {
+    @Test
+    void testRemovingNonExistingPlayer() {
         var table = TableTestUtils.createBasicTable(UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID());
-        table.removePlayer(UUID.randomUUID());
+        assertThrows(FlexPokerException.class, () -> table.removePlayer(UUID.randomUUID()));
     }
 
-    @Test(expected = FlexPokerException.class)
-    public void testRemovingDuringAHand() {
+    @Test
+    void testRemovingDuringAHand() {
         var existingPlayer = UUID.randomUUID();
         var table = TableTestUtils.createBasicTableAndStartHand(UUID.randomUUID(), UUID.randomUUID(), existingPlayer);
-        table.removePlayer(existingPlayer);
+        assertThrows(FlexPokerException.class, () -> table.removePlayer(existingPlayer));
     }
 
 }

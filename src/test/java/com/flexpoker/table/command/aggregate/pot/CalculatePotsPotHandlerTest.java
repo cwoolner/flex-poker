@@ -19,7 +19,7 @@ import com.flexpoker.table.command.events.PotCreatedEvent;
 public class CalculatePotsPotHandlerTest {
 
     @Test
-    public void testTwoPlayersSameBet() {
+    void testTwoPlayersSameBet() {
         var player1 = UUID.randomUUID();
         var player2 = UUID.randomUUID();
 
@@ -47,7 +47,7 @@ public class CalculatePotsPotHandlerTest {
     }
 
     @Test
-    public void testTwoPlayerDifferentBets() {
+    void testTwoPlayerDifferentBets() {
         var player1 = UUID.randomUUID();
         var player2 = UUID.randomUUID();
 
@@ -77,7 +77,7 @@ public class CalculatePotsPotHandlerTest {
     }
 
     @Test
-    public void testTwoPlayerOneAllIn() {
+    void testTwoPlayerOneAllIn() {
         var player1 = UUID.randomUUID();
         var player2 = UUID.randomUUID();
 
@@ -117,7 +117,7 @@ public class CalculatePotsPotHandlerTest {
     }
 
     @Test
-    public void testTwoPlayerChipAndAChair() {
+    void testTwoPlayerChipAndAChair() {
         var player1 = UUID.randomUUID();
         var player2 = UUID.randomUUID();
 

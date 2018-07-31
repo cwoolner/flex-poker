@@ -22,7 +22,7 @@ public class DefaultHandEvaluatorServiceTest {
     private DefaultHandEvaluatorService bso = new DefaultHandEvaluatorService();
 
     @Test
-    public void testDeterminePossibleHands() {
+    void testDeterminePossibleHands() {
         testDeterminePossibleHandsStraightFlushOnBoard();
         testDeterminePossibleHandsFourOfAKindOnBoard();
         testDeterminePossibleHandsFullHouseOnBoard();
@@ -40,7 +40,7 @@ public class DefaultHandEvaluatorServiceTest {
     }
 
     @Test
-    public void testDetermineHandEvaluation() {
+    void testDetermineHandEvaluation() {
         testDetermineHandEvaluationScenario1();
         testDetermineHandEvaluationScenario2();
         testDetermineHandEvaluationScenario3();

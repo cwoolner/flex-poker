@@ -18,7 +18,7 @@ import com.flexpoker.game.command.events.TableRemovedEvent;
 public class TableBalancerRemoveTableTest {
 
     @Test
-    public void testSubjectTableIsEmpty() {
+    void testSubjectTableIsEmpty() {
         var subjectTableId = UUID.randomUUID();
         var tableToPlayersMap = createTableToPlayersMap(subjectTableId, 0, 2);
 
@@ -30,7 +30,7 @@ public class TableBalancerRemoveTableTest {
     }
 
     @Test
-    public void testSingleOtherEmptyTable() {
+    void testSingleOtherEmptyTable() {
         var subjectTableId = UUID.randomUUID();
         var tableToPlayersMap = createTableToPlayersMap(subjectTableId, 2, 0);
         var otherTableId = tableToPlayersMap.keySet().stream()
@@ -44,7 +44,7 @@ public class TableBalancerRemoveTableTest {
     }
 
     @Test
-    public void testMultipleOtherEmptyTables() {
+    void testMultipleOtherEmptyTables() {
         var subjectTableId = UUID.randomUUID();
         var tableToPlayersMap = createTableToPlayersMap(subjectTableId, 2, 0, 0);
         var otherTableIds = tableToPlayersMap.keySet().stream()
@@ -59,7 +59,7 @@ public class TableBalancerRemoveTableTest {
     }
 
     @Test
-    public void testNoEmptyOtherwiseBalancedTables() {
+    void testNoEmptyOtherwiseBalancedTables() {
         var subjectTableId = UUID.randomUUID();
         var tableToPlayersMap = createTableToPlayersMap(subjectTableId, 2, 2);
 

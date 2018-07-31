@@ -1,5 +1,6 @@
 package com.flexpoker.signup.command.aggregate;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.UUID;
@@ -25,33 +26,36 @@ public class SignUpUserTest {
     private static final UUID VALID_SIGN_UP_CODE = UUID.randomUUID();
 
     @Test
-    public void testConfirmSignedUpUserSucceedsEvent() {
+    void testConfirmSignedUpUserSucceedsEvent() {
         var signUpUser = new SignUpUser(VALID_AGGREGATE_ID, VALID_SIGN_UP_CODE, VALID_EMAIL_ADDRESS,
                 VALID_USERNAME, VALID_ENCRYPTED_PASSWORD);
         signUpUser.confirmSignedUpUser(VALID_USERNAME, VALID_SIGN_UP_CODE);
         assertTrue(signUpUser.isConfirmed());
     }
 
-    @Test(expected = FlexPokerException.class)
-    public void testConfirmSignedUpUserFailsBadUsername() {
+    @Test
+    void testConfirmSignedUpUserFailsBadUsername() {
         var signUpUser = new SignUpUser(VALID_AGGREGATE_ID, VALID_SIGN_UP_CODE, VALID_EMAIL_ADDRESS,
                 VALID_USERNAME, VALID_ENCRYPTED_PASSWORD);
-        signUpUser.confirmSignedUpUser("notequalusername", VALID_SIGN_UP_CODE);
+        assertThrows(FlexPokerException.class,
+                () -> signUpUser.confirmSignedUpUser("notequalusername", VALID_SIGN_UP_CODE));
     }
 
-    @Test(expected = FlexPokerException.class)
-    public void testConfirmSignedUpUserFailsBadSignUpCode() {
+    @Test
+    void testConfirmSignedUpUserFailsBadSignUpCode() {
         var signUpUser = new SignUpUser(VALID_AGGREGATE_ID, VALID_SIGN_UP_CODE, VALID_EMAIL_ADDRESS,
                 VALID_USERNAME, VALID_ENCRYPTED_PASSWORD);
-        signUpUser.confirmSignedUpUser(VALID_USERNAME, UUID.randomUUID());
+        assertThrows(FlexPokerException.class,
+                () -> signUpUser.confirmSignedUpUser(VALID_USERNAME, UUID.randomUUID()));
     }
 
-    @Test(expected = IllegalStateException.class)
-    public void testConfirmSignedUpUserFailedWhenEventAlreadyApplied() {
+    @Test
+    void testConfirmSignedUpUserFailedWhenEventAlreadyApplied() {
         var signUpUser = new SignUpUser(VALID_AGGREGATE_ID, VALID_SIGN_UP_CODE, VALID_EMAIL_ADDRESS,
                 VALID_USERNAME, VALID_ENCRYPTED_PASSWORD);
         signUpUser.confirmSignedUpUser(VALID_USERNAME, VALID_SIGN_UP_CODE);
-        signUpUser.confirmSignedUpUser(VALID_USERNAME, VALID_SIGN_UP_CODE);
+        assertThrows(IllegalStateException.class,
+                () -> signUpUser.confirmSignedUpUser(VALID_USERNAME, VALID_SIGN_UP_CODE));
     }
 
 }

@@ -27,7 +27,7 @@ import com.flexpoker.table.command.events.WinnersDeterminedEvent;
 public class TwoPlayerButtonFoldsDueToTimeoutTest {
 
     @Test
-    public void test() {
+    void test() {
         var tableId = UUID.randomUUID();
 
         var table = TableTestUtils.createBasicTableAndStartHand(tableId, UUID.randomUUID(), UUID.randomUUID());

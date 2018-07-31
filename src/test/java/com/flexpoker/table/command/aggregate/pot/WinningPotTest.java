@@ -18,7 +18,7 @@ import com.flexpoker.table.command.aggregate.HandEvaluation;
 public class WinningPotTest {
 
     @Test
-    public void testBasicTwoPersonPotHasSingleWinner() {
+    void testBasicTwoPersonPotHasSingleWinner() {
         var player1 = UUID.randomUUID();
         var player2 = UUID.randomUUID();
 
@@ -49,7 +49,7 @@ public class WinningPotTest {
     }
 
     @Test
-    public void testThreePersonPotHasTwoWinners() {
+    void testThreePersonPotHasTwoWinners() {
         var player1 = UUID.randomUUID();
         var player2 = UUID.randomUUID();
         var player3 = UUID.randomUUID();
@@ -80,7 +80,7 @@ public class WinningPotTest {
     }
 
     @Test
-    public void testThreePersonPotHasTwoWinnersWithBonus() {
+    void testThreePersonPotHasTwoWinnersWithBonus() {
         var player1 = UUID.randomUUID();
         var player2 = UUID.randomUUID();
         var player3 = UUID.randomUUID();
@@ -119,7 +119,7 @@ public class WinningPotTest {
     }
 
     @Test
-    public void testThreePersonPotHasTwoWinnersButOneOfTheWinnersFolds() {
+    void testThreePersonPotHasTwoWinnersButOneOfTheWinnersFolds() {
         var player1 = UUID.randomUUID();
         var player2 = UUID.randomUUID();
         var player3 = UUID.randomUUID();

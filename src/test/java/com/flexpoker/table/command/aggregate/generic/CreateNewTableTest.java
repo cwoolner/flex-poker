@@ -1,6 +1,7 @@
 package com.flexpoker.table.command.aggregate.generic;
 
 import static com.flexpoker.test.util.CommonAssertions.verifyAppliedAndNewEventsForAggregate;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.HashSet;
 import java.util.UUID;
@@ -15,7 +16,7 @@ import com.flexpoker.table.command.events.TableCreatedEvent;
 public class CreateNewTableTest {
 
     @Test
-    public void testCreateNewTestSuccess() {
+    void testCreateNewTestSuccess() {
         var tableId = UUID.randomUUID();
         var playerIds = new HashSet<UUID>();
         playerIds.add(UUID.randomUUID());
@@ -27,8 +28,8 @@ public class CreateNewTableTest {
         verifyAppliedAndNewEventsForAggregate(table, TableCreatedEvent.class);
     }
 
-    @Test(expected = FlexPokerException.class)
-    public void testCantCreateATableGreaterThanMaxSize() {
+    @Test
+    void testCantCreateATableGreaterThanMaxSize() {
         var tableId = UUID.randomUUID();
         var playerIds = new HashSet<UUID>();
         playerIds.add(UUID.randomUUID());
@@ -36,17 +37,17 @@ public class CreateNewTableTest {
         playerIds.add(UUID.randomUUID());
 
         var command = new CreateTableCommand(tableId, UUID.randomUUID(), playerIds, 2);
-        new DefaultTableFactory().createNew(command);
+        assertThrows(FlexPokerException.class, () -> new DefaultTableFactory().createNew(command));
     }
 
-    @Test(expected = FlexPokerException.class)
-    public void testCantCreateATableWithOnlyOnePlayer() {
+    @Test
+    void testCantCreateATableWithOnlyOnePlayer() {
         var tableId = UUID.randomUUID();
         var playerIds = new HashSet<UUID>();
         playerIds.add(UUID.randomUUID());
 
         var command = new CreateTableCommand(tableId, UUID.randomUUID(), playerIds, 2);
-        new DefaultTableFactory().createNew(command);
+        assertThrows(FlexPokerException.class, () -> new DefaultTableFactory().createNew(command));
     }
 
 }

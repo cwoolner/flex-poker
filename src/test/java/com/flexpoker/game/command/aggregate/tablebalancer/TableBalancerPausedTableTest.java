@@ -16,7 +16,7 @@ import com.flexpoker.game.command.events.TablePausedForBalancingEvent;
 public class TableBalancerPausedTableTest {
 
     @Test
-    public void testTwoTablesOneAndTwoPlayersCantMerge() {
+    void testTwoTablesOneAndTwoPlayersCantMerge() {
         var subjectTableId = UUID.randomUUID();
         var tableToPlayersMap = createTableToPlayersMap(subjectTableId, 1, 2);
 
@@ -27,7 +27,7 @@ public class TableBalancerPausedTableTest {
     }
 
     @Test
-    public void testTwoTablesOneAndThreePlayersCantMerge() {
+    void testTwoTablesOneAndThreePlayersCantMerge() {
         var subjectTableId = UUID.randomUUID();
         var tableToPlayersMap = createTableToPlayersMap(subjectTableId, 1, 3);
 
@@ -38,7 +38,7 @@ public class TableBalancerPausedTableTest {
     }
 
     @Test
-    public void testTwoTablesImbalancedByTwoCantMergeSubjectIsSmallerTableNoPaused() {
+    void testTwoTablesImbalancedByTwoCantMergeSubjectIsSmallerTableNoPaused() {
         var subjectTableId = UUID.randomUUID();
         var tableToPlayersMap = createTableToPlayersMap(subjectTableId, 5, 7);
 
@@ -50,7 +50,7 @@ public class TableBalancerPausedTableTest {
     }
 
     @Test
-    public void testTwoTablesImbalancedByTwoCantMergeSubjectIsLargerTableNoPaused() {
+    void testTwoTablesImbalancedByTwoCantMergeSubjectIsLargerTableNoPaused() {
         var subjectTableId = UUID.randomUUID();
         var tableToPlayersMap = createTableToPlayersMap(subjectTableId, 7, 5);
         var otherTableId = tableToPlayersMap.keySet().stream()
@@ -65,7 +65,7 @@ public class TableBalancerPausedTableTest {
     }
 
     @Test
-    public void testThreeTablesTwoImbalancedByTwoCantMergeSubjectIsSmallestTableNoPaused() {
+    void testThreeTablesTwoImbalancedByTwoCantMergeSubjectIsSmallestTableNoPaused() {
         var subjectTableId = UUID.randomUUID();
         var tableToPlayersMap = createTableToPlayersMap(subjectTableId, 7, 8, 9);
 
@@ -78,7 +78,7 @@ public class TableBalancerPausedTableTest {
     }
 
     @Test
-    public void testThreeTablesTwoImbalancedByTwoCantMergeSubjectIsLargestTableNoPaused() {
+    void testThreeTablesTwoImbalancedByTwoCantMergeSubjectIsLargestTableNoPaused() {
         var subjectTableId = UUID.randomUUID();
         var tableToPlayersMap = createTableToPlayersMap(subjectTableId, 9, 8, 7);
         var smallestOtherTableId = tableToPlayersMap.entrySet().stream()

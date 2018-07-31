@@ -1,6 +1,7 @@
 package com.flexpoker.table.command.aggregate.generic;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.UUID;
 
@@ -13,25 +14,25 @@ import com.flexpoker.table.command.events.TableResumedEvent;
 public class ResumeTableTest {
 
     @Test
-    public void testResumeSuccess() {
+    void testResumeSuccess() {
         var table = TableTestUtils.createBasicTable(UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID());
         table.pause();
         table.resume();
         assertEquals(TableResumedEvent.class, table.fetchNewEvents().get(table.fetchNewEvents().size() - 1).getClass());
     }
 
-    @Test(expected = FlexPokerException.class)
-    public void testResumeOnActiveTable() {
+    @Test
+    void testResumeOnActiveTable() {
         var table = TableTestUtils.createBasicTable(UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID());
-        table.resume();
+        assertThrows(FlexPokerException.class, () -> table.resume());
     }
 
-    @Test(expected = FlexPokerException.class)
-    public void testResumeTwice() {
+    @Test
+    void testResumeTwice() {
         var table = TableTestUtils.createBasicTable(UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID());
         table.pause();
         table.resume();
-        table.resume();
+        assertThrows(FlexPokerException.class, () -> table.resume());
     }
 
 }

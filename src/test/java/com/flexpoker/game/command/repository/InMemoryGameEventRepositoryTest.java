@@ -3,6 +3,7 @@ package com.flexpoker.game.command.repository;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.Collections;
 import java.util.UUID;
@@ -16,7 +17,7 @@ import com.flexpoker.game.command.events.GameJoinedEvent;
 public class InMemoryGameEventRepositoryTest {
 
     @Test
-    public void testFetchAll() {
+    void testFetchAll() {
         var repository = new InMemoryGameEventRepository();
         var gameId = UUID.randomUUID();
         repository.setEventVersionsAndSave(0, Collections.singletonList(
@@ -26,7 +27,7 @@ public class InMemoryGameEventRepositoryTest {
     }
 
     @Test
-    public void testFetchGameCreatedEventSuccess() {
+    void testFetchGameCreatedEventSuccess() {
         var repository = new InMemoryGameEventRepository();
         var gameId = UUID.randomUUID();
         repository.setEventVersionsAndSave(0, Collections.singletonList(
@@ -38,7 +39,7 @@ public class InMemoryGameEventRepositoryTest {
     }
 
     @Test
-    public void testFetchGameCreatedEventFail() {
+    void testFetchGameCreatedEventFail() {
         var repository = new InMemoryGameEventRepository();
         var gameId = UUID.randomUUID();
         repository.setEventVersionsAndSave(0, Collections.singletonList(
@@ -47,28 +48,32 @@ public class InMemoryGameEventRepositoryTest {
         assertNull(event);
     }
 
-    @Test(expected = FlexPokerException.class)
-    public void testSetEventVersionsAndSaveBadBasedOnVersion1() {
+    @Test
+    void testSetEventVersionsAndSaveBadBasedOnVersion1() {
         var repository = new InMemoryGameEventRepository();
         var gameId = UUID.randomUUID();
-        repository.setEventVersionsAndSave(1, Collections.singletonList(
-                new GameJoinedEvent(gameId, UUID.randomUUID())));
+
+        assertThrows(FlexPokerException.class,
+                () -> repository.setEventVersionsAndSave(1, Collections.singletonList(
+                        new GameJoinedEvent(gameId, UUID.randomUUID()))));
     }
 
-    @Test(expected = FlexPokerException.class)
-    public void testSetEventVersionsAndSaveTwoJoinsSameTime() {
+    @Test
+    void testSetEventVersionsAndSaveTwoJoinsSameTime() {
         var repository = new InMemoryGameEventRepository();
         var gameId = UUID.randomUUID();
         repository.setEventVersionsAndSave(0, Collections.singletonList(
                 new GameCreatedEvent(gameId, "test", 2, 2, UUID.randomUUID(), 10, 10)));
         repository.setEventVersionsAndSave(1, Collections.singletonList(
                 new GameJoinedEvent(gameId, UUID.randomUUID())));
-        repository.setEventVersionsAndSave(1, Collections.singletonList(
-                new GameJoinedEvent(gameId, UUID.randomUUID())));
+
+        assertThrows(FlexPokerException.class,
+                () -> repository.setEventVersionsAndSave(1, Collections.singletonList(
+                        new GameJoinedEvent(gameId, UUID.randomUUID()))));
     }
 
     @Test
-    public void testSetEventVersionsAndSaveTwoJoinsSeparateTime() {
+    void testSetEventVersionsAndSaveTwoJoinsSeparateTime() {
         var repository = new InMemoryGameEventRepository();
         var gameId = UUID.randomUUID();
         repository.setEventVersionsAndSave(0, Collections.singletonList(

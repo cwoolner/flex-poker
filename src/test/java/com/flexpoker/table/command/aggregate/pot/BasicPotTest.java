@@ -1,6 +1,7 @@
 package com.flexpoker.table.command.aggregate.pot;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
@@ -17,30 +18,30 @@ import com.flexpoker.table.command.aggregate.HandEvaluation;
 public class BasicPotTest {
 
     @Test
-    public void testPotIsOpenOnCreate() {
+    void testPotIsOpenOnCreate() {
         var pot = createGenericPot();
         assertTrue(pot.isOpen());
     }
 
     @Test
-    public void testPotClosesAfterClosing() {
+    void testPotClosesAfterClosing() {
         var pot = createGenericPot();
         pot.closePot();
         assertFalse(pot.isOpen());
     }
 
-    @Test(expected = FlexPokerException.class)
-    public void testPotCannotBeAddedToAfterClosing() {
+    @Test
+    void testPotCannotBeAddedToAfterClosing() {
         var pot = createGenericPot();
         pot.closePot();
-        pot.addChips(60);
+        assertThrows(FlexPokerException.class, () -> pot.addChips(60));
     }
 
-    @Test(expected = FlexPokerException.class)
-    public void testPotCannotHaveAPlayerRemovedAfterClosing() {
+    @Test
+    void testPotCannotHaveAPlayerRemovedAfterClosing() {
         var pot = createGenericPot();
         pot.closePot();
-        pot.removePlayer(UUID.randomUUID());
+        assertThrows(FlexPokerException.class, () -> pot.removePlayer(UUID.randomUUID()));
     }
 
     private Pot createGenericPot() {

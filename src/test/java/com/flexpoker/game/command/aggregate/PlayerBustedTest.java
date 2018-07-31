@@ -1,6 +1,7 @@
 package com.flexpoker.game.command.aggregate;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.HashMap;
@@ -17,7 +18,7 @@ import com.flexpoker.game.command.events.PlayerBustedGameEvent;
 public class PlayerBustedTest {
 
     @Test
-    public void testEventIsCreated() {
+    void testEventIsCreated() {
         var player1Id = UUID.randomUUID();
         var player2Id = UUID.randomUUID();
         var player3Id = UUID.randomUUID();
@@ -47,7 +48,7 @@ public class PlayerBustedTest {
     }
 
     @Test
-    public void testRemovedUserFromTableCreatesEvent() {
+    void testRemovedUserFromTableCreatesEvent() {
         var player1Id = UUID.randomUUID();
         var player2Id = UUID.randomUUID();
         var player3Id = UUID.randomUUID();
@@ -74,7 +75,7 @@ public class PlayerBustedTest {
     }
 
     @Test
-    public void testMultiplePlayersBust() {
+    void testMultiplePlayersBust() {
         var player1Id = UUID.randomUUID();
         var player2Id = UUID.randomUUID();
         var player3Id = UUID.randomUUID();
@@ -108,8 +109,8 @@ public class PlayerBustedTest {
         assertTrue(bustedPlayers.contains(player2Id));
     }
 
-    @Test(expected = FlexPokerException.class)
-    public void testInvalidPlayer() {
+    @Test
+    void testInvalidPlayer() {
         var player1Id = UUID.randomUUID();
         var player2Id = UUID.randomUUID();
         var player3Id = UUID.randomUUID();
@@ -131,11 +132,11 @@ public class PlayerBustedTest {
                 .filter(x -> x.getClass().equals(GameTablesCreatedAndPlayersAssociatedEvent.class)).findFirst().get();
         var tableId = gameTablesCreatedAndPlayersAssociatedEvent.getTableIdToPlayerIdsMap().keySet().iterator().next();
 
-        game.attemptToStartNewHand(tableId, playerToChipsMap);
+        assertThrows(FlexPokerException.class, () -> game.attemptToStartNewHand(tableId, playerToChipsMap));
     }
 
-    @Test(expected = FlexPokerException.class)
-    public void testPlayerBustsTwice() {
+    @Test
+    void testPlayerBustsTwice() {
         var player1Id = UUID.randomUUID();
         var player2Id = UUID.randomUUID();
         var player3Id = UUID.randomUUID();
@@ -150,17 +151,17 @@ public class PlayerBustedTest {
                 .filter(x -> x.getClass().equals(GameTablesCreatedAndPlayersAssociatedEvent.class)).findFirst().get();
         var tableId = gameTablesCreatedAndPlayersAssociatedEvent.getTableIdToPlayerIdsMap().keySet().iterator().next();
 
-        var playerToChipsMap = new HashMap<UUID, Integer>();
-        playerToChipsMap.put(player1Id, 0);
-        playerToChipsMap.put(player2Id, 0);
-        playerToChipsMap.put(player3Id, 100);
-        game.attemptToStartNewHand(tableId, playerToChipsMap);
+        var playerToChipsMapFirst = new HashMap<UUID, Integer>();
+        playerToChipsMapFirst.put(player1Id, 0);
+        playerToChipsMapFirst.put(player2Id, 0);
+        playerToChipsMapFirst.put(player3Id, 100);
+        game.attemptToStartNewHand(tableId, playerToChipsMapFirst);
 
-        playerToChipsMap = new HashMap<>();
-        playerToChipsMap.put(player1Id, 0);
-        playerToChipsMap.put(player2Id, 0);
-        playerToChipsMap.put(player3Id, 100);
-        game.attemptToStartNewHand(tableId, playerToChipsMap);
+        var playerToChipsMapSecond = new HashMap<UUID, Integer>();
+        playerToChipsMapSecond.put(player1Id, 0);
+        playerToChipsMapSecond.put(player2Id, 0);
+        playerToChipsMapSecond.put(player3Id, 100);
+        assertThrows(FlexPokerException.class, () -> game.attemptToStartNewHand(tableId, playerToChipsMapSecond));
     }
 
 }

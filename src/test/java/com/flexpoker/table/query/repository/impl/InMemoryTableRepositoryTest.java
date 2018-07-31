@@ -3,6 +3,7 @@ package com.flexpoker.table.query.repository.impl;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -15,14 +16,15 @@ import com.flexpoker.web.dto.outgoing.TableDTO;
 
 public class InMemoryTableRepositoryTest {
 
-    @Test(expected = NullPointerException.class)
-    public void testFetchNonExistentTable() {
+    @Test
+    void testFetchNonExistentTable() {
         var inMemoryTableRepository = new InMemoryTableRepository();
-        inMemoryTableRepository.fetchById(UUID.randomUUID());
+        assertThrows(NullPointerException.class,
+                () -> inMemoryTableRepository.fetchById(UUID.randomUUID()));
     }
 
     @Test
-    public void testFetchExistingTable() {
+    void testFetchExistingTable() {
         var inMemoryTableRepository = new InMemoryTableRepository();
         var tableId = UUID.randomUUID();
         inMemoryTableRepository.save(new TableDTO(tableId, 1, null, 0, null, null, 0, UUID.randomUUID()));
@@ -30,7 +32,7 @@ public class InMemoryTableRepositoryTest {
     }
 
     @Test
-    public void testSaveIncrementingVersions() {
+    void testSaveIncrementingVersions() {
         var inMemoryTableRepository = new InMemoryTableRepository();
         var tableId = UUID.randomUUID();
         inMemoryTableRepository.save(new TableDTO(tableId, 1, null, 0, null, null, 0, UUID.randomUUID()));
@@ -39,7 +41,7 @@ public class InMemoryTableRepositoryTest {
     }
 
     @Test
-    public void testSaveDecrementingVersions() {
+    void testSaveDecrementingVersions() {
         var inMemoryTableRepository = new InMemoryTableRepository();
         var tableId = UUID.randomUUID();
         inMemoryTableRepository.save(new TableDTO(tableId, 2, null, 0, null, null, 0, UUID.randomUUID()));
@@ -48,7 +50,7 @@ public class InMemoryTableRepositoryTest {
     }
 
     @Test
-    public void testSaveDuplicateVersionsDoNotOverwrite() {
+    void testSaveDuplicateVersionsDoNotOverwrite() {
         var inMemoryTableRepository = new InMemoryTableRepository();
         var tableId = UUID.randomUUID();
         inMemoryTableRepository.save(new TableDTO(tableId, 2, null, 10, null, null, 0, UUID.randomUUID()));
@@ -57,7 +59,7 @@ public class InMemoryTableRepositoryTest {
     }
 
     @Test
-    public void testSaveMultithreadVersions() throws InterruptedException {
+    void testSaveMultithreadVersions() throws InterruptedException {
         var inMemoryTableRepository = new InMemoryTableRepository();
         var tableId = UUID.randomUUID();
 
@@ -80,7 +82,7 @@ public class InMemoryTableRepositoryTest {
     }
 
     @Test
-    public void testFetchMultithreaded() throws InterruptedException {
+    void testFetchMultithreaded() throws InterruptedException {
         var inMemoryTableRepository = new InMemoryTableRepository();
         var tableId = UUID.randomUUID();
         inMemoryTableRepository.save(new TableDTO(tableId, 1, null, 0, null, null, 0, UUID.randomUUID()));

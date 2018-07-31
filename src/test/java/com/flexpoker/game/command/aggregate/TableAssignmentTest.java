@@ -19,7 +19,7 @@ import com.flexpoker.game.command.framework.GameEvent;
 public class TableAssignmentTest {
 
     @Test
-    public void testAssignmentIsRandom() {
+    void testAssignmentIsRandom() {
         var player1AlwaysWithPlayer2 = true;
         var player1SometimesWithPlayer2 = false;
 
@@ -64,91 +64,91 @@ public class TableAssignmentTest {
     }
 
     @Test
-    public void testTwoPlayersOneTable() {
+    void testTwoPlayersOneTable() {
         var game = createGameAndJoinAllPlayers(2, 2);
         verifyTableDistribution(game, 2);
     }
 
     @Test
-    public void testFourFitsAllInOneTable() {
+    void testFourFitsAllInOneTable() {
         var game = createGameAndJoinAllPlayers(4, 9);
         verifyTableDistribution(game, 4);
     }
 
     @Test
-    public void testFourFitsAllInASmallerTable() {
+    void testFourFitsAllInASmallerTable() {
         var game = createGameAndJoinAllPlayers(4, 6);
         verifyTableDistribution(game, 4);
     }
 
     @Test
-    public void testFourFitsPerfectlyInOneTable() {
+    void testFourFitsPerfectlyInOneTable() {
         var game = createGameAndJoinAllPlayers(4, 4);
         verifyTableDistribution(game, 4);
     }
 
     @Test
-    public void testFourFitsEvenlyInTwoTables() {
+    void testFourFitsEvenlyInTwoTables() {
         var game = createGameAndJoinAllPlayers(4, 3);
         verifyTableDistribution(game, 2, 2);
     }
 
     @Test
-    public void testTwentyFitsUnevenlyOverThreeTables() {
+    void testTwentyFitsUnevenlyOverThreeTables() {
         var game = createGameAndJoinAllPlayers(20, 9);
         verifyTableDistribution(game, 6, 7, 7);
     }
 
     @Test
-    public void testTwentyFitsFourEvenTablesNoneFull() {
+    void testTwentyFitsFourEvenTablesNoneFull() {
         var game = createGameAndJoinAllPlayers(20, 6);
         verifyTableDistribution(game, 5, 5, 5, 5);
     }
 
     @Test
-    public void testTwentyFitsFiveEvenTablesAllFull() {
+    void testTwentyFitsFiveEvenTablesAllFull() {
         var game = createGameAndJoinAllPlayers(20, 4);
         verifyTableDistribution(game, 4, 4, 4, 4, 4);
     }
 
     @Test
-    public void testTwentyFitsSevenTablesUnevenly() {
+    void testTwentyFitsSevenTablesUnevenly() {
         var game = createGameAndJoinAllPlayers(20, 3);
         verifyTableDistribution(game, 2, 3, 3, 3, 3, 3, 3);
     }
 
     @Test
-    public void testTwentyFitsTenTablesEvenly() {
+    void testTwentyFitsTenTablesEvenly() {
         var game = createGameAndJoinAllPlayers(20, 2);
         verifyTableDistribution(game, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2);
     }
 
     @Test
-    public void testTwoFitsOneTable1() {
+    void testTwoFitsOneTable1() {
         var game = createGameAndJoinAllPlayers(2, 9);
         verifyTableDistribution(game, 2);
     }
 
     @Test
-    public void testTwoFitsOneTable2() {
+    void testTwoFitsOneTable2() {
         var game = createGameAndJoinAllPlayers(2, 6);
         verifyTableDistribution(game, 2);
     }
 
     @Test
-    public void testTwoFitsOneTable3() {
+    void testTwoFitsOneTable3() {
         var game = createGameAndJoinAllPlayers(2, 4);
         verifyTableDistribution(game, 2);
     }
 
     @Test
-    public void testTwoFitsOneTable4() {
+    void testTwoFitsOneTable4() {
         var game = createGameAndJoinAllPlayers(2, 3);
         verifyTableDistribution(game, 2);
     }
 
     @Test
-    public void testTwoFitsOneTable5() {
+    void testTwoFitsOneTable5() {
         var game = createGameAndJoinAllPlayers(2, 2);
         verifyTableDistribution(game, 2);
     }

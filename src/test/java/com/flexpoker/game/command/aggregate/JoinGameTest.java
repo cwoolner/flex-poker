@@ -1,6 +1,7 @@
 package com.flexpoker.game.command.aggregate;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.ArrayList;
 import java.util.UUID;
@@ -17,7 +18,7 @@ import com.flexpoker.game.command.framework.GameEvent;
 public class JoinGameTest {
 
     @Test
-    public void testJoinGameSuccessFirstPlayerJoins() {
+    void testJoinGameSuccessFirstPlayerJoins() {
         var events = new ArrayList<GameEvent>();
         events.add(new GameCreatedEvent(UUID.randomUUID(), "test", 2, 2, UUID.randomUUID(), 10, 20));
 
@@ -29,7 +30,7 @@ public class JoinGameTest {
     }
 
     @Test
-    public void testJoinGameSuccessGameStarting() {
+    void testJoinGameSuccessGameStarting() {
         var events = new ArrayList<GameEvent>();
         events.add(new GameCreatedEvent(UUID.randomUUID(), "test", 2, 2, UUID.randomUUID(), 10, 20));
 
@@ -44,8 +45,8 @@ public class JoinGameTest {
         assertEquals(GameStartedEvent.class, game.fetchNewEvents().get(4).getClass());
     }
 
-    @Test(expected = FlexPokerException.class)
-    public void testJoinGameAttemptToJoinTwice() {
+    @Test
+    void testJoinGameAttemptToJoinTwice() {
         var events = new ArrayList<GameEvent>();
         events.add(new GameCreatedEvent(UUID.randomUUID(), "test", 2, 2, UUID.randomUUID(), 10, 20));
 
@@ -53,18 +54,18 @@ public class JoinGameTest {
 
         var game = new DefaultGameFactory().createFrom(events);
         game.joinGame(playerId);
-        game.joinGame(playerId);
+        assertThrows(FlexPokerException.class, () -> game.joinGame(playerId));
     }
 
-    @Test(expected = FlexPokerException.class)
-    public void testJoinGameAttemptToJoinMoreThanMax() {
+    @Test
+    void testJoinGameAttemptToJoinMoreThanMax() {
         var events = new ArrayList<GameEvent>();
         events.add(new GameCreatedEvent(UUID.randomUUID(), "test", 2, 2, UUID.randomUUID(), 10, 20));
 
         var game = new DefaultGameFactory().createFrom(events);
         game.joinGame(UUID.randomUUID());
         game.joinGame(UUID.randomUUID());
-        game.joinGame(UUID.randomUUID());
+        assertThrows(FlexPokerException.class, () -> game.joinGame(UUID.randomUUID()));
     }
 
 }

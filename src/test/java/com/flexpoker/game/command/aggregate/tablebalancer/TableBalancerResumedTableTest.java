@@ -15,7 +15,7 @@ import com.flexpoker.game.command.events.TableResumedAfterBalancingEvent;
 public class TableBalancerResumedTableTest {
 
     @Test
-    public void testOneBalancedTableThatIsPaused() {
+    void testOneBalancedTableThatIsPaused() {
         var subjectTableId = UUID.randomUUID();
         var tableToPlayersMap = createTableToPlayersMap(subjectTableId, 2);
 
@@ -27,7 +27,7 @@ public class TableBalancerResumedTableTest {
     }
 
     @Test
-    public void testTwoBalancedTablesOnePaused() {
+    void testTwoBalancedTablesOnePaused() {
         var subjectTableId = UUID.randomUUID();
         var tableToPlayersMap = createTableToPlayersMap(subjectTableId, 8, 8);
         var otherTableId = tableToPlayersMap.keySet().stream()

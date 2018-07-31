@@ -13,7 +13,7 @@ import com.flexpoker.game.command.events.GameCreatedEvent;
 public class CreateNewGameTest {
 
     @Test
-    public void testCreateNewGameSuccess() {
+    void testCreateNewGameSuccess() {
         var createGameCommand = new CreateGameCommand("test", 2, 2, UUID.randomUUID(), 10, 20);
         var game = new DefaultGameFactory().createNew(createGameCommand);
 

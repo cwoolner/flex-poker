@@ -1,6 +1,7 @@
 package com.flexpoker.table.command.aggregate.generic;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.UUID;
 
@@ -13,17 +14,17 @@ import com.flexpoker.table.command.events.PlayerAddedEvent;
 public class AddPlayerToTableTest {
 
     @Test
-    public void testAddPlayerSuccess() {
+    void testAddPlayerSuccess() {
         var table = TableTestUtils.createBasicTable(UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID());
         table.addPlayer(UUID.randomUUID(), 100);
         assertEquals(PlayerAddedEvent.class, table.fetchNewEvents().get(table.fetchNewEvents().size() - 1).getClass());
     }
 
-    @Test(expected = FlexPokerException.class)
-    public void testAddingExistingPlayer() {
+    @Test
+    void testAddingExistingPlayer() {
         var existingPlayer = UUID.randomUUID();
         var table = TableTestUtils.createBasicTable(UUID.randomUUID(), UUID.randomUUID(), existingPlayer);
-        table.addPlayer(existingPlayer, 100);
+        assertThrows(FlexPokerException.class, () -> table.addPlayer(existingPlayer, 100));
     }
 
 }

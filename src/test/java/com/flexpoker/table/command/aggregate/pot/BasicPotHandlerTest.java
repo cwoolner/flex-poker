@@ -4,6 +4,7 @@ import static com.flexpoker.table.command.aggregate.pot.PotTestUtils.createBasic
 import static com.flexpoker.table.command.aggregate.pot.PotTestUtils.createSetOfPlayers;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.NoSuchElementException;
@@ -16,7 +17,7 @@ import com.flexpoker.exception.FlexPokerException;
 public class BasicPotHandlerTest {
 
     @Test
-    public void testTwoPlayersRequiredToShowCardsAndChipsWon() {
+    void testTwoPlayersRequiredToShowCardsAndChipsWon() {
         var player1 = UUID.randomUUID();
         var player2 = UUID.randomUUID();
         var potId1 = UUID.randomUUID();
@@ -37,8 +38,8 @@ public class BasicPotHandlerTest {
         assertEquals(30, fetchChipsWon.get(player1).intValue());
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void testAddNewPotWithPlayersThatDontExist() {
+    @Test
+    void testAddNewPotWithPlayersThatDontExist() {
         var player1 = UUID.randomUUID();
         var player2 = UUID.randomUUID();
         var player3 = UUID.randomUUID();
@@ -46,11 +47,13 @@ public class BasicPotHandlerTest {
         var potHandler = createBasicPotHandler(player1, player2);
         
         var potId = UUID.randomUUID();
-        potHandler.addNewPot(potId, createSetOfPlayers(player3));
+
+        assertThrows(IllegalArgumentException.class,
+                () -> potHandler.addNewPot(potId, createSetOfPlayers(player3)));
     }
 
     @Test
-    public void testClosePot() {
+    void testClosePot() {
         var player1 = UUID.randomUUID();
         var player2 = UUID.randomUUID();
 
@@ -61,15 +64,15 @@ public class BasicPotHandlerTest {
         potHandler.closePot(potId);
     }
 
-    @Test(expected = NoSuchElementException.class)
-    public void testClosePotThatDoesntExist() {
-        PotHandler potHandler = createBasicPotHandler(UUID.randomUUID(),
-                UUID.randomUUID());
-        potHandler.closePot(UUID.randomUUID());
+    @Test
+    void testClosePotThatDoesntExist() {
+        PotHandler potHandler = createBasicPotHandler(UUID.randomUUID(), UUID.randomUUID());
+        assertThrows(NoSuchElementException.class,
+                () -> potHandler.closePot(UUID.randomUUID()));
     }
 
-    @Test(expected = FlexPokerException.class)
-    public void testAddChipsToClosedPot() {
+    @Test
+    void testAddChipsToClosedPot() {
         var player1 = UUID.randomUUID();
         var player2 = UUID.randomUUID();
 
@@ -78,7 +81,9 @@ public class BasicPotHandlerTest {
         var potId = UUID.randomUUID();
         potHandler.addNewPot(potId, createSetOfPlayers(player1, player2));
         potHandler.closePot(potId);
-        potHandler.addToPot(potId, 10);
+
+        assertThrows(FlexPokerException.class,
+                () -> potHandler.addToPot(potId, 10));
     }
 
 }

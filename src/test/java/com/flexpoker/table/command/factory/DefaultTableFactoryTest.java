@@ -2,6 +2,7 @@ package com.flexpoker.table.command.factory;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
@@ -9,7 +10,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.UUID;
 
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import com.flexpoker.exception.FlexPokerException;
@@ -22,13 +23,13 @@ public class DefaultTableFactoryTest {
 
     private DefaultTableFactory sut;
 
-    @Before
-    public void setup() {
+    @BeforeEach
+    void setup() {
         sut = new DefaultTableFactory();
     }
 
     @Test
-    public void testCreateNew() {
+    void testCreateNew() {
         var playerIds = new HashSet<UUID>();
         playerIds.add(UUID.randomUUID());
         playerIds.add(UUID.randomUUID());
@@ -40,19 +41,19 @@ public class DefaultTableFactoryTest {
         assertFalse(table.fetchNewEvents().isEmpty());
     }
 
-    @Test(expected = FlexPokerException.class)
-    public void testPlayerListToLongFails() {
+    @Test
+    void testPlayerListToLongFails() {
         var playerIds = new HashSet<UUID>();
         playerIds.add(UUID.randomUUID());
         playerIds.add(UUID.randomUUID());
         playerIds.add(UUID.randomUUID());
 
         var command = new CreateTableCommand(UUID.randomUUID(), UUID.randomUUID(), playerIds, 2);
-        sut.createNew(command);
+        assertThrows(FlexPokerException.class, () -> sut.createNew(command));
     }
 
     @Test
-    public void testPlayerListExactSucceeds() {
+    void testPlayerListExactSucceeds() {
         var playerIds = new HashSet<UUID>();
         playerIds.add(UUID.randomUUID());
         playerIds.add(UUID.randomUUID());
@@ -65,7 +66,7 @@ public class DefaultTableFactoryTest {
     }
 
     @Test
-    public void testCreateFrom() {
+    void testCreateFrom() {
         var events = new ArrayList<TableEvent>();
         events.add(new TableCreatedEvent(null, UUID.randomUUID(), 6, new HashMap<>(), 1500));
         var table = sut.createFrom(events);

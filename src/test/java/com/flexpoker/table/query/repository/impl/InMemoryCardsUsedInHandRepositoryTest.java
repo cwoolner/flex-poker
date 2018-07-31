@@ -19,7 +19,7 @@ import com.flexpoker.model.card.TurnCard;
 public class InMemoryCardsUsedInHandRepositoryTest {
 
     @Test
-    public void testSaveFlopCards() {
+    void testSaveFlopCards() {
         var repository = new InMemoryCardsUsedInHandRepository();
         var handId = UUID.randomUUID();
         var card1 = new Card(0, CardRank.TWO, CardSuit.HEARTS);
@@ -32,7 +32,7 @@ public class InMemoryCardsUsedInHandRepositoryTest {
     }
 
     @Test
-    public void testSaveTurnCard() {
+    void testSaveTurnCard() {
         var repository = new InMemoryCardsUsedInHandRepository();
         var handId = UUID.randomUUID();
         var card1 = new Card(0, CardRank.TWO, CardSuit.HEARTS);
@@ -41,7 +41,7 @@ public class InMemoryCardsUsedInHandRepositoryTest {
     }
 
     @Test
-    public void testSaveRiverCard() {
+    void testSaveRiverCard() {
         var repository = new InMemoryCardsUsedInHandRepository();
         var handId = UUID.randomUUID();
         var card1 = new Card(0, CardRank.TWO, CardSuit.HEARTS);
@@ -50,7 +50,7 @@ public class InMemoryCardsUsedInHandRepositoryTest {
     }
 
     @Test
-    public void testSavePocketCards() {
+    void testSavePocketCards() {
         var repository = new InMemoryCardsUsedInHandRepository();
         var handId = UUID.randomUUID();
 
@@ -74,7 +74,7 @@ public class InMemoryCardsUsedInHandRepositoryTest {
     }
 
     @Test
-    public void testFetchAllPocketCardsForUser() {
+    void testFetchAllPocketCardsForUser() {
         InMemoryCardsUsedInHandRepository repository = new InMemoryCardsUsedInHandRepository();
 
         PocketCards pocketCards1 = new PocketCards(

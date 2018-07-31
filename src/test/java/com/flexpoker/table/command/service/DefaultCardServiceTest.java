@@ -8,14 +8,14 @@ import org.junit.jupiter.api.Test;
 public class DefaultCardServiceTest {
 
     @Test
-    public void testCreateShuffledDeck() {
+    void testCreateShuffledDeck() {
         var service = new DefaultCardService();
         var shuffledDeck = service.createShuffledDeck();
         assertEquals(52, shuffledDeck.size());
     }
 
     @Test
-    public void testShuffledDecksAreDifferent() {
+    void testShuffledDecksAreDifferent() {
         var service = new DefaultCardService();
         var shuffledDeck1 = service.createShuffledDeck();
         var shuffledDeck2 = service.createShuffledDeck();
@@ -25,7 +25,7 @@ public class DefaultCardServiceTest {
     }
 
     @Test
-    public void testCreateCardsUsedInHand() {
+    void testCreateCardsUsedInHand() {
         var service = new DefaultCardService();
         var fullDeckOfCards = service.createShuffledDeck();
         var cardsUsedInHand = service.createCardsUsedInHand(fullDeckOfCards , 2);

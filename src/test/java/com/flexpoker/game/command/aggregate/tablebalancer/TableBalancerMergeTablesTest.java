@@ -15,7 +15,7 @@ import com.flexpoker.game.command.events.PlayerMovedToNewTableEvent;
 public class TableBalancerMergeTablesTest {
 
     @Test
-    public void testTwoTablesOneAlreadyPaused() {
+    void testTwoTablesOneAlreadyPaused() {
         var subjectTableId = UUID.randomUUID();
         var tableToPlayersMap = createTableToPlayersMap(subjectTableId, 1, 1);
         var otherTableId = tableToPlayersMap.keySet().stream()
@@ -29,7 +29,7 @@ public class TableBalancerMergeTablesTest {
     }
 
     @Test
-    public void testTwoTablesReadyToMerge() {
+    void testTwoTablesReadyToMerge() {
         var subjectTableId = UUID.randomUUID();
         var tableToPlayersMap = createTableToPlayersMap(subjectTableId, 1, 2);
 
@@ -41,7 +41,7 @@ public class TableBalancerMergeTablesTest {
     }
 
     @Test
-    public void testThreeTablesReadyToMerge() {
+    void testThreeTablesReadyToMerge() {
         var subjectTableId = UUID.randomUUID();
         var tableToPlayersMap = createTableToPlayersMap(subjectTableId, 1, 3, 2);
         var smallestOtherTableId = tableToPlayersMap.entrySet().stream()

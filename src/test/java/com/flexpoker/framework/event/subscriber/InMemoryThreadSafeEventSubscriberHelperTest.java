@@ -17,7 +17,7 @@ import com.flexpoker.game.command.events.GameJoinedEvent;
 public class InMemoryThreadSafeEventSubscriberHelperTest {
 
     @Test
-    public void testSentInOrderRunsInOrder() {
+    void testSentInOrderRunsInOrder() {
         var tableId = UUID.randomUUID();
         var event1 = new BlindsIncreasedEvent(tableId);
         event1.setVersion(1);
@@ -46,7 +46,7 @@ public class InMemoryThreadSafeEventSubscriberHelperTest {
     }
 
     @Test
-    public void testSentInSwappedOrderRunsInOrder() {
+    void testSentInSwappedOrderRunsInOrder() {
         var tableId = UUID.randomUUID();
         var event1 = new BlindsIncreasedEvent(tableId);
         event1.setVersion(1);

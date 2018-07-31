@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 public class BlindScheduleTest {
 
     @Test
-    public void testInitial() {
+    void testInitial() {
         var blindSchedule = new BlindSchedule(10);
         assertEquals(1, blindSchedule.getCurrentLevel());
         assertEquals(10, blindSchedule.getNumberOfMinutesBetweenLevels());
@@ -18,7 +18,7 @@ public class BlindScheduleTest {
     }
 
     @Test
-    public void testIncrement() {
+    void testIncrement() {
         var blindSchedule = new BlindSchedule(10);
         blindSchedule.incrementLevel();
         assertFalse(blindSchedule.isMaxLevel());
@@ -28,7 +28,7 @@ public class BlindScheduleTest {
     }
 
     @Test
-    public void testMaxLevel() {
+    void testMaxLevel() {
         var blindSchedule = new BlindSchedule(10);
         blindSchedule.incrementLevel();
         blindSchedule.incrementLevel();
