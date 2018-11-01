@@ -13,26 +13,30 @@
   "license": "ISC",
   "dependencies": {
     "immutable": "3.8.2",
-    "lodash": "4.17.10",
-    "react": "16.4.1",
-    "react-bootstrap": "0.32.1",
-    "react-dom": "16.4.1",
+    "lodash": "4.17.11",
+    "react": "16.5.2",
+    "react-bootstrap": "0.32.4",
+    "react-dom": "16.5.2",
     "react-redux": "5.0.7",
     "react-router": "4.3.1",
     "react-router-dom": "4.3.1",
     "redux": "4.0.0",
     "reselect": "3.0.1",
-    "sockjs-client": "1.1.5",
+    "sockjs-client": "1.2.0",
     "webstomp-client": "1.2.4"
   },
   "devDependencies": {
-    "babel-core": "6.26.3",
-    "babel-loader": "7.1.5",
-    "babel-preset-env": "1.7.0",
-    "babel-preset-react": "6.24.1",
-    "babel-preset-stage-3": "6.24.1",
+    "@babel/core": "7.1.0",
+    "@babel/plugin-proposal-class-properties": "7.1.0",
+    "@babel/plugin-proposal-json-strings": "7.0.0",
+    "@babel/plugin-syntax-dynamic-import": "7.0.0",
+    "@babel/plugin-syntax-import-meta": "7.0.0",
+    "@babel/plugin-proposal-object-rest-spread": "7.0.0",
+    "@babel/preset-env": "7.1.0",
+    "@babel/preset-react": "7.0.0",
+    "babel-loader": "8.0.2",
     "http-server": "0.11.1",
-    "webpack": "4.16.3",
-    "webpack-cli": "3.1.0"
+    "webpack": "4.19.1",
+    "webpack-cli": "3.1.1"
   }
 }

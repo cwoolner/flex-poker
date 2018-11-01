@@ -34,12 +34,17 @@ module.exports = {
           loader: 'babel-loader',
           options: {
             presets: [
-              'react',
-              'stage-3',
-              ['env', {
-                'useBuiltIns': true,
-                'modules': false
-              }]
+              '@babel/react',
+              [
+                '@babel/preset-env',
+                {
+                  "targets": {
+                    "esmodules": true
+                  },
+                  "modules": false,
+                  "useBuiltIns": "entry"
+                }
+              ]
             ]
           }
         }]
