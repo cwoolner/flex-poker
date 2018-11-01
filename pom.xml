@@ -13,7 +13,7 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <jetty.version>9.4.11.v20180605</jetty.version>
+    <jetty.version>9.4.12.v20180830</jetty.version>
   </properties>
 
   <build>
@@ -92,7 +92,7 @@
       <dependency>
         <groupId>io.spring.platform</groupId>
         <artifactId>platform-bom</artifactId>
-        <version>Cairo-SR2</version>
+        <version>Cairo-SR5</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
