@@ -9,7 +9,7 @@
 <jsp:include page="generic-header.jsp"></jsp:include>
 
 <div class="container">
-  <h3 class="text-center">Confirm your sign up</h3>
+  <h4 class="text-center">Confirm your sign up</h4>
 
   <p class="text-center">Email sent to <c:out value="${email}" /> (TODO: not working yet)</p>
 

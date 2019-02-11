@@ -10,7 +10,7 @@
 
 <div class="container">
   <form class="standard-form" action="<c:url value='sign-up' />" method='POST'>
-    <h3>Sign Up</h3>
+    <h4>Sign Up</h4>
     <c:if test="${error != null}">
       <p class=" error-message">${error}</p>
     </c:if>

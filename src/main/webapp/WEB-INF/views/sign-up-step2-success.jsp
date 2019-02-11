@@ -9,7 +9,7 @@
 <jsp:include page="generic-header.jsp"></jsp:include>
 
 <div class="container">
-  <h3 class="text-center">Confirmed!</h3>
+  <h4 class="text-center">Confirmed!</h4>
 
   <c:url value="/login" var="loginUrl" />
   <p class="text-center"><a href="${loginUrl}">Go to Login</a></p>
