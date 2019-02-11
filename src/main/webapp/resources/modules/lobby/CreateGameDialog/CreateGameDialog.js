@@ -1,5 +1,6 @@
-import React from 'react';
-import { Modal, Button, FormControl, FormGroup, ControlLabel } from 'react-bootstrap';
+import React from 'react'
+import { Modal, Button, FormControl, FormGroup } from 'react-bootstrap'
+import Form from 'react-bootstrap/Form'
 
 export default ({showModal, hideDialogCallback, submitFormCallback}) => {
  return (
@@ -11,23 +12,23 @@ export default ({showModal, hideDialogCallback, submitFormCallback}) => {
       <form id="create-game-form" onSubmit={submitFormCallback}>
         <Modal.Body>
           <FormGroup>
-            <ControlLabel>Name</ControlLabel>
+            <Form.Label>Name</Form.Label>
             <FormControl type="text" name="name" autoFocus />
           </FormGroup>
           <FormGroup>
-            <ControlLabel>Number of Players (2 - 90)</ControlLabel>
+            <Form.Label>Number of Players (2 - 90)</Form.Label>
             <FormControl type="number" name="players" min="2" max="90" />
           </FormGroup>
           <FormGroup>
-            <ControlLabel>Number of Players per Table (2 - 9)</ControlLabel>
+            <Form.Label>Number of Players per Table (2 - 9)</Form.Label>
             <FormControl type="number" name="playersPerTable" min="2" max="9" />
           </FormGroup>
           <FormGroup>
-            <ControlLabel>Blind increment in minutes (1 - 60)</ControlLabel>
+            <Form.Label>Blind increment in minutes (1 - 60)</Form.Label>
             <FormControl type="number" name="numberOfMinutesBetweenBlindLevels" min="1" max="60" />
           </FormGroup>
           <FormGroup>
-            <ControlLabel>Blind timer in seconds (1 - 60)</ControlLabel>
+            <Form.Label>Blind timer in seconds (1 - 60)</Form.Label>
             <FormControl type="number" name="secondsForActionOnTimer" min="1" max="60" />
           </FormGroup>
         </Modal.Body>

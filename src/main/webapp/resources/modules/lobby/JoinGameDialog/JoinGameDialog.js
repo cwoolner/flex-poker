@@ -1,5 +1,6 @@
-import React from 'react';
-import { Modal, Button, FormControl, FormGroup, ControlLabel } from 'react-bootstrap';
+import React from 'react'
+import { Modal, Button, FormControl, FormGroup } from 'react-bootstrap'
+import Form from 'react-bootstrap/Form'
 
 export default ({gameId, showModal, hideDialogCallback, submitFormCallback}) => {
   return (
@@ -11,15 +12,15 @@ export default ({gameId, showModal, hideDialogCallback, submitFormCallback}) => 
       <form id="join-game-form" onSubmit={submitFormCallback}>
         <Modal.Body>
           <FormGroup>
-            <ControlLabel>Current Balance</ControlLabel>
+            <Form.Label>Current Balance</Form.Label>
             <FormControl.Static>100</FormControl.Static>
           </FormGroup>
           <FormGroup>
-            <ControlLabel>Cost</ControlLabel>
+            <Form.Label>Cost</Form.Label>
             <FormControl.Static>10</FormControl.Static>
           </FormGroup>
           <FormGroup>
-            <ControlLabel>Remaining Balance</ControlLabel>
+            <Form.Label>Remaining Balance</Form.Label>
             <FormControl.Static>90</FormControl.Static>
           </FormGroup>
         </Modal.Body>
