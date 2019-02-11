@@ -33,7 +33,7 @@ export default ({showModal, hideDialogCallback, submitFormCallback}) => {
           </Form.Group>
         </Modal.Body>
         <Modal.Footer>
-          <Button onClick={hideDialogCallback}>Close</Button>
+          <Button variant="secondary" onClick={hideDialogCallback}>Close</Button>
           <Button type="submit" variant="primary">Create Game</Button>
         </Modal.Footer>
       </form>

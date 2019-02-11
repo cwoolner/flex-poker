@@ -25,7 +25,7 @@ export default ({gameId, showModal, hideDialogCallback, submitFormCallback}) => 
           </Form.Group>
         </Modal.Body>
         <Modal.Footer>
-          <Button onClick={hideDialogCallback}>Close</Button>
+          <Button variant="secondary" onClick={hideDialogCallback}>Close</Button>
           <Button type="submit" variant="primary" autoFocus>Join Game</Button>
         </Modal.Footer>
       </form>
