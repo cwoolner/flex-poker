@@ -6,7 +6,9 @@ import GameTab from './GameTab'
 const GameTabs = ({openGameTabs}) => {
   return (
     <Nav variant="tabs">
-      <Nav.Item href="/#">Lobby</Nav.Item>
+      <Nav.Item>
+        <Nav.Link href="/#">Lobby</Nav.Link>
+      </Nav.Item>
       {openGameTabs.map((openGameTab, index) => <GameTab key={index} openGameTab={openGameTab} />)}
     </Nav>
   );
