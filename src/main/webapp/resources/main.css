@@ -83,3 +83,10 @@ footer .container p {
   color: #777777;
 	padding-top: 5px;
 }
+
+nav {
+	min-height: 50px;
+	margin-bottom: 20px;
+	border: 1px solid transparent;
+	border-color: #e7e7e7;
+}
