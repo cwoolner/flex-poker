@@ -5,7 +5,7 @@ import GameTab from './GameTab';
 
 const GameTabs = ({openGameTabs}) => {
   return (
-    <Nav bsStyle="tabs">
+    <Nav variant="tabs">
       <NavItem href="/#">Lobby</NavItem>
       {openGameTabs.map((openGameTab, index) => <GameTab key={index} openGameTab={openGameTab} />)}
     </Nav>

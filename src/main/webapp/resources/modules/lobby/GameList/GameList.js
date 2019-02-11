@@ -16,7 +16,7 @@ export default ({gameList, gameOpenedCallback, openCreateGameModalCallback}) => 
             <th>Action On timer (s)</th>
             <th>Creator</th>
             <th>Created</th>
-            <th style={{textAlign: 'center'}}><Button bsStyle="primary" onClick={openCreateGameModalCallback}><span className="glyphicon glyphicon-plus-sign"></span></Button></th>
+            <th style={{textAlign: 'center'}}><Button variant="primary" onClick={openCreateGameModalCallback}><span className="glyphicon glyphicon-plus-sign"></span></Button></th>
           </tr>
         </thead>
         <tbody>
