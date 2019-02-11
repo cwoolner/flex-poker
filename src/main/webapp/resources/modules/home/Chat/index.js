@@ -1,7 +1,8 @@
 import React from 'react';
 import { List, Map } from 'immutable'
-import { FormGroup, FormControl, FieldGroup, Button } from 'react-bootstrap';
-import WebSocketService from '../../webSocket/WebSocketService';
+import Button from 'react-bootstrap/Button'
+import Form from 'react-bootstrap/Form'
+import WebSocketService from '../../webSocket/WebSocketService'
 import { connect } from 'react-redux'
 import ChatLine from './ChatLine'
 import { getChats } from './selectors'
@@ -54,9 +55,9 @@ class Chat extends React.Component {
           {this.props.chats.map(msg => <ChatLine chat={msg} />)}
         </div>
         <form onSubmit={this.chatFormSubmitted}>
-          <FormGroup>
-            <FormControl type="text" placeholder="Chat..." />
-          </FormGroup>
+          <Form.Group>
+            <Form.Control type="text" placeholder="Chat..." />
+          </Form.Group>
         </form>
       </div>
     )

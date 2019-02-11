@@ -1,5 +1,5 @@
 import React from 'react'
-import { NavDropdown } from 'react-bootstrap'
+import NavDropdown from 'react-bootstrap/NavDropdown'
 import Dropdown from 'react-bootstrap/Dropdown'
 
 export default ({openGameTab}) => {

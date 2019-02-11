@@ -1,12 +1,12 @@
-import React from 'react';
-import { Nav, NavItem } from 'react-bootstrap';
-import { connect } from 'react-redux';
-import GameTab from './GameTab';
+import React from 'react'
+import Nav from 'react-bootstrap/Nav'
+import { connect } from 'react-redux'
+import GameTab from './GameTab'
 
 const GameTabs = ({openGameTabs}) => {
   return (
     <Nav variant="tabs">
-      <NavItem href="/#">Lobby</NavItem>
+      <Nav.Item href="/#">Lobby</Nav.Item>
       {openGameTabs.map((openGameTab, index) => <GameTab key={index} openGameTab={openGameTab} />)}
     </Nav>
   );

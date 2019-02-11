@@ -2,7 +2,7 @@ import React from 'react';
 import CreateGameDialog from './CreateGameDialog';
 import JoinGameDialog from './JoinGameDialog';
 import GameList from './GameList';
-import { Button } from 'react-bootstrap';
+import Button from 'react-bootstrap/Button';
 import { connect } from 'react-redux'
 import { changeChatMsgStream } from '../../reducers'
 
