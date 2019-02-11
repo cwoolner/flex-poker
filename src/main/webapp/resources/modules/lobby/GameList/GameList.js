@@ -1,11 +1,12 @@
 import React from 'react'
 import Button from 'react-bootstrap/Button'
 import Table from 'react-bootstrap/Table'
+import moment from 'moment-timezone'
 
 export default ({gameList, gameOpenedCallback, openCreateGameModalCallback}) => {
   return (
     <div className={'game-list'}>
-      <Table striped bordered hover>
+      <Table striped bordered hover size="sm">
         <thead>
           <tr>
             <th>Name</th>
@@ -13,8 +14,6 @@ export default ({gameList, gameOpenedCallback, openCreateGameModalCallback}) => 
             <th>Registered Players</th>
             <th>Total Players</th>
             <th>Players Per Table</th>
-            <th>Blind level (min)</th>
-            <th>Action On timer (s)</th>
             <th>Creator</th>
             <th>Created</th>
             <th style={{textAlign: 'center'}}>
@@ -34,11 +33,13 @@ export default ({gameList, gameOpenedCallback, openCreateGameModalCallback}) => 
                     <td>{game.numberOfRegisteredPlayers}</td>
                     <td>{game.maxNumberOfPlayers}</td>
                     <td>{game.maxPlayersPerTable}</td>
-                    <td>{game.blindLevelIncreaseInMinutes}</td>
-                    <td>{game.actionOnTimerInSeconds}</td>
                     <td>{game.createdBy}</td>
-                    <td>{game.createdOn}</td>
-                    <td style={{textAlign: 'center'}}><Button onClick={() => gameOpenedCallback(game.id)} disabled={game.stage !== 'REGISTERING'}>Open Game</Button></td>
+                    <td>{moment.parseZone(game.createdOn)
+                               .tz(moment.tz.guess())
+                               .format("YYYY-MM-DD h:mm:ss a")}</td>
+                    <td style={{textAlign: 'center'}}>
+                      <Button onClick={() => gameOpenedCallback(game.id)} disabled={game.stage !== 'REGISTERING'}>Open</Button>
+                    </td>
                   </tr>
                 )
               })
