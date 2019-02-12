@@ -1,35 +1,18 @@
-import React from 'react';
+import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
 import { changeChatMsgStream } from '../../reducers'
 
-class GamePage extends React.Component {
+const GamePage = ({ changeChatMsgStream, match: { params: { gameId }} }) => {
 
-  constructor(props) {
-    super(props)
-  }
+  useEffect(() => {
+    changeChatMsgStream(gameId)
+  }, [gameId])
 
-  componentDidMount() {
-    const { gameId } = this.props.match.params
-    this.props.changeChatMsgStream(gameId)
-  }
-
-  componentDidUpdate(prevProps, prevState, snapshot) {
-    const prevGameId = prevProps.match.params.gameId
-    const currentGameId = this.props.match.params.gameId
-
-    if (prevGameId !== currentGameId) {
-      this.props.changeChatMsgStream(currentGameId)
-    }
-  }
-
-  render() {
-    return <div>Game page</div>
-  }
-
+  return <div>Game page</div>
 }
 
-const mapDispatchToProps = dispatch => ({
-  changeChatMsgStream: gameId => dispatch(changeChatMsgStream(gameId, null))
+const mapDispatchToProps = (dispatch) => ({
+  changeChatMsgStream: (gameId) => dispatch(changeChatMsgStream(gameId, null))
 })
 
 export default connect(null, mapDispatchToProps)(GamePage)

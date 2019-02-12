@@ -6,4 +6,4 @@ const displayChat = chat => {
     : `${chat.senderUsername}: ${chat.message}`
 }
 
-export default ({chat}) => <div key={chat.id}>{displayChat(chat)}</div>
+export default ({chat}) => <div>{displayChat(chat)}</div>
