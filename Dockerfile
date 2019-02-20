@@ -1,4 +1,4 @@
-FROM openjdk:10.0.1-jdk-slim-sid
+FROM openjdk:11.0.2-jdk-slim-stretch
 
 RUN apt update
 RUN apt install maven curl -y
@@ -17,7 +17,7 @@ RUN npm install
 RUN mvn package
 
 
-FROM openjdk:10.0.1-jre-slim-sid
+FROM openjdk:11.0.2-jre-slim-stretch
 
 COPY --from=0 /flex-poker/target/flexpoker.war .
 COPY --from=0 /flex-poker/target/dependency/jetty-runner.jar .
