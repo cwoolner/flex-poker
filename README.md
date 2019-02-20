@@ -14,8 +14,8 @@ Flex Poker is a poker-playing (Texas hold 'em) web app.  It was originally writt
 ### w/o Docker
 1. `npm install`
 2. Run the server:
-   * Default version: `mvn jetty:run`
-   * Prod version (Redis required): `mvn jetty:run -Dspring.profiles.active=prod`
+   * Default version (JDK 11 required): `mvn jetty:run`
+   * Prod version (Redis and JDK 11 required): `mvn jetty:run -Dspring.profiles.active=prod`
 3. Hit [http://localhost:8080/](http://localhost:8080/)
 4. Users created by default: player1/player1, player2/player2, player3/player3, player4/player4
 
@@ -23,7 +23,7 @@ Flex Poker is a poker-playing (Texas hold 'em) web app.  It was originally writt
 
 ## Build/dev tools
 * Node.js/npm
-* Java 10
+* Java 11
 * Maven
 * Redis - only required if using the "prod" Spring profile
 * Docker (>= 17.05) - if you want to use the provided Dockerfile to build/run
