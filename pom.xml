@@ -22,7 +22,7 @@
     <maven.surefire.plugin.version>2.22.2</maven.surefire.plugin.version>
     <pitest.maven.version>1.4.11</pitest.maven.version>
     <pitest.junit5.plugin>0.11</pitest.junit5.plugin>
-    <spring.platform.bom.version>Cairo-SR8</spring.platform.bom.version>
+    <spring.boot.dependencies.bom.version>2.2.6.RELEASE</spring.boot.dependencies.bom.version>
   </properties>
 
   <build>
@@ -102,9 +102,9 @@
   <dependencyManagement>
     <dependencies>
       <dependency>
-        <groupId>io.spring.platform</groupId>
-        <artifactId>platform-bom</artifactId>
-        <version>${spring.platform.bom.version}</version>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-dependencies</artifactId>
+        <version>${spring.boot.dependencies.bom.version}</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -137,12 +137,9 @@
       <artifactId>spring-websocket</artifactId>
     </dependency>
     <dependency>
-      <groupId>commons-logging</groupId>
-      <artifactId>commons-logging</artifactId>
-    </dependency>
-    <dependency>
       <groupId>javax.inject</groupId>
       <artifactId>javax.inject</artifactId>
+      <version>1</version>
     </dependency>
     <dependency>
       <groupId>javax.servlet</groupId>
@@ -170,8 +167,8 @@
       <artifactId>jackson-core</artifactId>
     </dependency>
     <dependency>
-      <groupId>commons-lang</groupId>
-      <artifactId>commons-lang</artifactId>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
     </dependency>
     <dependency>
       <groupId>org.springframework.data</groupId>
