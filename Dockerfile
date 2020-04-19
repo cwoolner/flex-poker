@@ -26,6 +26,5 @@ RUN mvn package
 FROM openjdk:11.0.6-jre-slim-buster
 
 COPY --from=0 /flex-poker/target/flexpoker.war .
-COPY --from=0 /flex-poker/target/dependency/jetty-runner.jar .
 
-ENTRYPOINT java -jar jetty-runner.jar flexpoker.war
+ENTRYPOINT java -jar flexpoker.war
