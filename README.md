@@ -87,7 +87,7 @@ Thanks to Heroku for making it so simple (and free) to get a WebSocket-enabled J
 
 Node.js: The Heroku config had to be changed to add a heroku/nodejs buildpack as well as the existing heroku/java buildpack.  The pack by default just runs npm install, so the webpack build has been added to the postinstall script.
 
-Java: A Procfile had been used previously for a jetty-runner config, but after the switch to Spring Boot, the Procfile has been removed.
+Java: A Procfile is included that contains the java -jar command that Heroku uses to launch the app.
 
 Heroku auto-deploys whenever changes are made to master: [https://flex-poker.herokuapp.com/](https://flex-poker.herokuapp.com/)
 
