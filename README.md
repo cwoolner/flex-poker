@@ -14,8 +14,8 @@ Flex Poker is a poker-playing (Texas hold 'em) web app.  It was originally writt
 ### w/o Docker
 1. `npm install`
 2. Run the server:
-   * Default version (JDK 11 required): `mvn jetty:run`
-   * Prod version (Redis and JDK 11 required): `mvn jetty:run -Dspring.profiles.active=prod`
+   * Default version (JDK 11 required): `mvn spring-boot:run`
+   * Prod version (Redis and JDK 11 required): `mvn -Dspring-boot.run.profiles=prod spring-boot:run`
 3. Hit [http://localhost:8080/](http://localhost:8080/)
 4. Users created by default: player1/player1, player2/player2, player3/player3, player4/player4
 
@@ -87,9 +87,9 @@ Thanks to Heroku for making it so simple (and free) to get a WebSocket-enabled J
 
 Node.js: The Heroku config had to be changed to add a heroku/nodejs buildpack as well as the existing heroku/java buildpack.  The pack by default just runs npm install, so the webpack build has been added to the postinstall script.
 
-Java: A Procfile is included that contains the jetty-runner command that Heroku uses to launch the app.  In addition to the Procfile, a small chunk of jetty-runner config was added to the pom.
+Java: A Procfile had been used previously for a jetty-runner config, but after the switch to Spring Boot, the Procfile has been removed.
 
-Heroku auto-deploys whenever changes are made to master: [http://flex-poker.herokuapp.com/](http://flex-poker.herokuapp.com/)
+Heroku auto-deploys whenever changes are made to master: [https://flex-poker.herokuapp.com/](https://flex-poker.herokuapp.com/)
 
 NOTE: Since the app uses in-memory persistence, the entire state of the app is essentially reset after Heroku puts it to sleep from inactivity.  Feel free to hit that URL and try it out.
 
