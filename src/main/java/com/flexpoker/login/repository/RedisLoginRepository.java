@@ -1,7 +1,6 @@
 package com.flexpoker.login.repository;
 
-import java.util.Arrays;
-import java.util.Collection;
+import java.util.Collections;
 import java.util.Map;
 import java.util.UUID;
 
@@ -9,8 +8,8 @@ import javax.inject.Inject;
 
 import org.springframework.context.annotation.Profile;
 import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -38,8 +37,7 @@ public class RedisLoginRepository implements LoginRepository {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String username)
-            throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
         var encryptedPassword = redisTemplate.opsForValue().get(LOGIN_PASSWORD_NAMESPACE + username);
 
@@ -47,49 +45,8 @@ public class RedisLoginRepository implements LoginRepository {
             return null;
         }
 
-        // TODO: change these to not use default positive values, getting all of
-        // the data from Redis instead
-        var userDetails = new UserDetails() {
-
-            private static final long serialVersionUID = 1L;
-
-            @Override
-            public boolean isEnabled() {
-                return true;
-            }
-
-            @Override
-            public boolean isCredentialsNonExpired() {
-                return true;
-            }
-
-            @Override
-            public boolean isAccountNonLocked() {
-                return true;
-            }
-
-            @Override
-            public boolean isAccountNonExpired() {
-                return true;
-            }
-
-            @Override
-            public String getUsername() {
-                return username;
-            }
-
-            @Override
-            public String getPassword() {
-                return encryptedPassword;
-            }
-
-            @Override
-            public Collection<? extends GrantedAuthority> getAuthorities() {
-                return Arrays.asList(new SimpleGrantedAuthority("ROLE_USER"));
-            }
-        };
-
-        return userDetails;
+        return new User(username, encryptedPassword,
+                Collections.singleton(new SimpleGrantedAuthority("ROLE_USER")));
     }
 
     @Override
@@ -121,16 +78,17 @@ public class RedisLoginRepository implements LoginRepository {
 
     private void addDefaultUsers() {
         var passwordEncoder = new DelegatingPasswordEncoder("bcrypt", Map.of("bcrypt", new BCryptPasswordEncoder()));
+        addUserIfDoesNotExist("player1", passwordEncoder);
+        addUserIfDoesNotExist("player2", passwordEncoder);
+        addUserIfDoesNotExist("player3", passwordEncoder);
+        addUserIfDoesNotExist("player4", passwordEncoder);
+    }
 
-        saveUsernameAndPassword("player1", passwordEncoder.encode("player1"));
-        saveUsernameAndPassword("player2", passwordEncoder.encode("player2"));
-        saveUsernameAndPassword("player3", passwordEncoder.encode("player3"));
-        saveUsernameAndPassword("player4", passwordEncoder.encode("player4"));
-
-        saveAggregateIdAndUsername(UUID.randomUUID(), "player1");
-        saveAggregateIdAndUsername(UUID.randomUUID(), "player2");
-        saveAggregateIdAndUsername(UUID.randomUUID(), "player3");
-        saveAggregateIdAndUsername(UUID.randomUUID(), "player4");
+    private void addUserIfDoesNotExist(String username, DelegatingPasswordEncoder passwordEncoder) {
+        if (loadUserByUsername(username) == null) {
+            saveUsernameAndPassword(username, passwordEncoder.encode(username));
+            saveAggregateIdAndUsername(UUID.randomUUID(), username);
+        }
     }
 
 }
