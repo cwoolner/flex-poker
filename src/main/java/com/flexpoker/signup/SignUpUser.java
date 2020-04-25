@@ -16,13 +16,21 @@ public class SignUpUser {
 
     private String encryptedPassword;
 
+    private String email;
+
     public SignUpUser(UUID aggregateId,
-            UUID signUpCode, String emailAddress, String username,
+            UUID signUpCode, String email, String username,
             String encryptedPassword) {
         this.aggregateId = aggregateId;
         this.username = username;
         this.encryptedPassword = encryptedPassword;
         this.signUpCode = signUpCode;
+        this.email = email;
+        this.confirmed = false;
+    }
+
+    public String getEmail() {
+        return email;
     }
 
     public void confirmSignedUpUser(final String username, final UUID signUpCode) {
@@ -45,6 +53,14 @@ public class SignUpUser {
 
     public UUID getAggregateId() {
         return aggregateId;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public UUID getSignUpCode() {
+        return signUpCode;
     }
 
     public boolean isConfirmed() {

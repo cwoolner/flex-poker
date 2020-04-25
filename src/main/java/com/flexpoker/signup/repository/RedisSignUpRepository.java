@@ -1,6 +1,8 @@
 package com.flexpoker.signup.repository;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -10,7 +12,9 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.redis.connection.RedisConnection;
 import org.springframework.data.redis.core.RedisCallback;
+import org.springframework.data.redis.core.RedisOperations;
 import org.springframework.data.redis.core.ScanOptions;
+import org.springframework.data.redis.core.SessionCallback;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -77,12 +81,17 @@ public class RedisSignUpRepository implements SignUpRepository {
     public void storeSignUpInformation(UUID aggregateId, String username, UUID signUpCode) {
         var signUpCodeKey = SIGN_UP_CODE_NAMESPACE + signUpCode.toString();
 
-        redisTemplate.multi();
-        redisTemplate.opsForHash().put(signUpCodeKey, "username", username);
-        redisTemplate.opsForHash().put(signUpCodeKey, "aggregateid",
-                aggregateId.toString());
-        redisTemplate.expire(signUpCodeKey, EXPIRATION_IN_MINUTES, TimeUnit.MINUTES);
-        redisTemplate.exec();
+        redisTemplate.execute(new SessionCallback<List<Object>>() {
+            @Override
+            public List<Object> execute(RedisOperations operations) throws DataAccessException {
+                operations.multi();
+                operations.opsForHash().put(signUpCodeKey, "username", username);
+                operations.opsForHash().put(signUpCodeKey, "aggregateid",
+                        aggregateId.toString());
+                operations.expire(signUpCodeKey, EXPIRATION_IN_MINUTES, TimeUnit.MINUTES);
+                return redisTemplate.exec();
+            }
+        });
     }
 
     @Override
@@ -123,26 +132,39 @@ public class RedisSignUpRepository implements SignUpRepository {
     @Override
     public SignUpUser fetchSignUpUser(UUID signUpUserId) {
         var signUpCodeKey = SIGN_UP_USER_NAMESPACE + signUpUserId;
-        var objectFromQuery = redisTemplate.opsForHash().get(signUpCodeKey, "username");
+        var signUpUserObject= redisTemplate.opsForHash().entries(signUpCodeKey);
 
-        if (objectFromQuery == null) {
+        if (signUpUserObject == null) {
             return null;
         }
 
-        var usernameFromQuery = (String) objectFromQuery;
-
-//        if (usernameFromQuery.equals(username)) {
-//            return UUID.fromString((String) redisTemplate.opsForHash().get(signUpCodeKey,
-//                    "aggregateid"));
-//        }
-
-        return null;
+        return new SignUpUser(
+                UUID.fromString(signUpUserObject.get("aggregateId").toString()),
+                UUID.fromString(signUpUserObject.get("signUpCode").toString()),
+                signUpUserObject.get("email").toString(),
+                signUpUserObject.get("username").toString(),
+                signUpUserObject.get("encryptedPassword").toString());
     }
 
     @Override
     public void saveSignUpUser(SignUpUser signUpUser) {
-        // TODO Auto-generated method stub
-        
+        final var signUpUserKey = SIGN_UP_USER_NAMESPACE + signUpUser.getAggregateId();
+        final var signUpUserMap = Map.of(
+                "username", signUpUser.getUsername(),
+                "email", signUpUser.getEmail(),
+                "aggregateId", signUpUser.getAggregateId().toString(),
+                "signUpCode", signUpUser.getSignUpCode().toString(),
+                "confirmed", String.valueOf(signUpUser.isConfirmed()),
+                "encryptedPassword", signUpUser.getEncryptedPassword());
+
+        redisTemplate.execute(new SessionCallback<List<Object>>() {
+            @Override
+            public List<Object> execute(RedisOperations operations) throws DataAccessException {
+                operations.multi();
+                operations.opsForHash().putAll(signUpUserKey, signUpUserMap);
+                return redisTemplate.exec();
+            }
+        });
     }
 
 }
