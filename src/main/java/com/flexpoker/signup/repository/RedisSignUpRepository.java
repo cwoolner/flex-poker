@@ -17,7 +17,7 @@ import org.springframework.stereotype.Repository;
 import com.flexpoker.exception.FlexPokerException;
 import com.flexpoker.signup.SignUpUser;
 
-@Profile("prod")
+@Profile("signup-redis")
 @Repository
 public class RedisSignUpRepository implements SignUpRepository {
 

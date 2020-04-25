@@ -15,7 +15,7 @@ import com.flexpoker.game.query.dto.GameInListDTO;
 import com.flexpoker.game.query.dto.GameStage;
 import com.flexpoker.game.query.repository.GameListRepository;
 
-@Profile("prod")
+@Profile("game-query-redis")
 @Repository
 public class RedisGameListRepository implements GameListRepository {
 

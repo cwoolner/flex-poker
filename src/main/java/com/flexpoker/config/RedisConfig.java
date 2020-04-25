@@ -2,6 +2,7 @@ package com.flexpoker.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -11,6 +12,9 @@ import com.flexpoker.game.query.dto.GameInListDTO;
 import com.flexpoker.table.command.framework.TableEvent;
 
 @Configuration
+@Profile({ "login-redis", "signup-redis",
+           "game-command-redis", "game-query-redis",
+           "table-command-redis", "table-query-redis" })
 public class RedisConfig {
 
     @Bean

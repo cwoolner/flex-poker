@@ -11,7 +11,7 @@ import com.flexpoker.game.query.dto.GameInListDTO;
 import com.flexpoker.game.query.dto.GameStage;
 import com.flexpoker.game.query.repository.GameListRepository;
 
-@Profile("default")
+@Profile({ "default", "game-query-inmemory" })
 @Repository
 public class InMemoryGameListRepository implements GameListRepository {
 

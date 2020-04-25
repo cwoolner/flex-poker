@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
 
 import com.flexpoker.signup.SignUpUser;
 
-@Profile("default")
+@Profile({ "default", "signup-inmemory" })
 @Repository
 public class InMemorySignUpRepository implements SignUpRepository {
 

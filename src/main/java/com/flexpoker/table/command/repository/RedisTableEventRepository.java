@@ -15,7 +15,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.flexpoker.exception.FlexPokerException;
 import com.flexpoker.table.command.framework.TableEvent;
 
-@Profile("prod")
+@Profile("table-command-redis")
 @Repository
 public class RedisTableEventRepository implements TableEventRepository {
 

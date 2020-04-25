@@ -15,7 +15,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Repository;
 
-@Profile("prod")
+@Profile("login-redis")
 @Repository
 public class RedisLoginRepository implements LoginRepository {
 

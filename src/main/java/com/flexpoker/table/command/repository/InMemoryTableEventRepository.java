@@ -12,7 +12,7 @@ import org.springframework.stereotype.Repository;
 import com.flexpoker.exception.FlexPokerException;
 import com.flexpoker.table.command.framework.TableEvent;
 
-@Profile("default")
+@Profile({ "default", "table-command-inmemory" })
 @Repository
 public class InMemoryTableEventRepository implements TableEventRepository {
 

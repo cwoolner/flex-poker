@@ -14,7 +14,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.DelegatingPasswordEncoder;
 import org.springframework.stereotype.Repository;
 
-@Profile("default")
+@Profile({ "default", "login-inmemory" })
 @Repository
 public class InMemoryLoginRepository implements LoginRepository {
 
