@@ -2,6 +2,7 @@ package com.flexpoker.login.repository;
 
 import java.util.Collections;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 import javax.inject.Inject;
@@ -38,15 +39,10 @@ public class RedisLoginRepository implements LoginRepository {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-
-        var encryptedPassword = redisTemplate.opsForValue().get(LOGIN_PASSWORD_NAMESPACE + username);
-
-        if (encryptedPassword == null) {
-            return null;
-        }
-
-        return new User(username, encryptedPassword,
-                Collections.singleton(new SimpleGrantedAuthority("ROLE_USER")));
+        return Optional.ofNullable(redisTemplate.opsForValue().get(LOGIN_PASSWORD_NAMESPACE + username))
+                .map(password -> new User(username, password,
+                        Collections.singleton(new SimpleGrantedAuthority("ROLE_USER"))))
+                .orElseThrow(() -> new UsernameNotFoundException(username));
     }
 
     @Override
@@ -85,7 +81,7 @@ public class RedisLoginRepository implements LoginRepository {
     }
 
     private void addUserIfDoesNotExist(String username, DelegatingPasswordEncoder passwordEncoder) {
-        if (loadUserByUsername(username) == null) {
+        if (!redisTemplate.opsForValue().getOperations().hasKey(LOGIN_PASSWORD_NAMESPACE + username)) {
             saveUsernameAndPassword(username, passwordEncoder.encode(username));
             saveAggregateIdAndUsername(UUID.randomUUID(), username);
         }

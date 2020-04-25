@@ -3,6 +3,7 @@ package com.flexpoker.login.repository;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.context.annotation.Profile;
@@ -35,11 +36,9 @@ public class InMemoryLoginRepository implements LoginRepository {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        var persistedUserDetails = loginUserMap.get(username);
-        return new User(
-                persistedUserDetails.getUsername(),
-                persistedUserDetails.getPassword(),
-                persistedUserDetails.getAuthorities());
+        return Optional.ofNullable(loginUserMap.get(username))
+                .map(user -> new User(user.getUsername(), user.getPassword(), user.getAuthorities()))
+                .orElseThrow(() -> new UsernameNotFoundException(username));
     }
 
     @Override
