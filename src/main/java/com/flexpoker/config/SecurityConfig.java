@@ -1,7 +1,5 @@
 package com.flexpoker.config;
 
-import java.util.Map;
-
 import javax.inject.Inject;
 
 import org.springframework.context.annotation.Configuration;
@@ -10,10 +8,9 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.DelegatingPasswordEncoder;
 
 import com.flexpoker.login.repository.LoginRepository;
+import com.flexpoker.util.PasswordUtils;
 
 @Configuration
 @EnableWebSecurity
@@ -24,8 +21,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        var passwordEncoder = new DelegatingPasswordEncoder("bcrypt", Map.of("bcrypt", new BCryptPasswordEncoder()));
-        auth.userDetailsService(loginRepository).passwordEncoder(passwordEncoder);
+        auth.userDetailsService(loginRepository).passwordEncoder(PasswordUtils.encoder);
     }
 
     @Override

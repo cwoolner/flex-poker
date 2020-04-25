@@ -1,7 +1,6 @@
 package com.flexpoker.login.repository;
 
 import java.util.Collections;
-import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -13,11 +12,10 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.DelegatingPasswordEncoder;
 import org.springframework.stereotype.Repository;
 
 import com.flexpoker.config.ProfileNames;
+import com.flexpoker.util.PasswordUtils;
 
 @Profile({ ProfileNames.REDIS, ProfileNames.LOGIN_REDIS })
 @Repository
@@ -73,16 +71,15 @@ public class RedisLoginRepository implements LoginRepository {
     }
 
     private void addDefaultUsers() {
-        var passwordEncoder = new DelegatingPasswordEncoder("bcrypt", Map.of("bcrypt", new BCryptPasswordEncoder()));
-        addUserIfDoesNotExist("player1", passwordEncoder);
-        addUserIfDoesNotExist("player2", passwordEncoder);
-        addUserIfDoesNotExist("player3", passwordEncoder);
-        addUserIfDoesNotExist("player4", passwordEncoder);
+        addUserIfDoesNotExist("player1");
+        addUserIfDoesNotExist("player2");
+        addUserIfDoesNotExist("player3");
+        addUserIfDoesNotExist("player4");
     }
 
-    private void addUserIfDoesNotExist(String username, DelegatingPasswordEncoder passwordEncoder) {
+    private void addUserIfDoesNotExist(String username) {
         if (!redisTemplate.opsForValue().getOperations().hasKey(LOGIN_PASSWORD_NAMESPACE + username)) {
-            saveUsernameAndPassword(username, passwordEncoder.encode(username));
+            saveUsernameAndPassword(username, PasswordUtils.encode(username));
             saveAggregateIdAndUsername(UUID.randomUUID(), username);
         }
     }

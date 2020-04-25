@@ -6,10 +6,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.UUID;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import com.flexpoker.exception.FlexPokerException;
 import com.flexpoker.signup.SignUpUser;
+import com.flexpoker.util.PasswordUtils;
 
 public class SignUpUserTest {
 
@@ -19,7 +19,7 @@ public class SignUpUserTest {
 
     private static final String VALID_PASSWORD = "123456";
 
-    private static final String VALID_ENCRYPTED_PASSWORD = new BCryptPasswordEncoder().encode(VALID_PASSWORD);
+    private static final String VALID_ENCRYPTED_PASSWORD = PasswordUtils.encode(VALID_PASSWORD);
 
     private static final UUID VALID_AGGREGATE_ID = UUID.randomUUID();
 

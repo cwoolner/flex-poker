@@ -11,11 +11,10 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.DelegatingPasswordEncoder;
 import org.springframework.stereotype.Repository;
 
 import com.flexpoker.config.ProfileNames;
+import com.flexpoker.util.PasswordUtils;
 
 @Profile({ ProfileNames.DEFAULT, ProfileNames.LOGIN_INMEMORY })
 @Repository
@@ -64,12 +63,10 @@ public class InMemoryLoginRepository implements LoginRepository {
     }
 
     private void addDefaultUsers() {
-        var passwordEncoder = new DelegatingPasswordEncoder("bcrypt", Map.of("bcrypt", new BCryptPasswordEncoder()));
-
-        saveUsernameAndPassword("player1", passwordEncoder.encode("player1"));
-        saveUsernameAndPassword("player2", passwordEncoder.encode("player2"));
-        saveUsernameAndPassword("player3", passwordEncoder.encode("player3"));
-        saveUsernameAndPassword("player4", passwordEncoder.encode("player4"));
+        saveUsernameAndPassword("player1", PasswordUtils.encode("player1"));
+        saveUsernameAndPassword("player2", PasswordUtils.encode("player2"));
+        saveUsernameAndPassword("player3", PasswordUtils.encode("player3"));
+        saveUsernameAndPassword("player4", PasswordUtils.encode("player4"));
 
         saveAggregateIdAndUsername(UUID.randomUUID(), "player1");
         saveAggregateIdAndUsername(UUID.randomUUID(), "player2");

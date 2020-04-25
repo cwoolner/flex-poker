@@ -1,12 +1,9 @@
 package com.flexpoker.web.controller;
 
-import java.util.Map;
 import java.util.UUID;
 
 import javax.inject.Inject;
 
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.DelegatingPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,6 +13,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.flexpoker.login.repository.LoginRepository;
 import com.flexpoker.signup.SignUpUser;
 import com.flexpoker.signup.repository.SignUpRepository;
+import com.flexpoker.util.PasswordUtils;
 
 @Controller
 public class SignUpController {
@@ -50,8 +48,7 @@ public class SignUpController {
         var aggregateId = UUID.randomUUID();
         var signUpCode = UUID.randomUUID();
 
-        var passwordEncoder = new DelegatingPasswordEncoder("bcrypt", Map.of("bcrypt", new BCryptPasswordEncoder()));
-        var encryptedPassword = passwordEncoder.encode(password);
+        var encryptedPassword = PasswordUtils.encode(password);
 
         signUpRepository.saveSignUpUser(new SignUpUser(aggregateId, signUpCode, emailAddress, username, encryptedPassword));
         signUpRepository.storeSignUpInformation(aggregateId, username, signUpCode);
