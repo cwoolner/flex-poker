@@ -2,6 +2,7 @@ package com.flexpoker.login.repository;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Map;
 import java.util.UUID;
 
 import javax.inject.Inject;
@@ -13,6 +14,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.DelegatingPasswordEncoder;
 import org.springframework.stereotype.Repository;
 
 import com.flexpoker.config.ProfileNames;
@@ -118,10 +120,12 @@ public class RedisLoginRepository implements LoginRepository {
     }
 
     private void addDefaultUsers() {
-        saveUsernameAndPassword("player1", new BCryptPasswordEncoder().encode("player1"));
-        saveUsernameAndPassword("player2", new BCryptPasswordEncoder().encode("player2"));
-        saveUsernameAndPassword("player3", new BCryptPasswordEncoder().encode("player3"));
-        saveUsernameAndPassword("player4", new BCryptPasswordEncoder().encode("player4"));
+        var passwordEncoder = new DelegatingPasswordEncoder("bcrypt", Map.of("bcrypt", new BCryptPasswordEncoder()));
+
+        saveUsernameAndPassword("player1", passwordEncoder.encode("player1"));
+        saveUsernameAndPassword("player2", passwordEncoder.encode("player2"));
+        saveUsernameAndPassword("player3", passwordEncoder.encode("player3"));
+        saveUsernameAndPassword("player4", passwordEncoder.encode("player4"));
 
         saveAggregateIdAndUsername(UUID.randomUUID(), "player1");
         saveAggregateIdAndUsername(UUID.randomUUID(), "player2");
