@@ -15,7 +15,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Repository;
 
-@Profile("login-redis")
+import com.flexpoker.config.ProfileNames;
+
+@Profile({ ProfileNames.REDIS, ProfileNames.LOGIN_REDIS })
 @Repository
 public class RedisLoginRepository implements LoginRepository {
 

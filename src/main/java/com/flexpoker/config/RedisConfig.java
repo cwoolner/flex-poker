@@ -12,9 +12,9 @@ import com.flexpoker.game.query.dto.GameInListDTO;
 import com.flexpoker.table.command.framework.TableEvent;
 
 @Configuration
-@Profile({ "login-redis", "signup-redis",
-           "game-command-redis", "game-query-redis",
-           "table-command-redis", "table-query-redis" })
+@Profile({ ProfileNames.REDIS, ProfileNames.LOGIN_REDIS, ProfileNames.SIGNUP_REDIS,
+           ProfileNames.GAME_COMMAND_REDIS, ProfileNames.GAME_QUERY_REDIS,
+           ProfileNames.TABLE_COMMAND_REDIS, ProfileNames.TABLE_QUERY_REDIS })
 public class RedisConfig {
 
     @Bean

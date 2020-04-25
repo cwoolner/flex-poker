@@ -14,7 +14,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.DelegatingPasswordEncoder;
 import org.springframework.stereotype.Repository;
 
-@Profile({ "default", "login-inmemory" })
+import com.flexpoker.config.ProfileNames;
+
+@Profile({ ProfileNames.DEFAULT, ProfileNames.LOGIN_INMEMORY })
 @Repository
 public class InMemoryLoginRepository implements LoginRepository {
 

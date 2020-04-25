@@ -15,7 +15,7 @@ Flex Poker is a poker-playing (Texas hold 'em) web app.  It was originally writt
 1. `npm install`
 2. Run the server:
    * Default version (JDK 11 required): `mvn spring-boot:run`
-   * Prod version (Redis and JDK 11 required): `mvn -Dspring-boot.run.profiles=prod spring-boot:run`
+   * Redis version (Redis and JDK 11 required): `mvn -Dspring-boot.run.profiles=redis spring-boot:run`
 3. Hit [http://localhost:8080/](http://localhost:8080/)
 4. Users created by default: player1/player1, player2/player2, player3/player3, player4/player4
 
@@ -25,7 +25,7 @@ Flex Poker is a poker-playing (Texas hold 'em) web app.  It was originally writt
 * Node.js/npm
 * Java 11
 * Maven
-* Redis - only required if using the "prod" Spring profile
+* Redis - only required if using the `redis` Spring profile
 * Docker (>= 17.05) - if you want to use the provided Dockerfile to build/run
 
 ## Front-end libraries/frameworks
@@ -71,11 +71,17 @@ It would be nice to actually make a fully usable product at some point, but so f
 
 # Persistence
 
-To keep development simple, the use of a database has been removed in the default Spring profile.  The in-memory "database" (HashMaps and such) will be the main/first implementation, so no datastore will be required to run locally.  As time/interest allows, new implementations of the repositories will be added for various datastores.  When currently using the "prod" Spring profile, Redis is used and will be required to be running on startup.  Redis was chosen not because of fitness for a particular feature, but just for learning purposes.
+To keep development simple, the use of a database has been removed in the default Spring profile.  The in-memory "database" (HashMaps and such) will be the main/first implementation, so no datastore will be required to run locally.  As time/interest allows, new implementations of the repositories will be added for various datastores.  When currently using the `redis` Spring profile, Redis is used and will be required to be running on startup.  Redis was chosen not because of fitness for a particular feature, but just for learning purposes.
 
 The app generally allows each domain, and the command/query pieces within those domains, to use whatever persistence storage they like.  The command-side of one domain might store your data in memory while the query side of the same domain might be in-memory by default, but can be switched on app startup to use Redis instead.  As best as possible, the choice of persistence should not infect the rest of the application.
 
 Since the app uses Event Sourcing, Greg Young's [Event Store](https://github.com/EventStore/EventStore) will be considered on the command side in the future.  On the query side, some sort of NoSQL document database will probably be considered.  Really happy with using in-memory structures and Redis for the time being.
+
+# Spring profiles
+
+The two main profiles are `default` (when you don't specify one) and `redis`.  In addition, there are more specific profiles that allow you to mix and match different datastores.  For example, if you run this extremely long list of profiles: `mvn -Dspring-boot.run.profiles=login-inmemory,signup-redis,game-command-redis,game-query-redis,table-command-inmemory,table-query-redis spring-boot:run`, you'll use the in-memory db for login and the command side of the table domain, but redis for everything else.
+
+This is overly complicated, and it's only being used to show that these different domains and sub-domains can be persisted in a truly independent manner.  It keeps details (how to store your data) away from the real logic of the application.  The query side of the domains can be made even more granular, but that seems a bit extreme at this point.
 
 # Security
 

@@ -14,10 +14,11 @@ import org.springframework.data.redis.core.ScanOptions;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Repository;
 
+import com.flexpoker.config.ProfileNames;
 import com.flexpoker.exception.FlexPokerException;
 import com.flexpoker.signup.SignUpUser;
 
-@Profile("signup-redis")
+@Profile({ ProfileNames.REDIS, ProfileNames.SIGNUP_REDIS })
 @Repository
 public class RedisSignUpRepository implements SignUpRepository {
 

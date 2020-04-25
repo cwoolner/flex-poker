@@ -9,10 +9,11 @@ import java.util.UUID;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Repository;
 
+import com.flexpoker.config.ProfileNames;
 import com.flexpoker.exception.FlexPokerException;
 import com.flexpoker.table.command.framework.TableEvent;
 
-@Profile({ "default", "table-command-inmemory" })
+@Profile({ ProfileNames.DEFAULT, ProfileNames.TABLE_COMMAND_INMEMORY })
 @Repository
 public class InMemoryTableEventRepository implements TableEventRepository {
 

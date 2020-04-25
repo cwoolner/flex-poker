@@ -11,11 +11,12 @@ import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.stereotype.Repository;
 
+import com.flexpoker.config.ProfileNames;
 import com.flexpoker.game.query.dto.GameInListDTO;
 import com.flexpoker.game.query.dto.GameStage;
 import com.flexpoker.game.query.repository.GameListRepository;
 
-@Profile("game-query-redis")
+@Profile({ ProfileNames.REDIS, ProfileNames.GAME_QUERY_REDIS })
 @Repository
 public class RedisGameListRepository implements GameListRepository {
 

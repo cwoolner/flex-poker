@@ -12,10 +12,11 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.stereotype.Repository;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.flexpoker.config.ProfileNames;
 import com.flexpoker.exception.FlexPokerException;
 import com.flexpoker.table.command.framework.TableEvent;
 
-@Profile("table-command-redis")
+@Profile({ ProfileNames.REDIS, ProfileNames.TABLE_COMMAND_REDIS })
 @Repository
 public class RedisTableEventRepository implements TableEventRepository {
 

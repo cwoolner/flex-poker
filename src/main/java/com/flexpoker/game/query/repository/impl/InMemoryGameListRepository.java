@@ -7,11 +7,12 @@ import java.util.UUID;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Repository;
 
+import com.flexpoker.config.ProfileNames;
 import com.flexpoker.game.query.dto.GameInListDTO;
 import com.flexpoker.game.query.dto.GameStage;
 import com.flexpoker.game.query.repository.GameListRepository;
 
-@Profile({ "default", "game-query-inmemory" })
+@Profile({ ProfileNames.DEFAULT, ProfileNames.GAME_QUERY_INMEMORY })
 @Repository
 public class InMemoryGameListRepository implements GameListRepository {
 
