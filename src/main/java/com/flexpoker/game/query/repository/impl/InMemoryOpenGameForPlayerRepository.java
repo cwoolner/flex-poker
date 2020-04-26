@@ -16,11 +16,11 @@ import com.flexpoker.game.query.dto.OpenGameForUser;
 import com.flexpoker.game.query.repository.OpenGameForPlayerRepository;
 
 @Repository
-public class OpenGameForPlayerInMemoryRepository implements OpenGameForPlayerRepository {
+public class InMemoryOpenGameForPlayerRepository implements OpenGameForPlayerRepository {
 
     private final Map<UUID, Map<UUID, OpenGameForUser>> openGameForUserMap;
 
-    public OpenGameForPlayerInMemoryRepository() {
+    public InMemoryOpenGameForPlayerRepository() {
         openGameForUserMap = new ConcurrentHashMap<>();
     }
 
