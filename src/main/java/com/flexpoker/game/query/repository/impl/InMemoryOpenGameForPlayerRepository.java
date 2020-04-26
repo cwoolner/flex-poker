@@ -9,12 +9,15 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Repository;
 
+import com.flexpoker.config.ProfileNames;
 import com.flexpoker.game.query.dto.GameStage;
 import com.flexpoker.game.query.dto.OpenGameForUser;
 import com.flexpoker.game.query.repository.OpenGameForPlayerRepository;
 
+@Profile({ ProfileNames.DEFAULT, ProfileNames.GAME_QUERY_INMEMORY })
 @Repository
 public class InMemoryOpenGameForPlayerRepository implements OpenGameForPlayerRepository {
 

@@ -3,6 +3,9 @@ package com.flexpoker.game.query.dto;
 import java.util.List;
 import java.util.UUID;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class OpenGameForUser {
 
     private final UUID gameId;
@@ -17,8 +20,14 @@ public class OpenGameForUser {
 
     private final List<String> viewingTables;
 
-    public OpenGameForUser(UUID gameId, UUID myTableId, String name, GameStage gameStage, int ordinal,
-            List<String> viewingTables) {
+    @JsonCreator
+    public OpenGameForUser(
+            @JsonProperty(value = "gameId") UUID gameId,
+            @JsonProperty(value = "myTableId") UUID myTableId,
+            @JsonProperty(value = "name") String name,
+            @JsonProperty(value = "gameStage") GameStage gameStage,
+            @JsonProperty(value = "ordinal") int ordinal,
+            @JsonProperty(value = "viewingTables") List<String> viewingTables) {
         this.gameId = gameId;
         this.myTableId = myTableId;
         this.name = name;

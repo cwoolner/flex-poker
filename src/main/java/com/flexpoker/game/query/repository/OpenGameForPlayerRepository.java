@@ -12,7 +12,7 @@ public interface OpenGameForPlayerRepository {
 
     void deleteOpenGameForPlayer(UUID playerId, UUID gameId);
 
-    void addOpenGameForUser(UUID playerId, UUID aggregateId, String gameName);
+    void addOpenGameForUser(UUID playerId, UUID gameId, String gameName);
 
     void changeGameStage(UUID playerId, UUID gameId, GameStage gameStage);
 

@@ -9,6 +9,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 
 import com.flexpoker.game.query.dto.GameInListDTO;
+import com.flexpoker.game.query.dto.OpenGameForUser;
 import com.flexpoker.table.command.framework.TableEvent;
 
 @Configuration
@@ -39,6 +40,13 @@ public class RedisConfig {
     @Bean
     RedisTemplate<String, TableEvent> redisTemplateTableEvent() {
         var redisTemplate = new RedisTemplate<String, TableEvent>();
+        redisTemplate.setConnectionFactory(jedisConnectionFactory());
+        return redisTemplate;
+    }
+
+    @Bean
+    RedisTemplate<String, OpenGameForUser> redisTemplateOpenGameForUser() {
+        var redisTemplate = new RedisTemplate<String, OpenGameForUser>();
         redisTemplate.setConnectionFactory(jedisConnectionFactory());
         return redisTemplate;
     }
