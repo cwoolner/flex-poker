@@ -6,10 +6,13 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Repository;
 
+import com.flexpoker.config.ProfileNames;
 import com.flexpoker.game.query.repository.GamePlayerRepository;
 
+@Profile({ ProfileNames.DEFAULT, ProfileNames.GAME_QUERY_INMEMORY })
 @Repository
 public class InMemoryGamePlayerRepository implements GamePlayerRepository {
 
