@@ -16,25 +16,26 @@ public class HandCompletedEvent extends BaseEvent implements TableEvent {
 
     private final Map<UUID, Integer> playerToChipsAtTableMap;
 
-    public HandCompletedEvent(UUID aggregateId, UUID gameId, UUID handId, Map<UUID, Integer> playerToChipsAtTableMap) {
-        super(aggregateId);
+    public HandCompletedEvent(
+            @JsonProperty(value = "tableId") UUID tableId,
+            @JsonProperty(value = "gameId") UUID gameId,
+            @JsonProperty(value = "handId") UUID handId,
+            @JsonProperty(value = "playerToChipsAtTableMap") Map<UUID, Integer> playerToChipsAtTableMap) {
+        super(tableId);
         this.gameId = gameId;
         this.handId = handId;
         this.playerToChipsAtTableMap = new HashMap<>(playerToChipsAtTableMap);
     }
 
-    @JsonProperty
     @Override
     public UUID getGameId() {
         return gameId;
     }
 
-    @JsonProperty
     public UUID getHandId() {
         return handId;
     }
 
-    @JsonProperty
     public Map<UUID, Integer> getPlayerToChipsAtTableMap() {
         return new HashMap<>(playerToChipsAtTableMap);
     }
