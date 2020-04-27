@@ -81,6 +81,8 @@ public class InMemoryAsyncTableEventSubscriber implements EventSubscriber<TableE
 
     private final EventHandler<WinnersDeterminedEvent> winnersDeterminedEventHandler;
 
+    private static final EventHandler<Event> NOOP = x -> {};
+
     @Inject
     public InMemoryAsyncTableEventSubscriber(
             InMemoryThreadSafeEventSubscriberHelper inMemoryThreadSafeEventSubscriberHelper,
@@ -133,13 +135,13 @@ public class InMemoryAsyncTableEventSubscriber implements EventSubscriber<TableE
     private Map<Class<? extends Event>, EventHandler<? extends Event>> createEventHandlerMap() {
         var eventHandlerMap = new HashMap<Class<? extends Event>, EventHandler<? extends Event>>();
         eventHandlerMap.put(ActionOnChangedEvent.class, actionOnChangedEventHandler);
-        eventHandlerMap.put(AutoMoveHandForwardEvent.class, x -> {});
-        eventHandlerMap.put(CardsShuffledEvent.class, x -> {});
+        eventHandlerMap.put(AutoMoveHandForwardEvent.class, NOOP);
+        eventHandlerMap.put(CardsShuffledEvent.class, NOOP);
         eventHandlerMap.put(FlopCardsDealtEvent.class, flopCardsDealtEventHandler);
-        eventHandlerMap.put(HandCompletedEvent.class, x -> {});
+        eventHandlerMap.put(HandCompletedEvent.class, NOOP);
         eventHandlerMap.put(HandDealtEvent.class, handDealtEventHandler);
-        eventHandlerMap.put(LastToActChangedEvent.class, x -> {});
-        eventHandlerMap.put(PlayerAddedEvent.class, x -> {});
+        eventHandlerMap.put(LastToActChangedEvent.class, NOOP);
+        eventHandlerMap.put(PlayerAddedEvent.class, NOOP);
         eventHandlerMap.put(PlayerBustedTableEvent.class, playerBustedTableEventHandler);
         eventHandlerMap.put(PlayerCalledEvent.class, playerCalledEventHandler);
         eventHandlerMap.put(PlayerCheckedEvent.class, playerCheckedEventHandler);
@@ -147,15 +149,15 @@ public class InMemoryAsyncTableEventSubscriber implements EventSubscriber<TableE
         eventHandlerMap.put(PlayerFoldedEvent.class, playerFoldedEventHandler);
         eventHandlerMap.put(PlayerForceFoldedEvent.class, playerForceFoldedEventHandler);
         eventHandlerMap.put(PlayerRaisedEvent.class, playerRaisedEventHandler);
-        eventHandlerMap.put(PlayerRemovedEvent.class, x -> {});
+        eventHandlerMap.put(PlayerRemovedEvent.class, NOOP);
         eventHandlerMap.put(PotAmountIncreasedEvent.class, potAmountIncreasedEventHandler);
         eventHandlerMap.put(PotClosedEvent.class, potClosedEventHandler);
         eventHandlerMap.put(PotCreatedEvent.class, potCreatedEventHandler);
         eventHandlerMap.put(RiverCardDealtEvent.class, riverCardDealtEventHandler);
         eventHandlerMap.put(RoundCompletedEvent.class, roundCompletedEventHandler);
         eventHandlerMap.put(TableCreatedEvent.class, tableCreatedEventHandler);
-        eventHandlerMap.put(TablePausedEvent.class, x -> {});
-        eventHandlerMap.put(TableResumedEvent.class, x -> {});
+        eventHandlerMap.put(TablePausedEvent.class, NOOP);
+        eventHandlerMap.put(TableResumedEvent.class, NOOP);
         eventHandlerMap.put(TurnCardDealtEvent.class, turnCardDealtEventHandler);
         eventHandlerMap.put(WinnersDeterminedEvent.class, winnersDeterminedEventHandler);
         return eventHandlerMap;
