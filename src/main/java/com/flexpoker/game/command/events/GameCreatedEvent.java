@@ -2,6 +2,8 @@ package com.flexpoker.game.command.events;
 
 import java.util.UUID;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.flexpoker.framework.event.BaseEvent;
 import com.flexpoker.game.command.framework.GameEvent;
 
@@ -19,9 +21,16 @@ public class GameCreatedEvent extends BaseEvent implements GameEvent {
 
     private final int numberOfSecondsForActionOnTimer;
 
-    public GameCreatedEvent(UUID aggregateId, String gameName, int numberOfPlayers, int numberOfPlayersPerTable,
-            UUID createdByPlayerId, int numberOfMinutesBetweenBlindLevels, int numberOfSecondsForActionOnTimer) {
-        super(aggregateId);
+    @JsonCreator
+    public GameCreatedEvent(
+            @JsonProperty(value = "gameId") UUID gameId,
+            @JsonProperty(value = "gameName") String gameName,
+            @JsonProperty(value = "numberOfPlayers") int numberOfPlayers,
+            @JsonProperty(value = "numberOfPlayersPerTable") int numberOfPlayersPerTable,
+            @JsonProperty(value = "createdByPlayerId") UUID createdByPlayerId,
+            @JsonProperty(value = "numberOfMinutesBetweenBlindLevels") int numberOfMinutesBetweenBlindLevels,
+            @JsonProperty(value = "numberOfSecondsForActionOnTimer") int numberOfSecondsForActionOnTimer) {
+        super(gameId);
         this.gameName = gameName;
         this.numberOfPlayers = numberOfPlayers;
         this.numberOfPlayersPerTable = numberOfPlayersPerTable;

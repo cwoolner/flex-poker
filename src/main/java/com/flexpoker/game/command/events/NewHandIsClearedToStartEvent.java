@@ -2,6 +2,8 @@ package com.flexpoker.game.command.events;
 
 import java.util.UUID;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.flexpoker.framework.event.BaseEvent;
 import com.flexpoker.game.command.aggregate.BlindAmounts;
 import com.flexpoker.game.command.framework.GameEvent;
@@ -12,8 +14,12 @@ public class NewHandIsClearedToStartEvent extends BaseEvent implements GameEvent
 
     private final BlindAmounts blinds;
 
-    public NewHandIsClearedToStartEvent(UUID aggregateId, UUID tableId, BlindAmounts blinds) {
-        super(aggregateId);
+    @JsonCreator
+    public NewHandIsClearedToStartEvent(
+            @JsonProperty(value = "gameId") UUID gameId,
+            @JsonProperty(value = "tableId") UUID tableId,
+            @JsonProperty(value = "blinds") BlindAmounts blinds) {
+        super(gameId);
         this.tableId = tableId;
         this.blinds = blinds;
     }

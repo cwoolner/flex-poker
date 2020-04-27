@@ -5,6 +5,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.flexpoker.framework.event.BaseEvent;
 import com.flexpoker.game.command.framework.GameEvent;
 
@@ -14,9 +16,12 @@ public class GameTablesCreatedAndPlayersAssociatedEvent extends BaseEvent implem
 
     private final int numberOfPlayersPerTable;
 
-    public GameTablesCreatedAndPlayersAssociatedEvent(UUID aggregateId, Map<UUID, Set<UUID>> tableIdToPlayerIdsMap,
-            int numberOfPlayersPerTable) {
-        super(aggregateId);
+    @JsonCreator
+    public GameTablesCreatedAndPlayersAssociatedEvent(
+            @JsonProperty(value = "gameId") UUID gameId,
+            @JsonProperty(value = "tableIdToPlayerIdsMap") Map<UUID, Set<UUID>> tableIdToPlayerIdsMap,
+            @JsonProperty(value = "numberOfPlayersPerTable") int numberOfPlayersPerTable) {
+        super(gameId);
         this.tableIdToPlayerIdsMap = new HashMap<>(tableIdToPlayerIdsMap);
         this.numberOfPlayersPerTable = numberOfPlayersPerTable;
     }

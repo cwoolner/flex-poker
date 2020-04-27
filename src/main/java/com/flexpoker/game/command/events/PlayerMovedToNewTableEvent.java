@@ -2,6 +2,8 @@ package com.flexpoker.game.command.events;
 
 import java.util.UUID;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.flexpoker.framework.event.BaseEvent;
 import com.flexpoker.game.command.framework.GameEvent;
 
@@ -15,8 +17,14 @@ public class PlayerMovedToNewTableEvent extends BaseEvent implements GameEvent {
 
     private final int chips;
 
-    public PlayerMovedToNewTableEvent(UUID aggregateId, UUID fromTableId, UUID toTableId, UUID playerId, int chips) {
-        super(aggregateId);
+    @JsonCreator
+    public PlayerMovedToNewTableEvent(
+            @JsonProperty(value = "gameId") UUID gameId,
+            @JsonProperty(value = "fromTableId") UUID fromTableId,
+            @JsonProperty(value = "toTableId") UUID toTableId,
+            @JsonProperty(value = "playerId") UUID playerId,
+            @JsonProperty(value = "chips") int chips) {
+        super(gameId);
         this.fromTableId = fromTableId;
         this.toTableId = toTableId;
         this.playerId = playerId;
