@@ -27,7 +27,8 @@ public class StartFirstHandProcessManager implements ProcessManager<GameStartedE
     @Async
     @Override
     public void handle(GameStartedEvent event) {
-        var blindAmounts = event.getBlindSchedule().getCurrentBlindAmounts();
+        var currentLevel = event.getBlindScheduleDTO().getCurrentLevel();
+        var blindAmounts = event.getBlindScheduleDTO().getLevelToAmountsMap().get(currentLevel);
 
         Consumer<UUID> startFirstHandConsumer = tableId -> {
             var startNewHandForNewGameCommand = new StartNewHandForNewGameCommand(tableId, event.getAggregateId(),

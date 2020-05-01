@@ -3,32 +3,24 @@ package com.flexpoker.game.command.aggregate;
 import java.util.Comparator;
 import java.util.Map;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.flexpoker.game.command.events.dto.BlindAmountsDTO;
+import com.flexpoker.game.command.events.dto.BlindScheduleDTO;
 
 public class BlindSchedule {
 
-    private final int numberOfMinutesBetweenLevels;
+    private BlindScheduleDTO blindScheduleDTO;
 
-    private final Map<Integer, BlindAmountsDTO> levelToAmountsMap;
-
-    private final int maxLevel;
-
-    private int currentLevel;
-
-    @JsonCreator
-    public BlindSchedule(@JsonProperty(value = "numberOfMinutesBetweenLevels") int numberOfMinutesBetweenLevels) {
-        this.numberOfMinutesBetweenLevels = numberOfMinutesBetweenLevels;
-        levelToAmountsMap = Map.of(
+    public BlindSchedule(int numberOfMinutesBetweenLevels) {
+        var levelToAmountsMap = Map.of(
                 1, validateBlindAmounts(10, 20),
                 2, validateBlindAmounts(20, 40),
                 3, validateBlindAmounts(40, 80),
                 4, validateBlindAmounts(80, 160),
                 5, validateBlindAmounts(160, 320));
-        maxLevel = levelToAmountsMap.keySet().stream()
+        var maxLevel = levelToAmountsMap.keySet().stream()
                 .max(Comparator.naturalOrder()).get();
-        currentLevel = 1;
+        this.blindScheduleDTO = new BlindScheduleDTO(numberOfMinutesBetweenLevels,
+                levelToAmountsMap, maxLevel, 1);
     }
 
     private BlindAmountsDTO validateBlindAmounts(int smallBlind, int bigBlind) {
@@ -49,25 +41,34 @@ public class BlindSchedule {
     }
 
     public int getNumberOfMinutesBetweenLevels() {
-        return numberOfMinutesBetweenLevels;
+        return blindScheduleDTO.getNumberOfMinutesBetweenLevels();
     }
 
     public BlindAmountsDTO getCurrentBlindAmounts() {
-        return levelToAmountsMap.get(currentLevel);
+        return blindScheduleDTO.getLevelToAmountsMap()
+                .get(blindScheduleDTO.getCurrentLevel());
     }
 
     public int getCurrentLevel() {
-        return currentLevel;
+        return blindScheduleDTO.getCurrentLevel();
     }
 
     public void incrementLevel() {
-        if (currentLevel < maxLevel) {
-            currentLevel++;
+        if (blindScheduleDTO.getCurrentLevel() < blindScheduleDTO.getMaxLevel()) {
+            this.blindScheduleDTO = new BlindScheduleDTO(
+                    blindScheduleDTO.getNumberOfMinutesBetweenLevels(),
+                    blindScheduleDTO.getLevelToAmountsMap(),
+                    blindScheduleDTO.getMaxLevel(),
+                    blindScheduleDTO.getCurrentLevel() + 1);
         }
     }
 
     public boolean isMaxLevel() {
-        return currentLevel == maxLevel;
+        return blindScheduleDTO.getCurrentLevel() == blindScheduleDTO.getMaxLevel();
+    }
+
+    public BlindScheduleDTO getBlindScheduleDTO() {
+        return blindScheduleDTO;
     }
 
 }

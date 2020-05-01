@@ -39,7 +39,7 @@ public class NewHandIsClearedToStartTest {
         events.add(new GameJoinedEvent(gameId, player2Id));
         events.add(new GameMovedToStartingStageEvent(gameId));
         events.add(new GameTablesCreatedAndPlayersAssociatedEvent(gameId, tableToPlayersMap, 2));
-        events.add(new GameStartedEvent(gameId, tableIds, new BlindSchedule(10)));
+        events.add(new GameStartedEvent(gameId, tableIds, new BlindSchedule(10).getBlindScheduleDTO()));
 
         var game = new DefaultGameFactory().createFrom(events);
 

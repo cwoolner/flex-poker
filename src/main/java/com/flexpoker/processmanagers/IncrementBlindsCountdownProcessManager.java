@@ -40,7 +40,7 @@ public class IncrementBlindsCountdownProcessManager implements ProcessManager<Ga
             }
         };
 
-        var blindIncrementInMilliseconds = event.getBlindSchedule().getNumberOfMinutesBetweenLevels() * 60000;
+        var blindIncrementInMilliseconds = event.getBlindScheduleDTO().getNumberOfMinutesBetweenLevels() * 60000;
         actionOnTimer.scheduleAtFixedRate(timerTask, blindIncrementInMilliseconds, blindIncrementInMilliseconds);
     }
 

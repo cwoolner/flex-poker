@@ -295,7 +295,7 @@ public class Game extends AggregateRoot<GameEvent> {
                     "tableToPlayerIdsMap should be filled at this point");
         }
 
-        var event = new GameStartedEvent(aggregateId, tableIdToPlayerIdsMap.keySet(), blindSchedule);
+        var event = new GameStartedEvent(aggregateId, tableIdToPlayerIdsMap.keySet(), blindSchedule.getBlindScheduleDTO());
         addNewEvent(event);
         applyCommonEvent(event);
     }

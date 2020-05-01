@@ -32,7 +32,7 @@ public class IncrementBlindsTest {
         events.add(new GameJoinedEvent(gameId, UUID.randomUUID()));
         events.add(new GameMovedToStartingStageEvent(gameId));
         events.add(new GameTablesCreatedAndPlayersAssociatedEvent(gameId, tableIdToPlayerIdsMap, 2));
-        events.add(new GameStartedEvent(gameId, tableIds, new BlindSchedule(10)));
+        events.add(new GameStartedEvent(gameId, tableIds, new BlindSchedule(10).getBlindScheduleDTO()));
 
         var game = new DefaultGameFactory().createFrom(events);
         game.increaseBlinds();
@@ -53,7 +53,7 @@ public class IncrementBlindsTest {
         events.add(new GameJoinedEvent(gameId, UUID.randomUUID()));
         events.add(new GameMovedToStartingStageEvent(gameId));
         events.add(new GameTablesCreatedAndPlayersAssociatedEvent(gameId, tableIdToPlayerIdsMap, 2));
-        events.add(new GameStartedEvent(gameId, tableIds, new BlindSchedule(10)));
+        events.add(new GameStartedEvent(gameId, tableIds, new BlindSchedule(10).getBlindScheduleDTO()));
 
         var game = new DefaultGameFactory().createFrom(events);
         game.increaseBlinds();
