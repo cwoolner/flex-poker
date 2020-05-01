@@ -1,37 +1,58 @@
 package com.flexpoker.game.command.aggregate;
 
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.Map;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.flexpoker.game.command.events.dto.BlindAmountsDTO;
 
 public class BlindSchedule {
 
     private final int numberOfMinutesBetweenLevels;
 
-    private final Map<Integer, BlindAmounts> levelToAmountsMap;
+    private final Map<Integer, BlindAmountsDTO> levelToAmountsMap;
 
     private final int maxLevel;
 
     private int currentLevel;
 
-    public BlindSchedule(int numberOfMinutesBetweenLevels) {
+    @JsonCreator
+    public BlindSchedule(@JsonProperty(value = "numberOfMinutesBetweenLevels") int numberOfMinutesBetweenLevels) {
         this.numberOfMinutesBetweenLevels = numberOfMinutesBetweenLevels;
-        levelToAmountsMap = new HashMap<>();
-        levelToAmountsMap.put(1, new BlindAmounts(10, 20));
-        levelToAmountsMap.put(2, new BlindAmounts(20, 40));
-        levelToAmountsMap.put(3, new BlindAmounts(40, 80));
-        levelToAmountsMap.put(4, new BlindAmounts(80, 160));
-        levelToAmountsMap.put(5, new BlindAmounts(160, 320));
+        levelToAmountsMap = Map.of(
+                1, validateBlindAmounts(10, 20),
+                2, validateBlindAmounts(20, 40),
+                3, validateBlindAmounts(40, 80),
+                4, validateBlindAmounts(80, 160),
+                5, validateBlindAmounts(160, 320));
         maxLevel = levelToAmountsMap.keySet().stream()
                 .max(Comparator.naturalOrder()).get();
         currentLevel = 1;
+    }
+
+    private BlindAmountsDTO validateBlindAmounts(int smallBlind, int bigBlind) {
+        if (smallBlind > Integer.MAX_VALUE / 2) {
+            throw new IllegalArgumentException("Small blind can't be that large.");
+        }
+        if (smallBlind < 1) {
+            throw new IllegalArgumentException("Small blind must be greater than 0.");
+        }
+        if (bigBlind < 2) {
+            throw new IllegalArgumentException("Big blind must be greater than 0.");
+        }
+        if (bigBlind != smallBlind * 2) {
+            throw new IllegalArgumentException("The big blind must be twice as "
+                    + "large as the small blind.");
+        }
+        return new BlindAmountsDTO(smallBlind, bigBlind);
     }
 
     public int getNumberOfMinutesBetweenLevels() {
         return numberOfMinutesBetweenLevels;
     }
 
-    public BlindAmounts getCurrentBlindAmounts() {
+    public BlindAmountsDTO getCurrentBlindAmounts() {
         return levelToAmountsMap.get(currentLevel);
     }
 
