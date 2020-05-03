@@ -1,5 +1,8 @@
 package com.flexpoker.config;
 
+import java.util.Map;
+import java.util.UUID;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -7,10 +10,16 @@ import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
+import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 import com.flexpoker.game.command.framework.GameEvent;
 import com.flexpoker.game.query.dto.GameInListDTO;
 import com.flexpoker.game.query.dto.OpenGameForUser;
+import com.flexpoker.model.card.FlopCards;
+import com.flexpoker.model.card.PocketCards;
+import com.flexpoker.model.card.RiverCard;
+import com.flexpoker.model.card.TurnCard;
 import com.flexpoker.table.command.framework.TableEvent;
 
 @Configuration
@@ -56,6 +65,46 @@ public class RedisConfig {
     RedisTemplate<String, OpenGameForUser> redisTemplateOpenGameForUser() {
         var redisTemplate = new RedisTemplate<String, OpenGameForUser>();
         redisTemplate.setConnectionFactory(jedisConnectionFactory());
+        return redisTemplate;
+    }
+
+    @Bean
+    RedisTemplate<String, FlopCards> redisTemplateFlopCards() {
+        var redisTemplate = new RedisTemplate<String, FlopCards>();
+        redisTemplate.setConnectionFactory(jedisConnectionFactory());
+        redisTemplate.setKeySerializer(new StringRedisSerializer());
+        redisTemplate.setValueSerializer(
+                new Jackson2JsonRedisSerializer<>(FlopCards.class));
+        return redisTemplate;
+    }
+
+    @Bean
+    RedisTemplate<String, TurnCard> redisTemplateTurnCard() {
+        var redisTemplate = new RedisTemplate<String, TurnCard>();
+        redisTemplate.setConnectionFactory(jedisConnectionFactory());
+        redisTemplate.setKeySerializer(new StringRedisSerializer());
+        redisTemplate.setValueSerializer(
+                new Jackson2JsonRedisSerializer<>(TurnCard.class));
+        return redisTemplate;
+    }
+
+    @Bean
+    RedisTemplate<String, RiverCard> redisTemplateRiverCard() {
+        var redisTemplate = new RedisTemplate<String, RiverCard>();
+        redisTemplate.setConnectionFactory(jedisConnectionFactory());
+        redisTemplate.setKeySerializer(new StringRedisSerializer());
+        redisTemplate.setValueSerializer(
+                new Jackson2JsonRedisSerializer<>(RiverCard.class));
+        return redisTemplate;
+    }
+
+    @Bean
+    RedisTemplate<String, Map<UUID, PocketCards>> redisTemplatePocketCards() {
+        var redisTemplate = new RedisTemplate<String, Map<UUID, PocketCards>>();
+        redisTemplate.setConnectionFactory(jedisConnectionFactory());
+        redisTemplate.setKeySerializer(new StringRedisSerializer());
+        redisTemplate.setHashKeySerializer(new Jackson2JsonRedisSerializer<>(UUID.class));
+        redisTemplate.setHashValueSerializer(new Jackson2JsonRedisSerializer<>(PocketCards.class));
         return redisTemplate;
     }
 
