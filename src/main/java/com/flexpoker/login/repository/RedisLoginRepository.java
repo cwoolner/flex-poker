@@ -4,10 +4,11 @@ import java.util.Collections;
 import java.util.Optional;
 import java.util.UUID;
 
+import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
 import org.springframework.context.annotation.Profile;
-import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -27,12 +28,11 @@ public class RedisLoginRepository implements LoginRepository {
 
     private static final String AGGREGATE_ID_USERNAME_NAMESPACE = "aggregateid-username:";
 
-    private final StringRedisTemplate redisTemplate;
+    private final RedisTemplate<String, String> redisTemplate;
 
     @Inject
-    public RedisLoginRepository(StringRedisTemplate redisTemplate) {
+    public RedisLoginRepository(RedisTemplate<String, String> redisTemplate) {
         this.redisTemplate = redisTemplate;
-        addDefaultUsers();
     }
 
     @Override
@@ -70,6 +70,7 @@ public class RedisLoginRepository implements LoginRepository {
                 AGGREGATE_ID_USERNAME_NAMESPACE + aggregateId);
     }
 
+    @PostConstruct
     private void addDefaultUsers() {
         addUserIfDoesNotExist("player1");
         addUserIfDoesNotExist("player2");

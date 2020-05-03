@@ -7,11 +7,8 @@ import javax.inject.Inject;
 
 import org.springframework.context.annotation.Profile;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
-import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.stereotype.Repository;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.flexpoker.config.ProfileNames;
 import com.flexpoker.exception.FlexPokerException;
 import com.flexpoker.table.command.framework.TableEvent;
@@ -27,16 +24,6 @@ public class RedisTableEventRepository implements TableEventRepository {
     @Inject
     public RedisTableEventRepository(RedisTemplate<String, TableEvent> redisTemplate) {
         this.redisTemplate = redisTemplate;
-        this.redisTemplate.setKeySerializer(new StringRedisSerializer());
-
-        var objectMapper = new ObjectMapper();
-        objectMapper.findAndRegisterModules();
-
-        Jackson2JsonRedisSerializer<TableEvent> valueSerializer = new Jackson2JsonRedisSerializer<>(
-                TableEvent.class);
-        valueSerializer.setObjectMapper(objectMapper);
-
-        this.redisTemplate.setValueSerializer(valueSerializer);
     }
 
     @Override

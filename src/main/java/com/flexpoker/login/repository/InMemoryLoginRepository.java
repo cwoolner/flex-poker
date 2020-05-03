@@ -6,6 +6,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
+import javax.annotation.PostConstruct;
+
 import org.springframework.context.annotation.Profile;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
@@ -30,7 +32,6 @@ public class InMemoryLoginRepository implements LoginRepository {
         loginUserMap = new HashMap<>();
         loginIdMap = new HashMap<>();
         aggregateIdUsernameMap = new HashMap<>();
-        addDefaultUsers();
     }
 
     @Override
@@ -62,6 +63,7 @@ public class InMemoryLoginRepository implements LoginRepository {
         return aggregateIdUsernameMap.get(aggregateId);
     }
 
+    @PostConstruct
     private void addDefaultUsers() {
         saveUsernameAndPassword("player1", PasswordUtils.encode("player1"));
         saveUsernameAndPassword("player2", PasswordUtils.encode("player2"));

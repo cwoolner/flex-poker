@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 import javax.inject.Inject;
 
 import org.springframework.context.annotation.Profile;
-import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Repository;
 
 import com.flexpoker.config.ProfileNames;
@@ -19,10 +19,10 @@ public class RedisGamePlayerRepository implements GamePlayerRepository {
 
     private static final String GAME_PLAYER_NAMESPACE = "game-player:";
 
-    private final StringRedisTemplate redisTemplate;
+    private final RedisTemplate<String, String> redisTemplate;
 
     @Inject
-    public RedisGamePlayerRepository(StringRedisTemplate redisTemplate) {
+    public RedisGamePlayerRepository(RedisTemplate<String, String> redisTemplate) {
         this.redisTemplate = redisTemplate;
     }
 

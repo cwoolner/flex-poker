@@ -9,7 +9,6 @@ import javax.inject.Inject;
 
 import org.springframework.context.annotation.Profile;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Repository;
 
 import com.flexpoker.config.ProfileNames;
@@ -31,7 +30,7 @@ public class RedisCardsUsedInHandRepository implements CardsUsedInHandRepository
 
     private static final String HAND_POCKET_CARDS_NAMESPACE = "hand-pocket-cards:";
 
-    private final StringRedisTemplate stringRedisTemplate;
+    private final RedisTemplate<String, String> stringRedisTemplate;
 
     private final RedisTemplate<String, FlopCards> redisTemplateFlopCards;
 
@@ -43,7 +42,7 @@ public class RedisCardsUsedInHandRepository implements CardsUsedInHandRepository
 
     @Inject
     public RedisCardsUsedInHandRepository(
-            StringRedisTemplate stringRedisTemplate,
+            RedisTemplate<String, String> stringRedisTemplate,
             RedisTemplate<String, FlopCards> redisTemplateFlopCards,
             RedisTemplate<String, TurnCard> redisTemplateTurnCard,
             RedisTemplate<String, RiverCard> redisTemplateRiverCard,

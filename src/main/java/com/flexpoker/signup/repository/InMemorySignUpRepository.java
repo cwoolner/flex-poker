@@ -6,6 +6,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import javax.annotation.PostConstruct;
+
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Repository;
 
@@ -26,7 +28,6 @@ public class InMemorySignUpRepository implements SignUpRepository {
         usernameSet = new HashSet<>();
         signUpCodeMap = new HashMap<>();
         signUpUserMap = new HashMap<>();
-        addDefaultSignUps();
     }
 
     @Override
@@ -68,6 +69,7 @@ public class InMemorySignUpRepository implements SignUpRepository {
                 .findAny().get().getKey();
     }
 
+    @PostConstruct
     private void addDefaultSignUps() {
         storeNewlyConfirmedUsername("player1");
         storeNewlyConfirmedUsername("player2");

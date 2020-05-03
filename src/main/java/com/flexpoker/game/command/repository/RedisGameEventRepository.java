@@ -7,11 +7,8 @@ import javax.inject.Inject;
 
 import org.springframework.context.annotation.Profile;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
-import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.stereotype.Repository;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.flexpoker.config.ProfileNames;
 import com.flexpoker.exception.FlexPokerException;
 import com.flexpoker.game.command.events.GameCreatedEvent;
@@ -28,15 +25,6 @@ public class RedisGameEventRepository implements GameEventRepository {
     @Inject
     public RedisGameEventRepository(RedisTemplate<String, GameEvent> redisTemplate) {
         this.redisTemplate = redisTemplate;
-        this.redisTemplate.setKeySerializer(new StringRedisSerializer());
-
-        var objectMapper = new ObjectMapper();
-        objectMapper.findAndRegisterModules();
-
-        var valueSerializer = new Jackson2JsonRedisSerializer<>(GameEvent.class);
-        valueSerializer.setObjectMapper(objectMapper);
-
-        this.redisTemplate.setValueSerializer(valueSerializer);
     }
 
     @Override

@@ -7,8 +7,6 @@ import javax.inject.Inject;
 
 import org.springframework.context.annotation.Profile;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
-import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.stereotype.Repository;
 
 import com.flexpoker.config.ProfileNames;
@@ -27,8 +25,6 @@ public class RedisGameListRepository implements GameListRepository {
     @Inject
     public RedisGameListRepository(RedisTemplate<String, GameInListDTO> redisTemplate) {
         this.redisTemplate = redisTemplate;
-        this.redisTemplate.setKeySerializer(new StringRedisSerializer());
-        this.redisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<>(GameInListDTO.class));
     }
 
     @Override

@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
+import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
 import org.springframework.context.annotation.Profile;
@@ -13,9 +14,9 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.data.redis.connection.RedisConnection;
 import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.RedisOperations;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ScanOptions;
 import org.springframework.data.redis.core.SessionCallback;
-import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Repository;
 
 import com.flexpoker.config.ProfileNames;
@@ -39,12 +40,11 @@ public class RedisSignUpRepository implements SignUpRepository {
     private static final String SIGN_UP_USER_NAMESPACE = SIGN_UP_NAMESPACE
             + "signupuser:";
 
-    private final StringRedisTemplate redisTemplate;
+    private final RedisTemplate<String, String> redisTemplate;
 
     @Inject
-    public RedisSignUpRepository(StringRedisTemplate redisTemplate) {
+    public RedisSignUpRepository(RedisTemplate<String, String> redisTemplate) {
         this.redisTemplate = redisTemplate;
-        addDefaultSignUps();
     }
 
     @Override
@@ -122,6 +122,7 @@ public class RedisSignUpRepository implements SignUpRepository {
         return UUID.fromString(foundSignUpCodeKey.split(":")[2]);
     }
 
+    @PostConstruct
     private void addDefaultSignUps() {
         storeNewlyConfirmedUsername("player1");
         storeNewlyConfirmedUsername("player2");
