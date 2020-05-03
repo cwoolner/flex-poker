@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class TableDTO {
@@ -24,9 +25,16 @@ public class TableDTO {
 
     private final UUID currentHandId;
 
-    public TableDTO(UUID tableId, int version, List<SeatDTO> seats,
-            int totalPot, Set<PotDTO> pots, List<CardDTO> visibleCommonCards,
-            int currentHandMinRaiseToAmount, UUID currentHandId) {
+    @JsonCreator
+    public TableDTO(
+            @JsonProperty(value = "id") UUID tableId,
+            @JsonProperty(value = "version") int version,
+            @JsonProperty(value = "seats") List<SeatDTO> seats,
+            @JsonProperty(value = "totalPot") int totalPot,
+            @JsonProperty(value = "pots") Set<PotDTO> pots,
+            @JsonProperty(value = "visibleCommonCards") List<CardDTO> visibleCommonCards,
+            @JsonProperty(value = "currentHandMinRaiseToAmount") int currentHandMinRaiseToAmount,
+            @JsonProperty(value = "currentHandId") UUID currentHandId) {
         this.tableId = tableId;
         this.version = version;
         this.seats = seats;
@@ -37,42 +45,34 @@ public class TableDTO {
         this.currentHandId = currentHandId;
     }
 
-    @JsonProperty
     public UUID getId() {
         return tableId;
     }
 
-    @JsonProperty
     public int getVersion() {
         return version;
     }
 
-    @JsonProperty
     public List<SeatDTO> getSeats() {
         return seats;
     }
 
-    @JsonProperty
     public int getTotalPot() {
         return totalPot;
     }
 
-    @JsonProperty
     public Set<PotDTO> getPots() {
         return pots;
     }
 
-    @JsonProperty
     public List<CardDTO> getVisibleCommonCards() {
         return visibleCommonCards;
     }
 
-    @JsonProperty
     public int getCurrentHandMinRaiseToAmount() {
         return currentHandMinRaiseToAmount;
     }
 
-    @JsonProperty
     public UUID getCurrentHandId() {
         return currentHandId;
     }

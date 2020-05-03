@@ -6,11 +6,14 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Repository;
 
+import com.flexpoker.config.ProfileNames;
 import com.flexpoker.table.query.repository.TableRepository;
 import com.flexpoker.web.dto.outgoing.TableDTO;
 
+@Profile({ ProfileNames.DEFAULT, ProfileNames.TABLE_QUERY_INMEMORY })
 @Repository
 public class InMemoryTableRepository implements TableRepository {
 

@@ -21,6 +21,7 @@ import com.flexpoker.model.card.PocketCards;
 import com.flexpoker.model.card.RiverCard;
 import com.flexpoker.model.card.TurnCard;
 import com.flexpoker.table.command.framework.TableEvent;
+import com.flexpoker.web.dto.outgoing.TableDTO;
 
 @Configuration
 @Profile({ ProfileNames.REDIS, ProfileNames.LOGIN_REDIS, ProfileNames.SIGNUP_REDIS,
@@ -105,6 +106,15 @@ public class RedisConfig {
         redisTemplate.setKeySerializer(new StringRedisSerializer());
         redisTemplate.setHashKeySerializer(new Jackson2JsonRedisSerializer<>(UUID.class));
         redisTemplate.setHashValueSerializer(new Jackson2JsonRedisSerializer<>(PocketCards.class));
+        return redisTemplate;
+    }
+
+    @Bean
+    RedisTemplate<String, TableDTO> redisTemplateTableDTO() {
+        var redisTemplate = new RedisTemplate<String, TableDTO>();
+        redisTemplate.setConnectionFactory(jedisConnectionFactory());
+        redisTemplate.setKeySerializer(new StringRedisSerializer());
+        redisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<>(TableDTO.class));
         return redisTemplate;
     }
 

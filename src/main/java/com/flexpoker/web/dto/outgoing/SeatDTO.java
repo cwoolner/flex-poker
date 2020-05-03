@@ -1,5 +1,6 @@
 package com.flexpoker.web.dto.outgoing;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class SeatDTO {
@@ -26,9 +27,19 @@ public class SeatDTO {
 
     private final boolean actionOn;
 
-    public SeatDTO(int position, String name, int chipsInBack, int chipsInFront,
-            boolean stillInHand, int raiseTo, int callAmount, boolean button,
-            boolean smallBlind, boolean bigBlind, boolean actionOn) {
+    @JsonCreator
+    public SeatDTO(
+            @JsonProperty(value = "position") int position,
+            @JsonProperty(value = "name") String name,
+            @JsonProperty(value = "chipsInBack") int chipsInBack,
+            @JsonProperty(value = "chipsInFront") int chipsInFront,
+            @JsonProperty(value = "stillInHand") boolean stillInHand,
+            @JsonProperty(value = "raiseTo") int raiseTo,
+            @JsonProperty(value = "callAmount") int callAmount,
+            @JsonProperty(value = "button") boolean button,
+            @JsonProperty(value = "smallBlind") boolean smallBlind,
+            @JsonProperty(value = "bigBlind") boolean bigBlind,
+            @JsonProperty(value = "actionOn") boolean actionOn) {
         this.position = position;
         this.name = name;
         this.chipsInBack = chipsInBack;
@@ -42,57 +53,46 @@ public class SeatDTO {
         this.actionOn = actionOn;
     }
 
-    @JsonProperty
     public int getPosition() {
         return position;
     }
 
-    @JsonProperty
     public String getName() {
         return name;
     }
 
-    @JsonProperty
     public int getChipsInBack() {
         return chipsInBack;
     }
 
-    @JsonProperty
     public int getChipsInFront() {
         return chipsInFront;
     }
 
-    @JsonProperty
     public boolean isStillInHand() {
         return stillInHand;
     }
 
-    @JsonProperty
     public int getRaiseTo() {
         return raiseTo;
     }
 
-    @JsonProperty
     public int getCallAmount() {
         return callAmount;
     }
 
-    @JsonProperty
     public boolean isButton() {
         return button;
     }
 
-    @JsonProperty
     public boolean isSmallBlind() {
         return smallBlind;
     }
 
-    @JsonProperty
     public boolean isBigBlind() {
         return bigBlind;
     }
 
-    @JsonProperty
     public boolean isActionOn() {
         return actionOn;
     }

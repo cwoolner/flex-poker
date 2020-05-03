@@ -2,6 +2,7 @@ package com.flexpoker.web.dto.outgoing;
 
 import java.util.UUID;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class PocketCardsDTO {
@@ -12,23 +13,24 @@ public class PocketCardsDTO {
 
     private final int cardId2;
 
-    public PocketCardsDTO(UUID handId, int cardId1, int cardId2) {
+    @JsonCreator
+    public PocketCardsDTO(
+            @JsonProperty(value = "handId") UUID handId,
+            @JsonProperty(value = "cardId1") int cardId1,
+            @JsonProperty(value = "cardId2") int cardId2) {
         this.handId = handId;
         this.cardId1 = cardId1;
         this.cardId2 = cardId2;
     }
 
-    @JsonProperty
     public UUID getHandId() {
         return handId;
     }
 
-    @JsonProperty
     public int getCardId1() {
         return cardId1;
     }
 
-    @JsonProperty
     public int getCardId2() {
         return cardId2;
     }

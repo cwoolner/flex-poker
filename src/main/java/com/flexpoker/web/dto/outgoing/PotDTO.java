@@ -2,6 +2,7 @@ package com.flexpoker.web.dto.outgoing;
 
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class PotDTO {
@@ -14,30 +15,30 @@ public class PotDTO {
 
     private final Set<String> winners;
 
-    public PotDTO(Set<String> seats, int amount, boolean open,
-            Set<String> winners) {
+    @JsonCreator
+    public PotDTO(
+            @JsonProperty(value = "seats") Set<String> seats,
+            @JsonProperty(value = "amount") int amount,
+            @JsonProperty(value = "open") boolean open,
+            @JsonProperty(value = "winners") Set<String> winners) {
         this.seats = seats;
         this.amount = amount;
         this.open = open;
         this.winners = winners;
     }
 
-    @JsonProperty
     public Set<String> getSeats() {
         return seats;
     }
 
-    @JsonProperty
     public int getAmount() {
         return amount;
     }
 
-    @JsonProperty
     public boolean isOpen() {
         return open;
     }
 
-    @JsonProperty
     public Set<String> getWinners() {
         return winners;
     }
