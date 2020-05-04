@@ -1,17 +1,18 @@
-package com.flexpoker.framework.event;
+package com.flexpoker.table.command.events;
 
 import java.time.Instant;
 import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.flexpoker.exception.FlexPokerException;
+import com.flexpoker.framework.event.Event;
 import com.flexpoker.util.StringUtils;
 
 /**
  * Base class used to handle some standard methods and fields so that the
  * subclasses can just be specific to what they need.
  */
-public abstract class BaseEvent implements Event {
+public abstract class BaseTableEvent implements Event {
 
     private final UUID aggregateId;
 
@@ -19,7 +20,7 @@ public abstract class BaseEvent implements Event {
 
     private final Instant time;
 
-    public BaseEvent(UUID aggregateId) {
+    public BaseTableEvent(UUID aggregateId) {
         this.aggregateId = aggregateId;
         this.time = Instant.now();
     }
@@ -39,6 +40,7 @@ public abstract class BaseEvent implements Event {
         return version;
     }
 
+    @Override
     public void setVersion(int version) {
         this.version = version;
     }

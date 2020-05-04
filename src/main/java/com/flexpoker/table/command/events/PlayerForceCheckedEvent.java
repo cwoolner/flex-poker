@@ -4,10 +4,9 @@ import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.flexpoker.framework.event.BaseEvent;
 import com.flexpoker.table.command.framework.TableEvent;
 
-public class PlayerForceCheckedEvent extends BaseEvent implements TableEvent {
+public class PlayerForceCheckedEvent extends BaseTableEvent implements TableEvent {
 
     private final UUID gameId;
 

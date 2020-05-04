@@ -5,10 +5,9 @@ import java.util.Map;
 import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.flexpoker.framework.event.BaseEvent;
 import com.flexpoker.table.command.framework.TableEvent;
 
-public class HandCompletedEvent extends BaseEvent implements TableEvent {
+public class HandCompletedEvent extends BaseTableEvent implements TableEvent {
 
     private final UUID gameId;
 

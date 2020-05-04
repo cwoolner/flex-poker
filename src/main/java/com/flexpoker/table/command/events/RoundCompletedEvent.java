@@ -4,11 +4,10 @@ import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.flexpoker.framework.event.BaseEvent;
 import com.flexpoker.table.command.aggregate.HandDealerState;
 import com.flexpoker.table.command.framework.TableEvent;
 
-public class RoundCompletedEvent extends BaseEvent implements TableEvent {
+public class RoundCompletedEvent extends BaseTableEvent implements TableEvent {
 
     private final UUID gameId;
 
