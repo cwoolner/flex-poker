@@ -12,7 +12,6 @@ import java.util.stream.Collectors;
 
 import com.flexpoker.exception.FlexPokerException;
 import com.flexpoker.framework.command.EventApplier;
-import com.flexpoker.framework.domain.AggregateRoot;
 import com.flexpoker.model.PlayerAction;
 import com.flexpoker.model.card.Card;
 import com.flexpoker.model.card.CardsUsedInHand;
@@ -45,7 +44,27 @@ import com.flexpoker.table.command.events.TurnCardDealtEvent;
 import com.flexpoker.table.command.events.WinnersDeterminedEvent;
 import com.flexpoker.table.command.framework.TableEvent;
 
-public class Table extends AggregateRoot<TableEvent> {
+public class Table {
+
+    private final List<TableEvent> newEvents = new ArrayList<>();
+
+    private final List<TableEvent> appliedEvents = new ArrayList<>();
+
+    protected void addNewEvent(TableEvent event) {
+        newEvents.add(event);
+    }
+
+    protected void addAppliedEvent(TableEvent event) {
+        appliedEvents.add(event);
+    }
+
+    public List<TableEvent> fetchNewEvents() {
+        return new ArrayList<>(newEvents);
+    }
+
+    public List<TableEvent> fetchAppliedEvents() {
+        return new ArrayList<>(appliedEvents);
+    }
 
     private final UUID aggregateId;
 
@@ -88,7 +107,6 @@ public class Table extends AggregateRoot<TableEvent> {
         }
     }
 
-    @Override
     public void applyAllHistoricalEvents(List<TableEvent> events) {
         events.forEach(x -> {
             applyCommonEvent(x);
