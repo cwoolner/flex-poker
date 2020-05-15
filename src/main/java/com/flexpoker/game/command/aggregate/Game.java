@@ -33,25 +33,9 @@ import com.flexpoker.game.query.dto.GameStage;
 
 public class Game {
 
-    private final List<GameEvent> newEvents = new ArrayList<>();
+    private final List<GameEvent> newEvents;
 
-    private final List<GameEvent> appliedEvents = new ArrayList<>();
-
-    protected void addNewEvent(GameEvent event) {
-        newEvents.add(event);
-    }
-
-    protected void addAppliedEvent(GameEvent event) {
-        appliedEvents.add(event);
-    }
-
-    public List<GameEvent> fetchNewEvents() {
-        return new ArrayList<>(newEvents);
-    }
-
-    public List<GameEvent> fetchAppliedEvents() {
-        return new ArrayList<>(appliedEvents);
-    }
+    private final List<GameEvent> appliedEvents;
 
     private final UUID aggregateId;
 
@@ -88,6 +72,9 @@ public class Game {
         tableIdToPlayerIdsMap = new HashMap<>();
         pausedTablesForBalancing = new HashSet<>();
 
+        newEvents = new ArrayList<>();
+        appliedEvents = new ArrayList<>();
+
         methodTable = new HashMap<>();
         populateMethodTable();
 
@@ -95,9 +82,17 @@ public class Game {
             var gameCreatedEvent = new GameCreatedEvent(aggregateId, gameName, maxNumberOfPlayers,
                     numberOfPlayersPerTable, createdById, blindSchedule.getNumberOfMinutesBetweenLevels(),
                     numberOfSecondsForActionOnTimer);
-            addNewEvent(gameCreatedEvent);
+            newEvents.add(gameCreatedEvent);
             applyCommonEvent(gameCreatedEvent);
         }
+    }
+
+    public List<GameEvent> fetchNewEvents() {
+        return new ArrayList<>(newEvents);
+    }
+
+    public List<GameEvent> fetchAppliedEvents() {
+        return new ArrayList<>(appliedEvents);
     }
 
     public void applyAllHistoricalEvents(List<GameEvent> events) {
@@ -148,7 +143,7 @@ public class Game {
 
     private void applyCommonEvent(GameEvent event) {
         methodTable.get(event.getClass()).applyEvent(event);
-        addAppliedEvent(event);
+        appliedEvents.add(event);
     }
 
     public void joinGame(UUID playerId) {
@@ -186,7 +181,7 @@ public class Game {
                 singleBalancingEvent = tableBalancer.createSingleBalancingEvent(tableId, pausedTablesForBalancing,
                         tableIdToPlayerIdsMap, playerToChipsAtTableMap);
                 if (singleBalancingEvent.isPresent()) {
-                    addNewEvent(singleBalancingEvent.get());
+                    newEvents.add(singleBalancingEvent.get());
                     applyCommonEvent(singleBalancingEvent.get());
                 }
             } while (singleBalancingEvent.isPresent());
@@ -194,7 +189,7 @@ public class Game {
             if (tableIdToPlayerIdsMap.containsKey(tableId) && !pausedTablesForBalancing.contains(tableId)) {
                 var event = new NewHandIsClearedToStartEvent(aggregateId, tableId,
                         blindSchedule.getCurrentBlindAmounts());
-                addNewEvent(event);
+                newEvents.add(event);
                 applyCommonEvent(event);
             }
         }
@@ -208,7 +203,7 @@ public class Game {
 
         if (!blindSchedule.isMaxLevel()) {
             var event = new BlindsIncreasedEvent(aggregateId);
-            addNewEvent(event);
+            newEvents.add(event);
             applyCommonEvent(event);
         }
     }
@@ -221,7 +216,7 @@ public class Game {
         }
 
         var event = new PlayerBustedGameEvent(aggregateId, playerId);
-        addNewEvent(event);
+        newEvents.add(event);
         applyCommonEvent(event);
     }
 
@@ -239,7 +234,7 @@ public class Game {
         }
 
         var event = new GameJoinedEvent(aggregateId, playerId);
-        addNewEvent(event);
+        newEvents.add(event);
         applyCommonEvent(event);
     }
 
@@ -249,7 +244,7 @@ public class Game {
                     "to move to STARTING, the game stage must be REGISTERING");
         }
         var event = new GameMovedToStartingStageEvent(aggregateId);
-        addNewEvent(event);
+        newEvents.add(event);
         applyCommonEvent(event);
     }
 
@@ -262,7 +257,7 @@ public class Game {
 
         var event = new GameTablesCreatedAndPlayersAssociatedEvent(aggregateId, tableIdToPlayerIdsMap,
                 numberOfPlayersPerTable);
-        addNewEvent(event);
+        newEvents.add(event);
         applyCommonEvent(event);
     }
 
@@ -314,7 +309,7 @@ public class Game {
         }
 
         var event = new GameStartedEvent(aggregateId, tableIdToPlayerIdsMap.keySet(), blindSchedule.getBlindScheduleDTO());
-        addNewEvent(event);
+        newEvents.add(event);
         applyCommonEvent(event);
     }
 

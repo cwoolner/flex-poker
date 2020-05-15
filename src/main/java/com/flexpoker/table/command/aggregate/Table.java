@@ -46,25 +46,9 @@ import com.flexpoker.table.command.framework.TableEvent;
 
 public class Table {
 
-    private final List<TableEvent> newEvents = new ArrayList<>();
+    private final List<TableEvent> newEvents;
 
-    private final List<TableEvent> appliedEvents = new ArrayList<>();
-
-    protected void addNewEvent(TableEvent event) {
-        newEvents.add(event);
-    }
-
-    protected void addAppliedEvent(TableEvent event) {
-        appliedEvents.add(event);
-    }
-
-    public List<TableEvent> fetchNewEvents() {
-        return new ArrayList<>(newEvents);
-    }
-
-    public List<TableEvent> fetchAppliedEvents() {
-        return new ArrayList<>(appliedEvents);
-    }
+    private final List<TableEvent> appliedEvents;
 
     private final UUID aggregateId;
 
@@ -96,15 +80,26 @@ public class Table {
         seatMap.values().stream().filter(x -> x != null)
                 .forEach(x -> chipsInBack.put(x, startingNumberOfChips));
 
+        newEvents = new ArrayList<>();
+        appliedEvents = new ArrayList<>();
+
         methodTable = new HashMap<>();
         populateMethodTable();
 
         if (!creatingFromEvents) {
             var tableCreatedEvent = new TableCreatedEvent(aggregateId, gameId, seatMap.size(), seatMap,
                     startingNumberOfChips);
-            addNewEvent(tableCreatedEvent);
+            newEvents.add(tableCreatedEvent);
             applyCommonEvent(tableCreatedEvent);
         }
+    }
+
+    public List<TableEvent> fetchNewEvents() {
+        return new ArrayList<>(newEvents);
+    }
+
+    public List<TableEvent> fetchAppliedEvents() {
+        return new ArrayList<>(appliedEvents);
     }
 
     public void applyAllHistoricalEvents(List<TableEvent> events) {
@@ -167,7 +162,7 @@ public class Table {
 
     private void applyCommonEvent(TableEvent event) {
         methodTable.get(event.getClass()).applyEvent(event);
-        addAppliedEvent(event);
+        appliedEvents.add(event);
     }
 
     public UUID getAggregateId() {
@@ -270,7 +265,7 @@ public class Table {
             Map<PocketCards, HandEvaluation> handEvaluations,
             int actionOnPosition) {
         var cardsShuffledEvent = new CardsShuffledEvent(aggregateId, gameId, shuffledDeckOfCards);
-        addNewEvent(cardsShuffledEvent);
+        newEvents.add(cardsShuffledEvent);
         applyCommonEvent(cardsShuffledEvent);
 
         var nextToReceivePocketCards = findNextFilledSeat(buttonOnPosition);
@@ -299,7 +294,7 @@ public class Table {
                 new HashMap<>(), smallBlind, bigBlind);
         var eventsCreated = hand.dealHand(actionOnPosition);
         eventsCreated.forEach(x -> {
-            addNewEvent(x);
+            newEvents.add(x);
             applyCommonEvent(x);
         });
     }
@@ -312,7 +307,7 @@ public class Table {
         checkHandIsBeingPlayed();
 
         var playerCheckedEvent = currentHand.check(playerId, false);
-        addNewEvent(playerCheckedEvent);
+        newEvents.add(playerCheckedEvent);
         applyCommonEvent(playerCheckedEvent);
 
         handleEndOfRound();
@@ -322,7 +317,7 @@ public class Table {
         checkHandIsBeingPlayed();
 
         var playerCalledEvent = currentHand.call(playerId);
-        addNewEvent(playerCalledEvent);
+        newEvents.add(playerCalledEvent);
         applyCommonEvent(playerCalledEvent);
 
         handleEndOfRound();
@@ -332,7 +327,7 @@ public class Table {
         checkHandIsBeingPlayed();
 
         var playerFoldedEvent = currentHand.fold(playerId, false);
-        addNewEvent(playerFoldedEvent);
+        newEvents.add(playerFoldedEvent);
         applyCommonEvent(playerFoldedEvent);
 
         handleEndOfRound();
@@ -342,7 +337,7 @@ public class Table {
         checkHandIsBeingPlayed();
 
         var playerRaisedEvent = currentHand.raise(playerId, raiseToAmount);
-        addNewEvent(playerRaisedEvent);
+        newEvents.add(playerRaisedEvent);
         applyCommonEvent(playerRaisedEvent);
 
         changeActionOnIfAppropriate();
@@ -356,7 +351,7 @@ public class Table {
         }
 
         var forcedActionOnExpiredEvent = currentHand.expireActionOn(playerId);
-        addNewEvent(forcedActionOnExpiredEvent);
+        newEvents.add(forcedActionOnExpiredEvent);
         applyCommonEvent(forcedActionOnExpiredEvent);
 
         handleEndOfRound();
@@ -385,18 +380,18 @@ public class Table {
     private void handlePotAndRoundCompleted() {
         var endOfRoundEvents = currentHand.handlePotAndRoundCompleted();
         endOfRoundEvents.forEach(x -> {
-            addNewEvent(x);
+            newEvents.add(x);
             // TODO: not using applyCommonEvent() here because PotHandler is too
             // stateful and the events get applied to the state down there. when
             // that's refactored, this should change
-            addAppliedEvent(x);
+            appliedEvents.add(x);
         });
     }
 
     private void changeActionOnIfAppropriate() {
         var actionOnChangedEvents = currentHand.changeActionOn();
         actionOnChangedEvents.forEach(x -> {
-            addNewEvent(x);
+            newEvents.add(x);
             applyCommonEvent(x);
         });
     }
@@ -404,7 +399,7 @@ public class Table {
     private void dealCommonCardsIfAppropriate() {
         currentHand.dealCommonCardsIfAppropriate().ifPresent(
                 event -> {
-                    addNewEvent(event);
+                    newEvents.add(event);
                     applyCommonEvent(event);
                 });
     }
@@ -412,7 +407,7 @@ public class Table {
     private void determineWinnersIfAppropriate() {
         currentHand.determineWinnersIfAppropriate().ifPresent(
                 event -> {
-                    addNewEvent(event);
+                    newEvents.add(event);
                     applyCommonEvent(event);
                 });
     }
@@ -422,7 +417,7 @@ public class Table {
             .filter(x -> x.getValue() == 0)
             .forEach(x -> {
                 var event = new PlayerBustedTableEvent(aggregateId, gameId, x.getKey());
-                addNewEvent(event);
+                newEvents.add(event);
                 applyCommonEvent(event);
             });
     }
@@ -431,11 +426,11 @@ public class Table {
         var handCompleteEvent = currentHand.finishHandIfAppropriate();
 
         if (handCompleteEvent.isPresent()) {
-            addNewEvent(handCompleteEvent.get());
+            newEvents.add(handCompleteEvent.get());
             applyCommonEvent(handCompleteEvent.get());
         } else {
             currentHand.autoMoveHandForward().ifPresent(event -> {
-                addNewEvent(event);
+                newEvents.add(event);
                 applyCommonEvent(event);
             });
         }
@@ -449,7 +444,7 @@ public class Table {
         var newPlayerPosition = findRandomOpenSeat();
 
         var playerAddedEvent = new PlayerAddedEvent(aggregateId, gameId, playerId, chips, newPlayerPosition);
-        addNewEvent(playerAddedEvent);
+        newEvents.add(playerAddedEvent);
         applyCommonEvent(playerAddedEvent);
     }
 
@@ -463,7 +458,7 @@ public class Table {
         }
 
         var playerRemovedEvent = new PlayerRemovedEvent(aggregateId, gameId, playerId);
-        addNewEvent(playerRemovedEvent);
+        newEvents.add(playerRemovedEvent);
         applyCommonEvent(playerRemovedEvent);
     }
 
@@ -473,7 +468,7 @@ public class Table {
         }
 
         var tablePausedEvent = new TablePausedEvent(aggregateId, gameId);
-        addNewEvent(tablePausedEvent);
+        newEvents.add(tablePausedEvent);
         applyCommonEvent(tablePausedEvent);
     }
 
@@ -483,7 +478,7 @@ public class Table {
         }
 
         var tableResumedEvent = new TableResumedEvent(aggregateId, gameId);
-        addNewEvent(tableResumedEvent);
+        newEvents.add(tableResumedEvent);
         applyCommonEvent(tableResumedEvent);
     }
 
