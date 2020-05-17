@@ -1,4 +1,4 @@
-package com.flexpoker.model.chat.incoming;
+package com.flexpoker.web.dto.incoming;
 
 import java.util.List;
 import java.util.UUID;
@@ -6,7 +6,7 @@ import java.util.UUID;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class ChatMessage {
+public class ChatMessageDTO {
 
     private final String message;
 
@@ -17,7 +17,7 @@ public class ChatMessage {
     private final UUID tableId;
 
     @JsonCreator
-    public ChatMessage(
+    public ChatMessageDTO(
             @JsonProperty(value = "message") String message,
             @JsonProperty(value = "receiverUsernames") List<String> receiverUsernames,
             @JsonProperty(value = "gameId") UUID gameId,

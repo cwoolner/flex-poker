@@ -8,8 +8,8 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.stereotype.Controller;
 
 import com.flexpoker.framework.pushnotifier.PushNotificationPublisher;
-import com.flexpoker.model.chat.incoming.ChatMessage;
 import com.flexpoker.pushnotifications.ChatSentPushNotification;
+import com.flexpoker.web.dto.incoming.ChatMessageDTO;
 
 @Controller
 public class ChatController {
@@ -22,7 +22,7 @@ public class ChatController {
     }
 
     @MessageMapping("/app/sendchatmessage")
-    public void sendChatMessage(ChatMessage chatMessage, Principal principal) {
+    public void sendChatMessage(ChatMessageDTO chatMessage, Principal principal) {
         pushNotificationPublisher.publish(new ChatSentPushNotification(chatMessage.getGameId(),
                 chatMessage.getTableId(), chatMessage.getMessage(), principal.getName(), false));
     }
