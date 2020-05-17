@@ -8,6 +8,7 @@ import javax.inject.Inject;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
+import com.flexpoker.chat.repository.ChatRepository;
 import com.flexpoker.framework.event.EventHandler;
 import com.flexpoker.framework.pushnotifier.PushNotificationPublisher;
 import com.flexpoker.game.command.events.GameStartedEvent;
@@ -18,6 +19,7 @@ import com.flexpoker.game.query.repository.OpenGameForPlayerRepository;
 import com.flexpoker.pushnotifications.ChatSentPushNotification;
 import com.flexpoker.pushnotifications.GameListUpdatedPushNotification;
 import com.flexpoker.pushnotifications.OpenGamesForPlayerUpdatedPushNotification;
+import com.flexpoker.web.dto.outgoing.ChatMessageDTO;
 
 @Component
 public class GameStartedEventHandler implements EventHandler<GameStartedEvent> {
@@ -30,15 +32,20 @@ public class GameStartedEventHandler implements EventHandler<GameStartedEvent> {
 
     private final PushNotificationPublisher pushNotificationPublisher;
 
+    private final ChatRepository chatRepository;
+
     @Inject
-    public GameStartedEventHandler(GameListRepository gameListRepository,
+    public GameStartedEventHandler(
+            GameListRepository gameListRepository,
             GamePlayerRepository gamePlayerRepository,
             OpenGameForPlayerRepository openGameForUserRepository,
-            PushNotificationPublisher pushNotificationPublisher) {
+            PushNotificationPublisher pushNotificationPublisher,
+            ChatRepository chatRepository) {
         this.gameListRepository = gameListRepository;
         this.gamePlayerRepository = gamePlayerRepository;
         this.openGameForUserRepository = openGameForUserRepository;
         this.pushNotificationPublisher = pushNotificationPublisher;
+        this.chatRepository = chatRepository;
     }
 
     @Async
@@ -69,6 +76,8 @@ public class GameStartedEventHandler implements EventHandler<GameStartedEvent> {
 
     private void handleChat(GameStartedEvent event) {
         var message = "Game started";
+        chatRepository.saveChatMessage(
+                new ChatMessageDTO(event.getAggregateId(), null, message, null, true));
         pushNotificationPublisher.publish(
                 new ChatSentPushNotification(event.getAggregateId(), null, message, null, true));
     }
