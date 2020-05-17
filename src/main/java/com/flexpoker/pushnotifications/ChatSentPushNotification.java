@@ -4,6 +4,7 @@ import java.util.UUID;
 
 import com.flexpoker.framework.pushnotifier.BasePushNotification;
 import com.flexpoker.framework.pushnotifier.PushNotificationType;
+import com.flexpoker.util.MessagingConstants;
 
 public class ChatSentPushNotification extends BasePushNotification {
 
@@ -21,6 +22,8 @@ public class ChatSentPushNotification extends BasePushNotification {
 
     private final boolean isSystemMessage;
 
+    private final String destination;
+
     public ChatSentPushNotification(UUID gameId, UUID tableId, String message, String senderUsername,
             boolean isSystemMessage) {
         super(TYPE);
@@ -30,6 +33,14 @@ public class ChatSentPushNotification extends BasePushNotification {
         this.message = message;
         this.senderUsername = senderUsername;
         this.isSystemMessage = isSystemMessage;
+
+        if (gameId != null && tableId != null) {
+            this.destination = String.format(MessagingConstants.CHAT_TABLE, gameId, tableId);
+        } else if (gameId != null) {
+            this.destination = String.format(MessagingConstants.CHAT_GAME, gameId);
+        } else {
+            this.destination = MessagingConstants.CHAT_GLOBAL;
+        }
     }
 
     public UUID getGameId() {
@@ -54,6 +65,10 @@ public class ChatSentPushNotification extends BasePushNotification {
 
     public boolean isSystemMessage() {
         return isSystemMessage;
+    }
+
+    public String getDestination() {
+        return destination;
     }
 
 }

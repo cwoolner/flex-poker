@@ -4,6 +4,7 @@ public class ProfileNames {
 
     /** In-memory and default */
     public static final String DEFAULT = "default";
+    public static final String CHAT_INMEMORY = "chat-inmemory";
     public static final String LOGIN_INMEMORY = "login-inmemory";
     public static final String SIGNUP_INMEMORY = "signup-inmemory";
     public static final String GAME_COMMAND_INMEMORY = "game-command-inmemory";
@@ -13,6 +14,7 @@ public class ProfileNames {
 
     /** Redis */
     public static final String REDIS = "redis";
+    public static final String CHAT_REDIS = "chat-redis";
     public static final String LOGIN_REDIS = "login-redis";
     public static final String SIGNUP_REDIS = "signup-redis";
     public static final String GAME_COMMAND_REDIS = "game-command-redis";

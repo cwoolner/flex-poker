@@ -73,14 +73,21 @@ export default (state = {
     case CHANGE_CHAT_MSG_STREAM:
       return { ...state, activeChatStream: { gameId: action.gameId, tableId: action.tableId }}
     case GLOBAL_CHAT_MSG_RECEIVED:
-      const globalMessages = state.chatMessages.globalMessages.push(action.chatMessage)
+      const globalMessages = Array.isArray(action.chatMessage)
+          ? List(action.chatMessage)
+          : state.chatMessages.globalMessages.push(action.chatMessage)
       return { ...state, chatMessages: { ...state.chatMessages, globalMessages }}
     case GAME_CHAT_MSG_RECEIVED:
-      const singleGameMessages = state.chatMessages.gameMessages.get(action.gameId, List()).push(action.chatMessage)
+      console.log(action);
+      const singleGameMessages = Array.isArray(action.chatMessage)
+          ? List(action.chatMessage)
+          : state.chatMessages.gameMessages.get(action.gameId, List()).push(action.chatMessage)
       const gameMessages = state.chatMessages.gameMessages.set(action.gameId, singleGameMessages)
       return { ...state, chatMessages: { ...state.chatMessages, gameMessages }}
     case TABLE_CHAT_MSG_RECEIVED:
-      const singleTableMessages = state.chatMessages.tableMessages.get(action.tableId, List()).push(action.chatMessage)
+      const singleTableMessages = Array.isArray(action.chatMessage)
+          ? List(action.chatMessage)
+          : state.chatMessages.tableMessages.get(action.tableId, List()).push(action.chatMessage)
       const tableMessages = state.chatMessages.tableMessages.set(action.tableId, singleTableMessages)
       return { ...state, chatMessages: { ...state.chatMessages, tableMessages }}
     case CHANGE_TABLE:

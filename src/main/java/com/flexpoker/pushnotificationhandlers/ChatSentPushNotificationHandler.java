@@ -8,7 +8,6 @@ import org.springframework.stereotype.Component;
 
 import com.flexpoker.framework.pushnotifier.PushNotificationHandler;
 import com.flexpoker.pushnotifications.ChatSentPushNotification;
-import com.flexpoker.util.MessagingConstants;
 
 @Component
 public class ChatSentPushNotificationHandler implements PushNotificationHandler<ChatSentPushNotification> {
@@ -23,17 +22,7 @@ public class ChatSentPushNotificationHandler implements PushNotificationHandler<
     @Async
     @Override
     public void handle(ChatSentPushNotification pushNotification) {
-        if (pushNotification.getGameId() != null && pushNotification.getTableId() != null) {
-            var topic = String.format(MessagingConstants.CHAT_TABLE, pushNotification.getGameId(),
-                    pushNotification.getTableId());
-            messagingTemplate.convertAndSend(topic, pushNotification);
-        } else if (pushNotification.getGameId() != null) {
-            var topic = String.format(MessagingConstants.CHAT_GAME, pushNotification.getGameId());
-            messagingTemplate.convertAndSend(topic, pushNotification);
-        } else {
-            messagingTemplate.convertAndSend(MessagingConstants.CHAT_GLOBAL, pushNotification);
-        }
-
+        messagingTemplate.convertAndSend(pushNotification.getDestination(), pushNotification);
     }
 
 }
