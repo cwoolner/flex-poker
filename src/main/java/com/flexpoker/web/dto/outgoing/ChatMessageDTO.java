@@ -2,6 +2,9 @@ package com.flexpoker.web.dto.outgoing;
 
 import java.util.UUID;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class ChatMessageDTO {
 
     private final UUID id;
@@ -14,16 +17,21 @@ public class ChatMessageDTO {
 
     private final String senderUsername;
 
-    private final boolean isSystemMessage;
+    private final boolean systemMessage;
 
-    public ChatMessageDTO(UUID gameId, UUID tableId, String message, String senderUsername,
-            boolean isSystemMessage) {
+    @JsonCreator
+    public ChatMessageDTO(
+            @JsonProperty(value = "gameId") UUID gameId,
+            @JsonProperty(value = "tableId") UUID tableId,
+            @JsonProperty(value = "message") String message,
+            @JsonProperty(value = "senderUsername") String senderUsername,
+            @JsonProperty(value = "systemMessage") boolean systemMessage) {
         this.id = UUID.randomUUID();
         this.gameId = gameId;
         this.tableId = tableId;
         this.message = message;
         this.senderUsername = senderUsername;
-        this.isSystemMessage = isSystemMessage;
+        this.systemMessage = systemMessage;
     }
 
     public UUID getGameId() {
@@ -47,7 +55,7 @@ public class ChatMessageDTO {
     }
 
     public boolean isSystemMessage() {
-        return isSystemMessage;
+        return systemMessage;
     }
 
 }

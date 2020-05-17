@@ -22,6 +22,7 @@ import com.flexpoker.model.card.PocketCards;
 import com.flexpoker.model.card.RiverCard;
 import com.flexpoker.model.card.TurnCard;
 import com.flexpoker.table.command.framework.TableEvent;
+import com.flexpoker.web.dto.outgoing.ChatMessageDTO;
 import com.flexpoker.web.dto.outgoing.TableDTO;
 
 @Configuration
@@ -112,6 +113,13 @@ public class RedisConfig {
     RedisTemplate<String, TableDTO> redisTemplateTableDTO() {
         var redisTemplate = new RedisTemplate<String, TableDTO>();
         setupDefaultKeyValueRedisTemplate(redisTemplate, TableDTO.class);
+        return redisTemplate;
+    }
+
+    @Bean
+    RedisTemplate<String, ChatMessageDTO> redisTemplateChatMessageDTO() {
+        var redisTemplate = new RedisTemplate<String, ChatMessageDTO>();
+        setupDefaultKeyValueRedisTemplate(redisTemplate, ChatMessageDTO.class);
         return redisTemplate;
     }
 

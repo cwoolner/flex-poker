@@ -20,19 +20,19 @@ public class ChatSentPushNotification extends BasePushNotification {
 
     private final String senderUsername;
 
-    private final boolean isSystemMessage;
+    private final boolean systemMessage;
 
     private final String destination;
 
     public ChatSentPushNotification(UUID gameId, UUID tableId, String message, String senderUsername,
-            boolean isSystemMessage) {
+            boolean systemMessage) {
         super(TYPE);
         this.id = UUID.randomUUID();
         this.gameId = gameId;
         this.tableId = tableId;
         this.message = message;
         this.senderUsername = senderUsername;
-        this.isSystemMessage = isSystemMessage;
+        this.systemMessage = systemMessage;
 
         if (gameId != null && tableId != null) {
             this.destination = String.format(MessagingConstants.CHAT_TABLE, gameId, tableId);
@@ -64,7 +64,7 @@ public class ChatSentPushNotification extends BasePushNotification {
     }
 
     public boolean isSystemMessage() {
-        return isSystemMessage;
+        return systemMessage;
     }
 
     public String getDestination() {
