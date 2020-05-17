@@ -1,6 +1,6 @@
 import { createSelector } from 'reselect'
 import WebSocketSubscriptionManager from '../../webSocket/WebSocketSubscriptionManager'
-import { globalChatMsgReceived, gameChatMsgReceived, tableChatMsgReceived } from '../../../reducers'
+import { lobbyChatMsgReceived, gameChatMsgReceived, tableChatMsgReceived } from '../../../reducers'
 
 export default dispatch => {
 
@@ -12,8 +12,8 @@ export default dispatch => {
   const activeChatStreamSelector = createSelector([ activeChatStreamState ],
     activeChatStream => registerWebSocketSubs(activeChatStream))
 
-  const acceptGlobalChatMsg = message =>
-    dispatch(globalChatMsgReceived(JSON.parse(message.body)))
+  const acceptLobbyChatMsg = message =>
+    dispatch(lobbyChatMsgReceived(JSON.parse(message.body)))
 
   const acceptGameChatMsg = (gameId, message) =>
     dispatch(gameChatMsgReceived(gameId, JSON.parse(message.body)))
@@ -35,8 +35,8 @@ export default dispatch => {
       }])
     } else {
       WebSocketSubscriptionManager.subscribe(constObj, [{
-        location: '/topic/chat/global',
-        subscription: acceptGlobalChatMsg
+        location: '/topic/chat/lobby',
+        subscription: acceptLobbyChatMsg
       }])
     }
   }

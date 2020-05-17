@@ -39,7 +39,7 @@ public class ChatSentPushNotification extends BasePushNotification {
         } else if (gameId != null) {
             this.destination = String.format(MessagingConstants.CHAT_GAME, gameId);
         } else {
-            this.destination = MessagingConstants.CHAT_GLOBAL;
+            this.destination = MessagingConstants.CHAT_LOBBY;
         }
     }
 

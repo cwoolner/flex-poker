@@ -16,14 +16,14 @@ import com.flexpoker.web.dto.outgoing.ChatMessageDTO;
 @Repository
 public class InMemoryChatRepository implements ChatRepository {
 
-    private final List<ChatMessageDTO> globalChatMessages;
+    private final List<ChatMessageDTO> lobbyChatMessages;
 
     private final Map<UUID, List<ChatMessageDTO>> gameChatMessages;
 
     private final Map<UUID, List<ChatMessageDTO>> tableChatMessages;
 
     public InMemoryChatRepository() {
-        globalChatMessages = new CopyOnWriteArrayList<ChatMessageDTO>();
+        lobbyChatMessages = new CopyOnWriteArrayList<ChatMessageDTO>();
         gameChatMessages = new ConcurrentHashMap<>();
         tableChatMessages = new ConcurrentHashMap<>();
     }
@@ -37,13 +37,13 @@ public class InMemoryChatRepository implements ChatRepository {
             gameChatMessages.putIfAbsent(chatMessage.getGameId(), new CopyOnWriteArrayList<>());
             gameChatMessages.get(chatMessage.getGameId()).add(chatMessage);
         } else {
-            globalChatMessages.add(chatMessage);
+            lobbyChatMessages.add(chatMessage);
         }
     }
 
     @Override
-    public List<ChatMessageDTO> fetchAllGlobalChatMessages() {
-        return globalChatMessages;
+    public List<ChatMessageDTO> fetchAllLobbyChatMessages() {
+        return lobbyChatMessages;
     }
 
     @Override

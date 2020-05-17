@@ -47,13 +47,13 @@ public class ChatController {
         } else if (gameId != null) {
             chatService.saveAndPushUserGameChatMessage(gameId, message, username);
         } else {
-            chatService.saveAndPushUserGlobalChatMessage(message, username);
+            chatService.saveAndPushUserLobbyChatMessage(message, username);
         }
     }
 
-    @SubscribeMapping("/topic/chat/global")
-    public List<ChatMessageDTO> fetchAllGlobalChatMessages() {
-        return chatRepository.fetchAllGlobalChatMessages();
+    @SubscribeMapping("/topic/chat/lobby")
+    public List<ChatMessageDTO> fetchAllLobbyChatMessages() {
+        return chatRepository.fetchAllLobbyChatMessages();
     }
 
     @SubscribeMapping("/topic/chat/game/{gameId}")

@@ -2,7 +2,7 @@ package com.flexpoker.util;
 
 public class MessagingConstants {
 
-    public static final String CHAT_GLOBAL = "/topic/chat/global";
+    public static final String CHAT_LOBBY = "/topic/chat/lobby";
 
     public static final String CHAT_GAME = "/topic/chat/game/%s";
 

@@ -9,7 +9,7 @@ public interface ChatRepository {
 
     void saveChatMessage(ChatMessageDTO chatMessage);
 
-    List<ChatMessageDTO> fetchAllGlobalChatMessages();
+    List<ChatMessageDTO> fetchAllLobbyChatMessages();
 
     List<ChatMessageDTO> fetchAllGameChatMessages(UUID gameId);
 

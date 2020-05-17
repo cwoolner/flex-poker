@@ -15,7 +15,7 @@ export const getChats = createSelector(
       const { gameId } = activeChatStream
       return chatMessages.gameMessages.get(gameId, List())
     } else {
-      return chatMessages.globalMessages
+      return chatMessages.lobbyMessages
     }
   }
 )

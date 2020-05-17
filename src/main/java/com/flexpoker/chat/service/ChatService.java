@@ -4,9 +4,9 @@ import java.util.UUID;
 
 public interface ChatService {
 
-    void saveAndPushSystemGlobalChatMessage(String message);
+    void saveAndPushSystemLobbyChatMessage(String message);
 
-    void saveAndPushUserGlobalChatMessage(String message, String username);
+    void saveAndPushUserLobbyChatMessage(String message, String username);
 
     void saveAndPushSystemGameChatMessage(UUID gameId, String message);
 

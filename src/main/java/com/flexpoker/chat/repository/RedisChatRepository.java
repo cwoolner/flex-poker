@@ -16,7 +16,7 @@ import com.flexpoker.web.dto.outgoing.ChatMessageDTO;
 @Repository
 public class RedisChatRepository implements ChatRepository {
 
-    private static final String GLOBAL_CHAT_NAMESPACE = "chat:global";
+    private static final String LOBBY_CHAT_NAMESPACE = "chat:lobby";
 
     private static final String GAME_CHAT_NAMESPACE = "chat:game:";
 
@@ -38,13 +38,13 @@ public class RedisChatRepository implements ChatRepository {
         } else if (gameId != null) {
             redisTemplate.opsForList().rightPush(GAME_CHAT_NAMESPACE + gameId, chatMessage);
         } else {
-            redisTemplate.opsForList().rightPush(GLOBAL_CHAT_NAMESPACE, chatMessage);
+            redisTemplate.opsForList().rightPush(LOBBY_CHAT_NAMESPACE, chatMessage);
         }
     }
 
     @Override
-    public List<ChatMessageDTO> fetchAllGlobalChatMessages() {
-        return redisTemplate.opsForList().range(GLOBAL_CHAT_NAMESPACE, 0, Long.MAX_VALUE);
+    public List<ChatMessageDTO> fetchAllLobbyChatMessages() {
+        return redisTemplate.opsForList().range(LOBBY_CHAT_NAMESPACE, 0, Long.MAX_VALUE);
     }
 
     @Override

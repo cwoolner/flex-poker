@@ -8,7 +8,7 @@ const HIDE_JOIN_GAME_MODAL = 'HIDE_JOIN_GAME_MODAL'
 const SHOW_CREATE_GAME_MODAL = 'SHOW_CREATE_GAME_MODAL'
 const HIDE_CREATE_GAME_MODAL = 'HIDE_CREATE_GAME_MODAL'
 const CHANGE_CHAT_MSG_STREAM = 'CHANGE_CHAT_MSG_STREAM'
-const GLOBAL_CHAT_MSG_RECEIVED = 'GLOBAL_CHAT_MSG_RECEIVED'
+const LOBBY_CHAT_MSG_RECEIVED = 'LOBBY_CHAT_MSG_RECEIVED'
 const GAME_CHAT_MSG_RECEIVED = 'GAME_CHAT_MSG_RECEIVED'
 const TABLE_CHAT_MSG_RECEIVED = 'TABLE_CHAT_MSG_RECEIVED'
 const CHANGE_TABLE = 'CHANGE_TABLE'
@@ -26,7 +26,7 @@ export const hideJoinGameModal = () => ({ type: HIDE_JOIN_GAME_MODAL })
 export const showCreateGameModal = () => ({ type: SHOW_CREATE_GAME_MODAL })
 export const hideCreateGameModal = () => ({ type: HIDE_CREATE_GAME_MODAL })
 export const changeChatMsgStream = (gameId, tableId) => ({ type: CHANGE_CHAT_MSG_STREAM, gameId, tableId })
-export const globalChatMsgReceived = msg => ({ type: GLOBAL_CHAT_MSG_RECEIVED, chatMessage: msg })
+export const lobbyChatMsgReceived = msg => ({ type: LOBBY_CHAT_MSG_RECEIVED, chatMessage: msg })
 export const gameChatMsgReceived = (gameId, msg) => ({ type: GAME_CHAT_MSG_RECEIVED, gameId, chatMessage: msg })
 export const tableChatMsgReceived = (gameId, tableId, msg) => ({ type: TABLE_CHAT_MSG_RECEIVED, gameId, tableId, chatMessage: msg })
 export const changeTable = (gameId, tableId) => ({ type: CHANGE_TABLE, gameId, tableId })
@@ -44,7 +44,7 @@ export default (state = {
   showCreateGameModal: false,
   activeChatStream: { gameId: null, tableId: null },
   chatMessages: {
-    globalMessages: List(),
+    lobbyMessages: List(),
     gameMessages: Map(),
     tableMessages: Map()
   },
@@ -72,11 +72,11 @@ export default (state = {
       return { ...state, showCreateGameModal: false }
     case CHANGE_CHAT_MSG_STREAM:
       return { ...state, activeChatStream: { gameId: action.gameId, tableId: action.tableId }}
-    case GLOBAL_CHAT_MSG_RECEIVED:
-      const globalMessages = Array.isArray(action.chatMessage)
+    case LOBBY_CHAT_MSG_RECEIVED:
+      const lobbyMessages = Array.isArray(action.chatMessage)
           ? List(action.chatMessage)
-          : state.chatMessages.globalMessages.push(action.chatMessage)
-      return { ...state, chatMessages: { ...state.chatMessages, globalMessages }}
+          : state.chatMessages.lobbyMessages.push(action.chatMessage)
+      return { ...state, chatMessages: { ...state.chatMessages, lobbyMessages }}
     case GAME_CHAT_MSG_RECEIVED:
       console.log(action);
       const singleGameMessages = Array.isArray(action.chatMessage)

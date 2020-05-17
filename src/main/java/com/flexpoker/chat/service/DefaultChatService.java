@@ -22,12 +22,12 @@ public class DefaultChatService implements ChatService {
     }
 
     @Override
-    public void saveAndPushSystemGlobalChatMessage(String message) {
+    public void saveAndPushSystemLobbyChatMessage(String message) {
         saveAndPush(null, null, message, null, true);
     }
 
     @Override
-    public void saveAndPushUserGlobalChatMessage(String message, String username) {
+    public void saveAndPushUserLobbyChatMessage(String message, String username) {
         saveAndPush(null, null, message, username, false);
     }
 
