@@ -12,8 +12,8 @@ import org.springframework.messaging.simp.annotation.SubscribeMapping;
 import org.springframework.stereotype.Controller;
 
 import com.flexpoker.chat.repository.ChatRepository;
+import com.flexpoker.chat.service.ChatService;
 import com.flexpoker.framework.pushnotifier.PushNotificationPublisher;
-import com.flexpoker.pushnotifications.ChatSentPushNotification;
 import com.flexpoker.web.dto.outgoing.ChatMessageDTO;
 
 @Controller
@@ -23,20 +23,32 @@ public class ChatController {
 
     private final ChatRepository chatRepository;
 
+    private final ChatService chatService;
+
     @Inject
     public ChatController(
             PushNotificationPublisher pushNotificationPublisher,
-            ChatRepository chatRepository) {
+            ChatRepository chatRepository,
+            ChatService chatService) {
         this.pushNotificationPublisher = pushNotificationPublisher;
         this.chatRepository = chatRepository;
+        this.chatService = chatService;
     }
 
     @MessageMapping("/app/sendchatmessage")
     public void sendChatMessage(com.flexpoker.web.dto.incoming.ChatMessageDTO chatMessage, Principal principal) {
-        chatRepository.saveChatMessage(new ChatMessageDTO(chatMessage.getGameId(),
-                chatMessage.getTableId(), chatMessage.getMessage(), principal.getName(), false));
-        pushNotificationPublisher.publish(new ChatSentPushNotification(chatMessage.getGameId(),
-                chatMessage.getTableId(), chatMessage.getMessage(), principal.getName(), false));
+        var gameId = chatMessage.getGameId();
+        var tableId = chatMessage.getTableId();
+        var message = chatMessage.getMessage();
+        var username = principal.getName();
+
+        if (gameId != null && tableId != null) {
+            chatService.saveAndPushUserTableChatMessage(gameId, tableId, message, username);
+        } else if (gameId != null) {
+            chatService.saveAndPushUserGameChatMessage(gameId, message, username);
+        } else {
+            chatService.saveAndPushUserGlobalChatMessage(message, username);
+        }
     }
 
     @SubscribeMapping("/topic/chat/global")

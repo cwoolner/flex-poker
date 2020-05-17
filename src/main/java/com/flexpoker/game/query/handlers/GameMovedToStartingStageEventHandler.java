@@ -8,7 +8,7 @@ import javax.inject.Inject;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
-import com.flexpoker.chat.repository.ChatRepository;
+import com.flexpoker.chat.service.ChatService;
 import com.flexpoker.framework.event.EventHandler;
 import com.flexpoker.framework.pushnotifier.PushNotificationPublisher;
 import com.flexpoker.game.command.events.GameMovedToStartingStageEvent;
@@ -16,10 +16,8 @@ import com.flexpoker.game.query.dto.GameStage;
 import com.flexpoker.game.query.repository.GameListRepository;
 import com.flexpoker.game.query.repository.GamePlayerRepository;
 import com.flexpoker.game.query.repository.OpenGameForPlayerRepository;
-import com.flexpoker.pushnotifications.ChatSentPushNotification;
 import com.flexpoker.pushnotifications.GameListUpdatedPushNotification;
 import com.flexpoker.pushnotifications.OpenGamesForPlayerUpdatedPushNotification;
-import com.flexpoker.web.dto.outgoing.ChatMessageDTO;
 
 @Component
 public class GameMovedToStartingStageEventHandler implements
@@ -33,7 +31,7 @@ public class GameMovedToStartingStageEventHandler implements
 
     private final PushNotificationPublisher pushNotificationPublisher;
 
-    private final ChatRepository chatRepository;
+    private final ChatService chatService;
 
     @Inject
     public GameMovedToStartingStageEventHandler(
@@ -41,12 +39,12 @@ public class GameMovedToStartingStageEventHandler implements
             GamePlayerRepository gamePlayerRepository,
             OpenGameForPlayerRepository openGameForUserRepository,
             PushNotificationPublisher pushNotificationPublisher,
-            ChatRepository chatRepository) {
+            ChatService chatService) {
         this.gameListRepository = gameListRepository;
         this.gamePlayerRepository = gamePlayerRepository;
         this.openGameForUserRepository = openGameForUserRepository;
         this.pushNotificationPublisher = pushNotificationPublisher;
-        this.chatRepository = chatRepository;
+        this.chatService = chatService;
     }
 
     @Async
@@ -77,10 +75,7 @@ public class GameMovedToStartingStageEventHandler implements
 
     private void handleChat(GameMovedToStartingStageEvent event) {
         var message = "Game will be starting shortly";
-        chatRepository.saveChatMessage(
-                new ChatMessageDTO(event.getAggregateId(), null, message, null, true));
-        pushNotificationPublisher.publish(
-                new ChatSentPushNotification(event.getAggregateId(), null, message, null, true));
+        chatService.saveAndPushSystemGameChatMessage(event.getAggregateId(), message);
     }
 
 }
