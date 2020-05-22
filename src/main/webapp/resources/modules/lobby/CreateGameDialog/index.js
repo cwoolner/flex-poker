@@ -1,6 +1,6 @@
-import React from 'react';
-import WebSocketService from '../../webSocket/WebSocketService';
-import { connect } from 'react-redux';
+import React from 'react'
+import WebSocketService from '../../webSocket/WebSocketService'
+import { connect } from 'react-redux'
 import { hideCreateGameModal } from '../../../reducers'
 import CreateGameDialog from './CreateGameDialog'
 

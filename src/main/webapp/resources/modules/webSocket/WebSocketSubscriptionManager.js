@@ -15,7 +15,7 @@ const WebSocketSubscriptionManager = () => {
       subscription: WebSocketService.registerSubscription(x.location, x.subscription)
     }))
     componentToSubscriptionsMap.set(component, existingSubscriptions.concat(registeredSubs))
-  };
+  }
 
   const unsubscribe = (component) => {
     componentToSubscriptionsMap.get(component).forEach(subscription =>

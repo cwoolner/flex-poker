@@ -1,13 +1,13 @@
-import WebSocketService from '../webSocket/WebSocketService';
+import WebSocketService from '../webSocket/WebSocketService'
 
 export default () => {
-  WebSocketService.disconnect();
+  WebSocketService.disconnect()
 
-  const header = document.querySelector("meta[name='_csrf_header']").content;
-  const token = document.querySelector("meta[name='_csrf']").content;
+  const header = document.querySelector("meta[name='_csrf_header']").content
+  const token = document.querySelector("meta[name='_csrf']").content
 
-  const myHeaders = new Headers();
-  myHeaders.append(header, token);
+  const myHeaders = new Headers()
+  myHeaders.append(header, token)
 
   const myInit = {
     method: 'POST',
@@ -15,7 +15,7 @@ export default () => {
     cache: 'no-cache',
     redirect: 'manual',
     credentials: 'same-origin'
-  };
+  }
 
-  fetch('/logout', myInit).then(response => location.href = response.url);
+  fetch('/logout', myInit).then(response => location.href = response.url)
 }

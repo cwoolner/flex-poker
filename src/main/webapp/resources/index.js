@@ -8,7 +8,7 @@ import staticSubscriptions from './modules/home/staticSubscriptions'
 import chatMessageSubscriber from './modules/home/Chat/chatMessageSubscriber'
 import tableStateSubscriber from './modules/table/tableStateSubscriber'
 
-const store = createStore(reducer);
+const store = createStore(reducer)
 
 staticSubscriptions(store.dispatch)
 store.subscribe(chatMessageSubscriber(store.dispatch)(store))

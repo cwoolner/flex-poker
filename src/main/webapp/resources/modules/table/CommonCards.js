@@ -1,5 +1,5 @@
-import React from 'react';
-import CardData from './CardData';
+import React from 'react'
+import CardData from './CardData'
 
 export default ({visibleCommonCards}) => {
   return (

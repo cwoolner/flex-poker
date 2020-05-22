@@ -21,5 +21,5 @@ export default ({username}) => {
         </Navbar.Collapse>
       </Container>
     </Navbar>
-  );
+  )
 }

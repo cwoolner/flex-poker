@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react'
 import { useSelector } from 'react-redux'
 import _ from 'lodash'
 import { HashRouter } from 'react-router-dom'

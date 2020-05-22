@@ -1,7 +1,7 @@
-import React, { useEffect } from 'react';
-import CreateGameDialog from './CreateGameDialog';
-import JoinGameDialog from './JoinGameDialog';
-import GameList from './GameList';
+import React, { useEffect } from 'react'
+import CreateGameDialog from './CreateGameDialog'
+import JoinGameDialog from './JoinGameDialog'
+import GameList from './GameList'
 import { connect } from 'react-redux'
 import { changeChatMsgStream } from '../../reducers'
 

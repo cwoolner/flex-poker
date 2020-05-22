@@ -18,7 +18,7 @@ const fold = (gameId, tableId, setCurrentRaiseTo) => {
 }
 
 const validRaise = (minRaiseTo, maxRaiseTo, currentRaiseTo) => {
-  return _.inRange(currentRaiseTo, minRaiseTo, maxRaiseTo + 1);
+  return _.inRange(currentRaiseTo, minRaiseTo, maxRaiseTo + 1)
 }
 
 const raise = (gameId, tableId, minRaiseTo, maxRaiseTo, currentRaiseTo, setCurrentRaiseTo) => {

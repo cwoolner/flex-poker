@@ -20,8 +20,8 @@ const TablePage = ({ match: { params: { gameId, tableId }}, changeChatMsgStream,
     changeTable(gameId, tableId)
   }, [gameId, tableId])
 
-  const username = window.username;
-  const mySeat = seats.find(seat => seat.name === username);
+  const username = window.username
+  const mySeat = seats.find(seat => seat.name === username)
 
   return (
     <>
