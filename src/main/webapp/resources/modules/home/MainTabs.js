@@ -1,5 +1,5 @@
 import React from 'react';
-import { connect } from 'react-redux'
+import { useSelector } from 'react-redux'
 import _ from 'lodash'
 import { HashRouter } from 'react-router-dom'
 import { Redirect, Route, Switch } from 'react-router'
@@ -10,7 +10,9 @@ import TablePage from '../table/TablePage'
 import Logout from './Logout'
 import Chat from './Chat'
 
-const MainTabs = ({ redirectUrl }) => {
+export default () => {
+  const redirectUrl = useSelector(state => state.redirectUrl)
+
   return (
     <HashRouter>
       <div>
@@ -27,7 +29,3 @@ const MainTabs = ({ redirectUrl }) => {
     </HashRouter>
   )
 }
-
-const mapStateToProps = state => ({ redirectUrl: state.redirectUrl })
-
-export default connect(mapStateToProps)(MainTabs)

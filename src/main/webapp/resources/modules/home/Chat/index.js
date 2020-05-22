@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react'
 import Form from 'react-bootstrap/Form'
 import WebSocketService from '../../webSocket/WebSocketService'
-import { connect } from 'react-redux'
+import { useSelector } from 'react-redux'
 import ChatLine from './ChatLine'
 import { getChats } from './selectors'
 
@@ -26,9 +26,12 @@ const chatFormSubmitted = (activeChatStream, evt) => {
   }
 }
 
-const Chat = ({ activeChatStream, chats }) => {
+export default () => {
 
   const displayArea = useRef(null)
+
+  const activeChatStream = useSelector(state => state.activeChatStream)
+  const chats = useSelector(state => getChats(state))
 
   useEffect(() => {
     const displayAreaMutationObserver = new MutationObserver(
@@ -54,10 +57,3 @@ const Chat = ({ activeChatStream, chats }) => {
     </div>
   )
 }
-
-const mapStateToProps = (state) => ({
-   activeChatStream: state.activeChatStream,
-   chats: getChats(state)
- })
-
-export default connect(mapStateToProps)(Chat)
