@@ -1,6 +1,6 @@
 import React from 'react'
 import WebSocketService from '../../webSocket/WebSocketService'
-import { connect } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import { hideCreateGameModal } from '../../../reducers'
 import CreateGameDialog from './CreateGameDialog'
 
@@ -18,8 +18,11 @@ const createGameFormSubmitted = (hideDialogCallback, evt) => {
     hideDialogCallback()
 }
 
-const CreateGameDialogContainer = ({showModal, dispatch}) => {
+export default () => {
+  const dispatch = useDispatch()
   const dispatchHideCreateGameModal = () => dispatch(hideCreateGameModal())
+
+  const showModal = useSelector(state => state.showCreateGameModal)
 
   return (
     <CreateGameDialog showModal={showModal}
@@ -27,7 +30,3 @@ const CreateGameDialogContainer = ({showModal, dispatch}) => {
                       submitFormCallback={createGameFormSubmitted.bind(null, dispatchHideCreateGameModal)} />
   )
 }
-
-const mapStateToProps = state => ({showModal: state.showCreateGameModal})
-
-export default connect(mapStateToProps)(CreateGameDialogContainer)

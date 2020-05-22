@@ -2,13 +2,14 @@ import React, { useEffect } from 'react'
 import CreateGameDialog from './CreateGameDialog'
 import JoinGameDialog from './JoinGameDialog'
 import GameList from './GameList'
-import { connect } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import { changeChatMsgStream } from '../../reducers'
 
-const Lobby = ({ changeChatMsgStream }) => {
+export default () => {
+  const dispatch = useDispatch()
 
   useEffect(() => {
-    changeChatMsgStream()
+    dispatch(changeChatMsgStream(null, null))
   })
 
   return (
@@ -19,9 +20,3 @@ const Lobby = ({ changeChatMsgStream }) => {
     </>
   )
 }
-
-const mapDispatchToProps = (dispatch) => ({
-  changeChatMsgStream: () => dispatch(changeChatMsgStream(null, null))
-})
-
-export default connect(null, mapDispatchToProps)(Lobby)

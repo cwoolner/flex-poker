@@ -1,6 +1,6 @@
 import React from 'react'
 import JoinGameDialog from './JoinGameDialog'
-import { connect } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { hideJoinGameModal, redirectToGame } from '../../../reducers'
 import WebSocketService from '../../webSocket/WebSocketService'
 
@@ -11,20 +11,18 @@ const joinGameFormSubmitted = (hideDialogCallback, redirectToGame, gameId, evt) 
   redirectToGame(gameId)
 }
 
-const JoinGameDialogContainer = ({gameId, showModal, hideJoinGameModal, redirectToGame}) => {
+export default () => {
+  const gameId = useSelector(state => state.joinGameId)
+  const showModal = useSelector(state => state.showJoinGameModal)
+
+  const dispatch = useDispatch()
+  const dispatchHideJoinGameModal = () => dispatch(hideJoinGameModal())
+  const dispatchRedirectToGame = gameId => dispatch(redirectToGame(gameId))
+
   return (
     <JoinGameDialog gameId={gameId}
                     showModal={showModal}
-                    hideDialogCallback={hideJoinGameModal}
-                    submitFormCallback={joinGameFormSubmitted.bind(null, hideJoinGameModal, redirectToGame, gameId)} />
+                    hideDialogCallback={dispatchHideJoinGameModal}
+                    submitFormCallback={joinGameFormSubmitted.bind(null, dispatchHideJoinGameModal, dispatchRedirectToGame, gameId)} />
   )
 }
-
-const mapStateToProps = state => ({gameId: state.joinGameId, showModal: state.showJoinGameModal})
-
-const mapDispatchToProps = dispatch => ({
-  hideJoinGameModal: () => dispatch(hideJoinGameModal()),
-  redirectToGame: gameId => dispatch(redirectToGame(gameId))
-})
-
-export default connect(mapStateToProps, mapDispatchToProps)(JoinGameDialogContainer)
