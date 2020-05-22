@@ -78,7 +78,6 @@ export default (state = {
           : state.chatMessages.lobbyMessages.push(action.chatMessage)
       return { ...state, chatMessages: { ...state.chatMessages, lobbyMessages }}
     case GAME_CHAT_MSG_RECEIVED:
-      console.log(action);
       const singleGameMessages = Array.isArray(action.chatMessage)
           ? List(action.chatMessage)
           : state.chatMessages.gameMessages.get(action.gameId, List()).push(action.chatMessage)
