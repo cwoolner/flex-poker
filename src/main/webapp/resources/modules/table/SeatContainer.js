@@ -1,9 +1,11 @@
 import React from 'react'
-import { connect } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { Map } from 'immutable'
 import Seat from './Seat'
 
-const SeatContainer = ({ seats, mySeat, actionOnTick }) => {
+export default ({ seats, mySeat }) => {
+  const actionOnTick = useSelector(state => state.actionOnTicks.get(state.activeTable.gameId, Map()).get(state.activeTable.tableId))
+
   return (
     <div className={"seat-holder"}>
     {
@@ -12,7 +14,3 @@ const SeatContainer = ({ seats, mySeat, actionOnTick }) => {
     </div>
   )
 }
-
-const mapStateToProps = state => ({ actionOnTick: state.actionOnTicks.get(state.activeTable.gameId, Map()).get(state.activeTable.tableId) })
-
-export default connect(mapStateToProps)(SeatContainer)

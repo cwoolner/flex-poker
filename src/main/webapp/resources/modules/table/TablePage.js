@@ -6,18 +6,31 @@ import Seat from './Seat'
 import PokerActions from './PokerActions'
 import SeatContainer from './SeatContainer'
 import _ from 'lodash'
-import { connect } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { changeChatMsgStream, changeTable } from '../../reducers'
 
-const TablePage = ({ match: { params: { gameId, tableId }}, changeChatMsgStream,
-  changeTable, seats, totalPot, visibleCommonCards, pots, cardId1, cardId2 }) => {
+export default ({ match: { params: { gameId, tableId }} }) => {
+
+  const { totalPot, visibleCommonCards, seats, tableVersion, pots, cardId1, cardId2 } = useSelector(state => {
+    const tableData = state.tables.get(state.activeTable.gameId, Map()).get(state.activeTable.tableId)
+      || { totalPot: 0, visibleCommonCards: [], seats: [], tableVersion: 0, pots: [] }
+    const pocketCardData = state.pocketCards.get(tableData.currentHandId)
+      || { cardId1: null, cardId2: null }
+
+    return {
+      ...tableData,
+      ...pocketCardData
+    }
+  })
+
+  const dispatch = useDispatch()
 
   useEffect(() => {
-    changeChatMsgStream(gameId, tableId)
+    dispatch(changeChatMsgStream(gameId, tableId))
   }, [gameId, tableId])
 
   useEffect(() => {
-    changeTable(gameId, tableId)
+    dispatch(changeTable(gameId, tableId))
   }, [gameId, tableId])
 
   const username = window.username
@@ -57,31 +70,3 @@ const TablePage = ({ match: { params: { gameId, tableId }}, changeChatMsgStream,
     </>
   )
 }
-
-const mapStateToProps = (state) => {
-  const tableData = state.tables.get(state.activeTable.gameId, Map()).get(state.activeTable.tableId)
-  if (tableData) {
-    const pocketCardData = state.pocketCards.get(tableData.currentHandId)
-    return {
-      ...tableData,
-      ...pocketCardData
-    }
-  } else {
-    return {
-      totalPot: 0,
-      visibleCommonCards: [],
-      seats: [],
-      tableVersion: 0,
-      pots: [],
-      cardId1: null,
-      cardId2: null
-    }
-  }
-}
-
-const mapDispatchToProps = (dispatch) => ({
-  changeChatMsgStream: (gameId, tableId) => dispatch(changeChatMsgStream(gameId, tableId)),
-  changeTable: (gameId, tableId) => dispatch(changeTable(gameId, tableId))
-})
-
-export default connect(mapStateToProps, mapDispatchToProps)(TablePage)
