@@ -8,7 +8,7 @@ export default ({username}) => {
   return (
     <Navbar bg="light">
       <Container>
-        <Navbar.Brand href="#/">Flex Poker</Navbar.Brand>
+        <Navbar.Brand href="/">Flex Poker</Navbar.Brand>
         <Navbar.Collapse className="justify-content-end">
           <Nav>
             <NavDropdown title={username} id="collasible-nav-dropdown">

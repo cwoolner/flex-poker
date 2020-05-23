@@ -1,7 +1,7 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
 import _ from 'lodash'
-import { HashRouter } from 'react-router-dom'
+import { BrowserRouter } from 'react-router-dom'
 import { Redirect, Route, Switch } from 'react-router'
 import GameTabs from './GameTabs'
 import Lobby from '../lobby/Lobby'
@@ -14,7 +14,7 @@ export default () => {
   const redirectUrl = useSelector(state => state.redirectUrl)
 
   return (
-    <HashRouter>
+    <BrowserRouter>
       <div>
         <GameTabs />
         <Switch>
@@ -26,6 +26,6 @@ export default () => {
         {_.isNil(redirectUrl) ? null : <Redirect to={redirectUrl} />}
         <Chat />
       </div>
-    </HashRouter>
+    </BrowserRouter>
   )
 }
