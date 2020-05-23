@@ -8,8 +8,11 @@ import SeatContainer from './SeatContainer'
 import _ from 'lodash'
 import { useDispatch, useSelector } from 'react-redux'
 import { changeChatMsgStream, changeTable } from '../../reducers'
+import { useParams } from 'react-router-dom'
 
-export default ({ match: { params: { gameId, tableId }} }) => {
+export default () => {
+
+  const { gameId, tableId } = useParams()
 
   const { totalPot, visibleCommonCards, seats, tableVersion, pots, cardId1, cardId2 } = useSelector(state => {
     const tableData = state.tables.get(state.activeTable.gameId, Map()).get(state.activeTable.tableId)
