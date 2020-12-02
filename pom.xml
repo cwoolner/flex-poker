@@ -15,11 +15,11 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>11</maven.compiler.source>
     <maven.compiler.target>11</maven.compiler.target>
-    <maven.war.plugin.version>3.2.3</maven.war.plugin.version>
+    <maven.war.plugin.version>3.3.1</maven.war.plugin.version>
     <maven.surefire.plugin.version>2.22.2</maven.surefire.plugin.version>
-    <pitest.maven.version>1.4.11</pitest.maven.version>
-    <pitest.junit5.plugin>0.11</pitest.junit5.plugin>
-    <spring.boot.dependencies.bom.version>2.2.6.RELEASE</spring.boot.dependencies.bom.version>
+    <pitest.maven.version>1.5.2</pitest.maven.version>
+    <pitest.junit5.plugin>0.12</pitest.junit5.plugin>
+    <spring.boot.dependencies.bom.version>2.4.0</spring.boot.dependencies.bom.version>
   </properties>
 
   <build>
