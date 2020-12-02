@@ -9,5 +9,6 @@ output/
 node_modules/
 src/main/webapp/resources/app.bundle.js
 src/main/webapp/resources/vendor.bundle.js
+src/main/webapp/resources/vendor.bundle.js.LICENSE.txt
 bin/
 flexpoker.iml
