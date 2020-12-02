@@ -20,11 +20,75 @@
     <pitest.maven.version>1.5.2</pitest.maven.version>
     <pitest.junit5.plugin>0.12</pitest.junit5.plugin>
     <spring.boot.dependencies.bom.version>2.4.0</spring.boot.dependencies.bom.version>
+    <kotlin.version>1.4.20</kotlin.version>
+    <kotlin.compiler.incremental>true</kotlin.compiler.incremental>
   </properties>
 
   <build>
     <finalName>flexpoker</finalName>
     <plugins>
+      <plugin>
+        <groupId>org.jetbrains.kotlin</groupId>
+        <artifactId>kotlin-maven-plugin</artifactId>
+        <version>${kotlin.version}</version>
+        <executions>
+          <execution>
+            <id>compile</id>
+            <phase>compile</phase>
+            <goals><goal>compile</goal></goals>
+            <configuration>
+              <sourceDirs>
+                <source>src/main/kotlin</source>
+                <source>src/main/java</source>
+              </sourceDirs>
+            </configuration>
+          </execution>
+          <execution>
+            <id>test-compile</id>
+            <phase>test-compile</phase>
+            <goals>
+              <goal>test-compile</goal>
+            </goals>
+            <configuration>
+              <sourceDirs>
+                <source>src/test/kotlin</source>
+              </sourceDirs>
+            </configuration>
+          </execution>
+        </executions>
+        <configuration>
+          <jvmTarget>${maven.compiler.target}</jvmTarget>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.8.1</version>
+        <executions>
+          <execution>
+            <id>default-compile</id>
+            <phase>none</phase>
+          </execution>
+           <execution>
+            <id>default-testCompile</id>
+            <phase>none</phase>
+          </execution>
+          <execution>
+            <id>java-compile</id>
+            <phase>compile</phase>
+            <goals>
+              <goal>compile</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>java-test-compile</id>
+            <phase>test-compile</phase>
+            <goals>
+              <goal>testCompile</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-war-plugin</artifactId>
@@ -76,6 +140,13 @@
 
   <dependencyManagement>
     <dependencies>
+      <dependency>
+        <groupId>org.jetbrains.kotlin</groupId>
+        <artifactId>kotlin-bom</artifactId>
+        <version>${kotlin.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
       <dependency>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-dependencies</artifactId>
@@ -140,6 +211,10 @@
     <dependency>
       <groupId>redis.clients</groupId>
       <artifactId>jedis</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jetbrains.kotlin</groupId>
+      <artifactId>kotlin-stdlib-jdk8</artifactId>
     </dependency>
     <dependency>
       <groupId>org.junit.jupiter</groupId>
