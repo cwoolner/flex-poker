@@ -10,3 +10,4 @@ node_modules/
 src/main/webapp/resources/app.bundle.js
 src/main/webapp/resources/vendor.bundle.js
 bin/
+flexpoker.iml
