@@ -25,7 +25,7 @@ public class StartNewHandForExistingTableProcessManager implements ProcessManage
     @Override
     public void handle(NewHandIsClearedToStartEvent event) {
         var command = new StartNewHandForExistingTableCommand(event.getTableId(), event.getAggregateId(),
-                event.getBlinds().getSmallBlind(), event.getBlinds().getBigBlind());
+                event.getBlindAmountsDTO().getSmallBlind(), event.getBlindAmountsDTO().getBigBlind());
         tableCommandSender.send(command);
     }
 

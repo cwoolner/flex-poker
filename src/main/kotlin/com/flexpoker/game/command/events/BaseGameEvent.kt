@@ -2,7 +2,7 @@ package com.flexpoker.game.command.events
 
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.flexpoker.exception.FlexPokerException
-import com.flexpoker.framework.event.Event
+import com.flexpoker.game.command.framework.GameEvent
 import com.flexpoker.util.StringUtils
 import java.time.Instant
 import java.util.UUID
@@ -11,7 +11,7 @@ import java.util.UUID
  * Base class used to handle some standard methods and fields so that the
  * subclasses can just be specific to what they need.
  */
-abstract class BaseGameEvent(private val aggregateId: UUID) : Event {
+abstract class BaseGameEvent(private val aggregateId: UUID) : GameEvent {
     private var version = 0
     private val time: Instant
     @JsonProperty("gameId")
