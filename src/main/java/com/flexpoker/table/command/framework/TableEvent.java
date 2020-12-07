@@ -1,7 +1,5 @@
 package com.flexpoker.table.command.framework;
 
-import java.util.UUID;
-
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.flexpoker.framework.event.Event;
@@ -61,7 +59,5 @@ import com.flexpoker.table.command.events.WinnersDeterminedEvent;
         @JsonSubTypes.Type(value = TurnCardDealtEvent.class, name = "TurnCardDealt"),
         @JsonSubTypes.Type(value = WinnersDeterminedEvent.class, name = "WinnersDetermined") })
 public interface TableEvent extends Event {
-
-    UUID getGameId();
 
 }
