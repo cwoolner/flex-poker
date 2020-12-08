@@ -15,8 +15,8 @@ import com.flexpoker.table.command.commands.RemovePlayerCommand;
 import com.flexpoker.table.command.commands.ResumeCommand;
 import com.flexpoker.table.command.commands.StartNewHandForExistingTableCommand;
 import com.flexpoker.table.command.commands.StartNewHandForNewGameCommand;
+import com.flexpoker.table.command.commands.TableCommand;
 import com.flexpoker.table.command.commands.TickActionOnTimerCommand;
-import com.flexpoker.table.command.framework.TableCommand;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
@@ -88,56 +88,56 @@ public class InMemoryAsyncTableCommandReceiver implements CommandReceiver<TableC
     @Async
     @Override
     public void receive(TableCommand command) {
-        switch (command.getType()) {
-        case CreateTable:
+        switch (command.getClass().getSimpleName()) {
+        case "CreateTableCommand":
             createTableCommandHandler.handle((CreateTableCommand) command);
             break;
-        case StartNewHandForNewGame:
+        case "StartNewHandForNewGameCommand":
             startNewHandForNewGameCommandHandler
                     .handle((StartNewHandForNewGameCommand) command);
             break;
-        case StartNewHandForExistingTable:
+        case "StartNewHandForExistingTableCommand":
             startNewHandForExistingTableCommandHandler
                     .handle((StartNewHandForExistingTableCommand) command);
             break;
-        case Call:
+        case "CallCommand":
             callCommandHandler.handle((CallCommand) command);
             break;
-        case Check:
+        case "CheckCommand":
             checkCommandHandler.handle((CheckCommand) command);
             break;
-        case Fold:
+        case "FoldCommand":
             foldCommandHandler.handle((FoldCommand) command);
             break;
-        case Raise:
+        case "RaiseCommand":
             raiseCommandHandler.handle((RaiseCommand) command);
             break;
-        case ExpireActionOnTimer:
+        case "ExpireActionOnTimerCommand":
             expireActionOnTimerCommandHandler
                     .handle((ExpireActionOnTimerCommand) command);
             break;
-        case TickActionOnTimer:
+        case "TickActionOnTimerCommand":
             tickActionOnTimerCommandHandler
                     .handle((TickActionOnTimerCommand) command);
             break;
-        case AddPlayer:
+        case "AddPlayerCommand":
             addPlayerCommandHandler.handle((AddPlayerCommand) command);
             break;
-        case Pause:
+        case "PauseCommand":
             pauseCommandHandler.handle((PauseCommand) command);
             break;
-        case RemovePlayer:
+        case "RemovePlayerCommand":
             removePlayerCommandHandler.handle((RemovePlayerCommand) command);
             break;
-        case Resume:
+        case "ResumeCommand":
             resumeCommandHandler.handle((ResumeCommand) command);
             break;
-        case AutoMoveHandForward:
+        case "AutoMoveHandForwardCommand":
             autoMoveHandForwardCommandHandler.handle((AutoMoveHandForwardCommand) command);
             break;
         default:
             throw new IllegalArgumentException(
-                    "Command Type cannot be handled: " + command.getType());
+                    "Command Type cannot be handled: " + command.getClass().getSimpleName());
         }
     }
 

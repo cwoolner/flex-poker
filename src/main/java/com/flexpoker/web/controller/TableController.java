@@ -6,7 +6,7 @@ import com.flexpoker.table.command.commands.CallCommand;
 import com.flexpoker.table.command.commands.CheckCommand;
 import com.flexpoker.table.command.commands.FoldCommand;
 import com.flexpoker.table.command.commands.RaiseCommand;
-import com.flexpoker.table.command.framework.TableCommand;
+import com.flexpoker.table.command.commands.TableCommand;
 import com.flexpoker.table.query.repository.CardsUsedInHandRepository;
 import com.flexpoker.table.query.repository.TableRepository;
 import com.flexpoker.web.dto.incoming.CallTableActionDTO;

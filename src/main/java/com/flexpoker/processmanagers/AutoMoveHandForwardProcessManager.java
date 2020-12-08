@@ -3,8 +3,8 @@ package com.flexpoker.processmanagers;
 import com.flexpoker.framework.command.CommandSender;
 import com.flexpoker.framework.processmanager.ProcessManager;
 import com.flexpoker.table.command.commands.AutoMoveHandForwardCommand;
+import com.flexpoker.table.command.commands.TableCommand;
 import com.flexpoker.table.command.events.AutoMoveHandForwardEvent;
-import com.flexpoker.table.command.framework.TableCommand;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 

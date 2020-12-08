@@ -4,7 +4,7 @@ import com.flexpoker.framework.command.CommandSender;
 import com.flexpoker.framework.processmanager.ProcessManager;
 import com.flexpoker.game.command.events.GameStartedEvent;
 import com.flexpoker.table.command.commands.StartNewHandForNewGameCommand;
-import com.flexpoker.table.command.framework.TableCommand;
+import com.flexpoker.table.command.commands.TableCommand;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 

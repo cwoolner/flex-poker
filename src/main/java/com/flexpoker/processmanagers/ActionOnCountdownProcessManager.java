@@ -4,9 +4,9 @@ import com.flexpoker.framework.command.CommandSender;
 import com.flexpoker.framework.processmanager.ProcessManager;
 import com.flexpoker.game.command.repository.GameEventRepository;
 import com.flexpoker.table.command.commands.ExpireActionOnTimerCommand;
+import com.flexpoker.table.command.commands.TableCommand;
 import com.flexpoker.table.command.commands.TickActionOnTimerCommand;
 import com.flexpoker.table.command.events.ActionOnChangedEvent;
-import com.flexpoker.table.command.framework.TableCommand;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
