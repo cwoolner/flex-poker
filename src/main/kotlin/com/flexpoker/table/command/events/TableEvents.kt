@@ -8,6 +8,8 @@ import com.flexpoker.table.command.aggregate.HandDealerState
 import com.flexpoker.table.command.aggregate.HandEvaluation
 import com.flexpoker.table.command.framework.TableEvent
 import com.flexpoker.util.StringUtils
+import org.pcollections.PMap
+import org.pcollections.PSet
 import java.time.Instant
 import java.util.UUID
 
@@ -55,7 +57,7 @@ data class CardsShuffledEvent (val tableId: UUID, val gameId: UUID, val shuffled
 data class FlopCardsDealtEvent (val tableId: UUID, val gameId: UUID, val handId: UUID) : BaseTableEvent(tableId)
 
 data class HandCompletedEvent(val tableId: UUID, val gameId: UUID, val handId: UUID,
-                              val playerToChipsAtTableMap: Map<UUID, Int>) : BaseTableEvent(tableId)
+                              val playerToChipsAtTableMap: PMap<UUID, Int>) : BaseTableEvent(tableId)
 
 data class HandDealtEvent (
     val tableId: UUID,
@@ -68,16 +70,16 @@ data class HandDealtEvent (
     val smallBlindPosition: Int,
     val bigBlindPosition: Int,
     val lastToActPlayerId: UUID,
-    val seatMap: Map<Int, UUID>,
-    val playerToPocketCardsMap: Map<UUID, PocketCards>,
-    val possibleSeatActionsMap: Map<UUID, Set<PlayerAction>>,
-    val playersStillInHand: Set<UUID>,
+    val seatMap: PMap<Int, UUID>,
+    val playerToPocketCardsMap: PMap<UUID, PocketCards>,
+    val possibleSeatActionsMap: PMap<UUID, Set<PlayerAction>>,
+    val playersStillInHand: PSet<UUID>,
     val handEvaluations: List<HandEvaluation>,
     val handDealerState: HandDealerState,
-    val chipsInBack: Map<UUID, Int>,
-    val chipsInFrontMap: Map<UUID, Int>,
-    val callAmountsMap: Map<UUID, Int>,
-    val raiseToAmountsMap: Map<UUID, Int>,
+    val chipsInBack: PMap<UUID, Int>,
+    val chipsInFrontMap: PMap<UUID, Int>,
+    val callAmountsMap: PMap<UUID, Int>,
+    val raiseToAmountsMap: PMap<UUID, Int>,
     val smallBlind: Int,
     val bigBlind: Int) : BaseTableEvent(tableId)
 
@@ -125,7 +127,7 @@ data class RoundCompletedEvent (val tableId: UUID, val gameId: UUID, val handId:
                                 val nextHandDealerState: HandDealerState) : BaseTableEvent(tableId)
 
 data class TableCreatedEvent (val tableId: UUID, val gameId: UUID, val numberOfPlayersPerTable: Int,
-                              val seatPositionToPlayerMap: Map<Int, UUID>,
+                              val seatPositionToPlayerMap: PMap<Int, UUID>,
                               val startingNumberOfChips: Int) : BaseTableEvent(tableId)
 
 data class TablePausedEvent (val tableId: UUID, val gameId: UUID) : BaseTableEvent(tableId)
@@ -136,4 +138,4 @@ data class TurnCardDealtEvent (val tableId: UUID, val gameId: UUID, val handId: 
 
 data class WinnersDeterminedEvent (val tableId: UUID, val gameId: UUID, val handId: UUID,
                                    val playersToShowCards: Set<UUID>,
-                                   val playersToChipsWonMap: Map<UUID, Int>) : BaseTableEvent(tableId)
+                                   val playersToChipsWonMap: PMap<UUID, Int>) : BaseTableEvent(tableId)

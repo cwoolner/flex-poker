@@ -22,6 +22,7 @@
     <spring.boot.dependencies.bom.version>2.4.0</spring.boot.dependencies.bom.version>
     <kotlin.version>1.4.20</kotlin.version>
     <kotlin.compiler.incremental>true</kotlin.compiler.incremental>
+    <pcollections.version>3.1.4</pcollections.version>
   </properties>
 
   <build>
@@ -219,6 +220,15 @@
     <dependency>
       <groupId>com.fasterxml.jackson.module</groupId>
       <artifactId>jackson-module-kotlin</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.pcollections</groupId>
+      <artifactId>pcollections</artifactId>
+      <version>${pcollections.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.datatype</groupId>
+      <artifactId>jackson-datatype-pcollections</artifactId>
     </dependency>
     <dependency>
       <groupId>org.junit.jupiter</groupId>

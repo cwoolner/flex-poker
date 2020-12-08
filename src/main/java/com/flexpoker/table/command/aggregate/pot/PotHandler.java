@@ -1,5 +1,13 @@
 package com.flexpoker.table.command.aggregate.pot;
 
+import com.flexpoker.table.command.aggregate.HandEvaluation;
+import com.flexpoker.table.command.events.PotAmountIncreasedEvent;
+import com.flexpoker.table.command.events.PotClosedEvent;
+import com.flexpoker.table.command.events.PotCreatedEvent;
+import com.flexpoker.table.command.framework.TableEvent;
+import org.pcollections.HashTreePMap;
+import org.pcollections.PMap;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -9,12 +17,6 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
-
-import com.flexpoker.table.command.aggregate.HandEvaluation;
-import com.flexpoker.table.command.events.PotAmountIncreasedEvent;
-import com.flexpoker.table.command.events.PotClosedEvent;
-import com.flexpoker.table.command.events.PotCreatedEvent;
-import com.flexpoker.table.command.framework.TableEvent;
 
 public class PotHandler {
 
@@ -78,7 +80,7 @@ public class PotHandler {
         return playersToShowCards;
     }
 
-    public Map<UUID, Integer> fetchChipsWon(Set<UUID> playersStillInHand) {
+    public PMap<UUID, Integer> fetchChipsWon(Set<UUID> playersStillInHand) {
         var playersToChipsWonMap = new HashMap<UUID, Integer>();
         pots.forEach(pot -> {
             playersStillInHand.forEach(playerInHand -> {
@@ -88,7 +90,7 @@ public class PotHandler {
                 playersToChipsWonMap.put(playerInHand, newTotalOfChipsWon);
             });
         });
-        return playersToChipsWonMap;
+        return HashTreePMap.from(playersToChipsWonMap);
     }
 
     /**

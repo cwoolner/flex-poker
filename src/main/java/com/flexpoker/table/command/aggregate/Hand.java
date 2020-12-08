@@ -1,14 +1,5 @@
 package com.flexpoker.table.command.aggregate;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
-
 import com.flexpoker.exception.FlexPokerException;
 import com.flexpoker.model.PlayerAction;
 import com.flexpoker.model.card.FlopCards;
@@ -36,6 +27,19 @@ import com.flexpoker.table.command.events.RoundCompletedEvent;
 import com.flexpoker.table.command.events.TurnCardDealtEvent;
 import com.flexpoker.table.command.events.WinnersDeterminedEvent;
 import com.flexpoker.table.command.framework.TableEvent;
+import org.pcollections.HashTreePMap;
+import org.pcollections.HashTreePSet;
+import org.pcollections.PMap;
+import org.pcollections.PSet;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
 
 public class Hand {
 
@@ -63,7 +67,7 @@ public class Hand {
 
     private final Map<UUID, PocketCards> playerToPocketCardsMap;
 
-    private final Map<UUID, Set<PlayerAction>> possibleSeatActionsMap;
+    private PMap<UUID, Set<PlayerAction>> possibleSeatActionsMap;
 
     private UUID originatingBettorPlayerId;
 
@@ -73,15 +77,15 @@ public class Hand {
 
     private final List<HandEvaluation> handEvaluationList;
 
-    private final Set<UUID> playersStillInHand;
+    private PSet<UUID> playersStillInHand;
 
-    private final Map<UUID, Integer> chipsInBackMap;
+    private PMap<UUID, Integer> chipsInBackMap;
 
-    private final Map<UUID, Integer> chipsInFrontMap;
+    private PMap<UUID, Integer> chipsInFrontMap;
 
-    private final Map<UUID, Integer> callAmountsMap;
+    private PMap<UUID, Integer> callAmountsMap;
 
-    private final Map<UUID, Integer> raiseToAmountsMap;
+    private PMap<UUID, Integer> raiseToAmountsMap;
 
     private final int smallBlind;
 
@@ -119,18 +123,17 @@ public class Hand {
         this.lastToActPlayerId = lastToActPlayerId;
         this.playerToPocketCardsMap = playerToPocketCardsMap;
         this.handEvaluationList = handEvaluationList;
-        this.possibleSeatActionsMap = possibleSeatActionsMap;
-        this.playersStillInHand = playersStillInHand;
+        this.possibleSeatActionsMap = HashTreePMap.from(possibleSeatActionsMap);
+        this.playersStillInHand = HashTreePSet.from(playersStillInHand);
         this.handDealerState = handDealerState;
-        this.chipsInBackMap = chipsInBack;
-        this.chipsInFrontMap = chipsInFrontMap;
-        this.callAmountsMap = callAmountsMap;
-        this.raiseToAmountsMap = raiseToAmountsMap;
+        this.chipsInBackMap = HashTreePMap.from(chipsInBack);
+        this.chipsInFrontMap = HashTreePMap.from(chipsInFrontMap);
+        this.callAmountsMap = HashTreePMap.from(callAmountsMap);
+        this.raiseToAmountsMap = HashTreePMap.from(raiseToAmountsMap);
         this.smallBlind = smallBlind;
         this.bigBlind = bigBlind;
         this.playersToShowCards = new HashSet<>();
-        this.potHandler = new PotHandler(gameId, tableId, entityId,
-                handEvaluationList);
+        this.potHandler = new PotHandler(gameId, tableId, entityId, handEvaluationList);
     }
 
     public List<TableEvent> dealHand(int actionOnPosition) {
@@ -145,9 +148,11 @@ public class Hand {
         handDealerState = HandDealerState.POCKET_CARDS_DEALT;
 
         var handDealtEvent = new HandDealtEvent(tableId, gameId, entityId, flopCards, turnCard, riverCard,
-                buttonOnPosition, smallBlindPosition, bigBlindPosition, lastToActPlayerId, seatMap,
-                playerToPocketCardsMap, possibleSeatActionsMap, playersStillInHand, handEvaluationList, handDealerState,
-                chipsInBackMap, chipsInFrontMap, callAmountsMap, raiseToAmountsMap, smallBlind, bigBlind);
+                buttonOnPosition, smallBlindPosition, bigBlindPosition, lastToActPlayerId, HashTreePMap.from(seatMap),
+                HashTreePMap.from(playerToPocketCardsMap), HashTreePMap.from(possibleSeatActionsMap),
+                HashTreePSet.from(playersStillInHand), handEvaluationList, handDealerState, HashTreePMap.from(chipsInBackMap),
+                HashTreePMap.from(chipsInFrontMap), HashTreePMap.from(callAmountsMap), HashTreePMap.from(raiseToAmountsMap),
+                smallBlind, bigBlind);
         eventsCreated.add(handDealtEvent);
 
         // creat an initial empty pot for the table
@@ -177,25 +182,25 @@ public class Hand {
         }
 
         if (chipsInFront > chipsInBackMap.get(playerId).intValue()) {
-            chipsInFrontMap.put(playerId, chipsInBackMap.get(playerId));
+            chipsInFrontMap = chipsInFrontMap.plus(playerId, chipsInBackMap.get(playerId));
         } else {
-            chipsInFrontMap.put(playerId, Integer.valueOf(chipsInFront));
+            chipsInFrontMap = chipsInFrontMap.plus(playerId, Integer.valueOf(chipsInFront));
         }
 
         subtractFromChipsInBack(playerId, chipsInFrontMap.get(playerId).intValue());
 
         if (callAmount > chipsInBackMap.get(playerId).intValue()) {
-            callAmountsMap.put(playerId, chipsInBackMap.get(playerId));
+            callAmountsMap = callAmountsMap.plus(playerId, chipsInBackMap.get(playerId));
         } else {
-            callAmountsMap.put(playerId, Integer.valueOf(callAmount));
+            callAmountsMap = callAmountsMap.plus(playerId, Integer.valueOf(callAmount));
         }
 
         var totalChips = chipsInBackMap.get(playerId).intValue() + chipsInFrontMap.get(playerId).intValue();
 
         if (raiseToAmount > totalChips) {
-            raiseToAmountsMap.put(playerId, Integer.valueOf(totalChips));
+            raiseToAmountsMap = raiseToAmountsMap.plus(playerId, Integer.valueOf(totalChips));
         } else {
-            raiseToAmountsMap.put(playerId, Integer.valueOf(raiseToAmount));
+            raiseToAmountsMap = raiseToAmountsMap.plus(playerId, Integer.valueOf(raiseToAmount));
         }
 
         if (raiseToAmountsMap.get(playerId).intValue() > 0) {
@@ -367,15 +372,15 @@ public class Hand {
     void applyEvent(PlayerCheckedEvent event) {
         var playerId = event.getPlayerId();
         possibleSeatActionsMap.get(playerId).clear();
-        callAmountsMap.put(playerId, Integer.valueOf(0));
-        raiseToAmountsMap.put(playerId, Integer.valueOf(0));
+        callAmountsMap = callAmountsMap.plus(playerId, Integer.valueOf(0));
+        raiseToAmountsMap = raiseToAmountsMap.plus(playerId, Integer.valueOf(0));
     }
 
     void applyEvent(PlayerForceCheckedEvent event) {
         var playerId = event.getPlayerId();
         possibleSeatActionsMap.get(playerId).clear();
-        callAmountsMap.put(playerId, Integer.valueOf(0));
-        raiseToAmountsMap.put(playerId, Integer.valueOf(0));
+        callAmountsMap = callAmountsMap.plus(playerId, Integer.valueOf(0));
+        raiseToAmountsMap = raiseToAmountsMap.plus(playerId, Integer.valueOf(0));
     }
 
     void applyEvent(PlayerCalledEvent event) {
@@ -383,31 +388,31 @@ public class Hand {
         possibleSeatActionsMap.get(playerId).clear();
 
         var newChipsInFront = chipsInFrontMap.get(playerId).intValue() + callAmountsMap.get(playerId).intValue();
-        chipsInFrontMap.put(playerId, Integer.valueOf(newChipsInFront));
+        chipsInFrontMap = chipsInFrontMap.plus(playerId, Integer.valueOf(newChipsInFront));
 
         var newChipsInBack = chipsInBackMap.get(playerId).intValue() - callAmountsMap.get(playerId).intValue();
-        chipsInBackMap.put(playerId, Integer.valueOf(newChipsInBack));
+        chipsInBackMap = chipsInBackMap.plus(playerId, Integer.valueOf(newChipsInBack));
 
-        callAmountsMap.put(playerId, Integer.valueOf(0));
-        raiseToAmountsMap.put(playerId, Integer.valueOf(0));
+        callAmountsMap = callAmountsMap.plus(playerId, Integer.valueOf(0));
+        raiseToAmountsMap = raiseToAmountsMap.plus(playerId, Integer.valueOf(0));
     }
 
     void applyEvent(PlayerFoldedEvent event) {
         var playerId = event.getPlayerId();
-        playersStillInHand.remove(playerId);
+        playersStillInHand = playersStillInHand.minus(playerId);
         potHandler.removePlayerFromAllPots(playerId);
         possibleSeatActionsMap.get(playerId).clear();
-        callAmountsMap.put(playerId, Integer.valueOf(0));
-        raiseToAmountsMap.put(playerId, Integer.valueOf(0));
+        callAmountsMap = callAmountsMap.plus(playerId, Integer.valueOf(0));
+        raiseToAmountsMap = raiseToAmountsMap.plus(playerId, Integer.valueOf(0));
     }
 
     void applyEvent(PlayerForceFoldedEvent event) {
         var playerId = event.getPlayerId();
-        playersStillInHand.remove(playerId);
+        playersStillInHand = playersStillInHand.minus(playerId);
         potHandler.removePlayerFromAllPots(playerId);
         possibleSeatActionsMap.get(playerId).clear();
-        callAmountsMap.put(playerId, Integer.valueOf(0));
-        raiseToAmountsMap.put(playerId, Integer.valueOf(0));
+        callAmountsMap = callAmountsMap.plus(playerId, Integer.valueOf(0));
+        raiseToAmountsMap = raiseToAmountsMap.plus(playerId, Integer.valueOf(0));
     }
 
     void applyEvent(PlayerRaisedEvent event) {
@@ -425,14 +430,14 @@ public class Hand {
         });
 
         possibleSeatActionsMap.get(playerId).clear();
-        callAmountsMap.put(playerId, Integer.valueOf(0));
-        raiseToAmountsMap.put(playerId, Integer.valueOf(bigBlind));
+        callAmountsMap = callAmountsMap.plus(playerId, Integer.valueOf(0));
+        raiseToAmountsMap = raiseToAmountsMap.plus(playerId, Integer.valueOf(bigBlind));
 
-        chipsInFrontMap.put(playerId, Integer.valueOf(raiseToAmount));
+        chipsInFrontMap = chipsInFrontMap.plus(playerId, Integer.valueOf(raiseToAmount));
 
         var newChipsInBack = chipsInBackMap.get(playerId).intValue()
                 - increaseOfChipsInFront;
-        chipsInBackMap.put(playerId, Integer.valueOf(newChipsInBack));
+        chipsInBackMap = chipsInBackMap.plus(playerId, Integer.valueOf(newChipsInBack));
     }
 
     void applyEvent(ActionOnChangedEvent event) {
@@ -484,20 +489,19 @@ public class Hand {
 
     private void resetChipsInFront() {
         var playersInMap = chipsInFrontMap.keySet();
-        playersInMap.forEach(x -> chipsInFrontMap.put(x, Integer.valueOf(0)));
+        playersInMap.forEach(x -> {
+            chipsInFrontMap = chipsInFrontMap.plus(x, Integer.valueOf(0));
+        });
     }
 
     private void resetCallAndRaiseAmountsAfterRound() {
         playersStillInHand
                 .forEach(playerInHand -> {
-                    callAmountsMap.put(playerInHand, Integer.valueOf(0));
-                    if (bigBlind > chipsInBackMap.get(playerInHand)
-                            .intValue()) {
-                        raiseToAmountsMap.put(playerInHand,
-                                chipsInBackMap.get(playerInHand));
+                    callAmountsMap = callAmountsMap.plus(playerInHand, Integer.valueOf(0));
+                    if (bigBlind > chipsInBackMap.get(playerInHand).intValue()) {
+                        raiseToAmountsMap = raiseToAmountsMap.plus(playerInHand, chipsInBackMap.get(playerInHand));
                     } else {
-                        raiseToAmountsMap.put(playerInHand,
-                                Integer.valueOf(bigBlind));
+                        raiseToAmountsMap = raiseToAmountsMap.plus(playerInHand, Integer.valueOf(bigBlind));
                     }
                 });
     }
@@ -541,17 +545,17 @@ public class Hand {
 
     private void addToChipsInBack(UUID playerId, int chipsToAdd) {
         var currentAmount = chipsInBackMap.get(playerId).intValue();
-        chipsInBackMap.put(playerId, Integer.valueOf(currentAmount + chipsToAdd));
+        chipsInBackMap = chipsInBackMap.plus(playerId, Integer.valueOf(currentAmount + chipsToAdd));
     }
 
     private void subtractFromChipsInBack(UUID playerId, int chipsToSubtract) {
         var currentAmount = chipsInBackMap.get(playerId).intValue();
-        chipsInBackMap.put(playerId, Integer.valueOf(currentAmount - chipsToSubtract));
+        chipsInBackMap = chipsInBackMap.plus(playerId, Integer.valueOf(currentAmount - chipsToSubtract));
     }
 
     private void subtractFromChipsInFront(UUID playerId, int chipsToSubtract) {
         var currentAmount = chipsInFrontMap.get(playerId).intValue();
-        chipsInFrontMap.put(playerId, Integer.valueOf(currentAmount - chipsToSubtract));
+        chipsInFrontMap = chipsInFrontMap.plus(playerId, Integer.valueOf(currentAmount - chipsToSubtract));
     }
 
     private int determineLastToAct() {
@@ -604,16 +608,15 @@ public class Hand {
                 + chipsInFrontMap.get(playerId).intValue();
 
         if (totalChips <= raiseToAmount) {
-            callAmountsMap.put(playerId, totalChips - chipsInFrontMap.get(playerId));
-            raiseToAmountsMap.put(playerId, 0);
+            callAmountsMap = callAmountsMap.plus(playerId, totalChips - chipsInFrontMap.get(playerId));
+            raiseToAmountsMap = raiseToAmountsMap.plus(playerId, 0);
         } else {
-            callAmountsMap.put(playerId, Integer.valueOf(raiseToAmount - chipsInFrontMap.get(playerId).intValue()));
+            callAmountsMap = callAmountsMap.plus(playerId, Integer.valueOf(raiseToAmount - chipsInFrontMap.get(playerId).intValue()));
             possibleSeatActionsMap.get(playerId).add(PlayerAction.RAISE);
             if (totalChips < raiseToAmount + raiseAboveCall) {
-                raiseToAmountsMap.put(playerId, Integer.valueOf(totalChips));
+                raiseToAmountsMap = raiseToAmountsMap.plus(playerId, Integer.valueOf(totalChips));
             } else {
-                raiseToAmountsMap.put(playerId,
-                        Integer.valueOf(raiseToAmount + raiseAboveCall));
+                raiseToAmountsMap = raiseToAmountsMap.plus(playerId, Integer.valueOf(raiseToAmount + raiseAboveCall));
             }
         }
     }

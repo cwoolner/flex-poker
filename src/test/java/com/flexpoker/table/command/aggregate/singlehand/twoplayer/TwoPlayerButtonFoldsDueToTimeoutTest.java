@@ -1,16 +1,5 @@
 package com.flexpoker.table.command.aggregate.singlehand.twoplayer;
 
-import static com.flexpoker.table.command.aggregate.testhelpers.TableTestUtils.fetchIdForBigBlind;
-import static com.flexpoker.table.command.aggregate.testhelpers.TableTestUtils.fetchIdForButton;
-import static com.flexpoker.test.util.CommonAssertions.verifyAppliedAndNewEventsForAggregate;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.UUID;
-
-import org.junit.jupiter.api.Test;
-
 import com.flexpoker.table.command.aggregate.HandDealerState;
 import com.flexpoker.table.command.aggregate.testhelpers.TableTestUtils;
 import com.flexpoker.table.command.events.ActionOnChangedEvent;
@@ -23,6 +12,16 @@ import com.flexpoker.table.command.events.PotCreatedEvent;
 import com.flexpoker.table.command.events.RoundCompletedEvent;
 import com.flexpoker.table.command.events.TableCreatedEvent;
 import com.flexpoker.table.command.events.WinnersDeterminedEvent;
+import org.junit.jupiter.api.Test;
+
+import java.util.UUID;
+
+import static com.flexpoker.table.command.aggregate.testhelpers.TableTestUtils.fetchIdForBigBlind;
+import static com.flexpoker.table.command.aggregate.testhelpers.TableTestUtils.fetchIdForButton;
+import static com.flexpoker.test.util.CommonAssertions.verifyAppliedAndNewEventsForAggregate;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class TwoPlayerButtonFoldsDueToTimeoutTest {
 

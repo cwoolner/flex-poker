@@ -26,8 +26,10 @@ public class ThreePlayerSeatPositionsAndButtonAndBlindsTest {
         var table = TableTestUtils.createBasicTableAndStartHand(tableId, player1Id, player2Id, player3Id);
 
         // check seat positions
-        var seatPositionToPlayerIdMap = ((TableCreatedEvent) table.fetchNewEvents().get(0)).getSeatPositionToPlayerMap();
-        seatPositionToPlayerIdMap = seatPositionToPlayerIdMap.entrySet().stream()
+        var seatPositionToPlayerIdMap = ((TableCreatedEvent) table.fetchNewEvents().get(0))
+                .getSeatPositionToPlayerMap()
+                .entrySet()
+                .stream()
                 .filter(x -> x.getValue() != null)
                 .collect(Collectors.toMap(x -> x.getKey(), x -> x.getValue()));
 

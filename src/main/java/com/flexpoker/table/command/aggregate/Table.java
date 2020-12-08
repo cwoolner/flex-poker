@@ -1,15 +1,5 @@
 package com.flexpoker.table.command.aggregate;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-import java.util.Set;
-import java.util.UUID;
-import java.util.stream.Collectors;
-
 import com.flexpoker.exception.FlexPokerException;
 import com.flexpoker.framework.command.EventApplier;
 import com.flexpoker.model.PlayerAction;
@@ -43,6 +33,17 @@ import com.flexpoker.table.command.events.TableResumedEvent;
 import com.flexpoker.table.command.events.TurnCardDealtEvent;
 import com.flexpoker.table.command.events.WinnersDeterminedEvent;
 import com.flexpoker.table.command.framework.TableEvent;
+import org.pcollections.HashTreePMap;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
+import java.util.Set;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class Table {
 
@@ -87,8 +88,8 @@ public class Table {
         populateMethodTable();
 
         if (!creatingFromEvents) {
-            var tableCreatedEvent = new TableCreatedEvent(aggregateId, gameId, seatMap.size(), seatMap,
-                    startingNumberOfChips);
+            var tableCreatedEvent = new TableCreatedEvent(aggregateId, gameId, seatMap.size(),
+                    HashTreePMap.from(seatMap), startingNumberOfChips);
             newEvents.add(tableCreatedEvent);
             applyCommonEvent(tableCreatedEvent);
         }
