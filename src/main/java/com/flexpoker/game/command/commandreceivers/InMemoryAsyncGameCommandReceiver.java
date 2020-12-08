@@ -1,22 +1,19 @@
 package com.flexpoker.game.command.commandreceivers;
 
-import javax.inject.Inject;
-
-import org.springframework.scheduling.annotation.Async;
-import org.springframework.stereotype.Component;
-
-import com.flexpoker.framework.command.Command;
 import com.flexpoker.framework.command.CommandHandler;
 import com.flexpoker.framework.command.CommandReceiver;
 import com.flexpoker.game.command.commands.AttemptToStartNewHandCommand;
 import com.flexpoker.game.command.commands.CreateGameCommand;
+import com.flexpoker.game.command.commands.GameCommand;
 import com.flexpoker.game.command.commands.IncrementBlindsCommand;
 import com.flexpoker.game.command.commands.JoinGameCommand;
-import com.flexpoker.game.command.framework.GameCommandType;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.stereotype.Component;
+
+import javax.inject.Inject;
 
 @Component("gameCommandReceiver")
-public class InMemoryAsyncGameCommandReceiver implements
-        CommandReceiver<GameCommandType> {
+public class InMemoryAsyncGameCommandReceiver implements CommandReceiver<GameCommand> {
 
     private final CommandHandler<CreateGameCommand> createGameCommandHandler;
 
@@ -40,24 +37,24 @@ public class InMemoryAsyncGameCommandReceiver implements
 
     @Async
     @Override
-    public void receive(Command<GameCommandType> command) {
-        switch (command.getType()) {
-        case CreateGame:
+    public void receive(GameCommand command) {
+        switch (command.getClass().getSimpleName()) {
+        case "CreateGameCommand":
             createGameCommandHandler.handle((CreateGameCommand) command);
             break;
-        case JoinGame:
+        case "JoinGameCommand":
             joinGameCommandHandler.handle((JoinGameCommand) command);
             break;
-        case AttemptToStartNewHand:
+        case "AttemptToStartNewHandCommand":
             attemptToStartNewHandCommandHandler
                     .handle((AttemptToStartNewHandCommand) command);
             break;
-        case IncrementBlinds:
+        case "IncrementBlindsCommand":
             incrementBlindsCommandHandler.handle((IncrementBlindsCommand) command);
             break;
         default:
             throw new IllegalArgumentException("Command Type cannot be handled: "
-                    + command.getType());
+                    + command.getClass().getSimpleName());
         }
     }
 

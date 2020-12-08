@@ -1,26 +1,24 @@
 package com.flexpoker.processmanagers;
 
-import java.util.Timer;
-import java.util.TimerTask;
-
-import javax.inject.Inject;
-
+import com.flexpoker.framework.command.CommandSender;
+import com.flexpoker.framework.processmanager.ProcessManager;
+import com.flexpoker.game.command.commands.GameCommand;
+import com.flexpoker.game.command.commands.IncrementBlindsCommand;
+import com.flexpoker.game.command.events.GameStartedEvent;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
-import com.flexpoker.framework.command.CommandSender;
-import com.flexpoker.framework.processmanager.ProcessManager;
-import com.flexpoker.game.command.commands.IncrementBlindsCommand;
-import com.flexpoker.game.command.events.GameStartedEvent;
-import com.flexpoker.game.command.framework.GameCommandType;
+import javax.inject.Inject;
+import java.util.Timer;
+import java.util.TimerTask;
 
 @Component
 public class IncrementBlindsCountdownProcessManager implements ProcessManager<GameStartedEvent> {
 
-    private final CommandSender<GameCommandType> gameCommandSender;
+    private final CommandSender<GameCommand> gameCommandSender;
 
     @Inject
-    public IncrementBlindsCountdownProcessManager(CommandSender<GameCommandType> gameCommandSender) {
+    public IncrementBlindsCountdownProcessManager(CommandSender<GameCommand> gameCommandSender) {
         this.gameCommandSender = gameCommandSender;
     }
 

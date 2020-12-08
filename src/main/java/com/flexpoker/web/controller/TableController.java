@@ -1,24 +1,12 @@
 package com.flexpoker.web.controller;
 
-import java.security.Principal;
-import java.util.List;
-import java.util.UUID;
-import java.util.stream.Collectors;
-
-import javax.inject.Inject;
-
-import org.springframework.messaging.handler.annotation.DestinationVariable;
-import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.simp.annotation.SubscribeMapping;
-import org.springframework.stereotype.Controller;
-
 import com.flexpoker.framework.command.CommandSender;
 import com.flexpoker.login.repository.LoginRepository;
 import com.flexpoker.table.command.commands.CallCommand;
 import com.flexpoker.table.command.commands.CheckCommand;
 import com.flexpoker.table.command.commands.FoldCommand;
 import com.flexpoker.table.command.commands.RaiseCommand;
-import com.flexpoker.table.command.framework.TableCommandType;
+import com.flexpoker.table.command.framework.TableCommand;
 import com.flexpoker.table.query.repository.CardsUsedInHandRepository;
 import com.flexpoker.table.query.repository.TableRepository;
 import com.flexpoker.web.dto.incoming.CallTableActionDTO;
@@ -27,11 +15,21 @@ import com.flexpoker.web.dto.incoming.FoldTableActionDTO;
 import com.flexpoker.web.dto.incoming.RaiseTableActionDTO;
 import com.flexpoker.web.dto.outgoing.PocketCardsDTO;
 import com.flexpoker.web.dto.outgoing.TableDTO;
+import org.springframework.messaging.handler.annotation.DestinationVariable;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.simp.annotation.SubscribeMapping;
+import org.springframework.stereotype.Controller;
+
+import javax.inject.Inject;
+import java.security.Principal;
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Controller
 public class TableController {
 
-    private final CommandSender<TableCommandType> commandSender;
+    private final CommandSender<TableCommand> commandSender;
 
     private final LoginRepository loginRepository;
 
@@ -40,7 +38,7 @@ public class TableController {
     private final CardsUsedInHandRepository cardsUsedInHandRepository;
 
     @Inject
-    public TableController(CommandSender<TableCommandType> commandSender,
+    public TableController(CommandSender<TableCommand> commandSender,
             LoginRepository loginRepository, TableRepository tableRepository,
             CardsUsedInHandRepository cardsUsedInHandRepository) {
         this.commandSender = commandSender;

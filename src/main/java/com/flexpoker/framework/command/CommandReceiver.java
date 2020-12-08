@@ -1,7 +1,7 @@
 package com.flexpoker.framework.command;
 
-public interface CommandReceiver<T extends CommandType> {
+public interface CommandReceiver<T> {
 
-    void receive(Command<T> event);
+    void receive(T command);
 
 }

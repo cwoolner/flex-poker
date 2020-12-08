@@ -1,8 +1,8 @@
 package com.flexpoker.framework.command;
 
 
-public interface CommandSender<T extends CommandType> {
+public interface CommandSender<T> {
 
-    void send(Command<T> command);
+    void send(T command);
 
 }

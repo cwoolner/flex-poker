@@ -1,30 +1,26 @@
 package com.flexpoker.web.commandsenders;
 
-import javax.inject.Inject;
-
+import com.flexpoker.framework.command.CommandReceiver;
+import com.flexpoker.framework.command.CommandSender;
+import com.flexpoker.game.command.commands.GameCommand;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
-import com.flexpoker.framework.command.Command;
-import com.flexpoker.framework.command.CommandReceiver;
-import com.flexpoker.framework.command.CommandSender;
-import com.flexpoker.game.command.framework.GameCommandType;
+import javax.inject.Inject;
 
 @Component
-public class InMemoryAsyncGameCommandSender
-        implements CommandSender<GameCommandType> {
+public class InMemoryAsyncGameCommandSender implements CommandSender<GameCommand> {
 
-    private final CommandReceiver<GameCommandType> gameCommandReceiver;
+    private final CommandReceiver<GameCommand> gameCommandReceiver;
 
     @Lazy
     @Inject
-    public InMemoryAsyncGameCommandSender(
-            CommandReceiver<GameCommandType> gameCommandReceiver) {
+    public InMemoryAsyncGameCommandSender(CommandReceiver<GameCommand> gameCommandReceiver) {
         this.gameCommandReceiver = gameCommandReceiver;
     }
 
     @Override
-    public void send(Command<GameCommandType> command) {
+    public void send(GameCommand command) {
         gameCommandReceiver.receive(command);
     }
 

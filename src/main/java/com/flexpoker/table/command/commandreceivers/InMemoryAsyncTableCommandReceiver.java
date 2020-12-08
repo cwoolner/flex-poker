@@ -1,11 +1,5 @@
 package com.flexpoker.table.command.commandreceivers;
 
-import javax.inject.Inject;
-
-import org.springframework.scheduling.annotation.Async;
-import org.springframework.stereotype.Component;
-
-import com.flexpoker.framework.command.Command;
 import com.flexpoker.framework.command.CommandHandler;
 import com.flexpoker.framework.command.CommandReceiver;
 import com.flexpoker.table.command.commands.AddPlayerCommand;
@@ -22,11 +16,14 @@ import com.flexpoker.table.command.commands.ResumeCommand;
 import com.flexpoker.table.command.commands.StartNewHandForExistingTableCommand;
 import com.flexpoker.table.command.commands.StartNewHandForNewGameCommand;
 import com.flexpoker.table.command.commands.TickActionOnTimerCommand;
-import com.flexpoker.table.command.framework.TableCommandType;
+import com.flexpoker.table.command.framework.TableCommand;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.stereotype.Component;
+
+import javax.inject.Inject;
 
 @Component("tableCommandReceiver")
-public class InMemoryAsyncTableCommandReceiver
-        implements CommandReceiver<TableCommandType> {
+public class InMemoryAsyncTableCommandReceiver implements CommandReceiver<TableCommand> {
 
     private final CommandHandler<CreateTableCommand> createTableCommandHandler;
 
@@ -90,7 +87,7 @@ public class InMemoryAsyncTableCommandReceiver
 
     @Async
     @Override
-    public void receive(Command<TableCommandType> command) {
+    public void receive(TableCommand command) {
         switch (command.getType()) {
         case CreateTable:
             createTableCommandHandler.handle((CreateTableCommand) command);

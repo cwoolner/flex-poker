@@ -1,5 +1,16 @@
 package com.flexpoker.processmanagers;
 
+import com.flexpoker.framework.command.CommandSender;
+import com.flexpoker.framework.processmanager.ProcessManager;
+import com.flexpoker.game.command.repository.GameEventRepository;
+import com.flexpoker.table.command.commands.ExpireActionOnTimerCommand;
+import com.flexpoker.table.command.commands.TickActionOnTimerCommand;
+import com.flexpoker.table.command.events.ActionOnChangedEvent;
+import com.flexpoker.table.command.framework.TableCommand;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.stereotype.Component;
+
+import javax.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -7,23 +18,10 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-import javax.inject.Inject;
-
-import org.springframework.scheduling.annotation.Async;
-import org.springframework.stereotype.Component;
-
-import com.flexpoker.framework.command.CommandSender;
-import com.flexpoker.framework.processmanager.ProcessManager;
-import com.flexpoker.game.command.repository.GameEventRepository;
-import com.flexpoker.table.command.commands.ExpireActionOnTimerCommand;
-import com.flexpoker.table.command.commands.TickActionOnTimerCommand;
-import com.flexpoker.table.command.events.ActionOnChangedEvent;
-import com.flexpoker.table.command.framework.TableCommandType;
-
 @Component
 public class ActionOnCountdownProcessManager implements ProcessManager<ActionOnChangedEvent> {
 
-    private final CommandSender<TableCommandType> tableCommandSender;
+    private final CommandSender<TableCommand> tableCommandSender;
 
     private final Map<UUID, ScheduledFuture<?>> actionOnPlayerScheduledFutureMap;
 
@@ -32,7 +30,7 @@ public class ActionOnCountdownProcessManager implements ProcessManager<ActionOnC
     private final GameEventRepository gameEventRepository;
 
     @Inject
-    public ActionOnCountdownProcessManager(CommandSender<TableCommandType> tableCommandSender,
+    public ActionOnCountdownProcessManager(CommandSender<TableCommand> tableCommandSender,
             GameEventRepository gameEventRepository) {
         this.tableCommandSender = tableCommandSender;
         this.gameEventRepository = gameEventRepository;
