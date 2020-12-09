@@ -39,8 +39,10 @@ public class InMemoryTableRepository implements TableRepository {
     @Override
     public void save(TableDTO tableDTO) {
         try {
-            idToLockMap.putIfAbsent(tableDTO.getId(),
-                    new ReentrantReadWriteLock());
+            // used ConcurrentHashMap because this putIfAbsent works consistently without additional
+            // locking.  regular HashMap was causing an incorrect lock to be unlocked in the finally clause
+            // when run repeatedly in the unit test
+            idToLockMap.putIfAbsent(tableDTO.getId(), new ReentrantReadWriteLock());
             idToLockMap.get(tableDTO.getId()).writeLock().lock();
 
             var existingTableDTO = idToTableDTOMap.get(tableDTO.getId());

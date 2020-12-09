@@ -1,18 +1,18 @@
 package com.flexpoker.table.query.repository.impl;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import com.flexpoker.web.dto.outgoing.TableDTO;
+import org.junit.jupiter.api.RepeatedTest;
+import org.junit.jupiter.api.Test;
 
 import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import org.junit.jupiter.api.Test;
-
-import com.flexpoker.web.dto.outgoing.TableDTO;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class InMemoryTableRepositoryTest {
 
@@ -58,17 +58,18 @@ public class InMemoryTableRepositoryTest {
         assertEquals(10, inMemoryTableRepository.fetchById(tableId).getTotalPot());
     }
 
-    @Test
-    void testSaveMultithreadVersions() throws InterruptedException {
+    @RepeatedTest(100)
+    void testSaveMultithreadVersionsWithTwoDifferentTables() throws InterruptedException {
         var inMemoryTableRepository = new InMemoryTableRepository();
-        var tableId = UUID.randomUUID();
+        var table1Id = UUID.randomUUID();
+        var table2Id = UUID.randomUUID();
 
-        // creating a small number of threads/versions purposefully. a higher
-        // number makes the invalid ordering/over-writing occur less often since
-        // the odds of the max version thread running during the disorderly
-        // begin time less likely
-        var saveThreads = IntStream.rangeClosed(1, 5).boxed()
-                .map(x -> new TableDTO(tableId, x, null, 0, null, null, 0, UUID.randomUUID()))
+        var saveThreads = IntStream.rangeClosed(1, 10).boxed()
+                .map(x -> {
+                    var tableId = x % 2 == 0 ? table2Id : table1Id;
+                    var version = x % 2 == 0 ? x / 2 : (x / 2) + 1;
+                    return new TableDTO(tableId, version, null, 0, null, null,0, UUID.randomUUID());
+                })
                 .map(x -> new Thread(() -> inMemoryTableRepository.save(x)))
                 .collect(Collectors.toSet());
 
@@ -78,10 +79,11 @@ public class InMemoryTableRepositoryTest {
             thread.join();
         }
 
-        assertEquals(5, inMemoryTableRepository.fetchById(tableId).getVersion());
+        assertEquals(5, inMemoryTableRepository.fetchById(table1Id).getVersion());
+        assertEquals(5, inMemoryTableRepository.fetchById(table2Id).getVersion());
     }
 
-    @Test
+    @RepeatedTest(100)
     void testFetchMultithreaded() throws InterruptedException {
         var inMemoryTableRepository = new InMemoryTableRepository();
         var tableId = UUID.randomUUID();
@@ -123,14 +125,14 @@ public class InMemoryTableRepositoryTest {
                 }))
                 .collect(Collectors.toSet());
 
+        save2Thread.join();
+
         readThreads2.forEach(x -> x.start());
 
         // using a foreach cause of the checked exception
         for (var thread : readThreads2) {
             thread.join();
         }
-
-        save2Thread.join();
 
         assertArrayEquals(new Boolean[]{true, true, true, true, true}, testAssertsPassed2.toArray());
     }
