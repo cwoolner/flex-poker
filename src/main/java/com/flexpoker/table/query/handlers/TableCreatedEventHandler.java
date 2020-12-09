@@ -1,14 +1,5 @@
 package com.flexpoker.table.query.handlers;
 
-import java.util.Collections;
-import java.util.UUID;
-import java.util.function.Consumer;
-import java.util.stream.Collectors;
-
-import javax.inject.Inject;
-
-import org.springframework.stereotype.Component;
-
 import com.flexpoker.framework.event.EventHandler;
 import com.flexpoker.framework.pushnotifier.PushNotification;
 import com.flexpoker.framework.pushnotifier.PushNotificationPublisher;
@@ -17,9 +8,16 @@ import com.flexpoker.login.repository.LoginRepository;
 import com.flexpoker.pushnotifications.OpenGamesForPlayerUpdatedPushNotification;
 import com.flexpoker.pushnotifications.OpenTableForUserPushNotification;
 import com.flexpoker.table.command.events.TableCreatedEvent;
+import com.flexpoker.table.query.dto.SeatDTO;
+import com.flexpoker.table.query.dto.TableDTO;
 import com.flexpoker.table.query.repository.TableRepository;
-import com.flexpoker.web.dto.outgoing.SeatDTO;
-import com.flexpoker.web.dto.outgoing.TableDTO;
+import org.springframework.stereotype.Component;
+
+import javax.inject.Inject;
+import java.util.Collections;
+import java.util.UUID;
+import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 @Component
 public class TableCreatedEventHandler implements EventHandler<TableCreatedEvent> {
@@ -55,10 +53,8 @@ public class TableCreatedEventHandler implements EventHandler<TableCreatedEvent>
                 .map(position -> {
                     var displayName = loginRepository.fetchUsernameByAggregateId(event
                             .getSeatPositionToPlayerMap().get(Integer.valueOf(position)));
-                    return SeatDTO.createForNewTable(
-                            position,
-                            displayName,
-                            event.getStartingNumberOfChips());
+                    return new SeatDTO(position, displayName, event.getStartingNumberOfChips(),
+                            0, false, 0, 0, false, false, false, false);
                 }).collect(Collectors.toList());
 
         var tableDTO = new TableDTO(event.getAggregateId(),

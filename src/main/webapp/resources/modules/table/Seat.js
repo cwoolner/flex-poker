@@ -4,16 +4,16 @@ import ActionOnTimer from './ActionOnTimer'
 export default ({mySeat, seat, actionOnTick}) => {
   return (
     <div className={mySeat ? 'my-seat' : ''}
-      data-action-on={seat.actionOn}
-      data-still-in-hand={seat.stillInHand}
+      data-action-on={seat.isActionOn}
+      data-still-in-hand={seat.isStillInHand}
       data-position={seat.position}>
-      {seat.actionOn ? <ActionOnTimer actionOnTick={actionOnTick} /> : null}
+      {seat.isActionOn ? <ActionOnTimer actionOnTick={actionOnTick} /> : null}
       <p>{seat.name}</p>
       <p>{seat.chipsInFront}</p>
       <p>{seat.chipsInBack}</p>
-      {seat.button ? <img src='/resources/img/button.png' /> : null}
-      {seat.smallBlind ? <img src='/resources/img/smallBlind.png' /> : null}
-      {seat.bigBlind ? <img src='/resources/img/bigBlind.png' /> : null}
+      {seat.isButton ? <img src='/resources/img/button.png' /> : null}
+      {seat.isSmallBlind ? <img src='/resources/img/smallBlind.png' /> : null}
+      {seat.isBigBlind ? <img src='/resources/img/bigBlind.png' /> : null}
     </div>
   )
 }

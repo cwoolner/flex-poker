@@ -1,8 +1,16 @@
 package com.flexpoker.config;
 
-import java.util.Map;
-import java.util.UUID;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.flexpoker.game.command.framework.GameEvent;
+import com.flexpoker.game.query.dto.GameInListDTO;
+import com.flexpoker.game.query.dto.OpenGameForUser;
+import com.flexpoker.model.card.FlopCards;
+import com.flexpoker.model.card.PocketCards;
+import com.flexpoker.model.card.RiverCard;
+import com.flexpoker.model.card.TurnCard;
+import com.flexpoker.table.command.framework.TableEvent;
+import com.flexpoker.table.query.dto.TableDTO;
+import com.flexpoker.web.dto.OutgoingChatMessageDTO;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -13,17 +21,8 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.flexpoker.game.command.framework.GameEvent;
-import com.flexpoker.game.query.dto.GameInListDTO;
-import com.flexpoker.game.query.dto.OpenGameForUser;
-import com.flexpoker.model.card.FlopCards;
-import com.flexpoker.model.card.PocketCards;
-import com.flexpoker.model.card.RiverCard;
-import com.flexpoker.model.card.TurnCard;
-import com.flexpoker.table.command.framework.TableEvent;
-import com.flexpoker.web.dto.outgoing.ChatMessageDTO;
-import com.flexpoker.web.dto.outgoing.TableDTO;
+import java.util.Map;
+import java.util.UUID;
 
 @Configuration
 @Profile({ ProfileNames.REDIS, ProfileNames.LOGIN_REDIS, ProfileNames.SIGNUP_REDIS,
@@ -117,9 +116,9 @@ public class RedisConfig {
     }
 
     @Bean
-    RedisTemplate<String, ChatMessageDTO> redisTemplateChatMessageDTO() {
-        var redisTemplate = new RedisTemplate<String, ChatMessageDTO>();
-        setupDefaultKeyValueRedisTemplate(redisTemplate, ChatMessageDTO.class);
+    RedisTemplate<String, OutgoingChatMessageDTO> redisTemplateChatMessageDTO() {
+        var redisTemplate = new RedisTemplate<String, OutgoingChatMessageDTO>();
+        setupDefaultKeyValueRedisTemplate(redisTemplate, OutgoingChatMessageDTO.class);
         return redisTemplate;
     }
 

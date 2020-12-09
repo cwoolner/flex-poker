@@ -9,7 +9,7 @@ import com.flexpoker.game.query.dto.OpenGameForUser;
 import com.flexpoker.game.query.repository.GameListRepository;
 import com.flexpoker.game.query.repository.OpenGameForPlayerRepository;
 import com.flexpoker.login.repository.LoginRepository;
-import com.flexpoker.web.dto.incoming.CreateGameDTO;
+import com.flexpoker.web.dto.CreateGameDTO;
 import org.springframework.messaging.handler.annotation.MessageExceptionHandler;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.annotation.SendToUser;

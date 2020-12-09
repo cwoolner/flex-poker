@@ -3,16 +3,16 @@ package com.flexpoker.chat.repository;
 import java.util.List;
 import java.util.UUID;
 
-import com.flexpoker.web.dto.outgoing.ChatMessageDTO;
+import com.flexpoker.web.dto.OutgoingChatMessageDTO;
 
 public interface ChatRepository {
 
-    void saveChatMessage(ChatMessageDTO chatMessage);
+    void saveChatMessage(OutgoingChatMessageDTO chatMessage);
 
-    List<ChatMessageDTO> fetchAllLobbyChatMessages();
+    List<OutgoingChatMessageDTO> fetchAllLobbyChatMessages();
 
-    List<ChatMessageDTO> fetchAllGameChatMessages(UUID gameId);
+    List<OutgoingChatMessageDTO> fetchAllGameChatMessages(UUID gameId);
 
-    List<ChatMessageDTO> fetchAllTableChatMessages(UUID tableId);
+    List<OutgoingChatMessageDTO> fetchAllTableChatMessages(UUID tableId);
 
 }

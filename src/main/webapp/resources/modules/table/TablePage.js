@@ -53,7 +53,7 @@ export default () => {
             <div>{pot.seats}</div>
             <div>{pot.amount}</div>
             <div>{pot.winners}</div>
-            <div>{pot.open ? 'open' : 'closed'}</div>
+            <div>{pot.isOpen ? 'open' : 'closed'}</div>
           </div>
         )
       })}
@@ -65,7 +65,7 @@ export default () => {
           : <PokerActions
               gameId={gameId}
               tableId={tableId}
-              actionOn={mySeat.actionOn}
+              actionOn={mySeat.isActionOn}
               callAmount={mySeat.callAmount}
               minRaiseTo={mySeat.raiseTo}
               maxRaiseTo={mySeat.chipsInBack + mySeat.chipsInFront} />

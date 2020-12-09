@@ -1,16 +1,15 @@
 package com.flexpoker.pushnotificationhandlers;
 
-import javax.inject.Inject;
-
+import com.flexpoker.framework.pushnotifier.PushNotificationHandler;
+import com.flexpoker.login.repository.LoginRepository;
+import com.flexpoker.pushnotifications.SendUserPocketCardsPushNotification;
+import com.flexpoker.table.query.dto.PocketCardsDTO;
+import com.flexpoker.util.MessagingConstants;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
-import com.flexpoker.framework.pushnotifier.PushNotificationHandler;
-import com.flexpoker.login.repository.LoginRepository;
-import com.flexpoker.pushnotifications.SendUserPocketCardsPushNotification;
-import com.flexpoker.util.MessagingConstants;
-import com.flexpoker.web.dto.outgoing.PocketCardsDTO;
+import javax.inject.Inject;
 
 @Component
 public class SendUserPocketCardsPushNotificationHandler

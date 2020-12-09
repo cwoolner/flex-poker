@@ -1,8 +1,8 @@
 package com.flexpoker.table.query.repository;
 
-import java.util.UUID;
+import com.flexpoker.table.query.dto.TableDTO;
 
-import com.flexpoker.web.dto.outgoing.TableDTO;
+import java.util.UUID;
 
 public interface TableRepository {
 

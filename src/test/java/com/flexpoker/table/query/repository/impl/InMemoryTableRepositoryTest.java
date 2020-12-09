@@ -1,6 +1,6 @@
 package com.flexpoker.table.query.repository.impl;
 
-import com.flexpoker.web.dto.outgoing.TableDTO;
+import com.flexpoker.table.query.dto.TableDTO;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 

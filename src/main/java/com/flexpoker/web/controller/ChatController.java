@@ -1,20 +1,19 @@
 package com.flexpoker.web.controller;
 
-import java.security.Principal;
-import java.util.List;
-import java.util.UUID;
-
-import javax.inject.Inject;
-
+import com.flexpoker.chat.repository.ChatRepository;
+import com.flexpoker.chat.service.ChatService;
+import com.flexpoker.framework.pushnotifier.PushNotificationPublisher;
+import com.flexpoker.web.dto.IncomingChatMessageDTO;
+import com.flexpoker.web.dto.OutgoingChatMessageDTO;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.annotation.SubscribeMapping;
 import org.springframework.stereotype.Controller;
 
-import com.flexpoker.chat.repository.ChatRepository;
-import com.flexpoker.chat.service.ChatService;
-import com.flexpoker.framework.pushnotifier.PushNotificationPublisher;
-import com.flexpoker.web.dto.outgoing.ChatMessageDTO;
+import javax.inject.Inject;
+import java.security.Principal;
+import java.util.List;
+import java.util.UUID;
 
 @Controller
 public class ChatController {
@@ -36,7 +35,7 @@ public class ChatController {
     }
 
     @MessageMapping("/app/sendchatmessage")
-    public void sendChatMessage(com.flexpoker.web.dto.incoming.ChatMessageDTO chatMessage, Principal principal) {
+    public void sendChatMessage(IncomingChatMessageDTO chatMessage, Principal principal) {
         var gameId = chatMessage.getGameId();
         var tableId = chatMessage.getTableId();
         var message = chatMessage.getMessage();
@@ -52,17 +51,17 @@ public class ChatController {
     }
 
     @SubscribeMapping("/topic/chat/lobby")
-    public List<ChatMessageDTO> fetchAllLobbyChatMessages() {
+    public List<OutgoingChatMessageDTO> fetchAllLobbyChatMessages() {
         return chatRepository.fetchAllLobbyChatMessages();
     }
 
     @SubscribeMapping("/topic/chat/game/{gameId}")
-    public List<ChatMessageDTO> fetchAllGameChatMessages(@DestinationVariable UUID gameId) {
+    public List<OutgoingChatMessageDTO> fetchAllGameChatMessages(@DestinationVariable UUID gameId) {
         return chatRepository.fetchAllGameChatMessages(gameId);
     }
 
     @SubscribeMapping("/topic/chat/game/{gameId}/table/{tableId}")
-    public List<ChatMessageDTO> fetchAllTableChatMessages(
+    public List<OutgoingChatMessageDTO> fetchAllTableChatMessages(
             @DestinationVariable UUID gameId, @DestinationVariable UUID tableId) {
         return chatRepository.fetchAllTableChatMessages(tableId);
     }

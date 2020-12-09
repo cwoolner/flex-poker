@@ -7,14 +7,14 @@ import com.flexpoker.table.command.commands.CheckCommand;
 import com.flexpoker.table.command.commands.FoldCommand;
 import com.flexpoker.table.command.commands.RaiseCommand;
 import com.flexpoker.table.command.commands.TableCommand;
+import com.flexpoker.table.query.dto.PocketCardsDTO;
+import com.flexpoker.table.query.dto.TableDTO;
 import com.flexpoker.table.query.repository.CardsUsedInHandRepository;
 import com.flexpoker.table.query.repository.TableRepository;
-import com.flexpoker.web.dto.incoming.CallTableActionDTO;
-import com.flexpoker.web.dto.incoming.CheckTableActionDTO;
-import com.flexpoker.web.dto.incoming.FoldTableActionDTO;
-import com.flexpoker.web.dto.incoming.RaiseTableActionDTO;
-import com.flexpoker.web.dto.outgoing.PocketCardsDTO;
-import com.flexpoker.web.dto.outgoing.TableDTO;
+import com.flexpoker.web.dto.CallTableActionDTO;
+import com.flexpoker.web.dto.CheckTableActionDTO;
+import com.flexpoker.web.dto.FoldTableActionDTO;
+import com.flexpoker.web.dto.RaiseTableActionDTO;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.annotation.SubscribeMapping;
@@ -58,7 +58,7 @@ public class TableController {
 
     @SubscribeMapping("/topic/game/{gameId}/table/{tableId}")
     public TableDTO fetchTable(@DestinationVariable UUID gameId,
-            @DestinationVariable UUID tableId) {
+                               @DestinationVariable UUID tableId) {
         return tableRepository.fetchById(tableId);
     }
 

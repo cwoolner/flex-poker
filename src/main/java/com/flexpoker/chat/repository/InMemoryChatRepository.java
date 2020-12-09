@@ -10,26 +10,26 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Repository;
 
 import com.flexpoker.config.ProfileNames;
-import com.flexpoker.web.dto.outgoing.ChatMessageDTO;
+import com.flexpoker.web.dto.OutgoingChatMessageDTO;
 
 @Profile({ ProfileNames.DEFAULT, ProfileNames.CHAT_INMEMORY })
 @Repository
 public class InMemoryChatRepository implements ChatRepository {
 
-    private final List<ChatMessageDTO> lobbyChatMessages;
+    private final List<OutgoingChatMessageDTO> lobbyChatMessages;
 
-    private final Map<UUID, List<ChatMessageDTO>> gameChatMessages;
+    private final Map<UUID, List<OutgoingChatMessageDTO>> gameChatMessages;
 
-    private final Map<UUID, List<ChatMessageDTO>> tableChatMessages;
+    private final Map<UUID, List<OutgoingChatMessageDTO>> tableChatMessages;
 
     public InMemoryChatRepository() {
-        lobbyChatMessages = new CopyOnWriteArrayList<ChatMessageDTO>();
+        lobbyChatMessages = new CopyOnWriteArrayList<OutgoingChatMessageDTO>();
         gameChatMessages = new ConcurrentHashMap<>();
         tableChatMessages = new ConcurrentHashMap<>();
     }
 
     @Override
-    public void saveChatMessage(ChatMessageDTO chatMessage) {
+    public void saveChatMessage(OutgoingChatMessageDTO chatMessage) {
         if (chatMessage.getGameId() != null && chatMessage.getTableId() != null) {
             tableChatMessages.putIfAbsent(chatMessage.getTableId(), new CopyOnWriteArrayList<>());
             tableChatMessages.get(chatMessage.getTableId()).add(chatMessage);
@@ -42,17 +42,17 @@ public class InMemoryChatRepository implements ChatRepository {
     }
 
     @Override
-    public List<ChatMessageDTO> fetchAllLobbyChatMessages() {
+    public List<OutgoingChatMessageDTO> fetchAllLobbyChatMessages() {
         return lobbyChatMessages;
     }
 
     @Override
-    public List<ChatMessageDTO> fetchAllGameChatMessages(UUID gameId) {
+    public List<OutgoingChatMessageDTO> fetchAllGameChatMessages(UUID gameId) {
         return gameChatMessages.get(gameId);
     }
 
     @Override
-    public List<ChatMessageDTO> fetchAllTableChatMessages(UUID tableId) {
+    public List<OutgoingChatMessageDTO> fetchAllTableChatMessages(UUID tableId) {
         return tableChatMessages.get(tableId);
     }
 

@@ -1,21 +1,19 @@
 package com.flexpoker.table.query.handlers;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.stream.Collectors;
-
-import javax.inject.Inject;
-
-import org.springframework.stereotype.Component;
-
 import com.flexpoker.framework.event.EventHandler;
 import com.flexpoker.framework.pushnotifier.PushNotificationPublisher;
 import com.flexpoker.login.repository.LoginRepository;
 import com.flexpoker.pushnotifications.TableUpdatedPushNotification;
 import com.flexpoker.table.command.events.PotCreatedEvent;
+import com.flexpoker.table.query.dto.PotDTO;
+import com.flexpoker.table.query.dto.TableDTO;
 import com.flexpoker.table.query.repository.TableRepository;
-import com.flexpoker.web.dto.outgoing.PotDTO;
-import com.flexpoker.web.dto.outgoing.TableDTO;
+import org.springframework.stereotype.Component;
+
+import javax.inject.Inject;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.stream.Collectors;
 
 @Component
 public class PotCreatedEventHandler implements EventHandler<PotCreatedEvent> {

@@ -1,13 +1,12 @@
 package com.flexpoker.chat.service;
 
-import java.util.UUID;
-
-import org.springframework.stereotype.Service;
-
 import com.flexpoker.chat.repository.ChatRepository;
 import com.flexpoker.framework.pushnotifier.PushNotificationPublisher;
 import com.flexpoker.pushnotifications.ChatSentPushNotification;
-import com.flexpoker.web.dto.outgoing.ChatMessageDTO;
+import com.flexpoker.web.dto.OutgoingChatMessageDTO;
+import org.springframework.stereotype.Service;
+
+import java.util.UUID;
 
 @Service
 public class DefaultChatService implements ChatService {
@@ -53,7 +52,7 @@ public class DefaultChatService implements ChatService {
 
     private void saveAndPush(UUID gameId, UUID tableId, String message, String username, boolean isSystemMessage) {
         chatRepository.saveChatMessage(
-                new ChatMessageDTO(gameId, tableId, message, username, isSystemMessage));
+                new OutgoingChatMessageDTO(UUID.randomUUID(), gameId, tableId, message, username, isSystemMessage));
         pushNotificationPublisher.publish(
                 new ChatSentPushNotification(gameId, tableId, message, username, isSystemMessage));
     }

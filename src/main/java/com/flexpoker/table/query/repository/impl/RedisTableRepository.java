@@ -1,16 +1,14 @@
 package com.flexpoker.table.query.repository.impl;
 
-import java.util.UUID;
-
-import javax.inject.Inject;
-
+import com.flexpoker.config.ProfileNames;
+import com.flexpoker.table.query.dto.TableDTO;
+import com.flexpoker.table.query.repository.TableRepository;
 import org.springframework.context.annotation.Profile;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Repository;
 
-import com.flexpoker.config.ProfileNames;
-import com.flexpoker.table.query.repository.TableRepository;
-import com.flexpoker.web.dto.outgoing.TableDTO;
+import javax.inject.Inject;
+import java.util.UUID;
 
 @Profile({ ProfileNames.REDIS, ProfileNames.TABLE_QUERY_REDIS })
 @Repository

@@ -1,17 +1,16 @@
 package com.flexpoker.table.query.repository.impl;
 
+import com.flexpoker.config.ProfileNames;
+import com.flexpoker.table.query.dto.TableDTO;
+import com.flexpoker.table.query.repository.TableRepository;
+import org.springframework.context.annotation.Profile;
+import org.springframework.stereotype.Repository;
+
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
-
-import org.springframework.context.annotation.Profile;
-import org.springframework.stereotype.Repository;
-
-import com.flexpoker.config.ProfileNames;
-import com.flexpoker.table.query.repository.TableRepository;
-import com.flexpoker.web.dto.outgoing.TableDTO;
 
 @Profile({ ProfileNames.DEFAULT, ProfileNames.TABLE_QUERY_INMEMORY })
 @Repository

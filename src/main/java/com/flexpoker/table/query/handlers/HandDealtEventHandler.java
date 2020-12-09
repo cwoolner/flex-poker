@@ -1,25 +1,23 @@
 package com.flexpoker.table.query.handlers;
 
-import java.util.Collections;
-import java.util.UUID;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
-import javax.inject.Inject;
-
-import org.springframework.stereotype.Component;
-
 import com.flexpoker.framework.event.EventHandler;
 import com.flexpoker.framework.pushnotifier.PushNotificationPublisher;
 import com.flexpoker.login.repository.LoginRepository;
 import com.flexpoker.pushnotifications.SendUserPocketCardsPushNotification;
 import com.flexpoker.pushnotifications.TableUpdatedPushNotification;
 import com.flexpoker.table.command.events.HandDealtEvent;
+import com.flexpoker.table.query.dto.SeatDTO;
+import com.flexpoker.table.query.dto.TableDTO;
 import com.flexpoker.table.query.repository.CardsUsedInHandRepository;
 import com.flexpoker.table.query.repository.TableRepository;
-import com.flexpoker.web.dto.outgoing.SeatDTO;
-import com.flexpoker.web.dto.outgoing.TableDTO;
+import org.springframework.stereotype.Component;
+
+import javax.inject.Inject;
+import java.util.Collections;
+import java.util.UUID;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Component
 public class HandDealtEventHandler implements EventHandler<HandDealtEvent> {
