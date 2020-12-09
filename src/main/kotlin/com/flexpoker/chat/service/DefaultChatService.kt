@@ -3,6 +3,7 @@ package com.flexpoker.chat.service
 import com.flexpoker.chat.repository.ChatRepository
 import com.flexpoker.framework.pushnotifier.PushNotificationPublisher
 import com.flexpoker.pushnotifications.ChatSentPushNotification
+import com.flexpoker.util.MessagingConstants
 import com.flexpoker.web.dto.OutgoingChatMessageDTO
 import org.springframework.stereotype.Service
 import java.util.UUID
@@ -40,7 +41,18 @@ class DefaultChatService(private val chatRepository: ChatRepository,
             OutgoingChatMessageDTO(UUID.randomUUID(), gameId, tableId, message, username, isSystemMessage)
         )
         pushNotificationPublisher.publish(
-            ChatSentPushNotification(gameId, tableId, message, username, isSystemMessage)
+            ChatSentPushNotification(UUID.randomUUID(), gameId, tableId, message, username, isSystemMessage,
+                calculateChatMsgDestination(gameId, tableId))
         )
+    }
+
+    private fun calculateChatMsgDestination(gameId: UUID?, tableId: UUID?): String {
+        if (gameId != null && tableId != null) {
+            return String.format(MessagingConstants.CHAT_TABLE, gameId, tableId)
+        } else if (gameId != null) {
+            return String.format(MessagingConstants.CHAT_GAME, gameId)
+        } else {
+            return MessagingConstants.CHAT_LOBBY
+        }
     }
 }

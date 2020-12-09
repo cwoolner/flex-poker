@@ -1,10 +1,5 @@
 package com.flexpoker.game.query.handlers;
 
-import javax.inject.Inject;
-
-import org.springframework.scheduling.annotation.Async;
-import org.springframework.stereotype.Component;
-
 import com.flexpoker.framework.event.EventHandler;
 import com.flexpoker.framework.pushnotifier.PushNotificationPublisher;
 import com.flexpoker.game.command.events.GameCreatedEvent;
@@ -13,6 +8,10 @@ import com.flexpoker.game.query.dto.GameStage;
 import com.flexpoker.game.query.repository.GameListRepository;
 import com.flexpoker.login.repository.LoginRepository;
 import com.flexpoker.pushnotifications.GameListUpdatedPushNotification;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.stereotype.Component;
+
+import javax.inject.Inject;
 
 @Component
 public class GameCreatedEventHandler implements EventHandler<GameCreatedEvent> {
@@ -52,7 +51,7 @@ public class GameCreatedEventHandler implements EventHandler<GameCreatedEvent> {
     }
 
     private void handlePushNotifications() {
-        pushNotificationPublisher.publish(new GameListUpdatedPushNotification());
+        pushNotificationPublisher.publish(GameListUpdatedPushNotification.INSTANCE);
     }
 
 }

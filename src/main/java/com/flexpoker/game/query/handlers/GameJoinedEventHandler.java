@@ -1,10 +1,5 @@
 package com.flexpoker.game.query.handlers;
 
-import javax.inject.Inject;
-
-import org.springframework.scheduling.annotation.Async;
-import org.springframework.stereotype.Component;
-
 import com.flexpoker.chat.service.ChatService;
 import com.flexpoker.framework.event.EventHandler;
 import com.flexpoker.framework.pushnotifier.PushNotificationPublisher;
@@ -15,6 +10,10 @@ import com.flexpoker.game.query.repository.OpenGameForPlayerRepository;
 import com.flexpoker.login.repository.LoginRepository;
 import com.flexpoker.pushnotifications.GameListUpdatedPushNotification;
 import com.flexpoker.pushnotifications.OpenGamesForPlayerUpdatedPushNotification;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.stereotype.Component;
+
+import javax.inject.Inject;
 
 @Component
 public class GameJoinedEventHandler implements EventHandler<GameJoinedEvent> {
@@ -73,7 +72,7 @@ public class GameJoinedEventHandler implements EventHandler<GameJoinedEvent> {
     private void handlePushNotifications(GameJoinedEvent event) {
         pushNotificationPublisher.publish(new OpenGamesForPlayerUpdatedPushNotification(
                 event.getPlayerId()));
-        pushNotificationPublisher.publish(new GameListUpdatedPushNotification());
+        pushNotificationPublisher.publish(GameListUpdatedPushNotification.INSTANCE);
     }
 
     private void handleChat(GameJoinedEvent event) {

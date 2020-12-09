@@ -1,13 +1,5 @@
 package com.flexpoker.game.query.handlers;
 
-import java.util.Set;
-import java.util.UUID;
-
-import javax.inject.Inject;
-
-import org.springframework.scheduling.annotation.Async;
-import org.springframework.stereotype.Component;
-
 import com.flexpoker.chat.service.ChatService;
 import com.flexpoker.framework.event.EventHandler;
 import com.flexpoker.framework.pushnotifier.PushNotificationPublisher;
@@ -18,6 +10,12 @@ import com.flexpoker.game.query.repository.GamePlayerRepository;
 import com.flexpoker.game.query.repository.OpenGameForPlayerRepository;
 import com.flexpoker.pushnotifications.GameListUpdatedPushNotification;
 import com.flexpoker.pushnotifications.OpenGamesForPlayerUpdatedPushNotification;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.stereotype.Component;
+
+import javax.inject.Inject;
+import java.util.Set;
+import java.util.UUID;
 
 @Component
 public class GameMovedToStartingStageEventHandler implements
@@ -70,7 +68,7 @@ public class GameMovedToStartingStageEventHandler implements
     private void handlePushNotifications(Set<UUID> playerIdsForGame) {
         playerIdsForGame.forEach(x -> pushNotificationPublisher
                 .publish(new OpenGamesForPlayerUpdatedPushNotification(x)));
-        pushNotificationPublisher.publish(new GameListUpdatedPushNotification());
+        pushNotificationPublisher.publish(GameListUpdatedPushNotification.INSTANCE);
     }
 
     private void handleChat(GameMovedToStartingStageEvent event) {
