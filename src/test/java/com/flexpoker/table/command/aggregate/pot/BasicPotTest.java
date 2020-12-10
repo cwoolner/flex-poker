@@ -11,8 +11,8 @@ import java.util.UUID;
 import org.junit.jupiter.api.Test;
 
 import com.flexpoker.exception.FlexPokerException;
-import com.flexpoker.model.HandRanking;
-import com.flexpoker.model.card.CardRank;
+import com.flexpoker.table.command.HandRanking;
+import com.flexpoker.table.command.CardRank;
 import com.flexpoker.table.command.aggregate.HandEvaluation;
 
 public class BasicPotTest {

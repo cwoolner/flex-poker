@@ -2,8 +2,8 @@ package com.flexpoker.test.util.datageneration;
 
 import java.util.Arrays;
 
-import com.flexpoker.model.card.CardsUsedInHand;
-import com.flexpoker.model.card.PocketCards;
+import com.flexpoker.table.command.CardsUsedInHand;
+import com.flexpoker.table.command.PocketCards;
 
 public class DeckGenerator {
 

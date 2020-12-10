@@ -12,10 +12,10 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Repository;
 
 import com.flexpoker.config.ProfileNames;
-import com.flexpoker.model.card.FlopCards;
-import com.flexpoker.model.card.PocketCards;
-import com.flexpoker.model.card.RiverCard;
-import com.flexpoker.model.card.TurnCard;
+import com.flexpoker.table.command.FlopCards;
+import com.flexpoker.table.command.PocketCards;
+import com.flexpoker.table.command.RiverCard;
+import com.flexpoker.table.command.TurnCard;
 import com.flexpoker.table.query.repository.CardsUsedInHandRepository;
 
 @Profile({ ProfileNames.REDIS, ProfileNames.TABLE_QUERY_REDIS })

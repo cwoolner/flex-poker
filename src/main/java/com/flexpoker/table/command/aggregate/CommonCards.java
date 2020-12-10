@@ -3,10 +3,10 @@ package com.flexpoker.table.command.aggregate;
 import java.util.Arrays;
 import java.util.List;
 
-import com.flexpoker.model.card.Card;
-import com.flexpoker.model.card.FlopCards;
-import com.flexpoker.model.card.RiverCard;
-import com.flexpoker.model.card.TurnCard;
+import com.flexpoker.table.command.Card;
+import com.flexpoker.table.command.FlopCards;
+import com.flexpoker.table.command.RiverCard;
+import com.flexpoker.table.command.TurnCard;
 
 public class CommonCards {
 

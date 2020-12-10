@@ -2,10 +2,10 @@ package com.flexpoker.table.command.aggregate;
 
 import com.flexpoker.exception.FlexPokerException;
 import com.flexpoker.framework.command.EventApplier;
-import com.flexpoker.model.PlayerAction;
-import com.flexpoker.model.card.Card;
-import com.flexpoker.model.card.CardsUsedInHand;
-import com.flexpoker.model.card.PocketCards;
+import com.flexpoker.table.command.PlayerAction;
+import com.flexpoker.table.command.Card;
+import com.flexpoker.table.command.CardsUsedInHand;
+import com.flexpoker.table.command.PocketCards;
 import com.flexpoker.table.command.events.ActionOnChangedEvent;
 import com.flexpoker.table.command.events.AutoMoveHandForwardEvent;
 import com.flexpoker.table.command.events.CardsShuffledEvent;

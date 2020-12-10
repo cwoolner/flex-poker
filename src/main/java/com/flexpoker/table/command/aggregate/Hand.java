@@ -1,11 +1,11 @@
 package com.flexpoker.table.command.aggregate;
 
 import com.flexpoker.exception.FlexPokerException;
-import com.flexpoker.model.PlayerAction;
-import com.flexpoker.model.card.FlopCards;
-import com.flexpoker.model.card.PocketCards;
-import com.flexpoker.model.card.RiverCard;
-import com.flexpoker.model.card.TurnCard;
+import com.flexpoker.table.command.PlayerAction;
+import com.flexpoker.table.command.FlopCards;
+import com.flexpoker.table.command.PocketCards;
+import com.flexpoker.table.command.RiverCard;
+import com.flexpoker.table.command.TurnCard;
 import com.flexpoker.table.command.aggregate.pot.PotHandler;
 import com.flexpoker.table.command.events.ActionOnChangedEvent;
 import com.flexpoker.table.command.events.AutoMoveHandForwardEvent;

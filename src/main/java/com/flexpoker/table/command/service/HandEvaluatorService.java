@@ -3,11 +3,11 @@ package com.flexpoker.table.command.service;
 import java.util.List;
 import java.util.Map;
 
-import com.flexpoker.model.HandRanking;
-import com.flexpoker.model.card.FlopCards;
-import com.flexpoker.model.card.PocketCards;
-import com.flexpoker.model.card.RiverCard;
-import com.flexpoker.model.card.TurnCard;
+import com.flexpoker.table.command.HandRanking;
+import com.flexpoker.table.command.FlopCards;
+import com.flexpoker.table.command.PocketCards;
+import com.flexpoker.table.command.RiverCard;
+import com.flexpoker.table.command.TurnCard;
 import com.flexpoker.table.command.aggregate.HandEvaluation;
 
 public interface HandEvaluatorService {

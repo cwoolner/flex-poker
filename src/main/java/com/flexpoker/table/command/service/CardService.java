@@ -2,8 +2,8 @@ package com.flexpoker.table.command.service;
 
 import java.util.List;
 
-import com.flexpoker.model.card.Card;
-import com.flexpoker.model.card.CardsUsedInHand;
+import com.flexpoker.table.command.Card;
+import com.flexpoker.table.command.CardsUsedInHand;
 
 public interface CardService {
 

@@ -1,12 +1,12 @@
 package com.flexpoker.test.util.datageneration;
 
-import com.flexpoker.model.card.Card;
-import com.flexpoker.model.card.CardRank;
-import com.flexpoker.model.card.CardSuit;
-import com.flexpoker.model.card.FlopCards;
-import com.flexpoker.model.card.PocketCards;
-import com.flexpoker.model.card.RiverCard;
-import com.flexpoker.model.card.TurnCard;
+import com.flexpoker.table.command.Card;
+import com.flexpoker.table.command.CardRank;
+import com.flexpoker.table.command.CardSuit;
+import com.flexpoker.table.command.FlopCards;
+import com.flexpoker.table.command.PocketCards;
+import com.flexpoker.table.command.RiverCard;
+import com.flexpoker.table.command.TurnCard;
 
 public class CardGenerator {
 

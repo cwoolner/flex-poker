@@ -6,10 +6,10 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.UUID;
 
-import com.flexpoker.model.HandRanking;
-import com.flexpoker.model.card.Card;
-import com.flexpoker.model.card.CardRank;
-import com.flexpoker.model.card.PocketCards;
+import com.flexpoker.table.command.HandRanking;
+import com.flexpoker.table.command.Card;
+import com.flexpoker.table.command.CardRank;
+import com.flexpoker.table.command.PocketCards;
 import com.flexpoker.table.command.aggregate.DefaultTableFactory;
 import com.flexpoker.table.command.aggregate.HandEvaluation;
 import com.flexpoker.table.command.aggregate.Table;

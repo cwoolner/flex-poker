@@ -2,7 +2,7 @@ package com.flexpoker.pushnotifications
 
 import com.flexpoker.framework.pushnotifier.BasePushNotification
 import com.flexpoker.framework.pushnotifier.PushNotificationType
-import com.flexpoker.model.card.PocketCards
+import com.flexpoker.table.command.PocketCards
 import java.util.UUID
 
 data class ChatSentPushNotification(val id: UUID, val gameId: UUID?, val tableId: UUID?,
