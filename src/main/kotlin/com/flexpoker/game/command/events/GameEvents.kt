@@ -5,7 +5,6 @@ import com.flexpoker.exception.FlexPokerException
 import com.flexpoker.game.command.events.dto.BlindAmountsDTO
 import com.flexpoker.game.command.events.dto.BlindScheduleDTO
 import com.flexpoker.game.command.framework.GameEvent
-import com.flexpoker.util.StringUtils
 import java.time.Instant
 import java.util.UUID
 
@@ -33,10 +32,6 @@ sealed class BaseGameEvent(private val aggregateId: UUID) : GameEvent {
     @JsonProperty
     override fun getTime(): Instant {
         return time
-    }
-
-    override fun toString(): String {
-        return StringUtils.allFieldsToString(this)
     }
 
 }

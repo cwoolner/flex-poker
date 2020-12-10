@@ -11,7 +11,6 @@ import com.flexpoker.table.command.TurnCard
 import com.flexpoker.table.command.aggregate.HandDealerState
 import com.flexpoker.table.command.aggregate.HandEvaluation
 import com.flexpoker.table.command.framework.TableEvent
-import com.flexpoker.util.StringUtils
 import org.pcollections.PMap
 import org.pcollections.PSet
 import java.time.Instant
@@ -41,10 +40,6 @@ sealed class BaseTableEvent(private val aggregateId: UUID) : TableEvent {
     @JsonProperty
     override fun getTime(): Instant {
         return time
-    }
-
-    override fun toString(): String {
-        return StringUtils.allFieldsToString(this)
     }
 
 }
