@@ -10,7 +10,7 @@ import java.util.concurrent.CopyOnWriteArrayList
 
 @Profile(ProfileNames.DEFAULT, ProfileNames.CHAT_INMEMORY)
 @Repository
-open class InMemoryChatRepository : ChatRepository {
+class InMemoryChatRepository : ChatRepository {
 
     private val lobbyChatMessages: MutableList<OutgoingChatMessageDTO> = CopyOnWriteArrayList()
     private val gameChatMessages: MutableMap<UUID, MutableList<OutgoingChatMessageDTO>> = ConcurrentHashMap()

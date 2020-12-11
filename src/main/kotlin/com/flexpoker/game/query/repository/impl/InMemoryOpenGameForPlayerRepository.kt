@@ -14,7 +14,7 @@ import java.util.stream.Collectors
 
 @Profile(ProfileNames.DEFAULT, ProfileNames.GAME_QUERY_INMEMORY)
 @Repository
-open class InMemoryOpenGameForPlayerRepository : OpenGameForPlayerRepository {
+class InMemoryOpenGameForPlayerRepository : OpenGameForPlayerRepository {
 
     private val openGameForUserMap: MutableMap<UUID?, MutableMap<UUID?, OpenGameForUser>> = ConcurrentHashMap()
 

@@ -10,7 +10,7 @@ import javax.inject.Inject
 
 @Profile(ProfileNames.REDIS, ProfileNames.CHAT_REDIS)
 @Repository
-open class RedisChatRepository @Inject constructor(private val redisTemplate: RedisTemplate<String, OutgoingChatMessageDTO>) :
+class RedisChatRepository @Inject constructor(private val redisTemplate: RedisTemplate<String, OutgoingChatMessageDTO>) :
     ChatRepository {
 
     companion object {

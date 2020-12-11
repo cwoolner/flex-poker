@@ -11,7 +11,7 @@ import java.util.UUID
 
 @Profile(ProfileNames.DEFAULT, ProfileNames.GAME_QUERY_INMEMORY)
 @Repository
-open class InMemoryGameListRepository : GameListRepository {
+class InMemoryGameListRepository : GameListRepository {
 
     private val gameInListDTOList: MutableList<GameInListDTO> = ArrayList()
 

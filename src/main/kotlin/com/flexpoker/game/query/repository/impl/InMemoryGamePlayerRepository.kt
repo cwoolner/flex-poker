@@ -10,7 +10,7 @@ import java.util.UUID
 
 @Profile(ProfileNames.DEFAULT, ProfileNames.GAME_QUERY_INMEMORY)
 @Repository
-open class InMemoryGamePlayerRepository : GamePlayerRepository {
+class InMemoryGamePlayerRepository : GamePlayerRepository {
 
     private val gameIdToPlayerId: MutableMap<UUID, MutableSet<UUID>> = HashMap()
 

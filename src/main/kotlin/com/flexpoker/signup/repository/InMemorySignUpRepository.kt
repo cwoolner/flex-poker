@@ -11,7 +11,7 @@ import javax.annotation.PostConstruct
 
 @Profile(ProfileNames.DEFAULT, ProfileNames.SIGNUP_INMEMORY)
 @Repository
-open class InMemorySignUpRepository : SignUpRepository {
+class InMemorySignUpRepository : SignUpRepository {
 
     private val usernameSet: MutableSet<String> = HashSet()
     private val signUpCodeMap: MutableMap<UUID, MutableMap<String, UUID>> = HashMap()

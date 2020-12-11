@@ -12,7 +12,7 @@ import javax.inject.Inject
 
 @Profile(ProfileNames.REDIS, ProfileNames.GAME_QUERY_REDIS)
 @Repository
-open class RedisGameListRepository @Inject constructor(private val redisTemplate: RedisTemplate<String, GameInListDTO?>) :
+class RedisGameListRepository @Inject constructor(private val redisTemplate: RedisTemplate<String, GameInListDTO?>) :
     GameListRepository {
 
     companion object {

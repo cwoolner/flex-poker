@@ -18,7 +18,7 @@ import javax.inject.Inject
 
 @Profile(ProfileNames.REDIS, ProfileNames.SIGNUP_REDIS)
 @Repository
-open class RedisSignUpRepository @Inject constructor(private val redisTemplate: RedisTemplate<String, String>) :
+class RedisSignUpRepository @Inject constructor(private val redisTemplate: RedisTemplate<String, String>) :
     SignUpRepository {
 
     companion object {

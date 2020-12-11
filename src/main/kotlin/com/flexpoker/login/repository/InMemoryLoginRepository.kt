@@ -15,7 +15,7 @@ import javax.annotation.PostConstruct
 
 @Profile(ProfileNames.DEFAULT, ProfileNames.LOGIN_INMEMORY)
 @Repository
-open class InMemoryLoginRepository : LoginRepository {
+class InMemoryLoginRepository : LoginRepository {
 
     private val loginUserMap: MutableMap<String, UserDetails> = HashMap()
     private val loginIdMap: MutableMap<String, UUID> = HashMap()
