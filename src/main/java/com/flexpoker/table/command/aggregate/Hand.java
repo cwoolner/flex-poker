@@ -26,7 +26,7 @@ import com.flexpoker.table.command.events.RiverCardDealtEvent;
 import com.flexpoker.table.command.events.RoundCompletedEvent;
 import com.flexpoker.table.command.events.TurnCardDealtEvent;
 import com.flexpoker.table.command.events.WinnersDeterminedEvent;
-import com.flexpoker.table.command.framework.TableEvent;
+import com.flexpoker.table.command.events.TableEvent;
 import org.pcollections.HashTreePMap;
 import org.pcollections.HashTreePSet;
 import org.pcollections.PMap;

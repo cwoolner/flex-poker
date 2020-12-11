@@ -28,7 +28,7 @@ import com.flexpoker.game.command.events.PlayerMovedToNewTableEvent;
 import com.flexpoker.game.command.events.TablePausedForBalancingEvent;
 import com.flexpoker.game.command.events.TableRemovedEvent;
 import com.flexpoker.game.command.events.TableResumedAfterBalancingEvent;
-import com.flexpoker.game.command.framework.GameEvent;
+import com.flexpoker.game.command.events.GameEvent;
 import com.flexpoker.game.query.dto.GameStage;
 
 public class Game {

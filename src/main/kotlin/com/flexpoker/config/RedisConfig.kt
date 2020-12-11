@@ -1,14 +1,14 @@
 package com.flexpoker.config
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.flexpoker.game.command.framework.GameEvent
+import com.flexpoker.game.command.events.GameEvent
 import com.flexpoker.game.query.dto.GameInListDTO
 import com.flexpoker.game.query.dto.OpenGameForUser
 import com.flexpoker.table.command.FlopCards
 import com.flexpoker.table.command.PocketCards
 import com.flexpoker.table.command.RiverCard
 import com.flexpoker.table.command.TurnCard
-import com.flexpoker.table.command.framework.TableEvent
+import com.flexpoker.table.command.events.TableEvent
 import com.flexpoker.table.query.dto.TableDTO
 import com.flexpoker.web.dto.OutgoingChatMessageDTO
 import org.springframework.context.annotation.Bean

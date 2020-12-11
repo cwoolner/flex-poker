@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test;
 import com.flexpoker.game.command.aggregate.DefaultGameFactory;
 import com.flexpoker.game.command.commands.CreateGameCommand;
 import com.flexpoker.game.command.events.GameCreatedEvent;
-import com.flexpoker.game.command.framework.GameEvent;
+import com.flexpoker.game.command.events.GameEvent;
 
 public class GameFactoryTest {
 

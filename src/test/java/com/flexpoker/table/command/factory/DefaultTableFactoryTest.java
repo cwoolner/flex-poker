@@ -4,7 +4,7 @@ import com.flexpoker.exception.FlexPokerException;
 import com.flexpoker.table.command.aggregate.DefaultTableFactory;
 import com.flexpoker.table.command.commands.CreateTableCommand;
 import com.flexpoker.table.command.events.TableCreatedEvent;
-import com.flexpoker.table.command.framework.TableEvent;
+import com.flexpoker.table.command.events.TableEvent;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.pcollections.HashTreePMap;

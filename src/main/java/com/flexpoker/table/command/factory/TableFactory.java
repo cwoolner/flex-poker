@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.flexpoker.table.command.aggregate.Table;
 import com.flexpoker.table.command.commands.CreateTableCommand;
-import com.flexpoker.table.command.framework.TableEvent;
+import com.flexpoker.table.command.events.TableEvent;
 
 public interface TableFactory {
 

@@ -4,7 +4,7 @@ import com.flexpoker.framework.command.CommandHandler
 import com.flexpoker.framework.event.EventPublisher
 import com.flexpoker.game.command.commands.JoinGameCommand
 import com.flexpoker.game.command.factory.GameFactory
-import com.flexpoker.game.command.framework.GameEvent
+import com.flexpoker.game.command.events.GameEvent
 import com.flexpoker.game.command.repository.GameEventRepository
 import org.springframework.scheduling.annotation.Async
 import org.springframework.stereotype.Component

@@ -32,7 +32,7 @@ import com.flexpoker.table.command.events.TablePausedEvent;
 import com.flexpoker.table.command.events.TableResumedEvent;
 import com.flexpoker.table.command.events.TurnCardDealtEvent;
 import com.flexpoker.table.command.events.WinnersDeterminedEvent;
-import com.flexpoker.table.command.framework.TableEvent;
+import com.flexpoker.table.command.events.TableEvent;
 import org.pcollections.HashTreePMap;
 
 import java.util.ArrayList;

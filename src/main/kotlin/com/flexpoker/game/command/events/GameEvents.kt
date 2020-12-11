@@ -1,12 +1,32 @@
 package com.flexpoker.game.command.events
 
 import com.fasterxml.jackson.annotation.JsonProperty
+import com.fasterxml.jackson.annotation.JsonSubTypes
+import com.fasterxml.jackson.annotation.JsonTypeInfo
 import com.flexpoker.exception.FlexPokerException
+import com.flexpoker.framework.event.Event
 import com.flexpoker.game.command.events.dto.BlindAmountsDTO
 import com.flexpoker.game.command.events.dto.BlindScheduleDTO
-import com.flexpoker.game.command.framework.GameEvent
 import java.time.Instant
 import java.util.UUID
+
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
+@JsonSubTypes(
+    JsonSubTypes.Type(value = BlindsIncreasedEvent::class, name = "BlindsIncreased"),
+    JsonSubTypes.Type(value = GameCreatedEvent::class, name = "GameCreated"),
+    JsonSubTypes.Type(value = GameFinishedEvent::class, name = "GameFinished"),
+    JsonSubTypes.Type(value = GameJoinedEvent::class, name = "GameJoined"),
+    JsonSubTypes.Type(value = GameMovedToStartingStageEvent::class, name = "GameMovedToStartingStage"),
+    JsonSubTypes.Type(value = GameStartedEvent::class, name = "GameStarted"),
+    JsonSubTypes.Type(value = GameTablesCreatedAndPlayersAssociatedEvent::class, name = "GameTablesCreatedAndPlayersAssociated"),
+    JsonSubTypes.Type(value = NewHandIsClearedToStartEvent::class, name = "NewHandIsClearedToStart"),
+    JsonSubTypes.Type(value = PlayerBustedGameEvent::class, name = "PlayerBustedGame"),
+    JsonSubTypes.Type(value = PlayerMovedToNewTableEvent::class, name = "PlayerMovedToNewTable"),
+    JsonSubTypes.Type(value = TablePausedForBalancingEvent::class, name = "TablePausedForBalancing"),
+    JsonSubTypes.Type(value = TableRemovedEvent::class, name = "TableRemoved"),
+    JsonSubTypes.Type(value = TableResumedAfterBalancingEvent::class, name = "TableResumedAfterBalancing")
+)
+interface GameEvent : Event
 
 sealed class BaseGameEvent(private val aggregateId: UUID) : GameEvent {
     private var version = 0

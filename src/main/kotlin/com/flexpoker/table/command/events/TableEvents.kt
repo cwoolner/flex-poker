@@ -1,7 +1,10 @@
 package com.flexpoker.table.command.events
 
 import com.fasterxml.jackson.annotation.JsonProperty
+import com.fasterxml.jackson.annotation.JsonSubTypes
+import com.fasterxml.jackson.annotation.JsonTypeInfo
 import com.flexpoker.exception.FlexPokerException
+import com.flexpoker.framework.event.Event
 import com.flexpoker.table.command.Card
 import com.flexpoker.table.command.FlopCards
 import com.flexpoker.table.command.PlayerAction
@@ -10,11 +13,41 @@ import com.flexpoker.table.command.RiverCard
 import com.flexpoker.table.command.TurnCard
 import com.flexpoker.table.command.aggregate.HandDealerState
 import com.flexpoker.table.command.aggregate.HandEvaluation
-import com.flexpoker.table.command.framework.TableEvent
 import org.pcollections.PMap
 import org.pcollections.PSet
 import java.time.Instant
 import java.util.UUID
+
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
+@JsonSubTypes(
+    JsonSubTypes.Type(value = ActionOnChangedEvent::class, name = "ActionOnChanged"),
+    JsonSubTypes.Type(value = AutoMoveHandForwardEvent::class, name = "AutoMoveHandForward"),
+    JsonSubTypes.Type(value = CardsShuffledEvent::class, name = "CardsShuffled"),
+    JsonSubTypes.Type(value = FlopCardsDealtEvent::class, name = "FlopCardsDealt"),
+    JsonSubTypes.Type(value = HandCompletedEvent::class, name = "HandCompleted"),
+    JsonSubTypes.Type(value = HandDealtEvent::class, name = "HandDealt"),
+    JsonSubTypes.Type(value = LastToActChangedEvent::class, name = "LastToActChanged"),
+    JsonSubTypes.Type(value = PlayerAddedEvent::class, name = "PlayerAdded"),
+    JsonSubTypes.Type(value = PlayerBustedTableEvent::class, name = "PlayerBustedTableEvent"),
+    JsonSubTypes.Type(value = PlayerCalledEvent::class, name = "PlayerCalled"),
+    JsonSubTypes.Type(value = PlayerCheckedEvent::class, name = "PlayerChecked"),
+    JsonSubTypes.Type(value = PlayerFoldedEvent::class, name = "PlayerFolded"),
+    JsonSubTypes.Type(value = PlayerForceCheckedEvent::class, name = "PlayerForceChecked"),
+    JsonSubTypes.Type(value = PlayerForceFoldedEvent::class, name = "PlayerForceFolded"),
+    JsonSubTypes.Type(value = PlayerRaisedEvent::class, name = "PlayerRaised"),
+    JsonSubTypes.Type(value = PlayerRemovedEvent::class, name = "PlayerRemoved"),
+    JsonSubTypes.Type(value = PotAmountIncreasedEvent::class, name = "PotAmountIncreased"),
+    JsonSubTypes.Type(value = PotClosedEvent::class, name = "PotClosed"),
+    JsonSubTypes.Type(value = PotCreatedEvent::class, name = "PotCreated"),
+    JsonSubTypes.Type(value = RiverCardDealtEvent::class, name = "RiverCardDealt"),
+    JsonSubTypes.Type(value = RoundCompletedEvent::class, name = "RoundCompleted"),
+    JsonSubTypes.Type(value = TableCreatedEvent::class, name = "TableCreated"),
+    JsonSubTypes.Type(value = TablePausedEvent::class, name = "TablePaused"),
+    JsonSubTypes.Type(value = TableResumedEvent::class, name = "TableResumed"),
+    JsonSubTypes.Type(value = TurnCardDealtEvent::class, name = "TurnCardDealt"),
+    JsonSubTypes.Type(value = WinnersDeterminedEvent::class, name = "WinnersDetermined")
+)
+interface TableEvent : Event
 
 sealed class BaseTableEvent(private val aggregateId: UUID) : TableEvent {
     private var version = 0

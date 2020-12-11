@@ -4,7 +4,7 @@ import com.flexpoker.framework.command.CommandHandler
 import com.flexpoker.framework.event.EventPublisher
 import com.flexpoker.table.command.commands.StartNewHandForNewGameCommand
 import com.flexpoker.table.command.factory.TableFactory
-import com.flexpoker.table.command.framework.TableEvent
+import com.flexpoker.table.command.events.TableEvent
 import com.flexpoker.table.command.repository.TableEventRepository
 import com.flexpoker.table.command.service.CardService
 import com.flexpoker.table.command.service.HandEvaluatorService

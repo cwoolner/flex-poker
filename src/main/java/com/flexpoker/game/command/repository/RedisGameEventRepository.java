@@ -12,7 +12,7 @@ import org.springframework.stereotype.Repository;
 import com.flexpoker.config.ProfileNames;
 import com.flexpoker.exception.FlexPokerException;
 import com.flexpoker.game.command.events.GameCreatedEvent;
-import com.flexpoker.game.command.framework.GameEvent;
+import com.flexpoker.game.command.events.GameEvent;
 
 @Profile({ ProfileNames.REDIS, ProfileNames.TABLE_COMMAND_REDIS })
 @Repository

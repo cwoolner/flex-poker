@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.UUID;
 
 import com.flexpoker.game.command.events.GameCreatedEvent;
-import com.flexpoker.game.command.framework.GameEvent;
+import com.flexpoker.game.command.events.GameEvent;
 
 public interface GameEventRepository {
 

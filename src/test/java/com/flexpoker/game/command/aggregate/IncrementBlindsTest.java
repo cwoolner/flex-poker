@@ -16,7 +16,7 @@ import com.flexpoker.game.command.events.GameJoinedEvent;
 import com.flexpoker.game.command.events.GameMovedToStartingStageEvent;
 import com.flexpoker.game.command.events.GameStartedEvent;
 import com.flexpoker.game.command.events.GameTablesCreatedAndPlayersAssociatedEvent;
-import com.flexpoker.game.command.framework.GameEvent;
+import com.flexpoker.game.command.events.GameEvent;
 
 public class IncrementBlindsTest {
 

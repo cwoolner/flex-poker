@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.flexpoker.game.command.aggregate.Game;
 import com.flexpoker.game.command.commands.CreateGameCommand;
-import com.flexpoker.game.command.framework.GameEvent;
+import com.flexpoker.game.command.events.GameEvent;
 
 public interface GameFactory {
 

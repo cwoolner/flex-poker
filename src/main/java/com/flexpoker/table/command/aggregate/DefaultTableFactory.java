@@ -12,7 +12,7 @@ import com.flexpoker.exception.FlexPokerException;
 import com.flexpoker.table.command.commands.CreateTableCommand;
 import com.flexpoker.table.command.events.TableCreatedEvent;
 import com.flexpoker.table.command.factory.TableFactory;
-import com.flexpoker.table.command.framework.TableEvent;
+import com.flexpoker.table.command.events.TableEvent;
 
 @Component
 public class DefaultTableFactory implements TableFactory {

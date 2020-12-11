@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
 
 import com.flexpoker.config.ProfileNames;
 import com.flexpoker.exception.FlexPokerException;
-import com.flexpoker.table.command.framework.TableEvent;
+import com.flexpoker.table.command.events.TableEvent;
 
 @Profile({ ProfileNames.DEFAULT, ProfileNames.TABLE_COMMAND_INMEMORY })
 @Repository

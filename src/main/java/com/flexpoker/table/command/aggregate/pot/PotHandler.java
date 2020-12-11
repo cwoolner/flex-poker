@@ -4,7 +4,7 @@ import com.flexpoker.table.command.aggregate.HandEvaluation;
 import com.flexpoker.table.command.events.PotAmountIncreasedEvent;
 import com.flexpoker.table.command.events.PotClosedEvent;
 import com.flexpoker.table.command.events.PotCreatedEvent;
-import com.flexpoker.table.command.framework.TableEvent;
+import com.flexpoker.table.command.events.TableEvent;
 import org.pcollections.HashTreePMap;
 import org.pcollections.PMap;
 
