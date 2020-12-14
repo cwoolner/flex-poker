@@ -1,12 +1,12 @@
 package com.flexpoker.table.query.handlers;
 
 import com.flexpoker.framework.event.EventHandler;
-import com.flexpoker.framework.pushnotifier.PushNotification;
 import com.flexpoker.framework.pushnotifier.PushNotificationPublisher;
 import com.flexpoker.game.query.repository.OpenGameForPlayerRepository;
 import com.flexpoker.login.repository.LoginRepository;
 import com.flexpoker.pushnotifications.OpenGamesForPlayerUpdatedPushNotification;
 import com.flexpoker.pushnotifications.OpenTableForUserPushNotification;
+import com.flexpoker.pushnotifications.PushNotification;
 import com.flexpoker.table.command.events.TableCreatedEvent;
 import com.flexpoker.table.query.dto.SeatDTO;
 import com.flexpoker.table.query.dto.TableDTO;

@@ -14,3 +14,5 @@ data class SeatDTO (val position: Int, val name: String, val chipsInBack: Int, v
 
 data class TableDTO (val id: UUID, val version: Int, val seats: List<SeatDTO>?, val totalPot: Int, val pots: Set<PotDTO>?,
                      val visibleCommonCards: List<CardDTO>?, val currentHandMinRaiseToAmount: Int, val currentHandId: UUID?)
+
+data class OpenTableForUserDTO(val gameId: UUID, val tableId: UUID)
