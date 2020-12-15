@@ -42,7 +42,7 @@ class ActionOnCountdownProcessManager @Inject constructor(
     }
 
     private fun addNewActionOnTimer(event: ActionOnChangedEvent) {
-        val gameCreatedEvent = gameEventRepository.fetchGameCreatedEvent(event.gameId)
+        val gameCreatedEvent = gameEventRepository.fetchGameCreatedEvent(event.gameId)!!
         val numberOfSecondsForActionOnTimer = gameCreatedEvent.numberOfSecondsForActionOnTimer
         val scheduledFuture = scheduledThreadPoolExecutor.scheduleAtFixedRate(
             ActionOnCounter(event, numberOfSecondsForActionOnTimer), 0, 1,
