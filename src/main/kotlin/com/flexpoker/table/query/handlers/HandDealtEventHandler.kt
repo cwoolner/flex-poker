@@ -9,7 +9,6 @@ import com.flexpoker.table.command.events.HandDealtEvent
 import com.flexpoker.table.query.dto.SeatDTO
 import com.flexpoker.table.query.repository.CardsUsedInHandRepository
 import com.flexpoker.table.query.repository.TableRepository
-import org.springframework.scheduling.annotation.Async
 import org.springframework.stereotype.Component
 import javax.inject.Inject
 
@@ -21,7 +20,6 @@ class HandDealtEventHandler @Inject constructor(
     private val pushNotificationPublisher: PushNotificationPublisher
 ) : EventHandler<HandDealtEvent> {
 
-    @Async
     override fun handle(event: HandDealtEvent) {
         handleCardsUsedInHandStorage(event)
         handleUpdatingTable(event)

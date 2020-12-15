@@ -10,7 +10,6 @@ import com.flexpoker.game.query.repository.GamePlayerRepository
 import com.flexpoker.game.query.repository.OpenGameForPlayerRepository
 import com.flexpoker.pushnotifications.GameListUpdatedPushNotification
 import com.flexpoker.pushnotifications.OpenGamesForPlayerUpdatedPushNotification
-import org.springframework.scheduling.annotation.Async
 import org.springframework.stereotype.Component
 import java.util.UUID
 import javax.inject.Inject
@@ -24,7 +23,6 @@ class GameStartedEventHandler @Inject constructor(
     private val chatService: ChatService
 ) : EventHandler<GameStartedEvent> {
 
-    @Async
     override fun handle(event: GameStartedEvent) {
         val playerIdsForGame = handleOpenGameRepository(event)
         handleGameListRepository(event)

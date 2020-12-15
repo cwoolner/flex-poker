@@ -8,7 +8,6 @@ import com.flexpoker.game.query.dto.GameStage
 import com.flexpoker.game.query.repository.GameListRepository
 import com.flexpoker.login.repository.LoginRepository
 import com.flexpoker.pushnotifications.GameListUpdatedPushNotification
-import org.springframework.scheduling.annotation.Async
 import org.springframework.stereotype.Component
 import javax.inject.Inject
 
@@ -19,7 +18,6 @@ class GameCreatedEventHandler @Inject constructor(
     private val pushNotificationPublisher: PushNotificationPublisher
 ) : EventHandler<GameCreatedEvent> {
 
-    @Async
     override fun handle(event: GameCreatedEvent) {
         handleGameListRepository(event)
         handlePushNotifications()

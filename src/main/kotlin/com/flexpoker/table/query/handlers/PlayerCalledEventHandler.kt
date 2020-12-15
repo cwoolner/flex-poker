@@ -7,7 +7,6 @@ import com.flexpoker.login.repository.LoginRepository
 import com.flexpoker.pushnotifications.TableUpdatedPushNotification
 import com.flexpoker.table.command.events.PlayerCalledEvent
 import com.flexpoker.table.query.repository.TableRepository
-import org.springframework.scheduling.annotation.Async
 import org.springframework.stereotype.Component
 import javax.inject.Inject
 
@@ -19,7 +18,6 @@ class PlayerCalledEventHandler @Inject constructor(
     private val chatService: ChatService
 ) : EventHandler<PlayerCalledEvent> {
 
-    @Async
     override fun handle(event: PlayerCalledEvent) {
         handleUpdatingTable(event)
         handlePushNotifications(event)

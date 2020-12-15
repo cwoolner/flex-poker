@@ -7,7 +7,6 @@ import com.flexpoker.table.command.events.TurnCardDealtEvent
 import com.flexpoker.table.query.dto.CardDTO
 import com.flexpoker.table.query.repository.CardsUsedInHandRepository
 import com.flexpoker.table.query.repository.TableRepository
-import org.springframework.scheduling.annotation.Async
 import org.springframework.stereotype.Component
 import javax.inject.Inject
 
@@ -18,7 +17,6 @@ class TurnCardDealtEventHandler @Inject constructor(
     private val pushNotificationPublisher: PushNotificationPublisher
 ) : EventHandler<TurnCardDealtEvent> {
 
-    @Async
     override fun handle(event: TurnCardDealtEvent) {
         handleUpdatingTable(event)
         handlePushNotifications(event)

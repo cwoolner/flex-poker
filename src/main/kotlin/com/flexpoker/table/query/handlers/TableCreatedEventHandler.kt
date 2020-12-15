@@ -10,7 +10,6 @@ import com.flexpoker.table.command.events.TableCreatedEvent
 import com.flexpoker.table.query.dto.SeatDTO
 import com.flexpoker.table.query.dto.TableDTO
 import com.flexpoker.table.query.repository.TableRepository
-import org.springframework.scheduling.annotation.Async
 import org.springframework.stereotype.Component
 import javax.inject.Inject
 
@@ -22,7 +21,6 @@ class TableCreatedEventHandler @Inject constructor(
     private val pushNotificationPublisher: PushNotificationPublisher
 ) : EventHandler<TableCreatedEvent> {
 
-    @Async
     override fun handle(event: TableCreatedEvent) {
         handleNewTableInsert(event)
         handleOpenGameUpdate(event)

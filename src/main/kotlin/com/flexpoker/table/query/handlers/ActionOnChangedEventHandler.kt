@@ -6,7 +6,6 @@ import com.flexpoker.login.repository.LoginRepository
 import com.flexpoker.pushnotifications.TableUpdatedPushNotification
 import com.flexpoker.table.command.events.ActionOnChangedEvent
 import com.flexpoker.table.query.repository.TableRepository
-import org.springframework.scheduling.annotation.Async
 import org.springframework.stereotype.Component
 import javax.inject.Inject
 
@@ -17,7 +16,6 @@ class ActionOnChangedEventHandler @Inject constructor(
     private val pushNotificationPublisher: PushNotificationPublisher
 ) : EventHandler<ActionOnChangedEvent> {
 
-    @Async
     override fun handle(event: ActionOnChangedEvent) {
         handleUpdatingTable(event)
         handlePushNotifications(event)
