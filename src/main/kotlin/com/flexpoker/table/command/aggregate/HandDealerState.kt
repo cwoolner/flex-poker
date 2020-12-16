@@ -1,4 +1,4 @@
-package com.flexpoker.table.command.aggregate;
+package com.flexpoker.table.command.aggregate
 
 /**
  * This enum represents the various states that a dealer goes through.  When a
@@ -24,14 +24,10 @@ package com.flexpoker.table.command.aggregate;
  * turn card.
  *
  * NOTE: The ordering of the enum constants is important as the ordinal() value
- *       is used for security check purposes using ranges.  For instance, if the
- *       hand is in the TURN_DEALT state, then a client will be able to fetch
- *       their pocket cards, the flop, and the turn, but not the river.
- *
- * @author cwoolner
+ * is used for security check purposes using ranges.  For instance, if the
+ * hand is in the TURN_DEALT state, then a client will be able to fetch
+ * their pocket cards, the flop, and the turn, but not the river.
  */
-public enum HandDealerState {
-
-    NONE, POCKET_CARDS_DEALT, FLOP_DEALT, TURN_DEALT, RIVER_DEALT, COMPLETE;
-
+enum class HandDealerState {
+    NONE, POCKET_CARDS_DEALT, FLOP_DEALT, TURN_DEALT, RIVER_DEALT, COMPLETE
 }
