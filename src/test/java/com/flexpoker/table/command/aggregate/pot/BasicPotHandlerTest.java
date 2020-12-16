@@ -1,18 +1,17 @@
 package com.flexpoker.table.command.aggregate.pot;
 
+import com.flexpoker.exception.FlexPokerException;
+import org.junit.jupiter.api.Test;
+
+import java.util.NoSuchElementException;
+import java.util.UUID;
+
 import static com.flexpoker.table.command.aggregate.pot.PotTestUtils.createBasicPotHandler;
 import static com.flexpoker.table.command.aggregate.pot.PotTestUtils.createSetOfPlayers;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.NoSuchElementException;
-import java.util.UUID;
-
-import org.junit.jupiter.api.Test;
-
-import com.flexpoker.exception.FlexPokerException;
 
 public class BasicPotHandlerTest {
 
@@ -30,11 +29,11 @@ public class BasicPotHandlerTest {
         potHandler.addToPot(potId1, 20);
         potHandler.addToPot(potId2, 10);
 
-        var playersRequriedToShowCards = potHandler.fetchPlayersRequriedToShowCards(playersInvolved);
+        var playersRequiredToShowCards = potHandler.fetchPlayersRequiredToShowCards(playersInvolved);
         var fetchChipsWon = potHandler.fetchChipsWon(playersInvolved);
 
-        assertTrue(playersRequriedToShowCards.contains(player1));
-        assertFalse(playersRequriedToShowCards.contains(player2));
+        assertTrue(playersRequiredToShowCards.contains(player1));
+        assertFalse(playersRequiredToShowCards.contains(player2));
         assertEquals(30, fetchChipsWon.get(player1).intValue());
     }
 

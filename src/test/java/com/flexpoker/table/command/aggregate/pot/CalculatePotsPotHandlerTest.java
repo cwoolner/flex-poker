@@ -37,7 +37,7 @@ public class CalculatePotsPotHandlerTest {
         playersStillInHand.add(player1);
         playersStillInHand.add(player2);
 
-        var potEvents = potHandler.calculatePots(chipsInFrontMap, chipsInBackMap, playersStillInHand);
+        var potEvents = potHandler.calculatePots(chipsInFrontMap, chipsInBackMap);
 
         verifyNumberOfEventsAndEntireOrderByType(potEvents, PotCreatedEvent.class, PotAmountIncreasedEvent.class);
 
@@ -65,7 +65,7 @@ public class CalculatePotsPotHandlerTest {
         playersStillInHand.add(player1);
         playersStillInHand.add(player2);
 
-        var potEvents = potHandler.calculatePots(chipsInFrontMap, chipsInBackMap, playersStillInHand);
+        var potEvents = potHandler.calculatePots(chipsInFrontMap, chipsInBackMap);
 
         verifyNumberOfEventsAndEntireOrderByType(potEvents, PotCreatedEvent.class, PotAmountIncreasedEvent.class,
                 PotAmountIncreasedEvent.class);
@@ -95,7 +95,7 @@ public class CalculatePotsPotHandlerTest {
         playersStillInHand.add(player1);
         playersStillInHand.add(player2);
 
-        var potEvents = potHandler.calculatePots(chipsInFrontMap, chipsInBackMap, playersStillInHand);
+        var potEvents = potHandler.calculatePots(chipsInFrontMap, chipsInBackMap);
 
         verifyNumberOfEventsAndEntireOrderByType(potEvents,
                 PotCreatedEvent.class,
@@ -135,7 +135,7 @@ public class CalculatePotsPotHandlerTest {
         playersStillInHand.add(player1);
         playersStillInHand.add(player2);
 
-        var potEvents = potHandler.calculatePots(chipsInFrontMap, chipsInBackMap, playersStillInHand);
+        var potEvents = potHandler.calculatePots(chipsInFrontMap, chipsInBackMap);
 
         verifyNumberOfEventsAndEntireOrderByType(potEvents,
                 PotCreatedEvent.class,

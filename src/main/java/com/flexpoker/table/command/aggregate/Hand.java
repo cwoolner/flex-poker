@@ -329,7 +329,7 @@ public class Hand {
         }
 
         var tableEvents = new ArrayList<TableEvent>();
-        tableEvents.addAll(potHandler.calculatePots(chipsInFrontMap, chipsInBackMap, playersStillInHand));
+        tableEvents.addAll(potHandler.calculatePots(chipsInFrontMap, chipsInBackMap));
 
         var nextHandDealerState = playersStillInHand.size() == 1 ? HandDealerState.COMPLETE
                 : HandDealerState.values()[handDealerState.ordinal() + 1];
@@ -534,7 +534,7 @@ public class Hand {
 
     Optional<WinnersDeterminedEvent> determineWinnersIfAppropriate() {
         if (handDealerState == HandDealerState.COMPLETE) {
-            var playersRequiredToShowCards = potHandler.fetchPlayersRequriedToShowCards(playersStillInHand);
+            var playersRequiredToShowCards = potHandler.fetchPlayersRequiredToShowCards(playersStillInHand);
             var playersToChipsWonMap = potHandler.fetchChipsWon(playersStillInHand);
             return Optional.of(new WinnersDeterminedEvent(tableId, gameId, entityId, playersRequiredToShowCards,
                     playersToChipsWonMap));
