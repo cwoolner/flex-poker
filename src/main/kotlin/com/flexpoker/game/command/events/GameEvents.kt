@@ -1,9 +1,7 @@
 package com.flexpoker.game.command.events
 
-import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.annotation.JsonTypeInfo
-import com.flexpoker.exception.FlexPokerException
 import com.flexpoker.framework.event.Event
 import com.flexpoker.game.command.events.dto.BlindAmountsDTO
 import com.flexpoker.game.command.events.dto.BlindScheduleDTO
@@ -28,32 +26,9 @@ import java.util.UUID
 )
 interface GameEvent : Event
 
-sealed class BaseGameEvent(private val aggregateId: UUID) : GameEvent {
-    private var version = 0
-    private val time: Instant = Instant.now()
-
-    @JsonProperty("gameId")
-    override fun getAggregateId(): UUID {
-        return aggregateId
-    }
-
-    @JsonProperty
-    override fun getVersion(): Int {
-        if (version == 0) {
-            throw FlexPokerException("should be calling getVersion() in situations where it's already been set")
-        }
-        return version
-    }
-
-    override fun setVersion(version: Int) {
-        this.version = version
-    }
-
-    @JsonProperty
-    override fun getTime(): Instant {
-        return time
-    }
-
+sealed class BaseGameEvent(override val aggregateId: UUID) : GameEvent {
+    override var version = 0
+    override val time: Instant = Instant.now()
 }
 
 data class BlindsIncreasedEvent (val gameId: UUID) : BaseGameEvent(gameId)

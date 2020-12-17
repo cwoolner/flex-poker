@@ -1,9 +1,7 @@
 package com.flexpoker.table.command.events
 
-import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.annotation.JsonTypeInfo
-import com.flexpoker.exception.FlexPokerException
 import com.flexpoker.framework.event.Event
 import com.flexpoker.table.command.Card
 import com.flexpoker.table.command.FlopCards
@@ -49,32 +47,9 @@ import java.util.UUID
 )
 interface TableEvent : Event
 
-sealed class BaseTableEvent(private val aggregateId: UUID) : TableEvent {
-    private var version = 0
-    private val time: Instant = Instant.now()
-
-    @JsonProperty
-    override fun getAggregateId(): UUID {
-        return aggregateId
-    }
-
-    @JsonProperty
-    override fun getVersion(): Int {
-        if (version == 0) {
-            throw FlexPokerException("should be calling getVersion() in situations where it's already been set")
-        }
-        return version
-    }
-
-    override fun setVersion(version: Int) {
-        this.version = version
-    }
-
-    @JsonProperty
-    override fun getTime(): Instant {
-        return time
-    }
-
+sealed class BaseTableEvent(override val aggregateId: UUID) : TableEvent {
+    override var version = 0
+    override val time: Instant = Instant.now()
 }
 
 data class ActionOnChangedEvent (val tableId: UUID, val gameId: UUID, val handId: UUID, val playerId: UUID)
