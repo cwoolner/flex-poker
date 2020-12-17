@@ -159,7 +159,7 @@ data class RoundCompletedEvent (val tableId: UUID, val gameId: UUID, val handId:
                                 val nextHandDealerState: HandDealerState) : BaseTableEvent(tableId)
 
 data class TableCreatedEvent (val tableId: UUID, val gameId: UUID, val numberOfPlayersPerTable: Int,
-                              val seatPositionToPlayerMap: PMap<Int, UUID>,
+                              val seatPositionToPlayerMap: PMap<Int, UUID?>,
                               val startingNumberOfChips: Int) : BaseTableEvent(tableId)
 
 data class TablePausedEvent (val tableId: UUID, val gameId: UUID) : BaseTableEvent(tableId)

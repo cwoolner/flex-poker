@@ -5,6 +5,8 @@ import com.flexpoker.table.command.commands.CreateTableCommand
 import com.flexpoker.table.command.events.TableCreatedEvent
 import com.flexpoker.table.command.events.TableEvent
 import com.flexpoker.table.command.factory.TableFactory
+import org.pcollections.HashTreePMap
+import org.pcollections.PMap
 import org.springframework.stereotype.Component
 import java.util.ArrayList
 import java.util.HashMap
@@ -34,7 +36,7 @@ class DefaultTableFactory : TableFactory {
         }
 
         // TODO: add starting chips as a parameter, probably once blind scheduling gets introduced
-        return createWithGivenInfo(false, command.tableId, command.gameId, seatMap, 1500)
+        return createWithGivenInfo(false, command.tableId, command.gameId, HashTreePMap.from(seatMap), 1500)
     }
 
     override fun createFrom(events: List<TableEvent>): Table {
@@ -51,7 +53,7 @@ class DefaultTableFactory : TableFactory {
     }
 
     private fun createWithGivenInfo(creatingFromEvents: Boolean, aggregateId: UUID, gameId: UUID,
-                                    seatMap: Map<Int, UUID?>, startingNumberOfChips: Int): Table {
+                                    seatMap: PMap<Int, UUID?>, startingNumberOfChips: Int): Table {
         return Table(creatingFromEvents, aggregateId, gameId, seatMap, startingNumberOfChips)
     }
 }
