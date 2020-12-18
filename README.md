@@ -62,6 +62,7 @@ It would be nice to actually make a fully usable product at some point, but so f
 * 2009 - BlazeDS, Spring, Hibernate, MySQL
 * 2013 - BlazeDS replaced with Spring WebSocket
 * 2014 - Rewrote to incorporate DDD, CQRS, and ES
+* 2020 - Converted to Kotlin
 
 ### Front-end
 * 2009 - Flex
