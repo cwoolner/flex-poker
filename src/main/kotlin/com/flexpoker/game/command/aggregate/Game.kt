@@ -1,7 +1,6 @@
 package com.flexpoker.game.command.aggregate
 
 import com.flexpoker.exception.FlexPokerException
-import com.flexpoker.framework.command.EventApplier
 import com.flexpoker.game.command.events.BlindsIncreasedEvent
 import com.flexpoker.game.command.events.GameCreatedEvent
 import com.flexpoker.game.command.events.GameEvent
@@ -17,31 +16,35 @@ import com.flexpoker.game.command.events.TablePausedForBalancingEvent
 import com.flexpoker.game.command.events.TableRemovedEvent
 import com.flexpoker.game.command.events.TableResumedAfterBalancingEvent
 import com.flexpoker.game.query.dto.GameStage
+import org.pcollections.HashTreePMap
+import org.pcollections.HashTreePSet
+import org.pcollections.PMap
+import org.pcollections.PSet
 import java.util.ArrayList
-import java.util.Collections
 import java.util.HashMap
-import java.util.HashSet
 import java.util.Optional
 import java.util.UUID
 
 class Game constructor(
     creatingFromEvents: Boolean,
-    private val aggregateId: UUID,
+    aggregateId: UUID,
     gameName: String,
-    private val maxNumberOfPlayers: Int,
-    private val numberOfPlayersPerTable: Int,
+    maxNumberOfPlayers: Int,
+    numberOfPlayersPerTable: Int,
     numberOfSecondsForActionOnTimer: Int,
     createdById: UUID,
-    private var gameStage: GameStage,
     private val blindSchedule: BlindSchedule,
     private val tableBalancer: TableBalancer
 ) {
+    private var state = GameState(
+        aggregateId,
+        maxNumberOfPlayers,
+        numberOfPlayersPerTable,
+        GameStage.REGISTERING
+    )
+
     private val newEvents: MutableList<GameEvent>
     private val appliedEvents: MutableList<GameEvent>
-    private val methodTable: MutableMap<Class<out GameEvent>, EventApplier<in GameEvent>>
-    private val registeredPlayerIds: MutableSet<UUID?>
-    private val tableIdToPlayerIdsMap: MutableMap<UUID, MutableSet<UUID>>
-    private val pausedTablesForBalancing: MutableSet<UUID>
 
     fun fetchNewEvents(): List<GameEvent> {
         return ArrayList(newEvents)
@@ -55,46 +58,38 @@ class Game constructor(
         events.forEach { applyCommonEvent(it) }
     }
 
-    private fun populateMethodTable() {
-        methodTable[GameCreatedEvent::class.java] = EventApplier { }
-        methodTable[GameJoinedEvent::class.java] = EventApplier { registeredPlayerIds.add((it as GameJoinedEvent).playerId) }
-        methodTable[GameMovedToStartingStageEvent::class.java] = EventApplier { gameStage = GameStage.STARTING }
-        methodTable[GameStartedEvent::class.java] = EventApplier { gameStage = GameStage.INPROGRESS }
-        methodTable[GameTablesCreatedAndPlayersAssociatedEvent::class.java] = EventApplier { x: GameEvent ->
-            tableIdToPlayerIdsMap.putAll(
-                (x as GameTablesCreatedAndPlayersAssociatedEvent)
-                    .tableIdToPlayerIdsMap as Map<out UUID, MutableSet<UUID>>)
-        }
-        methodTable[GameFinishedEvent::class.java] = EventApplier {  gameStage = GameStage.FINISHED }
-        methodTable[NewHandIsClearedToStartEvent::class.java] = EventApplier { }
-        methodTable[BlindsIncreasedEvent::class.java] = EventApplier { blindSchedule.incrementLevel() }
-        methodTable[TableRemovedEvent::class.java] = EventApplier {
-            val tableId = (it as TableRemovedEvent).tableId
-            tableIdToPlayerIdsMap.remove(tableId)
-            pausedTablesForBalancing.remove(tableId)
-        }
-        methodTable[TablePausedForBalancingEvent::class.java] = EventApplier {
-            val tableId = (it as TablePausedForBalancingEvent).tableId
-            pausedTablesForBalancing.add(tableId)
-        }
-        methodTable[TableResumedAfterBalancingEvent::class.java] = EventApplier {
-            val tableId = (it as TableResumedAfterBalancingEvent).tableId
-            pausedTablesForBalancing.remove(tableId)
-        }
-        methodTable[PlayerMovedToNewTableEvent::class.java] = EventApplier {
-            val event = it as PlayerMovedToNewTableEvent
-            tableIdToPlayerIdsMap[event.fromTableId]!!.remove(event.playerId)
-            tableIdToPlayerIdsMap[event.toTableId]!!.add(event.playerId)
-        }
-        methodTable[PlayerBustedGameEvent::class.java] = EventApplier { x: GameEvent ->
-            val event = x as PlayerBustedGameEvent
-            val tableId = tableIdToPlayerIdsMap.entries.first { it.value.contains(event.playerId) }.key
-            tableIdToPlayerIdsMap[tableId]!!.remove(event.playerId)
-        }
-    }
-
     private fun applyCommonEvent(event: GameEvent) {
-        methodTable[event.javaClass]!!.applyEvent(event)
+        when(event) {
+            is GameCreatedEvent -> { }
+            is GameJoinedEvent ->
+                state = state.copy(registeredPlayerIds = state.registeredPlayerIds.plus(event.playerId))
+            is GameMovedToStartingStageEvent -> state = state.copy(stage = GameStage.STARTING)
+            is GameStartedEvent -> state = state.copy(stage = GameStage.INPROGRESS)
+            is GameTablesCreatedAndPlayersAssociatedEvent ->
+                state = state.copy(tableIdToPlayerIdsMap = state.tableIdToPlayerIdsMap.plusAll(event.tableIdToPlayerIdsMap))
+            is GameFinishedEvent -> state = state.copy(stage = GameStage.FINISHED)
+            is NewHandIsClearedToStartEvent -> { }
+            is BlindsIncreasedEvent -> blindSchedule.incrementLevel()
+            is TableRemovedEvent -> {
+                state = state.copy(tableIdToPlayerIdsMap = state.tableIdToPlayerIdsMap.minus(event.tableId))
+                state = state.copy(pausedTablesForBalancing = state.pausedTablesForBalancing.minus(event.tableId))
+            }
+            is TablePausedForBalancingEvent ->
+                state = state.copy(pausedTablesForBalancing = state.pausedTablesForBalancing.plus(event.tableId))
+            is TableResumedAfterBalancingEvent ->
+                state = state.copy(pausedTablesForBalancing = state.pausedTablesForBalancing.minus(event.tableId))
+            is PlayerMovedToNewTableEvent -> {
+                val fromPlayerIds = state.tableIdToPlayerIdsMap[event.fromTableId]!!.minus(event.playerId)
+                val toPlayerIds = state.tableIdToPlayerIdsMap[event.fromTableId]!!.plus(event.playerId)
+                state = state.copy(tableIdToPlayerIdsMap = state.tableIdToPlayerIdsMap.plus(event.fromTableId, fromPlayerIds))
+                state = state.copy(tableIdToPlayerIdsMap = state.tableIdToPlayerIdsMap.plus(event.toTableId, toPlayerIds))
+            }
+            is PlayerBustedGameEvent -> {
+                val tableId = state.tableIdToPlayerIdsMap.entries.first { it.value.contains(event.playerId) }.key
+                val playerIds = state.tableIdToPlayerIdsMap[tableId]!!.minus(event.playerId)
+                state = state.copy(tableIdToPlayerIdsMap = state.tableIdToPlayerIdsMap.plus(tableId, playerIds))
+            }
+        }
         appliedEvents.add(event)
     }
 
@@ -102,7 +97,7 @@ class Game constructor(
         createJoinGameEvent(playerId)
 
         // if the game is at the max capacity, start the game
-        if (registeredPlayerIds.size == maxNumberOfPlayers) {
+        if (state.registeredPlayerIds.size == state.maxNumberOfPlayers) {
             createGameMovedToStartingStageEvent()
             createGameTablesCreatedAndPlayersAssociatedEvent()
             createGameStartedEvent()
@@ -110,29 +105,29 @@ class Game constructor(
     }
 
     fun attemptToStartNewHand(tableId: UUID, playerToChipsAtTableMap: Map<UUID, Int>) {
-        if (gameStage !== GameStage.INPROGRESS) {
+        if (state.stage !== GameStage.INPROGRESS) {
             throw FlexPokerException("the game must be INPROGRESS if trying to start a new hand")
         }
         playerToChipsAtTableMap.filterValues { it == 0 }.map { it.key }.forEach { bustPlayer(it) }
 
-        val bustedPlayers = tableIdToPlayerIdsMap[tableId]!!
+        val bustedPlayers = state.tableIdToPlayerIdsMap[tableId]!!
             .filter { !playerToChipsAtTableMap.keys.contains(it) }.toSet()
         bustedPlayers.forEach { bustPlayer(it) }
 
-        if (tableIdToPlayerIdsMap.flatMap { it.value }.count() == 1) {
+        if (state.tableIdToPlayerIdsMap.flatMap { it.value }.count() == 1) {
             // TODO: do something for the winner
         } else {
             var singleBalancingEvent: Optional<GameEvent>?
             do {
-                singleBalancingEvent = tableBalancer.createSingleBalancingEvent(tableId, pausedTablesForBalancing,
-                    tableIdToPlayerIdsMap, playerToChipsAtTableMap)
+                singleBalancingEvent = tableBalancer.createSingleBalancingEvent(tableId, state.pausedTablesForBalancing,
+                    state.tableIdToPlayerIdsMap, playerToChipsAtTableMap)
                 if (singleBalancingEvent.isPresent) {
                     newEvents.add(singleBalancingEvent.get())
                     applyCommonEvent(singleBalancingEvent.get())
                 }
             } while (singleBalancingEvent!!.isPresent)
-            if (tableIdToPlayerIdsMap.containsKey(tableId) && !pausedTablesForBalancing.contains(tableId)) {
-                val event = NewHandIsClearedToStartEvent(aggregateId, tableId, blindSchedule.currentBlindAmounts)
+            if (state.tableIdToPlayerIdsMap.containsKey(tableId) && !state.pausedTablesForBalancing.contains(tableId)) {
+                val event = NewHandIsClearedToStartEvent(state.aggregateId, tableId, blindSchedule.currentBlindAmounts)
                 newEvents.add(event)
                 applyCommonEvent(event)
             }
@@ -140,111 +135,110 @@ class Game constructor(
     }
 
     fun increaseBlinds() {
-        if (gameStage !== GameStage.INPROGRESS) {
+        if (state.stage !== GameStage.INPROGRESS) {
             throw FlexPokerException("cannot increase blinds if the game isn't in progress")
         }
         if (!blindSchedule.isMaxLevel) {
-            val event = BlindsIncreasedEvent(aggregateId)
+            val event = BlindsIncreasedEvent(state.aggregateId)
             newEvents.add(event)
             applyCommonEvent(event)
         }
     }
 
     private fun bustPlayer(playerId: UUID) {
-        if (tableIdToPlayerIdsMap.flatMap { it.value }.none { it == playerId }) {
+        if (state.tableIdToPlayerIdsMap.flatMap { it.value }.none { it == playerId }) {
             throw FlexPokerException("player is not active in the game")
         }
-        val event = PlayerBustedGameEvent(aggregateId, playerId)
+        val event = PlayerBustedGameEvent(state.aggregateId, playerId)
         newEvents.add(event)
         applyCommonEvent(event)
     }
 
     private fun createJoinGameEvent(playerId: UUID) {
-        if (gameStage === GameStage.STARTING || gameStage === GameStage.INPROGRESS) {
+        if (state.stage === GameStage.STARTING || state.stage === GameStage.INPROGRESS) {
             throw FlexPokerException("The game has already started")
         }
-        if (gameStage === GameStage.FINISHED) {
+        if (state.stage === GameStage.FINISHED) {
             throw FlexPokerException("The game is already finished.")
         }
-        if (registeredPlayerIds.contains(playerId)) {
+        if (state.registeredPlayerIds.contains(playerId)) {
             throw FlexPokerException("You are already in this game.")
         }
-        val event = GameJoinedEvent(aggregateId, playerId)
+        val event = GameJoinedEvent(state.aggregateId, playerId)
         newEvents.add(event)
         applyCommonEvent(event)
     }
 
     private fun createGameMovedToStartingStageEvent() {
-        if (gameStage !== GameStage.REGISTERING) {
+        if (state.stage !== GameStage.REGISTERING) {
             throw FlexPokerException("to move to STARTING, the game stage must be REGISTERING")
         }
-        val event = GameMovedToStartingStageEvent(aggregateId)
+        val event = GameMovedToStartingStageEvent(state.aggregateId)
         newEvents.add(event)
         applyCommonEvent(event)
     }
 
     private fun createGameTablesCreatedAndPlayersAssociatedEvent() {
-        if (tableIdToPlayerIdsMap.isNotEmpty()) {
+        if (state.tableIdToPlayerIdsMap.isNotEmpty()) {
             throw FlexPokerException("tableToPlayerIdsMap should be empty when initializing the tables")
         }
         val tableMap = createTableToPlayerMap()
-        val event = GameTablesCreatedAndPlayersAssociatedEvent(aggregateId, tableMap, numberOfPlayersPerTable)
+        val event = GameTablesCreatedAndPlayersAssociatedEvent(state.aggregateId, tableMap, state.numberOfPlayersPerTable)
         newEvents.add(event)
         applyCommonEvent(event)
     }
 
-    private fun createTableToPlayerMap(): Map<UUID, Set<UUID>> {
-        val randomizedListOfPlayerIds = ArrayList(registeredPlayerIds)
-        Collections.shuffle(randomizedListOfPlayerIds)
-        val tableMap = HashMap<UUID, MutableSet<UUID?>>()
+    private fun createTableToPlayerMap(): PMap<UUID, PSet<UUID>> {
+        val randomizedListOfPlayerIds = state.registeredPlayerIds.toList().shuffled()
         val numberOfTablesToCreate = determineNumberOfTablesToCreate()
 
-        (0 until numberOfTablesToCreate).forEach { _ -> tableMap[UUID.randomUUID()] = HashSet() }
+        val tableMap = (0 until numberOfTablesToCreate)
+            .fold(HashMap<UUID, PSet<UUID>>(), { acc, _ ->
+                acc[UUID.randomUUID()] = HashTreePSet.empty()
+                acc
+            })
 
         val tableIdList = ArrayList(tableMap.keys)
-        (0 until randomizedListOfPlayerIds.size).forEach {
+        randomizedListOfPlayerIds.indices.forEach {
             val tableIndex = it % tableIdList.size
-            tableMap[tableIdList[tableIndex]]!!.add(randomizedListOfPlayerIds[it])
+            val players = tableMap[tableIdList[tableIndex]]!!.plus(randomizedListOfPlayerIds[it])
+            tableMap[tableIdList[tableIndex]] = players
         }
 
-        return tableMap as Map<UUID, Set<UUID>>
+        return HashTreePMap.from(tableMap)
     }
 
     private fun determineNumberOfTablesToCreate(): Int {
-        var numberOfTables = registeredPlayerIds.size / numberOfPlayersPerTable
+        var numberOfTables = state.registeredPlayerIds.size / state.numberOfPlayersPerTable
 
         // if the number of people doesn't fit perfectly, then an additional
         // table is needed for the overflow
-        if (registeredPlayerIds.size % numberOfPlayersPerTable != 0) {
+        if (state.registeredPlayerIds.size % state.numberOfPlayersPerTable != 0) {
             numberOfTables++
         }
         return numberOfTables
     }
 
     private fun createGameStartedEvent() {
-        if (gameStage !== GameStage.STARTING) {
+        if (state.stage !== GameStage.STARTING) {
             throw FlexPokerException("to move to STARTED, the game stage must be STARTING")
         }
-        if (tableIdToPlayerIdsMap.isEmpty()) {
+        if (state.tableIdToPlayerIdsMap.isEmpty()) {
             throw FlexPokerException("tableToPlayerIdsMap should be filled at this point")
         }
-        val event = GameStartedEvent(aggregateId, tableIdToPlayerIdsMap.keys, blindSchedule.blindScheduleDTO)
+        val event = GameStartedEvent(state.aggregateId, state.tableIdToPlayerIdsMap.keys, blindSchedule.blindScheduleDTO)
         newEvents.add(event)
         applyCommonEvent(event)
     }
 
     init {
-        registeredPlayerIds = HashSet()
-        tableIdToPlayerIdsMap = HashMap()
-        pausedTablesForBalancing = HashSet()
         newEvents = ArrayList()
         appliedEvents = ArrayList()
-        methodTable = HashMap()
-        populateMethodTable()
+
         if (!creatingFromEvents) {
             val gameCreatedEvent = GameCreatedEvent(
                 aggregateId, gameName, maxNumberOfPlayers,
-                numberOfPlayersPerTable, createdById, blindSchedule.numberOfMinutesBetweenLevels,
+                state.numberOfPlayersPerTable, createdById, blindSchedule.numberOfMinutesBetweenLevels,
                 numberOfSecondsForActionOnTimer
             )
             newEvents.add(gameCreatedEvent)

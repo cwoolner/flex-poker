@@ -50,7 +50,7 @@ class DefaultGameFactory : GameFactory {
             creatingFromEvents, aggregateId, gameName,
             maxNumberOfPlayers, numberOfPlayersPerTable,
             numberOfSecondsForActionOnTimer, createdById,
-            GameStage.REGISTERING, blindSchedule, tableBalancer
+            blindSchedule, tableBalancer
         )
     }
 }

@@ -8,9 +8,11 @@ import com.flexpoker.game.command.events.GameStartedEvent
 import com.flexpoker.game.command.events.GameTablesCreatedAndPlayersAssociatedEvent
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
+import org.pcollections.HashTreePMap
+import org.pcollections.HashTreePSet
+import org.pcollections.PSet
 import java.util.ArrayList
 import java.util.HashMap
-import java.util.HashSet
 import java.util.UUID
 
 class NewHandIsClearedToStartTest {
@@ -21,12 +23,9 @@ class NewHandIsClearedToStartTest {
         val tableId = UUID.randomUUID()
         val player1Id = UUID.randomUUID()
         val player2Id = UUID.randomUUID()
-        val tableToPlayersMap = HashMap<UUID, Set<UUID>>()
-        val playerIds = HashSet<UUID>()
-        playerIds.add(player1Id)
-        playerIds.add(player2Id)
-        tableToPlayersMap[tableId] = playerIds
-        val tableIds: Set<UUID> = tableToPlayersMap.keys
+        val playerIds = HashTreePSet.singleton(player1Id).plus(player2Id)
+        val tableToPlayersMap = HashTreePMap.singleton<UUID, PSet<UUID>>(tableId, playerIds)
+        val tableIds = tableToPlayersMap.keys
         val events = ArrayList<GameEvent>()
         events.add(GameCreatedEvent(gameId, "test", 2, 2, UUID.randomUUID(), 10, 20))
         events.add(GameJoinedEvent(gameId, player1Id))

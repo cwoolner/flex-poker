@@ -10,8 +10,9 @@ import com.flexpoker.game.command.events.GameTablesCreatedAndPlayersAssociatedEv
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
+import org.pcollections.HashTreePMap
+import org.pcollections.PSet
 import java.util.ArrayList
-import java.util.HashMap
 import java.util.UUID
 
 class IncrementBlindsTest {
@@ -19,7 +20,7 @@ class IncrementBlindsTest {
     @Test
     fun testIncrementBlindsCreatesNewEvent() {
         val gameId = UUID.randomUUID()
-        val tableIdToPlayerIdsMap = HashMap<UUID, Set<UUID>>()
+        val tableIdToPlayerIdsMap = HashTreePMap.empty<UUID, PSet<UUID>>()
         val tableIds: Set<UUID> = tableIdToPlayerIdsMap.keys
         val events = ArrayList<GameEvent>()
         events.add(GameCreatedEvent(gameId, "test", 2, 2, UUID.randomUUID(), 10, 20))
@@ -37,7 +38,7 @@ class IncrementBlindsTest {
     @Test
     fun testIncrementBlindsAlreadyAtMaxLevel() {
         val gameId = UUID.randomUUID()
-        val tableIdToPlayerIdsMap = HashMap<UUID, Set<UUID>>()
+        val tableIdToPlayerIdsMap = HashTreePMap.empty<UUID, PSet<UUID>>()
         val tableIds: Set<UUID> = tableIdToPlayerIdsMap.keys
         val events = ArrayList<GameEvent>()
         events.add(GameCreatedEvent(gameId, "test", 2, 2, UUID.randomUUID(), 10, 20))
@@ -59,7 +60,7 @@ class IncrementBlindsTest {
     @Test
     fun testFailureWhenNotInTheCorrectStage() {
         val gameId = UUID.randomUUID()
-        val tableIdToPlayerIdsMap = HashMap<UUID, Set<UUID>>()
+        val tableIdToPlayerIdsMap = HashTreePMap.empty<UUID, PSet<UUID>>()
         val events = ArrayList<GameEvent>()
         events.add(GameCreatedEvent(gameId, "test", 2, 2, UUID.randomUUID(), 10, 20))
         events.add(GameJoinedEvent(gameId, UUID.randomUUID()))

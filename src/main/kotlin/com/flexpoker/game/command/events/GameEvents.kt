@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo
 import com.flexpoker.framework.event.Event
 import com.flexpoker.game.command.events.dto.BlindAmountsDTO
 import com.flexpoker.game.command.events.dto.BlindScheduleDTO
+import org.pcollections.PMap
+import org.pcollections.PSet
 import java.time.Instant
 import java.util.UUID
 
@@ -48,7 +50,7 @@ data class GameStartedEvent (val gameId: UUID, val tableIds: Set<UUID>,
                              val blindScheduleDTO: BlindScheduleDTO) : BaseGameEvent(gameId)
 
 data class GameTablesCreatedAndPlayersAssociatedEvent (val gameId: UUID,
-                                                       val tableIdToPlayerIdsMap: Map<UUID, Set<UUID>>,
+                                                       val tableIdToPlayerIdsMap: PMap<UUID, PSet<UUID>>,
                                                        val numberOfPlayersPerTable: Int) : BaseGameEvent(gameId)
 
 data class NewHandIsClearedToStartEvent (val gameId: UUID, val tableId: UUID,
