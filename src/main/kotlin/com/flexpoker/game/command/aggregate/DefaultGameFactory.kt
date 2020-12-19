@@ -4,7 +4,6 @@ import com.flexpoker.game.command.commands.CreateGameCommand
 import com.flexpoker.game.command.events.GameCreatedEvent
 import com.flexpoker.game.command.events.GameEvent
 import com.flexpoker.game.command.factory.GameFactory
-import com.flexpoker.game.query.dto.GameStage
 import org.springframework.stereotype.Component
 import java.util.UUID
 
@@ -45,12 +44,7 @@ class DefaultGameFactory : GameFactory {
         numberOfSecondsForActionOnTimer: Int
     ): Game {
         val blindSchedule = BlindSchedule(numberOfMinutesBetweenBlindLevels)
-        val tableBalancer = TableBalancer(aggregateId, numberOfPlayersPerTable)
-        return Game(
-            creatingFromEvents, aggregateId, gameName,
-            maxNumberOfPlayers, numberOfPlayersPerTable,
-            numberOfSecondsForActionOnTimer, createdById,
-            blindSchedule, tableBalancer
-        )
+        return Game(creatingFromEvents, aggregateId, gameName, maxNumberOfPlayers,
+            numberOfPlayersPerTable, numberOfSecondsForActionOnTimer, createdById, blindSchedule)
     }
 }

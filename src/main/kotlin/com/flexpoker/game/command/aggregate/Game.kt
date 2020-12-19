@@ -33,8 +33,7 @@ class Game constructor(
     numberOfPlayersPerTable: Int,
     numberOfSecondsForActionOnTimer: Int,
     createdById: UUID,
-    private val blindSchedule: BlindSchedule,
-    private val tableBalancer: TableBalancer
+    private val blindSchedule: BlindSchedule
 ) {
     private var state = GameState(
         aggregateId,
@@ -119,8 +118,8 @@ class Game constructor(
         } else {
             var singleBalancingEvent: Optional<GameEvent>?
             do {
-                singleBalancingEvent = tableBalancer.createSingleBalancingEvent(tableId, state.pausedTablesForBalancing,
-                    state.tableIdToPlayerIdsMap, playerToChipsAtTableMap)
+                singleBalancingEvent = createSingleBalancingEvent(state.aggregateId, state.maxNumberOfPlayers, tableId,
+                    state.pausedTablesForBalancing, state.tableIdToPlayerIdsMap, playerToChipsAtTableMap)
                 if (singleBalancingEvent.isPresent) {
                     newEvents.add(singleBalancingEvent.get())
                     applyCommonEvent(singleBalancingEvent.get())
