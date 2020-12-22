@@ -1,42 +1,44 @@
 package com.flexpoker.game.command.aggregate
 
+import com.flexpoker.game.query.dto.GameStage
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
+import java.util.UUID
 
 class BlindScheduleTest {
 
+    private fun basicGameState(numberOfMinutesBetwenLevels: Int): GameState {
+        return GameState(UUID.randomUUID(), 2, 2,
+            GameStage.REGISTERING, blindSchedule(10))
+    }
+
     @Test
     fun testInitial() {
-        val blindSchedule = BlindSchedule(10)
+        val blindSchedule = blindSchedule(10)
         assertEquals(1, blindSchedule.currentLevel)
         assertEquals(10, blindSchedule.numberOfMinutesBetweenLevels)
-        assertEquals(10, blindSchedule.currentBlindAmounts.smallBlind)
-        assertEquals(20, blindSchedule.currentBlindAmounts.bigBlind)
+        assertEquals(10, blindSchedule.levelToAmountsMap[1]!!.smallBlind)
+        assertEquals(20, blindSchedule.levelToAmountsMap[1]!!.bigBlind)
     }
 
     @Test
     fun testIncrement() {
-        val blindSchedule = BlindSchedule(10)
-        blindSchedule.incrementLevel()
-        assertFalse(blindSchedule.isMaxLevel)
+        val state = basicGameState(10)
+        val blindSchedule = incrementLevel(state).blindScheduleDTO
         assertEquals(2, blindSchedule.currentLevel)
-        assertEquals(20, blindSchedule.currentBlindAmounts.smallBlind)
-        assertEquals(40, blindSchedule.currentBlindAmounts.bigBlind)
+        assertEquals(20, blindSchedule.levelToAmountsMap[2]!!.smallBlind)
+        assertEquals(40, blindSchedule.levelToAmountsMap[2]!!.bigBlind)
     }
 
     @Test
     fun testMaxLevel() {
-        val blindSchedule = BlindSchedule(10)
-        blindSchedule.incrementLevel()
-        blindSchedule.incrementLevel()
-        blindSchedule.incrementLevel()
-        blindSchedule.incrementLevel()
-        assertTrue(blindSchedule.isMaxLevel)
-        assertEquals(5, blindSchedule.currentLevel)
-        blindSchedule.incrementLevel()
-        assertEquals(5, blindSchedule.currentLevel)
+        val state = basicGameState(10)
+        val updatedState = incrementLevel(incrementLevel(incrementLevel(incrementLevel(state))))
+        assertTrue(isMaxLevel(updatedState))
+        assertEquals(5, updatedState.blindScheduleDTO.currentLevel)
+        val maxState = incrementLevel(updatedState)
+        assertEquals(5, maxState.blindScheduleDTO.currentLevel)
     }
 
     // TODO: re-enable some of these tests once a blind schedule editor is added

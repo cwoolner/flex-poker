@@ -40,10 +40,8 @@ class Game constructor(
         maxNumberOfPlayers,
         numberOfPlayersPerTable,
         GameStage.REGISTERING,
-        numberOfMinutesBetweenBlindLevels
+        blindSchedule(numberOfMinutesBetweenBlindLevels)
     )
-
-    private val blindSchedule = BlindSchedule(numberOfMinutesBetweenBlindLevels)
 
     private val newEvents: MutableList<GameEvent>
     private val appliedEvents: MutableList<GameEvent>
@@ -71,7 +69,7 @@ class Game constructor(
                 state = state.copy(tableIdToPlayerIdsMap = state.tableIdToPlayerIdsMap.plusAll(event.tableIdToPlayerIdsMap))
             is GameFinishedEvent -> state = state.copy(stage = GameStage.FINISHED)
             is NewHandIsClearedToStartEvent -> { }
-            is BlindsIncreasedEvent -> blindSchedule.incrementLevel()
+            is BlindsIncreasedEvent -> state = incrementLevel(state)
             is TableRemovedEvent -> {
                 state = state.copy(tableIdToPlayerIdsMap = state.tableIdToPlayerIdsMap.minus(event.tableId))
                 state = state.copy(pausedTablesForBalancing = state.pausedTablesForBalancing.minus(event.tableId))
@@ -129,7 +127,7 @@ class Game constructor(
                 }
             } while (singleBalancingEvent!!.isPresent)
             if (state.tableIdToPlayerIdsMap.containsKey(tableId) && !state.pausedTablesForBalancing.contains(tableId)) {
-                val event = NewHandIsClearedToStartEvent(state.aggregateId, tableId, blindSchedule.currentBlindAmounts)
+                val event = NewHandIsClearedToStartEvent(state.aggregateId, tableId, currentBlindAmounts(state))
                 newEvents.add(event)
                 applyCommonEvent(event)
             }
@@ -140,7 +138,7 @@ class Game constructor(
         if (state.stage !== GameStage.INPROGRESS) {
             throw FlexPokerException("cannot increase blinds if the game isn't in progress")
         }
-        if (!blindSchedule.isMaxLevel) {
+        if (!isMaxLevel(state)) {
             val event = BlindsIncreasedEvent(state.aggregateId)
             newEvents.add(event)
             applyCommonEvent(event)
@@ -228,7 +226,7 @@ class Game constructor(
         if (state.tableIdToPlayerIdsMap.isEmpty()) {
             throw FlexPokerException("tableToPlayerIdsMap should be filled at this point")
         }
-        val event = GameStartedEvent(state.aggregateId, state.tableIdToPlayerIdsMap.keys, blindSchedule.blindScheduleDTO)
+        val event = GameStartedEvent(state.aggregateId, state.tableIdToPlayerIdsMap.keys, state.blindScheduleDTO)
         newEvents.add(event)
         applyCommonEvent(event)
     }
@@ -240,7 +238,7 @@ class Game constructor(
         if (!creatingFromEvents) {
             val gameCreatedEvent = GameCreatedEvent(
                 aggregateId, gameName, maxNumberOfPlayers,
-                state.numberOfPlayersPerTable, createdById, blindSchedule.numberOfMinutesBetweenLevels,
+                state.numberOfPlayersPerTable, createdById, numberOfMinutesBetweenLevels(state),
                 numberOfSecondsForActionOnTimer
             )
             newEvents.add(gameCreatedEvent)

@@ -32,7 +32,7 @@ class NewHandIsClearedToStartTest {
         events.add(GameJoinedEvent(gameId, player2Id))
         events.add(GameMovedToStartingStageEvent(gameId))
         events.add(GameTablesCreatedAndPlayersAssociatedEvent(gameId, tableToPlayersMap, 2))
-        events.add(GameStartedEvent(gameId, tableIds, BlindSchedule(10).blindScheduleDTO))
+        events.add(GameStartedEvent(gameId, tableIds, blindSchedule(10)))
         val game = DefaultGameFactory().createFrom(events)
         val playersToChipsMap = HashMap<UUID, Int>()
         playersToChipsMap[player1Id] = 100

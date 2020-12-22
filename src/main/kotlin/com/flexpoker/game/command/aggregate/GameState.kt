@@ -12,7 +12,7 @@ data class GameState(
     val maxNumberOfPlayers: Int,
     val numberOfPlayersPerTable: Int,
     val stage: GameStage,
-    val numberOfMinutesBetweenBlindLevels: Int,
+    val blindScheduleDTO: BlindScheduleDTO,
     val registeredPlayerIds: PSet<UUID> = HashTreePSet.empty(),
     val tableIdToPlayerIdsMap: PMap<UUID, PSet<UUID>> = HashTreePMap.empty(),
     val pausedTablesForBalancing: PSet<UUID> = HashTreePSet.empty()
