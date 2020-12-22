@@ -33,14 +33,17 @@ class Game constructor(
     numberOfPlayersPerTable: Int,
     numberOfSecondsForActionOnTimer: Int,
     createdById: UUID,
-    private val blindSchedule: BlindSchedule
+    numberOfMinutesBetweenBlindLevels: Int
 ) {
     private var state = GameState(
         aggregateId,
         maxNumberOfPlayers,
         numberOfPlayersPerTable,
-        GameStage.REGISTERING
+        GameStage.REGISTERING,
+        numberOfMinutesBetweenBlindLevels
     )
+
+    private val blindSchedule = BlindSchedule(numberOfMinutesBetweenBlindLevels)
 
     private val newEvents: MutableList<GameEvent>
     private val appliedEvents: MutableList<GameEvent>

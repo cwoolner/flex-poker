@@ -43,8 +43,7 @@ class DefaultGameFactory : GameFactory {
         numberOfMinutesBetweenBlindLevels: Int,
         numberOfSecondsForActionOnTimer: Int
     ): Game {
-        val blindSchedule = BlindSchedule(numberOfMinutesBetweenBlindLevels)
-        return Game(creatingFromEvents, aggregateId, gameName, maxNumberOfPlayers,
-            numberOfPlayersPerTable, numberOfSecondsForActionOnTimer, createdById, blindSchedule)
+        return Game(creatingFromEvents, aggregateId, gameName, maxNumberOfPlayers, numberOfPlayersPerTable,
+            numberOfSecondsForActionOnTimer, createdById, numberOfMinutesBetweenBlindLevels)
     }
 }
