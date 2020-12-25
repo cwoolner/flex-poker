@@ -1,7 +1,6 @@
 package com.flexpoker.table.command.aggregate
 
 import com.flexpoker.exception.FlexPokerException
-import com.flexpoker.framework.command.EventApplier
 import com.flexpoker.table.command.Card
 import com.flexpoker.table.command.CardsUsedInHand
 import com.flexpoker.table.command.PlayerAction
@@ -34,7 +33,8 @@ import com.flexpoker.table.command.events.TableResumedEvent
 import com.flexpoker.table.command.events.TurnCardDealtEvent
 import com.flexpoker.table.command.events.WinnersDeterminedEvent
 import org.pcollections.HashTreePMap
-import org.pcollections.PMap
+import org.pcollections.HashTreePSet
+import org.pcollections.TreePVector
 import java.util.ArrayList
 import java.util.HashMap
 import java.util.HashSet
@@ -42,26 +42,16 @@ import java.util.Random
 import java.util.UUID
 import java.util.function.Consumer
 
-class Table(
-    creatingFromEvents: Boolean, val aggregateId: UUID, private val gameId: UUID,
-    private var seatMap: PMap<Int, UUID?>, startingNumberOfChips: Int
-) {
+class Table(creatingFromEvents: Boolean, var state: TableState) {
     private val newEvents = ArrayList<TableEvent>()
     private val appliedEvents = ArrayList<TableEvent>()
-    private val methodTable: MutableMap<Class<out TableEvent>, EventApplier<in TableEvent>> = HashMap()
-    private val chipsInBack = HashMap<UUID, Int>()
-    private var buttonOnPosition = 0
-    private var smallBlindPosition = 0
-    private var bigBlindPosition = 0
-    private var currentHand: Hand? = null
-    private var paused = false
 
     init {
-        seatMap.values.filterNotNull().forEach { chipsInBack[it] = startingNumberOfChips }
-        populateMethodTable()
+        state = state.copy(chipsInBack = HashTreePMap.from(state.seatMap.values
+            .filterNotNull().associateWith { state.startingNumberOfChips }))
         if (!creatingFromEvents) {
-            val tableCreatedEvent = TableCreatedEvent(aggregateId, gameId, seatMap.size,
-                HashTreePMap.from(seatMap), startingNumberOfChips)
+            val tableCreatedEvent = TableCreatedEvent(state.aggregateId, state.gameId, state.seatMap.size,
+                HashTreePMap.from(state.seatMap), state.startingNumberOfChips)
             newEvents.add(tableCreatedEvent)
             applyCommonEvent(tableCreatedEvent)
         }
@@ -79,221 +69,181 @@ class Table(
         events.forEach(Consumer { x: TableEvent -> applyCommonEvent(x) })
     }
 
-    private fun populateMethodTable() {
-        methodTable[TableCreatedEvent::class.java] = EventApplier { }
-        methodTable[CardsShuffledEvent::class.java] = EventApplier { }
-        methodTable[HandDealtEvent::class.java] =
-            EventApplier { x: TableEvent -> applyHandDealtEvent(x as HandDealtEvent) }
-        methodTable[AutoMoveHandForwardEvent::class.java] = EventApplier { }
-        methodTable[PlayerCalledEvent::class.java] = EventApplier { x: TableEvent ->
-            currentHand!!.applyEvent((x as PlayerCalledEvent))
-        }
-        methodTable[PlayerCheckedEvent::class.java] = EventApplier { x: TableEvent ->
-            currentHand!!.applyEvent((x as PlayerCheckedEvent))
-        }
-        methodTable[PlayerForceCheckedEvent::class.java] = EventApplier { x: TableEvent ->
-            currentHand!!.applyEvent((x as PlayerForceCheckedEvent))
-        }
-        methodTable[PlayerFoldedEvent::class.java] = EventApplier { x: TableEvent ->
-            currentHand!!.applyEvent((x as PlayerFoldedEvent))
-        }
-        methodTable[PlayerForceFoldedEvent::class.java] = EventApplier { x: TableEvent ->
-            currentHand!!.applyEvent((x as PlayerForceFoldedEvent))
-        }
-        methodTable[PlayerRaisedEvent::class.java] = EventApplier { x: TableEvent ->
-            currentHand!!.applyEvent((x as PlayerRaisedEvent))
-        }
-        methodTable[FlopCardsDealtEvent::class.java] = EventApplier { x: TableEvent ->
-            currentHand!!.applyEvent((x as FlopCardsDealtEvent))
-        }
-        methodTable[TurnCardDealtEvent::class.java] = EventApplier { x: TableEvent ->
-            currentHand!!.applyEvent((x as TurnCardDealtEvent))
-        }
-        methodTable[RiverCardDealtEvent::class.java] = EventApplier { x: TableEvent ->
-            currentHand!!.applyEvent((x as RiverCardDealtEvent))
-        }
-        methodTable[PotAmountIncreasedEvent::class.java] = EventApplier { x: TableEvent ->
-            currentHand!!.applyEvent((x as PotAmountIncreasedEvent))
-        }
-        methodTable[PotClosedEvent::class.java] = EventApplier { x: TableEvent ->
-            currentHand!!.applyEvent((x as PotClosedEvent))
-        }
-        methodTable[PotCreatedEvent::class.java] = EventApplier { x: TableEvent ->
-            currentHand!!.applyEvent((x as PotCreatedEvent))
-        }
-        methodTable[RoundCompletedEvent::class.java] = EventApplier { x: TableEvent ->
-            currentHand!!.applyEvent((x as RoundCompletedEvent))
-        }
-        methodTable[ActionOnChangedEvent::class.java] = EventApplier { x: TableEvent ->
-            currentHand!!.applyEvent((x as ActionOnChangedEvent))
-        }
-        methodTable[LastToActChangedEvent::class.java] = EventApplier { x: TableEvent ->
-            currentHand!!.applyEvent((x as LastToActChangedEvent))
-        }
-        methodTable[WinnersDeterminedEvent::class.java] = EventApplier { x: TableEvent ->
-            currentHand!!.applyEvent((x as WinnersDeterminedEvent))
-        }
-        methodTable[HandCompletedEvent::class.java] = EventApplier { x: TableEvent ->
-            val (_, _, _, playerToChipsAtTableMap) = x as HandCompletedEvent
-            currentHand = null
-            chipsInBack.clear()
-            chipsInBack.putAll(HashMap(playerToChipsAtTableMap))
-        }
-        methodTable[TablePausedEvent::class.java] = EventApplier { paused = true }
-        methodTable[TableResumedEvent::class.java] = EventApplier { paused = false }
-        methodTable[PlayerAddedEvent::class.java] = EventApplier { x: TableEvent ->
-            val event = x as PlayerAddedEvent
-            seatMap = seatMap.plus(event.position, event.playerId)
-            chipsInBack[event.playerId] = event.chipsInBack
-        }
-        methodTable[PlayerRemovedEvent::class.java] = EventApplier { x: TableEvent ->
-            val event = x as PlayerRemovedEvent
-            val position = seatMap.entries.first { it.value == event.playerId }.key
-            seatMap = seatMap.minus(position)
-            chipsInBack.remove(event.playerId)
-        }
-        methodTable[PlayerBustedTableEvent::class.java] = EventApplier { x: TableEvent ->
-            val event = x as PlayerBustedTableEvent
-            val position = seatMap.entries.first { it.value == event.playerId }.key
-            seatMap = seatMap.minus(position)
-            chipsInBack.remove(event.playerId)
+    private fun applyEvent(event: TableEvent) {
+        when (event) {
+            is TableCreatedEvent -> { }
+            is CardsShuffledEvent -> { }
+            is HandDealtEvent -> {
+                state = state.copy(
+                    buttonOnPosition = event.buttonOnPosition,
+                    smallBlindPosition = event.smallBlindPosition,
+                    bigBlindPosition = event.bigBlindPosition
+                )
+                val handState = HandState(
+                    event.gameId, event.aggregateId, event.handId, state.seatMap,
+                    event.flopCards, event.turnCard, event.riverCard, event.buttonOnPosition,
+                    event.smallBlindPosition, event.bigBlindPosition,
+                    event.lastToActPlayerId, event.playerToPocketCardsMap,
+                    event.possibleSeatActionsMap, event.playersStillInHand,
+                    event.handEvaluations, event.handDealerState,
+                    event.chipsInBack, event.chipsInFrontMap,
+                    event.callAmountsMap, event.raiseToAmountsMap,
+                    event.smallBlind, event.bigBlind, 0, null,
+                    HashTreePSet.empty(), false, false, false
+                )
+                state = state.copy(currentHand = Hand(handState))
+            }
+            is AutoMoveHandForwardEvent -> { }
+            is PlayerCalledEvent -> state.currentHand!!.applyEvent(event)
+            is PlayerCheckedEvent -> state.currentHand!!.applyEvent(event)
+            is PlayerForceCheckedEvent -> state.currentHand!!.applyEvent(event)
+            is PlayerFoldedEvent -> state.currentHand!!.applyEvent(event)
+            is PlayerForceFoldedEvent -> state.currentHand!!.applyEvent(event)
+            is PlayerRaisedEvent -> state.currentHand!!.applyEvent(event)
+            is FlopCardsDealtEvent -> state.currentHand!!.applyEvent(event)
+            is TurnCardDealtEvent -> state.currentHand!!.applyEvent(event)
+            is RiverCardDealtEvent -> state.currentHand!!.applyEvent(event)
+            is PotAmountIncreasedEvent -> state.currentHand!!.applyEvent(event)
+            is PotClosedEvent -> state.currentHand!!.applyEvent(event)
+            is PotCreatedEvent -> state.currentHand!!.applyEvent(event)
+            is RoundCompletedEvent -> state.currentHand!!.applyEvent(event)
+            is ActionOnChangedEvent -> state.currentHand!!.applyEvent(event)
+            is LastToActChangedEvent -> state.currentHand!!.applyEvent(event)
+            is WinnersDeterminedEvent -> state.currentHand!!.applyEvent(event)
+            is HandCompletedEvent -> {
+                state = state.copy(
+                    currentHand = null,
+                    chipsInBack = event.playerToChipsAtTableMap
+                )
+            }
+            is TablePausedEvent -> {
+                state = state.copy(paused = true)
+            }
+            is TableResumedEvent -> {
+                state = state.copy(paused = false)
+            }
+            is PlayerAddedEvent -> {
+                state = state.copy(
+                    seatMap = state.seatMap.plus(event.position, event.playerId),
+                    chipsInBack = state.chipsInBack.plus(event.playerId, event.chipsInBack)
+                )
+            }
+            is PlayerRemovedEvent -> {
+                val position = state.seatMap.entries.first { it.value == event.playerId }.key
+                state = state.copy(
+                    seatMap = state.seatMap.minus(position),
+                    chipsInBack = state.chipsInBack.minus(event.playerId)
+                )
+            }
+            is PlayerBustedTableEvent -> {
+                val position = state.seatMap.entries.first { it.value == event.playerId }.key
+                state = state.copy(
+                    seatMap = state.seatMap.minus(position),
+                    chipsInBack = state.chipsInBack.minus(event.playerId)
+                )
+            }
         }
     }
 
     private fun applyCommonEvent(event: TableEvent) {
-        methodTable[event.javaClass]!!.applyEvent(event)
+        applyEvent(event)
         appliedEvents.add(event)
     }
 
-    private fun applyHandDealtEvent(event: HandDealtEvent) {
-        buttonOnPosition = event.buttonOnPosition
-        smallBlindPosition = event.smallBlindPosition
-        bigBlindPosition = event.bigBlindPosition
-        currentHand = Hand(
-            event.gameId, event.aggregateId,
-            event.handId, seatMap, event.flopCards, event.turnCard,
-            event.riverCard, event.buttonOnPosition,
-            event.smallBlindPosition, event.bigBlindPosition,
-            event.lastToActPlayerId, event.playerToPocketCardsMap,
-            event.possibleSeatActionsMap, event.playersStillInHand,
-            event.handEvaluations, event.handDealerState,
-            event.chipsInBack, event.chipsInFrontMap,
-            event.callAmountsMap, event.raiseToAmountsMap,
-            event.smallBlind, event.bigBlind
-        )
+    fun startNewHandForNewGame(smallBlind: Int, bigBlind: Int, shuffledDeckOfCards: List<Card>,
+                               cardsUsedInHand: CardsUsedInHand, handEvaluations: Map<PocketCards, HandEvaluation>) {
+        state = state.copy(buttonOnPosition = assignButtonOnForNewGame())
+        state = state.copy(smallBlindPosition = assignSmallBlindForNewGame())
+        state = state.copy(bigBlindPosition = assignBigBlindForNewGame())
+        performNewHandCommonLogic(smallBlind, bigBlind, shuffledDeckOfCards, cardsUsedInHand,
+            handEvaluations, assignActionOnForNewHand())
     }
 
-    fun startNewHandForNewGame(
-        smallBlind: Int, bigBlind: Int,
-        shuffledDeckOfCards: List<Card>, cardsUsedInHand: CardsUsedInHand,
-        handEvaluations: Map<PocketCards, HandEvaluation>
-    ) {
-        buttonOnPosition = assignButtonOnForNewGame()
-        smallBlindPosition = assignSmallBlindForNewGame()
-        bigBlindPosition = assignBigBlindForNewGame()
-        val actionOnPosition = assignActionOnForNewHand()
-        performNewHandCommonLogic(
-            smallBlind, bigBlind, shuffledDeckOfCards,
-            cardsUsedInHand, handEvaluations, actionOnPosition
-        )
-    }
-
-    fun startNewHandForExistingTable(
-        smallBlind: Int, bigBlind: Int,
-        shuffledDeckOfCards: List<Card>, cardsUsedInHand: CardsUsedInHand,
-        handEvaluations: Map<PocketCards, HandEvaluation>
-    ) {
-        buttonOnPosition = assignButtonOnForNewHand()
-        smallBlindPosition = assignSmallBlindForNewHand()
-        bigBlindPosition = assignBigBlindForNewHand()
-        val actionOnPosition = assignActionOnForNewHand()
-        performNewHandCommonLogic(
-            smallBlind, bigBlind, shuffledDeckOfCards,
-            cardsUsedInHand, handEvaluations, actionOnPosition
-        )
+    fun startNewHandForExistingTable(smallBlind: Int, bigBlind: Int, shuffledDeckOfCards: List<Card>,
+                                     cardsUsedInHand: CardsUsedInHand, handEvaluations: Map<PocketCards, HandEvaluation>) {
+        state = state.copy(buttonOnPosition = assignButtonOnForNewHand())
+        state = state.copy(smallBlindPosition = assignSmallBlindForNewHand())
+        state = state.copy(bigBlindPosition = assignBigBlindForNewHand())
+        performNewHandCommonLogic(smallBlind, bigBlind, shuffledDeckOfCards, cardsUsedInHand,
+            handEvaluations, assignActionOnForNewHand())
     }
 
     private fun assignButtonOnForNewGame(): Int {
         while (true) {
-            val potentialButtonOnPosition = Random().nextInt(seatMap.size)
-            if (seatMap[Integer.valueOf(potentialButtonOnPosition)] != null) {
+            val potentialButtonOnPosition = Random().nextInt(state.seatMap.size)
+            if (state.seatMap[Integer.valueOf(potentialButtonOnPosition)] != null) {
                 return potentialButtonOnPosition
             }
         }
     }
 
     private fun assignSmallBlindForNewGame(): Int {
-        return if (numberOfPlayersAtTable == 2) buttonOnPosition else findNextFilledSeat(buttonOnPosition)
+        return if (numberOfPlayersAtTable == 2) state.buttonOnPosition else findNextFilledSeat(state.buttonOnPosition)
     }
 
     private fun assignBigBlindForNewGame(): Int {
-        return if (numberOfPlayersAtTable == 2) findNextFilledSeat(buttonOnPosition) else findNextFilledSeat(
-            smallBlindPosition
-        )
+        return if (numberOfPlayersAtTable == 2) findNextFilledSeat(state.buttonOnPosition) else findNextFilledSeat(state.smallBlindPosition)
     }
 
     private fun assignActionOnForNewHand(): Int {
-        return findNextFilledSeat(bigBlindPosition)
+        return findNextFilledSeat(state.bigBlindPosition)
     }
 
     private fun assignBigBlindForNewHand(): Int {
-        return findNextFilledSeat(bigBlindPosition)
+        return findNextFilledSeat(state.bigBlindPosition)
     }
 
     private fun assignSmallBlindForNewHand(): Int {
-        return findNextFilledSeat(smallBlindPosition)
+        return findNextFilledSeat(state.smallBlindPosition)
     }
 
     private fun assignButtonOnForNewHand(): Int {
-        return findNextFilledSeat(buttonOnPosition)
+        return findNextFilledSeat(state.buttonOnPosition)
     }
 
     private fun findNextFilledSeat(startingPosition: Int): Int {
-        for (i in startingPosition + 1 until seatMap.size) {
-            if (seatMap[i] != null) {
+        for (i in startingPosition + 1 until state.seatMap.size) {
+            if (state.seatMap[i] != null) {
                 return i
             }
         }
         for (i in 0 until startingPosition) {
-            if (seatMap[i] != null) {
+            if (state.seatMap[i] != null) {
                 return i
             }
         }
         throw IllegalStateException("unable to find next filled seat")
     }
 
-    private fun performNewHandCommonLogic(
-        smallBlind: Int, bigBlind: Int,
-        shuffledDeckOfCards: List<Card>, cardsUsedInHand: CardsUsedInHand,
-        handEvaluations: Map<PocketCards, HandEvaluation>,
-        actionOnPosition: Int
-    ) {
-        val cardsShuffledEvent = CardsShuffledEvent(aggregateId, gameId, shuffledDeckOfCards)
+    private fun performNewHandCommonLogic(smallBlind: Int, bigBlind: Int, shuffledDeckOfCards: List<Card>,
+                                          cardsUsedInHand: CardsUsedInHand,
+                                          handEvaluations: Map<PocketCards, HandEvaluation>, actionOnPosition: Int) {
+        val cardsShuffledEvent = CardsShuffledEvent(state.aggregateId, state.gameId, shuffledDeckOfCards)
         newEvents.add(cardsShuffledEvent)
         applyCommonEvent(cardsShuffledEvent)
-        var nextToReceivePocketCards = findNextFilledSeat(buttonOnPosition)
+        var nextToReceivePocketCards = findNextFilledSeat(state.buttonOnPosition)
         val playerToPocketCardsMap = HashMap<UUID?, PocketCards>()
         for (pocketCards in cardsUsedInHand.pocketCards) {
-            val playerIdAtPosition = seatMap[Integer
-                .valueOf(nextToReceivePocketCards)]
+            val playerIdAtPosition = state.seatMap[nextToReceivePocketCards]
             playerToPocketCardsMap[playerIdAtPosition] = pocketCards
             nextToReceivePocketCards = findNextFilledSeat(nextToReceivePocketCards)
             handEvaluations[pocketCards]!!.playerId = playerIdAtPosition
         }
-        val playersStillInHand = seatMap.values.filterNotNull().toSet()
+        val playersStillInHand = state.seatMap.values.filterNotNull().toSet()
         val possibleSeatActionsMap = HashMap<UUID?, Set<PlayerAction>>()
         playersStillInHand.forEach { possibleSeatActionsMap[it] = HashSet() }
-        val hand = Hand(
-            gameId, aggregateId, UUID.randomUUID(), seatMap,
+
+        val handState = HandState(state.gameId, state.aggregateId, UUID.randomUUID(), state.seatMap,
             cardsUsedInHand.flopCards, cardsUsedInHand.turnCard,
-            cardsUsedInHand.riverCard, buttonOnPosition, smallBlindPosition,
-            bigBlindPosition, null,
+            cardsUsedInHand.riverCard, state.buttonOnPosition, state.smallBlindPosition,
+            state.bigBlindPosition, null,
             HashTreePMap.from(playerToPocketCardsMap),
             HashTreePMap.from(possibleSeatActionsMap),
-            playersStillInHand, ArrayList(handEvaluations.values),
-            HandDealerState.NONE, chipsInBack, HashMap(), HashMap(),
-            HashMap(), smallBlind, bigBlind
-        )
+            HashTreePSet.from(playersStillInHand), TreePVector.from(handEvaluations.values),
+            HandDealerState.NONE, state.chipsInBack, HashTreePMap.empty(), HashTreePMap.empty(),
+            HashTreePMap.empty(), smallBlind, bigBlind, 0, null,
+            HashTreePSet.empty(), false, false, false)
+        val hand = Hand(handState)
         val eventsCreated = hand.dealHand(actionOnPosition)
         eventsCreated.forEach {
             newEvents.add(it)
@@ -302,11 +252,11 @@ class Table(
     }
 
     val numberOfPlayersAtTable: Int
-        get() = seatMap.values.filterNotNull().count()
+        get() = state.seatMap.values.filterNotNull().count()
 
     fun check(playerId: UUID?) {
         checkHandIsBeingPlayed()
-        val playerCheckedEvent = currentHand!!.check(playerId!!, false)
+        val playerCheckedEvent = state.currentHand!!.check(playerId!!, false)
         newEvents.add(playerCheckedEvent)
         applyCommonEvent(playerCheckedEvent)
         handleEndOfRound()
@@ -314,7 +264,7 @@ class Table(
 
     fun call(playerId: UUID?) {
         checkHandIsBeingPlayed()
-        val playerCalledEvent = currentHand!!.call(playerId!!)
+        val playerCalledEvent = state.currentHand!!.call(playerId!!)
         newEvents.add(playerCalledEvent)
         applyCommonEvent(playerCalledEvent)
         handleEndOfRound()
@@ -322,7 +272,7 @@ class Table(
 
     fun fold(playerId: UUID?) {
         checkHandIsBeingPlayed()
-        val playerFoldedEvent = currentHand!!.fold(playerId!!, false)
+        val playerFoldedEvent = state.currentHand!!.fold(playerId!!, false)
         newEvents.add(playerFoldedEvent)
         applyCommonEvent(playerFoldedEvent)
         handleEndOfRound()
@@ -330,7 +280,7 @@ class Table(
 
     fun raise(playerId: UUID?, raiseToAmount: Int) {
         checkHandIsBeingPlayed()
-        val playerRaisedEvent = currentHand!!.raise(playerId!!, raiseToAmount)
+        val playerRaisedEvent = state.currentHand!!.raise(playerId!!, raiseToAmount)
         newEvents.add(playerRaisedEvent)
         applyCommonEvent(playerRaisedEvent)
         changeActionOnIfAppropriate()
@@ -338,10 +288,10 @@ class Table(
 
     fun expireActionOn(handId: UUID?, playerId: UUID?) {
         checkHandIsBeingPlayed()
-        if (!currentHand!!.idMatches(handId!!)) {
+        if (!state.currentHand!!.idMatches(handId!!)) {
             return
         }
-        val forcedActionOnExpiredEvent = currentHand!!.expireActionOn(playerId!!)
+        val forcedActionOnExpiredEvent = state.currentHand!!.expireActionOn(playerId!!)
         newEvents.add(forcedActionOnExpiredEvent)
         applyCommonEvent(forcedActionOnExpiredEvent)
         handleEndOfRound()
@@ -362,13 +312,13 @@ class Table(
     }
 
     private fun checkHandIsBeingPlayed() {
-        if (currentHand == null) {
+        if (state.currentHand == null) {
             throw FlexPokerException("no hand in progress")
         }
     }
 
     private fun handlePotAndRoundCompleted() {
-        val endOfRoundEvents = currentHand!!.handlePotAndRoundCompleted()
+        val endOfRoundEvents = state.currentHand!!.handlePotAndRoundCompleted()
         endOfRoundEvents.forEach {
             newEvents.add(it)
             // TODO: not using applyCommonEvent() here because PotHandler is too
@@ -379,7 +329,7 @@ class Table(
     }
 
     private fun changeActionOnIfAppropriate() {
-        val actionOnChangedEvents = currentHand!!.changeActionOn()
+        val actionOnChangedEvents = state.currentHand!!.changeActionOn()
         actionOnChangedEvents.forEach {
             newEvents.add(it)
             applyCommonEvent(it)
@@ -387,34 +337,34 @@ class Table(
     }
 
     private fun dealCommonCardsIfAppropriate() {
-        currentHand!!.dealCommonCardsIfAppropriate().ifPresent {
+        state.currentHand!!.dealCommonCardsIfAppropriate().ifPresent {
             newEvents.add(it)
             applyCommonEvent(it)
         }
     }
 
     private fun determineWinnersIfAppropriate() {
-        currentHand!!.determineWinnersIfAppropriate().ifPresent {
+        state.currentHand!!.determineWinnersIfAppropriate().ifPresent {
             newEvents.add(it)
             applyCommonEvent(it)
         }
     }
 
     private fun removeAnyBustedPlayers() {
-        chipsInBack.entries.filter { it.value == 0 }.forEach {
-            val event = PlayerBustedTableEvent(aggregateId, gameId, it.key)
+        state.chipsInBack.filterValues { it == 0 }.forEach {
+            val event = PlayerBustedTableEvent(state.aggregateId, state.gameId, it.key)
             newEvents.add(event)
             applyCommonEvent(event)
         }
     }
 
     private fun finishHandIfAppropriate() {
-        val handCompleteEvent = currentHand!!.finishHandIfAppropriate()
+        val handCompleteEvent = state.currentHand!!.finishHandIfAppropriate()
         if (handCompleteEvent.isPresent) {
             newEvents.add(handCompleteEvent.get())
             applyCommonEvent(handCompleteEvent.get())
         } else {
-            currentHand!!.autoMoveHandForward().ifPresent {
+            state.currentHand!!.autoMoveHandForward().ifPresent {
                 newEvents.add(it)
                 applyCommonEvent(it)
             }
@@ -422,49 +372,49 @@ class Table(
     }
 
     fun addPlayer(playerId: UUID?, chips: Int) {
-        if (seatMap.values.contains(playerId)) {
+        if (state.seatMap.values.contains(playerId)) {
             throw FlexPokerException("player already at this table")
         }
         val newPlayerPosition = findRandomOpenSeat()
-        val playerAddedEvent = PlayerAddedEvent(aggregateId, gameId, playerId!!, chips, newPlayerPosition)
+        val playerAddedEvent = PlayerAddedEvent(state.aggregateId, state.gameId, playerId!!, chips, newPlayerPosition)
         newEvents.add(playerAddedEvent)
         applyCommonEvent(playerAddedEvent)
     }
 
     fun removePlayer(playerId: UUID?) {
-        if (!seatMap.values.contains(playerId)) {
+        if (!state.seatMap.values.contains(playerId)) {
             throw FlexPokerException("player not at this table")
         }
-        if (currentHand != null) {
+        if (state.currentHand != null) {
             throw FlexPokerException("can't remove a player while in a hand")
         }
-        val playerRemovedEvent = PlayerRemovedEvent(aggregateId, gameId, playerId!!)
+        val playerRemovedEvent = PlayerRemovedEvent(state.aggregateId, state.gameId, playerId!!)
         newEvents.add(playerRemovedEvent)
         applyCommonEvent(playerRemovedEvent)
     }
 
     fun pause() {
-        if (paused) {
+        if (state.paused) {
             throw FlexPokerException("table is already paused.  can't pause again.")
         }
-        val tablePausedEvent = TablePausedEvent(aggregateId, gameId)
+        val tablePausedEvent = TablePausedEvent(state.aggregateId, state.gameId)
         newEvents.add(tablePausedEvent)
         applyCommonEvent(tablePausedEvent)
     }
 
     fun resume() {
-        if (!paused) {
+        if (!state.paused) {
             throw FlexPokerException("table is not paused.  can't resume.")
         }
-        val tableResumedEvent = TableResumedEvent(aggregateId, gameId)
+        val tableResumedEvent = TableResumedEvent(state.aggregateId, state.gameId)
         newEvents.add(tableResumedEvent)
         applyCommonEvent(tableResumedEvent)
     }
 
     private fun findRandomOpenSeat(): Int {
         while (true) {
-            val potentialNewPlayerPosition = Random().nextInt(seatMap.size)
-            if (seatMap[potentialNewPlayerPosition] == null) {
+            val potentialNewPlayerPosition = Random().nextInt(state.seatMap.size)
+            if (state.seatMap[potentialNewPlayerPosition] == null) {
                 return potentialNewPlayerPosition
             }
         }

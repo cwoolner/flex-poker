@@ -54,6 +54,6 @@ class DefaultTableFactory : TableFactory {
 
     private fun createWithGivenInfo(creatingFromEvents: Boolean, aggregateId: UUID, gameId: UUID,
                                     seatMap: PMap<Int, UUID?>, startingNumberOfChips: Int): Table {
-        return Table(creatingFromEvents, aggregateId, gameId, seatMap, startingNumberOfChips)
+        return Table(creatingFromEvents, TableState(aggregateId, gameId, seatMap, startingNumberOfChips))
     }
 }

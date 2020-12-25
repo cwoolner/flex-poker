@@ -13,6 +13,7 @@ import com.flexpoker.table.command.aggregate.HandDealerState
 import com.flexpoker.table.command.aggregate.HandEvaluation
 import org.pcollections.PMap
 import org.pcollections.PSet
+import org.pcollections.PVector
 import java.time.Instant
 import java.util.UUID
 
@@ -77,11 +78,11 @@ data class HandDealtEvent (
     val smallBlindPosition: Int,
     val bigBlindPosition: Int,
     val lastToActPlayerId: UUID,
-    val seatMap: PMap<Int, UUID>,
+    val seatMap: PMap<Int, UUID?>,
     val playerToPocketCardsMap: PMap<UUID, PocketCards>,
     val possibleSeatActionsMap: PMap<UUID, Set<PlayerAction>>,
     val playersStillInHand: PSet<UUID>,
-    val handEvaluations: List<HandEvaluation>,
+    val handEvaluations: PVector<HandEvaluation>,
     val handDealerState: HandDealerState,
     val chipsInBack: PMap<UUID, Int>,
     val chipsInFrontMap: PMap<UUID, Int>,

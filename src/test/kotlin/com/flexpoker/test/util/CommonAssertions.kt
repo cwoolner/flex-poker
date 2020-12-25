@@ -20,8 +20,8 @@ object CommonAssertions {
     }
 
     fun verifyAppliedAndNewEventsForAggregate(table: Table, vararg eventClasses: Class<out Event>) {
-        verifyEventIds(table.aggregateId, table.fetchAppliedEvents())
-        verifyEventIds(table.aggregateId, table.fetchNewEvents())
+        verifyEventIds(table.state.aggregateId, table.fetchAppliedEvents())
+        verifyEventIds(table.state.aggregateId, table.fetchNewEvents())
         verifyNumberOfEventsAndEntireOrderByType(table.fetchAppliedEvents(), *eventClasses)
         verifyNumberOfEventsAndEntireOrderByType(table.fetchNewEvents(), *eventClasses)
     }
