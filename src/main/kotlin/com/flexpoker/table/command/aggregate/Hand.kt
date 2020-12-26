@@ -2,7 +2,13 @@ package com.flexpoker.table.command.aggregate
 
 import com.flexpoker.exception.FlexPokerException
 import com.flexpoker.table.command.PlayerAction
-import com.flexpoker.table.command.aggregate.pot.PotHandler
+import com.flexpoker.table.command.aggregate.pot.addNewPot
+import com.flexpoker.table.command.aggregate.pot.addToPot
+import com.flexpoker.table.command.aggregate.pot.calculatePots
+import com.flexpoker.table.command.aggregate.pot.closePot
+import com.flexpoker.table.command.aggregate.pot.fetchChipsWon
+import com.flexpoker.table.command.aggregate.pot.fetchPlayersRequiredToShowCards
+import com.flexpoker.table.command.aggregate.pot.removePlayerFromAllPots
 import com.flexpoker.table.command.events.ActionOnChangedEvent
 import com.flexpoker.table.command.events.AutoMoveHandForwardEvent
 import com.flexpoker.table.command.events.FlopCardsDealtEvent
@@ -30,7 +36,6 @@ import java.util.Optional
 import java.util.UUID
 
 class Hand(private var state: HandState) {
-    private val potHandler = PotHandler(state.gameId, state.tableId, state.entityId, state.handEvaluationList)
 
     fun dealHand(actionOnPosition: Int): List<TableEvent> {
         val eventsCreated = ArrayList<TableEvent>()
@@ -206,7 +211,8 @@ class Hand(private var state: HandState) {
             return emptyList()
         }
         val tableEvents = ArrayList<TableEvent>()
-        tableEvents.addAll(potHandler.calculatePots(state.chipsInFrontMap, state.chipsInBackMap))
+        tableEvents.addAll(calculatePots(state.gameId, state.tableId, state.entityId, state.pots,
+            state.handEvaluationList, state.chipsInFrontMap, state.chipsInBackMap))
         val nextHandDealerState =
             if (state.playersStillInHand.size == 1) HandDealerState.COMPLETE else HandDealerState.values()[state.handDealerState.ordinal + 1]
         val roundCompletedEvent = RoundCompletedEvent(state.tableId, state.gameId, state.entityId, nextHandDealerState)
@@ -271,7 +277,7 @@ class Hand(private var state: HandState) {
             }
             is PlayerFoldedEvent -> {
                 val playerId = event.playerId
-                potHandler.removePlayerFromAllPots(playerId)
+                removePlayerFromAllPots(state.pots, playerId)
                 state = state.copy(
                     playersStillInHand = state.playersStillInHand.minus(playerId),
                     possibleSeatActionsMap = state.possibleSeatActionsMap.plus(playerId, HashTreePSet.empty()),
@@ -281,7 +287,7 @@ class Hand(private var state: HandState) {
             }
             is PlayerForceFoldedEvent -> {
                 val playerId = event.playerId
-                potHandler.removePlayerFromAllPots(playerId)
+                removePlayerFromAllPots(state.pots, playerId)
                 state = state.copy(
                     playersStillInHand = state.playersStillInHand.minus(playerId),
                     possibleSeatActionsMap = state.possibleSeatActionsMap.plus(playerId, HashTreePSet.empty()),
@@ -323,11 +329,11 @@ class Hand(private var state: HandState) {
                 state = state.copy(riverDealt = true)
             }
             is PotAmountIncreasedEvent -> {
-                potHandler.addToPot(event.potId, event.amountIncreased)
+                addToPot(state.pots, event.potId, event.amountIncreased)
                 state.playersStillInHand.forEach { subtractFromChipsInFront(it, event.amountIncreased) }
             }
-            is PotClosedEvent -> potHandler.closePot(event.potId)
-            is PotCreatedEvent -> potHandler.addNewPot(event.potId, event.playersInvolved)
+            is PotClosedEvent -> closePot(state.pots, event.potId)
+            is PotCreatedEvent -> addNewPot(state.pots, state.handEvaluationList, event.potId, event.playersInvolved)
             is RoundCompletedEvent -> {
                 state = state.copy(handDealerState = event.nextHandDealerState)
                 state = state.copy(originatingBettorPlayerId = null)
@@ -401,8 +407,8 @@ class Hand(private var state: HandState) {
 
     fun determineWinnersIfAppropriate(): Optional<WinnersDeterminedEvent> {
         if (state.handDealerState === HandDealerState.COMPLETE) {
-            val playersRequiredToShowCards = potHandler.fetchPlayersRequiredToShowCards(state.playersStillInHand)
-            val playersToChipsWonMap = potHandler.fetchChipsWon(state.playersStillInHand)
+            val playersRequiredToShowCards = fetchPlayersRequiredToShowCards(state.pots, state.playersStillInHand)
+            val playersToChipsWonMap = fetchChipsWon(state.pots, state.playersStillInHand)
             return Optional.of(WinnersDeterminedEvent(state.tableId, state.gameId, state.entityId,
                 playersRequiredToShowCards, playersToChipsWonMap))
         }

@@ -89,7 +89,7 @@ class Table(creatingFromEvents: Boolean, var state: TableState) {
                     event.chipsInBack, event.chipsInFrontMap,
                     event.callAmountsMap, event.raiseToAmountsMap,
                     event.smallBlind, event.bigBlind, 0, null,
-                    HashTreePSet.empty(), false, false, false
+                    HashTreePSet.empty(), false, false, false, mutableSetOf()
                 )
                 state = state.copy(currentHand = Hand(handState))
             }
@@ -242,7 +242,7 @@ class Table(creatingFromEvents: Boolean, var state: TableState) {
             HashTreePSet.from(playersStillInHand), TreePVector.from(handEvaluations.values),
             HandDealerState.NONE, state.chipsInBack, HashTreePMap.empty(), HashTreePMap.empty(),
             HashTreePMap.empty(), smallBlind, bigBlind, 0, null,
-            HashTreePSet.empty(), false, false, false)
+            HashTreePSet.empty(), false, false, false, mutableSetOf())
         val hand = Hand(handState)
         val eventsCreated = hand.dealHand(actionOnPosition)
         eventsCreated.forEach {

@@ -18,7 +18,8 @@ class CalculatePotsPotHandlerTest {
     fun testTwoPlayersSameBet() {
         val player1 = UUID.randomUUID()
         val player2 = UUID.randomUUID()
-        val potHandler = PotTestUtils.createBasicPotHandler(player1, player2)
+        val pots = mutableSetOf<Pot>()
+        val hands = createPotHands(player1, player2)
         val chipsInFrontMap = HashMap<UUID, Int>()
         chipsInFrontMap[player1] = 10
         chipsInFrontMap[player2] = 10
@@ -28,7 +29,8 @@ class CalculatePotsPotHandlerTest {
         val playersStillInHand = HashSet<UUID>()
         playersStillInHand.add(player1)
         playersStillInHand.add(player2)
-        val potEvents = potHandler.calculatePots(chipsInFrontMap, chipsInBackMap)
+        val potEvents = calculatePots(UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID(),
+            pots, hands, chipsInFrontMap, chipsInBackMap)
         verifyNumberOfEventsAndEntireOrderByType(
             potEvents,
             PotCreatedEvent::class.java,
@@ -42,7 +44,8 @@ class CalculatePotsPotHandlerTest {
     fun testTwoPlayerDifferentBets() {
         val player1 = UUID.randomUUID()
         val player2 = UUID.randomUUID()
-        val potHandler = PotTestUtils.createBasicPotHandler(player1, player2)
+        val pots = mutableSetOf<Pot>()
+        val hands = createPotHands(player1, player2)
         val chipsInFrontMap = HashMap<UUID, Int>()
         chipsInFrontMap[player1] = 10
         chipsInFrontMap[player2] = 20
@@ -52,7 +55,8 @@ class CalculatePotsPotHandlerTest {
         val playersStillInHand = HashSet<UUID>()
         playersStillInHand.add(player1)
         playersStillInHand.add(player2)
-        val potEvents = potHandler.calculatePots(chipsInFrontMap, chipsInBackMap)
+        val potEvents = calculatePots(UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID(),
+            pots, hands, chipsInFrontMap, chipsInBackMap)
         verifyNumberOfEventsAndEntireOrderByType(
             potEvents, PotCreatedEvent::class.java, PotAmountIncreasedEvent::class.java,
             PotAmountIncreasedEvent::class.java
@@ -66,7 +70,8 @@ class CalculatePotsPotHandlerTest {
     fun testTwoPlayerOneAllIn() {
         val player1 = UUID.randomUUID()
         val player2 = UUID.randomUUID()
-        val potHandler = PotTestUtils.createBasicPotHandler(player1, player2)
+        val pots = mutableSetOf<Pot>()
+        val hands = createPotHands(player1, player2)
         val chipsInFrontMap = HashMap<UUID, Int>()
         chipsInFrontMap[player1] = 1000
         chipsInFrontMap[player2] = 20
@@ -76,7 +81,8 @@ class CalculatePotsPotHandlerTest {
         val playersStillInHand = HashSet<UUID>()
         playersStillInHand.add(player1)
         playersStillInHand.add(player2)
-        val potEvents = potHandler.calculatePots(chipsInFrontMap, chipsInBackMap)
+        val potEvents = calculatePots(UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID(),
+            pots, hands, chipsInFrontMap, chipsInBackMap)
         verifyNumberOfEventsAndEntireOrderByType(
             potEvents,
             PotCreatedEvent::class.java,
@@ -98,7 +104,8 @@ class CalculatePotsPotHandlerTest {
     fun testTwoPlayerChipAndAChair() {
         val player1 = UUID.randomUUID()
         val player2 = UUID.randomUUID()
-        val potHandler = PotTestUtils.createBasicPotHandler(player1, player2)
+        val pots = mutableSetOf<Pot>()
+        val hands = createPotHands(player1, player2)
         val chipsInFrontMap = HashMap<UUID, Int>()
         chipsInFrontMap[player1] = 2
         chipsInFrontMap[player2] = 1
@@ -108,7 +115,8 @@ class CalculatePotsPotHandlerTest {
         val playersStillInHand = HashSet<UUID>()
         playersStillInHand.add(player1)
         playersStillInHand.add(player2)
-        val potEvents = potHandler.calculatePots(chipsInFrontMap, chipsInBackMap)
+        val potEvents = calculatePots(UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID(),
+            pots, hands, chipsInFrontMap, chipsInBackMap)
         verifyNumberOfEventsAndEntireOrderByType(
             potEvents,
             PotCreatedEvent::class.java,

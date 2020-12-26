@@ -5,6 +5,7 @@ import com.flexpoker.table.command.PlayerAction
 import com.flexpoker.table.command.PocketCards
 import com.flexpoker.table.command.RiverCard
 import com.flexpoker.table.command.TurnCard
+import com.flexpoker.table.command.aggregate.pot.Pot
 import org.pcollections.HashTreePMap
 import org.pcollections.PMap
 import org.pcollections.PSet
@@ -52,5 +53,6 @@ data class HandState(
     val playersToShowCards: PSet<UUID>,
     val flopDealt: Boolean,
     val turnDealt: Boolean,
-    val riverDealt: Boolean
+    val riverDealt: Boolean,
+    val pots: MutableSet<Pot>
 )
