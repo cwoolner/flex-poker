@@ -90,6 +90,9 @@
           </targetTests>
           <timeoutFactor>3</timeoutFactor>
           <threads>4</threads>
+          <avoidCallsTo>
+            <avoidCallsTo>kotlin.jvm.internal</avoidCallsTo>
+          </avoidCallsTo>
         </configuration>
       </plugin>
       <plugin>
