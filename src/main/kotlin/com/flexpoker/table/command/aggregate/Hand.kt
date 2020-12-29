@@ -210,11 +210,16 @@ class Hand(private var state: HandState) {
         if (state.seatMap[state.actionOnPosition] != state.lastToActPlayerId && state.playersStillInHand.size > 1) {
             return emptyList()
         }
+
+        val (potEvents, updatedPots) = calculatePots(state.gameId, state.tableId, state.entityId, state.pots,
+            state.handEvaluationList, state.chipsInFrontMap, state.chipsInBackMap)
+
         val tableEvents = ArrayList<TableEvent>()
-        tableEvents.addAll(calculatePots(state.gameId, state.tableId, state.entityId, state.pots,
-            state.handEvaluationList, state.chipsInFrontMap, state.chipsInBackMap))
+        tableEvents.addAll(potEvents)
+        state = state.copy(pots = updatedPots)
         val nextHandDealerState =
-            if (state.playersStillInHand.size == 1) HandDealerState.COMPLETE else HandDealerState.values()[state.handDealerState.ordinal + 1]
+            if (state.playersStillInHand.size == 1) HandDealerState.COMPLETE
+            else HandDealerState.values()[state.handDealerState.ordinal + 1]
         val roundCompletedEvent = RoundCompletedEvent(state.tableId, state.gameId, state.entityId, nextHandDealerState)
         tableEvents.add(roundCompletedEvent)
         applyEvent(roundCompletedEvent)
@@ -277,20 +282,20 @@ class Hand(private var state: HandState) {
             }
             is PlayerFoldedEvent -> {
                 val playerId = event.playerId
-                removePlayerFromAllPots(state.pots, playerId)
                 state = state.copy(
                     playersStillInHand = state.playersStillInHand.minus(playerId),
                     possibleSeatActionsMap = state.possibleSeatActionsMap.plus(playerId, HashTreePSet.empty()),
+                    pots = removePlayerFromAllPots(state.pots, playerId),
                     callAmountsMap = state.callAmountsMap.plus(playerId, 0),
                     raiseToAmountsMap = state.raiseToAmountsMap.plus(playerId, 0)
                 )
             }
             is PlayerForceFoldedEvent -> {
                 val playerId = event.playerId
-                removePlayerFromAllPots(state.pots, playerId)
                 state = state.copy(
                     playersStillInHand = state.playersStillInHand.minus(playerId),
                     possibleSeatActionsMap = state.possibleSeatActionsMap.plus(playerId, HashTreePSet.empty()),
+                    pots = removePlayerFromAllPots(state.pots, playerId),
                     callAmountsMap = state.callAmountsMap.plus(playerId, 0),
                     raiseToAmountsMap = state.raiseToAmountsMap.plus(playerId, 0)
                 )
@@ -329,11 +334,15 @@ class Hand(private var state: HandState) {
                 state = state.copy(riverDealt = true)
             }
             is PotAmountIncreasedEvent -> {
-                addToPot(state.pots, event.potId, event.amountIncreased)
+                state = state.copy(pots = addToPot(state.pots, event.potId, event.amountIncreased))
                 state.playersStillInHand.forEach { subtractFromChipsInFront(it, event.amountIncreased) }
             }
-            is PotClosedEvent -> closePot(state.pots, event.potId)
-            is PotCreatedEvent -> addNewPot(state.pots, state.handEvaluationList, event.potId, event.playersInvolved)
+            is PotClosedEvent -> {
+                state = state.copy(pots = closePot(state.pots, event.potId))
+            }
+            is PotCreatedEvent -> {
+                state = state.copy(pots = addNewPot(state.pots, state.handEvaluationList, event.potId, event.playersInvolved))
+            }
             is RoundCompletedEvent -> {
                 state = state.copy(handDealerState = event.nextHandDealerState)
                 state = state.copy(originatingBettorPlayerId = null)

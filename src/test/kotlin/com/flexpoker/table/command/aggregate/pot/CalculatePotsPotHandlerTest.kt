@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
+import org.pcollections.HashTreePSet
 import java.util.HashMap
 import java.util.HashSet
 import java.util.UUID
@@ -18,7 +19,6 @@ class CalculatePotsPotHandlerTest {
     fun testTwoPlayersSameBet() {
         val player1 = UUID.randomUUID()
         val player2 = UUID.randomUUID()
-        val pots = mutableSetOf<Pot>()
         val hands = createPotHands(player1, player2)
         val chipsInFrontMap = HashMap<UUID, Int>()
         chipsInFrontMap[player1] = 10
@@ -29,8 +29,8 @@ class CalculatePotsPotHandlerTest {
         val playersStillInHand = HashSet<UUID>()
         playersStillInHand.add(player1)
         playersStillInHand.add(player2)
-        val potEvents = calculatePots(UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID(),
-            pots, hands, chipsInFrontMap, chipsInBackMap)
+        val (potEvents, _) = calculatePots(UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID(),
+            HashTreePSet.empty(), hands, chipsInFrontMap, chipsInBackMap)
         verifyNumberOfEventsAndEntireOrderByType(
             potEvents,
             PotCreatedEvent::class.java,
@@ -44,7 +44,6 @@ class CalculatePotsPotHandlerTest {
     fun testTwoPlayerDifferentBets() {
         val player1 = UUID.randomUUID()
         val player2 = UUID.randomUUID()
-        val pots = mutableSetOf<Pot>()
         val hands = createPotHands(player1, player2)
         val chipsInFrontMap = HashMap<UUID, Int>()
         chipsInFrontMap[player1] = 10
@@ -55,8 +54,8 @@ class CalculatePotsPotHandlerTest {
         val playersStillInHand = HashSet<UUID>()
         playersStillInHand.add(player1)
         playersStillInHand.add(player2)
-        val potEvents = calculatePots(UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID(),
-            pots, hands, chipsInFrontMap, chipsInBackMap)
+        val (potEvents, _) = calculatePots(UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID(),
+            HashTreePSet.empty(), hands, chipsInFrontMap, chipsInBackMap)
         verifyNumberOfEventsAndEntireOrderByType(
             potEvents, PotCreatedEvent::class.java, PotAmountIncreasedEvent::class.java,
             PotAmountIncreasedEvent::class.java
@@ -70,7 +69,6 @@ class CalculatePotsPotHandlerTest {
     fun testTwoPlayerOneAllIn() {
         val player1 = UUID.randomUUID()
         val player2 = UUID.randomUUID()
-        val pots = mutableSetOf<Pot>()
         val hands = createPotHands(player1, player2)
         val chipsInFrontMap = HashMap<UUID, Int>()
         chipsInFrontMap[player1] = 1000
@@ -81,8 +79,8 @@ class CalculatePotsPotHandlerTest {
         val playersStillInHand = HashSet<UUID>()
         playersStillInHand.add(player1)
         playersStillInHand.add(player2)
-        val potEvents = calculatePots(UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID(),
-            pots, hands, chipsInFrontMap, chipsInBackMap)
+        val (potEvents, _) = calculatePots(UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID(),
+            HashTreePSet.empty(), hands, chipsInFrontMap, chipsInBackMap)
         verifyNumberOfEventsAndEntireOrderByType(
             potEvents,
             PotCreatedEvent::class.java,
@@ -104,7 +102,6 @@ class CalculatePotsPotHandlerTest {
     fun testTwoPlayerChipAndAChair() {
         val player1 = UUID.randomUUID()
         val player2 = UUID.randomUUID()
-        val pots = mutableSetOf<Pot>()
         val hands = createPotHands(player1, player2)
         val chipsInFrontMap = HashMap<UUID, Int>()
         chipsInFrontMap[player1] = 2
@@ -115,8 +112,8 @@ class CalculatePotsPotHandlerTest {
         val playersStillInHand = HashSet<UUID>()
         playersStillInHand.add(player1)
         playersStillInHand.add(player2)
-        val potEvents = calculatePots(UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID(),
-            pots, hands, chipsInFrontMap, chipsInBackMap)
+        val (potEvents, _) = calculatePots(UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID(),
+            HashTreePSet.empty(), hands, chipsInFrontMap, chipsInBackMap)
         verifyNumberOfEventsAndEntireOrderByType(
             potEvents,
             PotCreatedEvent::class.java,

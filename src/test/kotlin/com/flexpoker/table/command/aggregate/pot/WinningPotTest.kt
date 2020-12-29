@@ -3,14 +3,12 @@ package com.flexpoker.table.command.aggregate.pot
 import com.flexpoker.table.command.CardRank
 import com.flexpoker.table.command.HandRanking
 import com.flexpoker.table.command.aggregate.HandEvaluation
-import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
+import org.pcollections.HashTreePSet
 import java.util.ArrayList
-import java.util.Arrays
-import java.util.HashSet
 import java.util.UUID
 
 class WinningPotTest {
@@ -34,12 +32,16 @@ class WinningPotTest {
         val winningHands = ArrayList<Any>()
         winningHands.add(handEvaluation1)
         winningHands.add(handEvaluation2)
-        val pot = Pot(UUID.randomUUID(), HashSet(Arrays.asList(handEvaluation1, handEvaluation2)))
-        pot.addChips(60)
-        Assertions.assertTrue(pot.forcePlayerToShowCards(player1))
-        Assertions.assertFalse(pot.forcePlayerToShowCards(player2))
-        Assertions.assertEquals(60, pot.getChipsWon(player1))
-        Assertions.assertEquals(0, pot.getChipsWon(player2))
+        val potId = UUID.randomUUID()
+        var pots = addNewPot(HashTreePSet.empty(), listOf(handEvaluation1, handEvaluation2),
+            potId, setOf(player1, player2))
+        pots = addToPot(pots,  potId, 60)
+
+        val chipsWon = fetchChipsWon(pots, setOf(player1, player2))
+        assertTrue(forcePlayerToShowCards(pots.first(), player1))
+        assertFalse(forcePlayerToShowCards(pots.first(), player2))
+        assertEquals(60, chipsWon[player1])
+        assertEquals(0, chipsWon[player2])
     }
 
     @Test
@@ -59,14 +61,18 @@ class WinningPotTest {
         handEvaluation3.playerId = player3
         handEvaluation3.handRanking = HandRanking.STRAIGHT
         handEvaluation3.primaryCardRank = CardRank.KING
-        val pot = Pot(UUID.randomUUID(), mutableSetOf(handEvaluation1, handEvaluation2, handEvaluation3))
-        pot.addChips(60)
-        assertFalse(pot.forcePlayerToShowCards(player1))
-        assertTrue(pot.forcePlayerToShowCards(player2))
-        assertTrue(pot.forcePlayerToShowCards(player3))
-        assertEquals(0, pot.getChipsWon(player1))
-        assertEquals(30, pot.getChipsWon(player2))
-        assertEquals(30, pot.getChipsWon(player3))
+        val potId = UUID.randomUUID()
+        var pots = addNewPot(HashTreePSet.empty(), listOf(handEvaluation1, handEvaluation2, handEvaluation3),
+            potId, setOf(player1, player2, player3))
+        pots = addToPot(pots, potId, 60)
+
+        val chipsWon = fetchChipsWon(pots, setOf(player1, player2, player3))
+        assertFalse(forcePlayerToShowCards(pots.first(), player1))
+        assertTrue(forcePlayerToShowCards(pots.first(), player2))
+        assertTrue(forcePlayerToShowCards(pots.first(), player3))
+        assertEquals(0, chipsWon[player1])
+        assertEquals(30, chipsWon[player2])
+        assertEquals(30, chipsWon[player3])
     }
 
     @Test
@@ -86,19 +92,22 @@ class WinningPotTest {
         handEvaluation3.playerId = player3
         handEvaluation3.handRanking = HandRanking.STRAIGHT
         handEvaluation3.primaryCardRank = CardRank.KING
-        val pot = Pot(UUID.randomUUID(), mutableSetOf(handEvaluation1, handEvaluation2, handEvaluation3))
-        pot.addChips(61)
+        val potId = UUID.randomUUID()
+        var pots = addNewPot(HashTreePSet.empty(), listOf(handEvaluation1, handEvaluation2, handEvaluation3),
+            potId, setOf(player1, player2, player3))
+        pots = addToPot(pots, potId, 61)
 
-        assertFalse(pot.forcePlayerToShowCards(player1))
-        assertTrue(pot.forcePlayerToShowCards(player2))
-        assertTrue(pot.forcePlayerToShowCards(player3))
-        assertEquals(0, pot.getChipsWon(player1))
-        if (pot.getChipsWon(player2) == 30) {
-            assertEquals(30, pot.getChipsWon(player2))
-            assertEquals(31, pot.getChipsWon(player3))
-        } else if (pot.getChipsWon(player3) == 30) {
-            assertEquals(31, pot.getChipsWon(player2))
-            assertEquals(30, pot.getChipsWon(player3))
+        val chipsWon = fetchChipsWon(pots, setOf(player1, player2, player3))
+        assertFalse(forcePlayerToShowCards(pots.first(), player1))
+        assertTrue(forcePlayerToShowCards(pots.first(), player2))
+        assertTrue(forcePlayerToShowCards(pots.first(), player3))
+        assertEquals(0, chipsWon[player1])
+        if (chipsWon[player2] == 30) {
+            assertEquals(30, chipsWon[player2])
+            assertEquals(31, chipsWon[player3])
+        } else if (chipsWon[player3] == 30) {
+            assertEquals(31, chipsWon[player2])
+            assertEquals(30, chipsWon[player3])
         } else {
             throw IllegalStateException("one of the pots should be 30 and the other should be 31")
         }
@@ -121,23 +130,19 @@ class WinningPotTest {
         handEvaluation3.playerId = player3
         handEvaluation3.handRanking = HandRanking.STRAIGHT
         handEvaluation3.primaryCardRank = CardRank.KING
-        val pot = Pot(
-            UUID.randomUUID(), HashSet(
-                Arrays.asList(
-                    handEvaluation1,
-                    handEvaluation2, handEvaluation3
-                )
-            )
-        )
-        pot.addChips(60)
-        pot.removePlayer(player3)
+        val potId = UUID.randomUUID()
+        var pots = addNewPot(HashTreePSet.empty(), listOf(handEvaluation1, handEvaluation2, handEvaluation3),
+            potId, setOf(player1, player2, player3))
+        pots = addToPot(pots, potId, 60)
+        pots = removePlayerFromAllPots(pots, player3)
 
-        assertFalse(pot.forcePlayerToShowCards(player1))
-        assertTrue(pot.forcePlayerToShowCards(player2))
-        assertFalse(pot.forcePlayerToShowCards(player3))
-        assertEquals(0, pot.getChipsWon(player1))
-        assertEquals(60, pot.getChipsWon(player2))
-        assertEquals(0, pot.getChipsWon(player3))
+        val chipsWon = fetchChipsWon(pots, setOf(player1, player2, player3))
+        assertFalse(forcePlayerToShowCards(pots.first(), player1))
+        assertTrue(forcePlayerToShowCards(pots.first(), player2))
+        assertFalse(forcePlayerToShowCards(pots.first(), player3))
+        assertEquals(0, chipsWon[player1])
+        assertEquals(60, chipsWon[player2])
+        assertEquals(0, chipsWon[player3])
     }
 
 }

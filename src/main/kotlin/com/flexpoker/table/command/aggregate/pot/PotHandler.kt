@@ -1,57 +1,112 @@
 package com.flexpoker.table.command.aggregate.pot
 
 import com.flexpoker.table.command.aggregate.HandEvaluation
+import com.flexpoker.table.command.aggregate.PotState
 import com.flexpoker.table.command.events.PotAmountIncreasedEvent
 import com.flexpoker.table.command.events.PotClosedEvent
 import com.flexpoker.table.command.events.PotCreatedEvent
 import com.flexpoker.table.command.events.TableEvent
 import org.pcollections.HashTreePMap
+import org.pcollections.HashTreePSet
 import org.pcollections.PMap
+import org.pcollections.PSet
 import java.util.HashMap
 import java.util.HashSet
-import java.util.Objects
+import java.util.Random
 import java.util.UUID
 import java.util.function.Consumer
 
-fun removePlayerFromAllPots(pots: MutableSet<Pot>, playerId: UUID) {
-    pots.forEach { it.removePlayer(playerId) }
+fun removePlayerFromAllPots(pots: PSet<PotState>, playerId: UUID): PSet<PotState> {
+    require(pots
+        .filter { it.handEvaluations.any { x -> x.playerId == playerId } }
+        .all { it.isOpen }) { "cannot remove player from a closed pot" }
+    return HashTreePSet.from(pots.map {
+        it.copy(handEvaluations = HashTreePSet.from(it.handEvaluations.filter { he -> he.playerId != playerId }))})
 }
 
-fun addToPot(pots: MutableSet<Pot>, potId: UUID, amountToAdd: Int) {
-    pots.first { it.id == potId }.addChips(amountToAdd)
+fun addToPot(pots: PSet<PotState>, potId: UUID, amountToAdd: Int): PSet<PotState> {
+    return HashTreePSet.from(pots.map {
+        if (it.id == potId) {
+            require(it.isOpen) { "cannot add chips to a closed pot" }
+            it.copy(amount = it.amount + amountToAdd)
+        } else {
+            it
+        }
+    })
 }
 
-fun closePot(pots: MutableSet<Pot>, potId: UUID) {
-    pots.first { it.id == potId }.closePot()
+fun closePot(pots: PSet<PotState>, potId: UUID): PSet<PotState> {
+    val pots = HashTreePSet.from(pots.map { if (it.id == potId) it.copy(isOpen = false) else it })
+    require(pots.isNotEmpty()) { "attempting to close pot that does not exist" }
+    return pots
 }
 
-fun addNewPot(pots: MutableSet<Pot>, handEvaluationList: List<HandEvaluation>,
-              potId: UUID, playersInvolved: Set<UUID?>) {
-    val handEvaluationsOfPlayersInPot = handEvaluationList
-        .filter { playersInvolved.contains(it.playerId) }
-        .toSet()
+fun addNewPot(pots: PSet<PotState>, handEvaluationList: List<HandEvaluation>,
+              potId: UUID, playersInvolved: Set<UUID?>): PSet<PotState> {
+    val handEvaluationsOfPlayersInPot = HashTreePSet.from(
+        handEvaluationList.filter { playersInvolved.contains(it.playerId) })
     require(handEvaluationsOfPlayersInPot.isNotEmpty()) { "trying to add a new pot with players that are not part of the hand" }
-    pots.add(Pot(potId, handEvaluationsOfPlayersInPot.toMutableSet()))
+    return pots.plus(PotState(potId, 0, true, handEvaluationsOfPlayersInPot))
 }
 
-fun fetchPlayersRequiredToShowCards(pots: MutableSet<Pot>, playersStillInHand: Set<UUID>): Set<UUID> {
+fun fetchPlayersRequiredToShowCards(pots: PSet<PotState>, playersStillInHand: Set<UUID>): Set<UUID> {
     return pots.fold(HashSet(), { acc, pot ->
-        acc.addAll(playersStillInHand.filter { pot.forcePlayerToShowCards(it) })
+        acc.addAll(playersStillInHand.filter { forcePlayerToShowCards(pot, it) })
         acc
     })
 }
 
-fun fetchChipsWon(pots: MutableSet<Pot>, playersStillInHand: Set<UUID>): PMap<UUID, Int> {
+fun fetchChipsWon(pots: PSet<PotState>, playersStillInHand: Set<UUID>): PMap<UUID, Int> {
     val playersToChipsWonMap = HashMap<UUID, Int>()
-    pots.forEach(Consumer { pot: Pot ->
+    pots.forEach(Consumer { pot: PotState ->
         playersStillInHand.forEach(Consumer { playerInHand: UUID ->
-            val numberOfChipsWonForPlayer = pot.getChipsWon(playerInHand)
+            val numberOfChipsWonForPlayer = chipsWon(pot, playerInHand)
             val existingChipsWon = playersToChipsWonMap.getOrDefault(playerInHand, 0)
             val newTotalOfChipsWon = numberOfChipsWonForPlayer + existingChipsWon
             playersToChipsWonMap[playerInHand] = newTotalOfChipsWon
         })
     })
     return HashTreePMap.from(playersToChipsWonMap)
+}
+
+fun forcePlayerToShowCards(pot: PotState, playerInHand: UUID): Boolean {
+    return chipsWon(pot, playerInHand) > 0 && playersInvolved(pot).size > 1
+}
+
+private fun chipsWon(pot: PotState, playerInHand: UUID): Int {
+    return recalculateWinners(pot).getOrDefault(playerInHand, 0)
+}
+
+private fun playersInvolved(pot: PotState): PSet<UUID> {
+    return HashTreePSet.from(pot.handEvaluations.map { it.playerId })
+}
+
+private fun recalculateWinners(pot: PotState): PMap<UUID, Int> {
+    val chipsForPlayerToWin = mutableMapOf<UUID, Int>()
+    val playersInvolved = playersInvolved(pot)
+
+    val relevantHandEvaluationsForPot = pot.handEvaluations
+        .filter { playersInvolved.contains(it.playerId) }
+        .sortedDescending()
+
+    val winners = relevantHandEvaluationsForPot
+        .fold(ArrayList<HandEvaluation>(), { acc, handEvaluation ->
+            if (acc.isEmpty() || acc.first() <= handEvaluation ) {
+                acc.add(handEvaluation)
+            }
+            acc
+        })
+        .map { it.playerId!! }
+
+    val numberOfWinners = winners.size
+    val baseNumberOfChips = pot.amount / numberOfWinners
+    val bonusChips = pot.amount % numberOfWinners
+    winners.forEach { chipsForPlayerToWin[it] = baseNumberOfChips }
+    if (bonusChips >= 1) {
+        val randomNumber = Random(System.currentTimeMillis()).nextInt(winners.size)
+        chipsForPlayerToWin.compute(winners[randomNumber]) { _: UUID, chips: Int? -> chips!! + bonusChips }
+    }
+    return HashTreePMap.from(chipsForPlayerToWin)
 }
 
 /**
@@ -72,21 +127,22 @@ fun fetchChipsWon(pots: MutableSet<Pot>, playersStillInHand: Set<UUID>): PMap<UU
  * player's all-in should be closed. Multiple closed pots can exist, but
  * only one open pot should ever exist at any given time.
  */
-fun calculatePots(gameId: UUID, tableId: UUID, handId: UUID, pots: MutableSet<Pot>,
-                  handEvaluationList: List<HandEvaluation>,
-                  chipsInFrontMap: Map<UUID, Int>, chipsInBackMap: Map<UUID, Int>): List<TableEvent> {
+fun calculatePots(gameId: UUID, tableId: UUID, handId: UUID, pots: PSet<PotState>,
+                  handEvaluationList: List<HandEvaluation>, chipsInFrontMap: Map<UUID, Int>,
+                  chipsInBackMap: Map<UUID, Int>): Pair<List<TableEvent>, PSet<PotState>> {
+    var updatedPots = pots
     val newPotEvents = ArrayList<TableEvent>()
     val distinctChipsInFrontAmounts = chipsInFrontMap.values.filter { it != 0 }.distinct().sorted()
     var totalOfPreviousChipLevelIncreases = 0
     for (chipsPerLevel in distinctChipsInFrontAmounts) {
-        val openPotOptional = pots.firstOrNull { it.isOpen }
+        val openPotOptional = updatedPots.firstOrNull { it.isOpen }
         val openPotId = openPotOptional?.id ?: UUID.randomUUID()
         val playersAtThisChipLevel = chipsInFrontMap.filterValues { it >= chipsPerLevel }.map { it.key }.toSet()
 
         if (openPotOptional == null) {
             val potCreatedEvent = PotCreatedEvent(tableId, gameId, handId, openPotId, playersAtThisChipLevel)
             newPotEvents.add(potCreatedEvent)
-            addNewPot(pots, handEvaluationList, potCreatedEvent.potId, potCreatedEvent.playersInvolved)
+            updatedPots = addNewPot(updatedPots, handEvaluationList, potCreatedEvent.potId, potCreatedEvent.playersInvolved)
         }
 
         // subtract the total of the previous levels from the current level
@@ -96,20 +152,18 @@ fun calculatePots(gameId: UUID, tableId: UUID, handId: UUID, pots: MutableSet<Po
         totalOfPreviousChipLevelIncreases += chipsPerLevel
         val potAmountIncreasedEvent = PotAmountIncreasedEvent(tableId, gameId, handId, openPotId, increaseInChips)
         newPotEvents.add(potAmountIncreasedEvent)
-        addToPot(pots, potAmountIncreasedEvent.potId, potAmountIncreasedEvent.amountIncreased)
+        updatedPots = addToPot(updatedPots, potAmountIncreasedEvent.potId, potAmountIncreasedEvent.amountIncreased)
 
         // if a player bet, but no longer has any chips, then they are all
         // in and the pot should be closed
         if (playersAtThisChipLevel
-                .filter { Objects.nonNull(it) }
                 .filter { chipsInFrontMap[it]!! >= 1 }
                 .filter { chipsInBackMap[it] == 0 }
-                .count() > 0
-        ) {
+                .count() > 0) {
             val potClosedEvent = PotClosedEvent(tableId, gameId, handId, openPotId)
             newPotEvents.add(potClosedEvent)
-            closePot(pots, potClosedEvent.potId)
+            updatedPots = closePot(updatedPots, potClosedEvent.potId)
         }
     }
-    return newPotEvents
+    return Pair(newPotEvents, updatedPots)
 }
