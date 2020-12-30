@@ -5,33 +5,14 @@ import com.flexpoker.table.command.Card
 import com.flexpoker.table.command.CardsUsedInHand
 import com.flexpoker.table.command.PlayerAction
 import com.flexpoker.table.command.PocketCards
-import com.flexpoker.table.command.events.ActionOnChangedEvent
-import com.flexpoker.table.command.events.AutoMoveHandForwardEvent
 import com.flexpoker.table.command.events.CardsShuffledEvent
-import com.flexpoker.table.command.events.FlopCardsDealtEvent
-import com.flexpoker.table.command.events.HandCompletedEvent
-import com.flexpoker.table.command.events.HandDealtEvent
-import com.flexpoker.table.command.events.LastToActChangedEvent
 import com.flexpoker.table.command.events.PlayerAddedEvent
 import com.flexpoker.table.command.events.PlayerBustedTableEvent
-import com.flexpoker.table.command.events.PlayerCalledEvent
-import com.flexpoker.table.command.events.PlayerCheckedEvent
-import com.flexpoker.table.command.events.PlayerFoldedEvent
-import com.flexpoker.table.command.events.PlayerForceCheckedEvent
-import com.flexpoker.table.command.events.PlayerForceFoldedEvent
-import com.flexpoker.table.command.events.PlayerRaisedEvent
 import com.flexpoker.table.command.events.PlayerRemovedEvent
-import com.flexpoker.table.command.events.PotAmountIncreasedEvent
-import com.flexpoker.table.command.events.PotClosedEvent
-import com.flexpoker.table.command.events.PotCreatedEvent
-import com.flexpoker.table.command.events.RiverCardDealtEvent
-import com.flexpoker.table.command.events.RoundCompletedEvent
 import com.flexpoker.table.command.events.TableCreatedEvent
 import com.flexpoker.table.command.events.TableEvent
 import com.flexpoker.table.command.events.TablePausedEvent
 import com.flexpoker.table.command.events.TableResumedEvent
-import com.flexpoker.table.command.events.TurnCardDealtEvent
-import com.flexpoker.table.command.events.WinnersDeterminedEvent
 import com.flexpoker.util.toPMap
 import com.flexpoker.util.toPSet
 import com.flexpoker.util.toPVector
@@ -70,84 +51,8 @@ class Table(creatingFromEvents: Boolean, var state: TableState) {
         events.forEach(Consumer { x: TableEvent -> applyCommonEvent(x) })
     }
 
-    private fun applyEvent(event: TableEvent) {
-        when (event) {
-            is TableCreatedEvent -> { }
-            is CardsShuffledEvent -> { }
-            is HandDealtEvent -> {
-                state = state.copy(
-                    buttonOnPosition = event.buttonOnPosition,
-                    smallBlindPosition = event.smallBlindPosition,
-                    bigBlindPosition = event.bigBlindPosition
-                )
-                val handState = HandState(
-                    event.gameId, event.aggregateId, event.handId, state.seatMap,
-                    event.flopCards, event.turnCard, event.riverCard, event.buttonOnPosition,
-                    event.smallBlindPosition, event.bigBlindPosition,
-                    event.lastToActPlayerId, event.playerToPocketCardsMap,
-                    event.possibleSeatActionsMap, event.playersStillInHand,
-                    event.handEvaluations, event.handDealerState,
-                    event.chipsInBack, event.chipsInFrontMap,
-                    event.callAmountsMap, event.raiseToAmountsMap,
-                    event.smallBlind, event.bigBlind, 0, null,
-                    HashTreePSet.empty(), false, false, false, HashTreePSet.empty()
-                )
-                state = state.copy(currentHand = Hand(handState))
-            }
-            is AutoMoveHandForwardEvent -> { }
-            is PlayerCalledEvent -> state.currentHand!!.applyEvent(event)
-            is PlayerCheckedEvent -> state.currentHand!!.applyEvent(event)
-            is PlayerForceCheckedEvent -> state.currentHand!!.applyEvent(event)
-            is PlayerFoldedEvent -> state.currentHand!!.applyEvent(event)
-            is PlayerForceFoldedEvent -> state.currentHand!!.applyEvent(event)
-            is PlayerRaisedEvent -> state.currentHand!!.applyEvent(event)
-            is FlopCardsDealtEvent -> state.currentHand!!.applyEvent(event)
-            is TurnCardDealtEvent -> state.currentHand!!.applyEvent(event)
-            is RiverCardDealtEvent -> state.currentHand!!.applyEvent(event)
-            is PotAmountIncreasedEvent -> state.currentHand!!.applyEvent(event)
-            is PotClosedEvent -> state.currentHand!!.applyEvent(event)
-            is PotCreatedEvent -> state.currentHand!!.applyEvent(event)
-            is RoundCompletedEvent -> state.currentHand!!.applyEvent(event)
-            is ActionOnChangedEvent -> state.currentHand!!.applyEvent(event)
-            is LastToActChangedEvent -> state.currentHand!!.applyEvent(event)
-            is WinnersDeterminedEvent -> state.currentHand!!.applyEvent(event)
-            is HandCompletedEvent -> {
-                state = state.copy(
-                    currentHand = null,
-                    chipsInBack = event.playerToChipsAtTableMap
-                )
-            }
-            is TablePausedEvent -> {
-                state = state.copy(paused = true)
-            }
-            is TableResumedEvent -> {
-                state = state.copy(paused = false)
-            }
-            is PlayerAddedEvent -> {
-                state = state.copy(
-                    seatMap = state.seatMap.plus(event.position, event.playerId),
-                    chipsInBack = state.chipsInBack.plus(event.playerId, event.chipsInBack)
-                )
-            }
-            is PlayerRemovedEvent -> {
-                val position = state.seatMap.entries.first { it.value == event.playerId }.key
-                state = state.copy(
-                    seatMap = state.seatMap.minus(position),
-                    chipsInBack = state.chipsInBack.minus(event.playerId)
-                )
-            }
-            is PlayerBustedTableEvent -> {
-                val position = state.seatMap.entries.first { it.value == event.playerId }.key
-                state = state.copy(
-                    seatMap = state.seatMap.minus(position),
-                    chipsInBack = state.chipsInBack.minus(event.playerId)
-                )
-            }
-        }
-    }
-
     private fun applyCommonEvent(event: TableEvent) {
-        applyEvent(event)
+        state = applyEvent(state, event)
         appliedEvents.add(event)
     }
 

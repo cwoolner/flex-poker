@@ -2,13 +2,9 @@ package com.flexpoker.table.command.aggregate
 
 import com.flexpoker.exception.FlexPokerException
 import com.flexpoker.table.command.PlayerAction
-import com.flexpoker.table.command.aggregate.pot.addNewPot
-import com.flexpoker.table.command.aggregate.pot.addToPot
 import com.flexpoker.table.command.aggregate.pot.calculatePots
-import com.flexpoker.table.command.aggregate.pot.closePot
 import com.flexpoker.table.command.aggregate.pot.fetchChipsWon
 import com.flexpoker.table.command.aggregate.pot.fetchPlayersRequiredToShowCards
-import com.flexpoker.table.command.aggregate.pot.removePlayerFromAllPots
 import com.flexpoker.table.command.events.ActionOnChangedEvent
 import com.flexpoker.table.command.events.AutoMoveHandForwardEvent
 import com.flexpoker.table.command.events.FlopCardsDealtEvent
@@ -21,21 +17,18 @@ import com.flexpoker.table.command.events.PlayerFoldedEvent
 import com.flexpoker.table.command.events.PlayerForceCheckedEvent
 import com.flexpoker.table.command.events.PlayerForceFoldedEvent
 import com.flexpoker.table.command.events.PlayerRaisedEvent
-import com.flexpoker.table.command.events.PotAmountIncreasedEvent
-import com.flexpoker.table.command.events.PotClosedEvent
 import com.flexpoker.table.command.events.PotCreatedEvent
 import com.flexpoker.table.command.events.RiverCardDealtEvent
 import com.flexpoker.table.command.events.RoundCompletedEvent
 import com.flexpoker.table.command.events.TableEvent
 import com.flexpoker.table.command.events.TurnCardDealtEvent
 import com.flexpoker.table.command.events.WinnersDeterminedEvent
-import com.flexpoker.util.toPMap
 import org.pcollections.HashTreePSet
 import java.util.ArrayList
 import java.util.Optional
 import java.util.UUID
 
-class Hand(private var state: HandState) {
+class Hand(var state: HandState) {
 
     fun dealHand(actionOnPosition: Int): List<TableEvent> {
         val eventsCreated = ArrayList<TableEvent>()
@@ -222,7 +215,7 @@ class Hand(private var state: HandState) {
             else HandDealerState.values()[state.handDealerState.ordinal + 1]
         val roundCompletedEvent = RoundCompletedEvent(state.tableId, state.gameId, state.entityId, nextHandDealerState)
         tableEvents.add(roundCompletedEvent)
-        applyEvent(roundCompletedEvent)
+        state = applyEvent(state, roundCompletedEvent)
         return tableEvents
     }
 
@@ -250,113 +243,6 @@ class Hand(private var state: HandState) {
         }
     }
 
-    fun applyEvent(event: TableEvent) {
-        when (event) {
-            is PlayerCheckedEvent -> {
-                val playerId = event.playerId
-                state = state.copy(
-                    possibleSeatActionsMap = state.possibleSeatActionsMap.plus(playerId, HashTreePSet.empty()),
-                    callAmountsMap = state.callAmountsMap.plus(playerId, 0),
-                    raiseToAmountsMap = state.raiseToAmountsMap.plus(playerId, 0)
-                )
-            }
-            is PlayerForceCheckedEvent -> {
-                val playerId = event.playerId
-                state = state.copy(
-                    possibleSeatActionsMap = state.possibleSeatActionsMap.plus(playerId, HashTreePSet.empty()),
-                    callAmountsMap = state.callAmountsMap.plus(playerId, 0),
-                    raiseToAmountsMap = state.raiseToAmountsMap.plus(playerId, 0)
-                )
-            }
-            is PlayerCalledEvent -> {
-                val playerId = event.playerId
-                val newChipsInFront = state.chipsInFrontMap[playerId]!! + state.callAmountsMap[playerId]!!
-                val newChipsInBack = state.chipsInBackMap[playerId]!! - state.callAmountsMap[playerId]!!
-                state = state.copy(
-                    possibleSeatActionsMap = state.possibleSeatActionsMap.plus(playerId, HashTreePSet.empty()),
-                    chipsInFrontMap = state.chipsInFrontMap.plus(playerId, newChipsInFront),
-                    chipsInBackMap = state.chipsInBackMap.plus(playerId, newChipsInBack),
-                    callAmountsMap = state.callAmountsMap.plus(playerId, 0),
-                    raiseToAmountsMap = state.raiseToAmountsMap.plus(playerId, 0)
-                )
-            }
-            is PlayerFoldedEvent -> {
-                val playerId = event.playerId
-                state = state.copy(
-                    playersStillInHand = state.playersStillInHand.minus(playerId),
-                    possibleSeatActionsMap = state.possibleSeatActionsMap.plus(playerId, HashTreePSet.empty()),
-                    pots = removePlayerFromAllPots(state.pots, playerId),
-                    callAmountsMap = state.callAmountsMap.plus(playerId, 0),
-                    raiseToAmountsMap = state.raiseToAmountsMap.plus(playerId, 0)
-                )
-            }
-            is PlayerForceFoldedEvent -> {
-                val playerId = event.playerId
-                state = state.copy(
-                    playersStillInHand = state.playersStillInHand.minus(playerId),
-                    possibleSeatActionsMap = state.possibleSeatActionsMap.plus(playerId, HashTreePSet.empty()),
-                    pots = removePlayerFromAllPots(state.pots, playerId),
-                    callAmountsMap = state.callAmountsMap.plus(playerId, 0),
-                    raiseToAmountsMap = state.raiseToAmountsMap.plus(playerId, 0)
-                )
-            }
-            is PlayerRaisedEvent -> {
-                val playerId = event.playerId
-                val raiseToAmount = event.raiseToAmount
-                state = state.copy(originatingBettorPlayerId = playerId)
-                val raiseAboveCall = (raiseToAmount - (state.chipsInFrontMap[playerId]!! + state.callAmountsMap[playerId]!!))
-                val increaseOfChipsInFront = raiseToAmount - state.chipsInFrontMap[playerId]!!
-                state.playersStillInHand.filter { it != playerId }
-                    .forEach { adjustPlayersFieldsAfterRaise(raiseToAmount, raiseAboveCall, it) }
-                val newChipsInBack = state.chipsInBackMap[playerId]!! - increaseOfChipsInFront
-
-                state = state.copy(
-                    possibleSeatActionsMap = state.possibleSeatActionsMap.plus(playerId, HashTreePSet.empty()),
-                    callAmountsMap = state.callAmountsMap.plus(playerId, 0),
-                    raiseToAmountsMap = state.raiseToAmountsMap.plus(playerId, state.bigBlind),
-                    chipsInFrontMap = state.chipsInFrontMap.plus(playerId, raiseToAmount),
-                    chipsInBackMap = state.chipsInBackMap.plus(playerId, newChipsInBack)
-                )
-            }
-            is ActionOnChangedEvent -> {
-                state = state.copy(actionOnPosition = state.seatMap.entries.first { it.value == event.playerId }.key)
-            }
-            is LastToActChangedEvent -> {
-                state = state.copy(lastToActPlayerId = event.playerId)
-            }
-            is FlopCardsDealtEvent -> {
-                state = state.copy(flopDealt = true)
-            }
-            is TurnCardDealtEvent -> {
-                state = state.copy(turnDealt = true)
-            }
-            is RiverCardDealtEvent -> {
-                state = state.copy(riverDealt = true)
-            }
-            is PotAmountIncreasedEvent -> {
-                state = state.copy(pots = addToPot(state.pots, event.potId, event.amountIncreased))
-                state.playersStillInHand.forEach { subtractFromChipsInFront(it, event.amountIncreased) }
-            }
-            is PotClosedEvent -> {
-                state = state.copy(pots = closePot(state.pots, event.potId))
-            }
-            is PotCreatedEvent -> {
-                state = state.copy(pots = addNewPot(state.pots, state.handEvaluationList, event.potId, event.playersInvolved))
-            }
-            is RoundCompletedEvent -> {
-                state = state.copy(handDealerState = event.nextHandDealerState)
-                state = state.copy(originatingBettorPlayerId = null)
-                resetChipsInFront()
-                resetCallAndRaiseAmountsAfterRound()
-                resetPossibleSeatActionsAfterRound()
-            }
-            is WinnersDeterminedEvent -> {
-                state = state.copy(playersToShowCards = state.playersToShowCards.plusAll(event.playersToShowCards))
-                event.playersToChipsWonMap.forEach { (playerId: UUID, chips: Int) -> addToChipsInBack(playerId, chips) }
-            }
-        }
-    }
-
     private fun findActionOnPlayerIdForNewRound(): UUID {
         val buttonIndex = state.buttonOnPosition
         for (i in buttonIndex + 1 until state.seatMap.size) {
@@ -376,26 +262,6 @@ class Hand(private var state: HandState) {
             }
         }
         throw FlexPokerException("couldn't determine new action on after round")
-    }
-
-    private fun resetChipsInFront() {
-        state = state.copy(chipsInFrontMap = state.chipsInFrontMap.mapValues { 0 }.toPMap())
-    }
-
-    private fun resetCallAndRaiseAmountsAfterRound() {
-        state = state.copy(
-            callAmountsMap = state.callAmountsMap.mapValues { 0 }.toPMap(),
-            raiseToAmountsMap = state.playersStillInHand.associateWith {
-                if (state.bigBlind > state.chipsInBackMap[it]!!) state.chipsInBackMap[it]!! else state.bigBlind
-            }.toPMap()
-        )
-    }
-
-    private fun resetPossibleSeatActionsAfterRound() {
-        state.playersStillInHand.forEach {
-            state = state.copy(possibleSeatActionsMap = state.possibleSeatActionsMap
-                .plus(it, setOf(PlayerAction.CHECK, PlayerAction.RAISE)))
-        }
     }
 
     private fun findNextToAct(): UUID {
@@ -424,19 +290,9 @@ class Hand(private var state: HandState) {
         return Optional.empty()
     }
 
-    private fun addToChipsInBack(playerId: UUID, chipsToAdd: Int) {
-        val currentAmount = state.chipsInBackMap[playerId]!!
-        state = state.copy(chipsInBackMap = state.chipsInBackMap.plus(playerId, Integer.valueOf(currentAmount + chipsToAdd)))
-    }
-
     private fun subtractFromChipsInBack(playerId: UUID, chipsToSubtract: Int) {
         val currentAmount = state.chipsInBackMap[playerId]!!
         state = state.copy(chipsInBackMap = state.chipsInBackMap.plus(playerId, currentAmount - chipsToSubtract))
-    }
-
-    private fun subtractFromChipsInFront(playerId: UUID, chipsToSubtract: Int) {
-        val currentAmount = state.chipsInFrontMap[playerId]!!
-        state = state.copy(chipsInFrontMap = state.chipsInFrontMap.plus(playerId, currentAmount - chipsToSubtract))
     }
 
     private fun determineLastToAct(): Int {
@@ -468,26 +324,6 @@ class Hand(private var state: HandState) {
 
     fun idMatches(handId: UUID): Boolean {
         return state.entityId == handId
-    }
-
-    private fun adjustPlayersFieldsAfterRaise(raiseToAmount: Int, raiseAboveCall: Int, playerId: UUID) {
-        state = state.copy(possibleSeatActionsMap = state.possibleSeatActionsMap.plus(playerId,
-            setOf(PlayerAction.CALL, PlayerAction.FOLD)))
-        val totalChips = state.chipsInBackMap[playerId]!! + state.chipsInFrontMap[playerId]!!
-        if (totalChips <= raiseToAmount) {
-            state = state.copy(callAmountsMap = state.callAmountsMap.plus(playerId, totalChips - state.chipsInFrontMap[playerId]!!))
-            state = state.copy(raiseToAmountsMap = state.raiseToAmountsMap.plus(playerId, 0))
-        } else {
-            state = state.copy(callAmountsMap = state.callAmountsMap.plus(playerId, raiseToAmount - state.chipsInFrontMap[playerId]!!))
-            state = state.copy(possibleSeatActionsMap = state.possibleSeatActionsMap.plus(playerId,
-                setOf(PlayerAction.CALL, PlayerAction.FOLD, PlayerAction.RAISE)))
-            state = state.copy(
-                raiseToAmountsMap =
-                if (totalChips < raiseToAmount + raiseAboveCall)
-                    state.raiseToAmountsMap.plus(playerId, totalChips)
-                else
-                    state.raiseToAmountsMap.plus(playerId, raiseToAmount + raiseAboveCall))
-        }
     }
 
     fun autoMoveHandForward(): Optional<TableEvent> {
