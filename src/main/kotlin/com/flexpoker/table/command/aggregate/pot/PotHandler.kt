@@ -6,8 +6,8 @@ import com.flexpoker.table.command.events.PotAmountIncreasedEvent
 import com.flexpoker.table.command.events.PotClosedEvent
 import com.flexpoker.table.command.events.PotCreatedEvent
 import com.flexpoker.table.command.events.TableEvent
-import org.pcollections.HashTreePMap
-import org.pcollections.HashTreePSet
+import com.flexpoker.util.toPMap
+import com.flexpoker.util.toPSet
 import org.pcollections.PMap
 import org.pcollections.PSet
 import java.util.HashMap
@@ -20,31 +20,31 @@ fun removePlayerFromAllPots(pots: PSet<PotState>, playerId: UUID): PSet<PotState
     require(pots
         .filter { it.handEvaluations.any { x -> x.playerId == playerId } }
         .all { it.isOpen }) { "cannot remove player from a closed pot" }
-    return HashTreePSet.from(pots.map {
-        it.copy(handEvaluations = HashTreePSet.from(it.handEvaluations.filter { he -> he.playerId != playerId }))})
+    return pots
+        .map { it.copy(handEvaluations = it.handEvaluations.filter { he -> he.playerId != playerId }.toPSet()) }
+        .toPSet()
 }
 
 fun addToPot(pots: PSet<PotState>, potId: UUID, amountToAdd: Int): PSet<PotState> {
-    return HashTreePSet.from(pots.map {
+    return pots.map {
         if (it.id == potId) {
             require(it.isOpen) { "cannot add chips to a closed pot" }
             it.copy(amount = it.amount + amountToAdd)
         } else {
             it
         }
-    })
+    }.toPSet()
 }
 
 fun closePot(pots: PSet<PotState>, potId: UUID): PSet<PotState> {
-    val pots = HashTreePSet.from(pots.map { if (it.id == potId) it.copy(isOpen = false) else it })
-    require(pots.isNotEmpty()) { "attempting to close pot that does not exist" }
-    return pots
+    val updatedPots = pots.map { if (it.id == potId) it.copy(isOpen = false) else it }.toPSet()
+    require(updatedPots.isNotEmpty()) { "attempting to close pot that does not exist" }
+    return updatedPots
 }
 
 fun addNewPot(pots: PSet<PotState>, handEvaluationList: List<HandEvaluation>,
               potId: UUID, playersInvolved: Set<UUID?>): PSet<PotState> {
-    val handEvaluationsOfPlayersInPot = HashTreePSet.from(
-        handEvaluationList.filter { playersInvolved.contains(it.playerId) })
+    val handEvaluationsOfPlayersInPot = handEvaluationList.filter { playersInvolved.contains(it.playerId) }.toPSet()
     require(handEvaluationsOfPlayersInPot.isNotEmpty()) { "trying to add a new pot with players that are not part of the hand" }
     return pots.plus(PotState(potId, 0, true, handEvaluationsOfPlayersInPot))
 }
@@ -66,7 +66,7 @@ fun fetchChipsWon(pots: PSet<PotState>, playersStillInHand: Set<UUID>): PMap<UUI
             playersToChipsWonMap[playerInHand] = newTotalOfChipsWon
         })
     })
-    return HashTreePMap.from(playersToChipsWonMap)
+    return playersToChipsWonMap.toPMap()
 }
 
 fun forcePlayerToShowCards(pot: PotState, playerInHand: UUID): Boolean {
@@ -78,7 +78,7 @@ private fun chipsWon(pot: PotState, playerInHand: UUID): Int {
 }
 
 private fun playersInvolved(pot: PotState): PSet<UUID> {
-    return HashTreePSet.from(pot.handEvaluations.map { it.playerId })
+    return pot.handEvaluations.map { it.playerId!! }.toPSet()
 }
 
 private fun recalculateWinners(pot: PotState): PMap<UUID, Int> {
@@ -106,7 +106,7 @@ private fun recalculateWinners(pot: PotState): PMap<UUID, Int> {
         val randomNumber = Random(System.currentTimeMillis()).nextInt(winners.size)
         chipsForPlayerToWin.compute(winners[randomNumber]) { _: UUID, chips: Int? -> chips!! + bonusChips }
     }
-    return HashTreePMap.from(chipsForPlayerToWin)
+    return chipsForPlayerToWin.toPMap()
 }
 
 /**

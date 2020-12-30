@@ -10,7 +10,6 @@ import com.flexpoker.table.command.RiverCard
 import com.flexpoker.table.command.TurnCard
 import com.flexpoker.table.command.aggregate.CommonCards
 import com.flexpoker.table.command.aggregate.HandEvaluation
-import org.pcollections.TreePVector
 import org.springframework.stereotype.Service
 import java.util.ArrayList
 import java.util.Arrays
@@ -38,7 +37,7 @@ class DefaultHandEvaluatorService : HandEvaluatorService {
                                          pocketCardsList: List<PocketCards>, possibleHandRankings: List<HandRanking>): Map<PocketCards, HandEvaluation> {
         val commonCards = CommonCards(flopCards, turnCard, riverCard)
         return pocketCardsList.associateWith {
-            val cardList = TreePVector.from(commonCards.cards).plus(it.card1).plus(it.card2)
+            val cardList = commonCards.cards.plus(it.card1).plus(it.card2)
             val handEvaluation = HandEvaluation()
             fillInHandEvaluation(handEvaluation, cardList, possibleHandRankings)
             handEvaluation

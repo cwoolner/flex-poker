@@ -1,7 +1,7 @@
 package com.flexpoker.game.command.aggregate.tablebalancer
 
-import org.pcollections.HashTreePMap
-import org.pcollections.HashTreePSet
+import com.flexpoker.util.toPMap
+import com.flexpoker.util.toPSet
 import org.pcollections.PMap
 import org.pcollections.PSet
 import java.util.HashMap
@@ -17,11 +17,11 @@ object TableBalancerTestUtils {
     fun createTableToPlayersMap(subjectTableId: UUID, numberOfSubjectTablePlayers: Int,
                                 vararg numberOfPlayersAtOtherTables: Int): PMap<UUID, PSet<UUID>> {
         val tableToPlayersMap = HashMap<UUID, PSet<UUID>>()
-        tableToPlayersMap[subjectTableId] = HashTreePSet.from(createRandomSetOfPlayerIds(numberOfSubjectTablePlayers))
+        tableToPlayersMap[subjectTableId] = createRandomSetOfPlayerIds(numberOfSubjectTablePlayers).toPSet()
         for (element in numberOfPlayersAtOtherTables) {
-            tableToPlayersMap[UUID.randomUUID()] = HashTreePSet.from(createRandomSetOfPlayerIds(element))
+            tableToPlayersMap[UUID.randomUUID()] = createRandomSetOfPlayerIds(element).toPSet()
         }
-        return HashTreePMap.from(tableToPlayersMap)
+        return tableToPlayersMap.toPMap()
     }
 
     private fun createRandomSetOfPlayerIds(numberOfPlayers: Int): Set<UUID> {

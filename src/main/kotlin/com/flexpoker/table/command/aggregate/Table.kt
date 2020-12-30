@@ -32,12 +32,13 @@ import com.flexpoker.table.command.events.TablePausedEvent
 import com.flexpoker.table.command.events.TableResumedEvent
 import com.flexpoker.table.command.events.TurnCardDealtEvent
 import com.flexpoker.table.command.events.WinnersDeterminedEvent
+import com.flexpoker.util.toPMap
+import com.flexpoker.util.toPSet
+import com.flexpoker.util.toPVector
 import org.pcollections.HashTreePMap
 import org.pcollections.HashTreePSet
-import org.pcollections.TreePVector
 import java.util.ArrayList
 import java.util.HashMap
-import java.util.HashSet
 import java.util.Random
 import java.util.UUID
 import java.util.function.Consumer
@@ -47,11 +48,11 @@ class Table(creatingFromEvents: Boolean, var state: TableState) {
     private val appliedEvents = ArrayList<TableEvent>()
 
     init {
-        state = state.copy(chipsInBack = HashTreePMap.from(state.seatMap.values
-            .filterNotNull().associateWith { state.startingNumberOfChips }))
+        state = state.copy(
+            chipsInBack = state.seatMap.values.filterNotNull().associateWith { state.startingNumberOfChips }.toPMap())
         if (!creatingFromEvents) {
             val tableCreatedEvent = TableCreatedEvent(state.aggregateId, state.gameId, state.seatMap.size,
-                HashTreePMap.from(state.seatMap), state.startingNumberOfChips)
+                state.seatMap, state.startingNumberOfChips)
             newEvents.add(tableCreatedEvent)
             applyCommonEvent(tableCreatedEvent)
         }
@@ -222,24 +223,21 @@ class Table(creatingFromEvents: Boolean, var state: TableState) {
         newEvents.add(cardsShuffledEvent)
         applyCommonEvent(cardsShuffledEvent)
         var nextToReceivePocketCards = findNextFilledSeat(state.buttonOnPosition)
-        val playerToPocketCardsMap = HashMap<UUID?, PocketCards>()
+        val playerToPocketCardsMap = HashMap<UUID, PocketCards>()
         for (pocketCards in cardsUsedInHand.pocketCards) {
-            val playerIdAtPosition = state.seatMap[nextToReceivePocketCards]
+            val playerIdAtPosition = state.seatMap[nextToReceivePocketCards]!!
             playerToPocketCardsMap[playerIdAtPosition] = pocketCards
             nextToReceivePocketCards = findNextFilledSeat(nextToReceivePocketCards)
             handEvaluations[pocketCards]!!.playerId = playerIdAtPosition
         }
-        val playersStillInHand = state.seatMap.values.filterNotNull().toSet()
-        val possibleSeatActionsMap = HashMap<UUID?, Set<PlayerAction>>()
-        playersStillInHand.forEach { possibleSeatActionsMap[it] = HashSet() }
+        val playersStillInHand = state.seatMap.values.filterNotNull().toPSet()
+        val possibleSeatActionsMap = playersStillInHand.associateWith { emptySet<PlayerAction>() }.toPMap()
 
         val handState = HandState(state.gameId, state.aggregateId, UUID.randomUUID(), state.seatMap,
             cardsUsedInHand.flopCards, cardsUsedInHand.turnCard,
             cardsUsedInHand.riverCard, state.buttonOnPosition, state.smallBlindPosition,
-            state.bigBlindPosition, null,
-            HashTreePMap.from(playerToPocketCardsMap),
-            HashTreePMap.from(possibleSeatActionsMap),
-            HashTreePSet.from(playersStillInHand), TreePVector.from(handEvaluations.values),
+            state.bigBlindPosition, null, playerToPocketCardsMap.toPMap(),
+            possibleSeatActionsMap, playersStillInHand, handEvaluations.values.toPVector(),
             HandDealerState.NONE, state.chipsInBack, HashTreePMap.empty(), HashTreePMap.empty(),
             HashTreePMap.empty(), smallBlind, bigBlind, 0, null,
             HashTreePSet.empty(), false, false, false, HashTreePSet.empty())

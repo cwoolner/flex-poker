@@ -29,7 +29,7 @@ import com.flexpoker.table.command.events.RoundCompletedEvent
 import com.flexpoker.table.command.events.TableEvent
 import com.flexpoker.table.command.events.TurnCardDealtEvent
 import com.flexpoker.table.command.events.WinnersDeterminedEvent
-import org.pcollections.HashTreePMap
+import com.flexpoker.util.toPMap
 import org.pcollections.HashTreePSet
 import java.util.ArrayList
 import java.util.Optional
@@ -379,22 +379,22 @@ class Hand(private var state: HandState) {
     }
 
     private fun resetChipsInFront() {
-        state = state.copy(chipsInFrontMap = HashTreePMap.from(state.chipsInFrontMap.mapValues { 0 }))
+        state = state.copy(chipsInFrontMap = state.chipsInFrontMap.mapValues { 0 }.toPMap())
     }
 
     private fun resetCallAndRaiseAmountsAfterRound() {
         state = state.copy(
-            callAmountsMap = HashTreePMap.from(state.callAmountsMap.mapValues { 0 }),
-            raiseToAmountsMap = HashTreePMap.from(state.playersStillInHand.associateWith {
-                if (state.bigBlind > state.chipsInBackMap[it]!!) state.chipsInBackMap[it] else state.bigBlind
-            })
+            callAmountsMap = state.callAmountsMap.mapValues { 0 }.toPMap(),
+            raiseToAmountsMap = state.playersStillInHand.associateWith {
+                if (state.bigBlind > state.chipsInBackMap[it]!!) state.chipsInBackMap[it]!! else state.bigBlind
+            }.toPMap()
         )
     }
 
     private fun resetPossibleSeatActionsAfterRound() {
         state.playersStillInHand.forEach {
             state = state.copy(possibleSeatActionsMap = state.possibleSeatActionsMap
-                .plus(it, HashTreePSet.from(setOf(PlayerAction.CHECK, PlayerAction.RAISE))))
+                .plus(it, setOf(PlayerAction.CHECK, PlayerAction.RAISE)))
         }
     }
 
@@ -472,7 +472,7 @@ class Hand(private var state: HandState) {
 
     private fun adjustPlayersFieldsAfterRaise(raiseToAmount: Int, raiseAboveCall: Int, playerId: UUID) {
         state = state.copy(possibleSeatActionsMap = state.possibleSeatActionsMap.plus(playerId,
-            HashTreePSet.from(setOf(PlayerAction.CALL, PlayerAction.FOLD))))
+            setOf(PlayerAction.CALL, PlayerAction.FOLD)))
         val totalChips = state.chipsInBackMap[playerId]!! + state.chipsInFrontMap[playerId]!!
         if (totalChips <= raiseToAmount) {
             state = state.copy(callAmountsMap = state.callAmountsMap.plus(playerId, totalChips - state.chipsInFrontMap[playerId]!!))
@@ -480,7 +480,7 @@ class Hand(private var state: HandState) {
         } else {
             state = state.copy(callAmountsMap = state.callAmountsMap.plus(playerId, raiseToAmount - state.chipsInFrontMap[playerId]!!))
             state = state.copy(possibleSeatActionsMap = state.possibleSeatActionsMap.plus(playerId,
-                HashTreePSet.from(setOf(PlayerAction.CALL, PlayerAction.FOLD, PlayerAction.RAISE))))
+                setOf(PlayerAction.CALL, PlayerAction.FOLD, PlayerAction.RAISE)))
             state = state.copy(
                 raiseToAmountsMap =
                 if (totalChips < raiseToAmount + raiseAboveCall)
