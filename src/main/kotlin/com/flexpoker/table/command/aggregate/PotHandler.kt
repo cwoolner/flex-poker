@@ -1,4 +1,4 @@
-package com.flexpoker.table.command.aggregate.pot
+package com.flexpoker.table.command.aggregate
 
 import com.flexpoker.table.command.aggregate.HandEvaluation
 import com.flexpoker.table.command.aggregate.PotState

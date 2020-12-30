@@ -2,9 +2,9 @@ package com.flexpoker.table.command.aggregate
 
 import com.flexpoker.exception.FlexPokerException
 import com.flexpoker.table.command.PlayerAction
-import com.flexpoker.table.command.aggregate.pot.calculatePots
-import com.flexpoker.table.command.aggregate.pot.fetchChipsWon
-import com.flexpoker.table.command.aggregate.pot.fetchPlayersRequiredToShowCards
+import com.flexpoker.table.command.aggregate.calculatePots
+import com.flexpoker.table.command.aggregate.fetchChipsWon
+import com.flexpoker.table.command.aggregate.fetchPlayersRequiredToShowCards
 import com.flexpoker.table.command.events.ActionOnChangedEvent
 import com.flexpoker.table.command.events.AutoMoveHandForwardEvent
 import com.flexpoker.table.command.events.FlopCardsDealtEvent

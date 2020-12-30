@@ -1,5 +1,6 @@
 package com.flexpoker.table.command.aggregate.pot
 
+import com.flexpoker.table.command.aggregate.calculatePots
 import com.flexpoker.table.command.events.PotAmountIncreasedEvent
 import com.flexpoker.table.command.events.PotClosedEvent
 import com.flexpoker.table.command.events.PotCreatedEvent

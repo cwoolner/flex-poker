@@ -5,10 +5,10 @@ import com.flexpoker.table.command.PlayerAction
 import com.flexpoker.table.command.PocketCards
 import com.flexpoker.table.command.RiverCard
 import com.flexpoker.table.command.TurnCard
-import com.flexpoker.table.command.aggregate.pot.addNewPot
-import com.flexpoker.table.command.aggregate.pot.addToPot
-import com.flexpoker.table.command.aggregate.pot.closePot
-import com.flexpoker.table.command.aggregate.pot.removePlayerFromAllPots
+import com.flexpoker.table.command.aggregate.addNewPot
+import com.flexpoker.table.command.aggregate.addToPot
+import com.flexpoker.table.command.aggregate.closePot
+import com.flexpoker.table.command.aggregate.removePlayerFromAllPots
 import com.flexpoker.table.command.events.ActionOnChangedEvent
 import com.flexpoker.table.command.events.AutoMoveHandForwardEvent
 import com.flexpoker.table.command.events.CardsShuffledEvent
