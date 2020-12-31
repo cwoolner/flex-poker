@@ -5,6 +5,18 @@ import com.flexpoker.table.command.Card
 import com.flexpoker.table.command.CardsUsedInHand
 import com.flexpoker.table.command.PlayerAction
 import com.flexpoker.table.command.PocketCards
+import com.flexpoker.table.command.aggregate.eventproducers.autoMoveHandForward
+import com.flexpoker.table.command.aggregate.eventproducers.call
+import com.flexpoker.table.command.aggregate.eventproducers.changeActionOn
+import com.flexpoker.table.command.aggregate.eventproducers.check
+import com.flexpoker.table.command.aggregate.eventproducers.dealCommonCardsIfAppropriate
+import com.flexpoker.table.command.aggregate.eventproducers.dealHand
+import com.flexpoker.table.command.aggregate.eventproducers.determineWinnersIfAppropriate
+import com.flexpoker.table.command.aggregate.eventproducers.expireActionOn
+import com.flexpoker.table.command.aggregate.eventproducers.finishHandIfAppropriate
+import com.flexpoker.table.command.aggregate.eventproducers.fold
+import com.flexpoker.table.command.aggregate.eventproducers.handlePotAndRoundCompleted
+import com.flexpoker.table.command.aggregate.eventproducers.raise
 import com.flexpoker.table.command.events.CardsShuffledEvent
 import com.flexpoker.table.command.events.PlayerAddedEvent
 import com.flexpoker.table.command.events.PlayerBustedTableEvent
@@ -146,8 +158,7 @@ class Table(creatingFromEvents: Boolean, var state: TableState) {
             HandDealerState.NONE, state.chipsInBack, HashTreePMap.empty(), HashTreePMap.empty(),
             HashTreePMap.empty(), smallBlind, bigBlind, 0, null,
             HashTreePSet.empty(), false, false, false, HashTreePSet.empty())
-        val hand = Hand(handState)
-        val eventsCreated = hand.dealHand(actionOnPosition)
+        val eventsCreated = dealHand(handState, actionOnPosition)
         eventsCreated.forEach {
             newEvents.add(it)
             applyCommonEvent(it)
@@ -157,46 +168,46 @@ class Table(creatingFromEvents: Boolean, var state: TableState) {
     val numberOfPlayersAtTable: Int
         get() = state.seatMap.values.filterNotNull().count()
 
-    fun check(playerId: UUID?) {
+    fun check(playerId: UUID) {
         checkHandIsBeingPlayed()
-        val playerCheckedEvent = state.currentHand!!.check(playerId!!, false)
-        newEvents.add(playerCheckedEvent)
-        applyCommonEvent(playerCheckedEvent)
+        val playerCheckedEvents = check(state.currentHand!!, playerId, false)
+        newEvents.addAll(playerCheckedEvents)
+        playerCheckedEvents.forEach { applyCommonEvent(it) }
         handleEndOfRound()
     }
 
-    fun call(playerId: UUID?) {
+    fun call(playerId: UUID) {
         checkHandIsBeingPlayed()
-        val playerCalledEvent = state.currentHand!!.call(playerId!!)
-        newEvents.add(playerCalledEvent)
-        applyCommonEvent(playerCalledEvent)
+        val playerCalledEvents = call(state.currentHand!!, playerId)
+        newEvents.addAll(playerCalledEvents)
+        playerCalledEvents.forEach { applyCommonEvent(it) }
         handleEndOfRound()
     }
 
-    fun fold(playerId: UUID?) {
+    fun fold(playerId: UUID) {
         checkHandIsBeingPlayed()
-        val playerFoldedEvent = state.currentHand!!.fold(playerId!!, false)
-        newEvents.add(playerFoldedEvent)
-        applyCommonEvent(playerFoldedEvent)
+        val playerFoldedEvents = fold(state.currentHand!!, playerId, false)
+        newEvents.addAll(playerFoldedEvents)
+        playerFoldedEvents.forEach { applyCommonEvent(it) }
         handleEndOfRound()
     }
 
-    fun raise(playerId: UUID?, raiseToAmount: Int) {
+    fun raise(playerId: UUID, raiseToAmount: Int) {
         checkHandIsBeingPlayed()
-        val playerRaisedEvent = state.currentHand!!.raise(playerId!!, raiseToAmount)
-        newEvents.add(playerRaisedEvent)
-        applyCommonEvent(playerRaisedEvent)
+        val playerRaisedEvents = raise(state.currentHand!!, playerId, raiseToAmount)
+        newEvents.addAll(playerRaisedEvents)
+        playerRaisedEvents.forEach { applyCommonEvent(it) }
         changeActionOnIfAppropriate()
     }
 
-    fun expireActionOn(handId: UUID?, playerId: UUID?) {
+    fun expireActionOn(handId: UUID?, playerId: UUID) {
         checkHandIsBeingPlayed()
-        if (!state.currentHand!!.idMatches(handId!!)) {
+        if (state.currentHand!!.entityId != handId) {
             return
         }
-        val forcedActionOnExpiredEvent = state.currentHand!!.expireActionOn(playerId!!)
-        newEvents.add(forcedActionOnExpiredEvent)
-        applyCommonEvent(forcedActionOnExpiredEvent)
+        val forcedActionOnExpiredEvents = expireActionOn(state.currentHand!!, playerId)
+        newEvents.addAll(forcedActionOnExpiredEvents)
+        forcedActionOnExpiredEvents.forEach { applyCommonEvent(it) }
         handleEndOfRound()
     }
 
@@ -221,33 +232,28 @@ class Table(creatingFromEvents: Boolean, var state: TableState) {
     }
 
     private fun handlePotAndRoundCompleted() {
-        val endOfRoundEvents = state.currentHand!!.handlePotAndRoundCompleted()
-        endOfRoundEvents.forEach {
+        handlePotAndRoundCompleted(state.currentHand!!).forEach {
             newEvents.add(it)
-            // TODO: not using applyCommonEvent() here because PotHandler is too
-            // stateful and the events get applied to the state down there. when
-            // that's refactored, this should change
-            appliedEvents.add(it)
+            applyCommonEvent(it)
         }
     }
 
     private fun changeActionOnIfAppropriate() {
-        val actionOnChangedEvents = state.currentHand!!.changeActionOn()
-        actionOnChangedEvents.forEach {
+        changeActionOn(state.currentHand!!).forEach {
             newEvents.add(it)
             applyCommonEvent(it)
         }
     }
 
     private fun dealCommonCardsIfAppropriate() {
-        state.currentHand!!.dealCommonCardsIfAppropriate().ifPresent {
+        dealCommonCardsIfAppropriate(state.currentHand!!).forEach {
             newEvents.add(it)
             applyCommonEvent(it)
         }
     }
 
     private fun determineWinnersIfAppropriate() {
-        state.currentHand!!.determineWinnersIfAppropriate().ifPresent {
+        determineWinnersIfAppropriate(state.currentHand!!).forEach {
             newEvents.add(it)
             applyCommonEvent(it)
         }
@@ -262,12 +268,14 @@ class Table(creatingFromEvents: Boolean, var state: TableState) {
     }
 
     private fun finishHandIfAppropriate() {
-        val handCompleteEvent = state.currentHand!!.finishHandIfAppropriate()
-        if (handCompleteEvent.isPresent) {
-            newEvents.add(handCompleteEvent.get())
-            applyCommonEvent(handCompleteEvent.get())
+        val handCompleteEvents = finishHandIfAppropriate(state.currentHand!!)
+        if (handCompleteEvents.isNotEmpty()) {
+            handCompleteEvents.forEach {
+                newEvents.add(it)
+                applyCommonEvent(it)
+            }
         } else {
-            state.currentHand!!.autoMoveHandForward().ifPresent {
+            autoMoveHandForward(state.currentHand!!).forEach {
                 newEvents.add(it)
                 applyCommonEvent(it)
             }

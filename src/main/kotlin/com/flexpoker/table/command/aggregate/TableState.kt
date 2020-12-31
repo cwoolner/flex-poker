@@ -5,10 +5,6 @@ import com.flexpoker.table.command.PlayerAction
 import com.flexpoker.table.command.PocketCards
 import com.flexpoker.table.command.RiverCard
 import com.flexpoker.table.command.TurnCard
-import com.flexpoker.table.command.aggregate.addNewPot
-import com.flexpoker.table.command.aggregate.addToPot
-import com.flexpoker.table.command.aggregate.closePot
-import com.flexpoker.table.command.aggregate.removePlayerFromAllPots
 import com.flexpoker.table.command.events.ActionOnChangedEvent
 import com.flexpoker.table.command.events.AutoMoveHandForwardEvent
 import com.flexpoker.table.command.events.CardsShuffledEvent
@@ -53,7 +49,7 @@ data class TableState(
     val buttonOnPosition: Int = 0,
     val smallBlindPosition: Int = 0,
     val bigBlindPosition: Int = 0,
-    val currentHand: Hand? = null,
+    val currentHand: HandState? = null,
     val paused: Boolean = false
 )
 
@@ -106,78 +102,30 @@ fun applyEvent(state: TableState?, event: TableEvent): TableState {
                 buttonOnPosition = event.buttonOnPosition,
                 smallBlindPosition = event.smallBlindPosition,
                 bigBlindPosition = event.bigBlindPosition,
-                currentHand = Hand(HandState(event.gameId, event.aggregateId, event.handId, state.seatMap,
+                currentHand = HandState(event.gameId, event.aggregateId, event.handId, state.seatMap,
                     event.flopCards, event.turnCard, event.riverCard, event.buttonOnPosition, event.smallBlindPosition,
                     event.bigBlindPosition, event.lastToActPlayerId, event.playerToPocketCardsMap,
                     event.possibleSeatActionsMap, event.playersStillInHand, event.handEvaluations,
                     event.handDealerState, event.chipsInBack, event.chipsInFrontMap, event.callAmountsMap,
                     event.raiseToAmountsMap, event.smallBlind, event.bigBlind, 0, null,
-                    HashTreePSet.empty(), false, false, false, HashTreePSet.empty())))
+                    HashTreePSet.empty(), false, false, false, HashTreePSet.empty()))
         is AutoMoveHandForwardEvent -> state!!
-        is PlayerCalledEvent -> {
-            state!!.currentHand!!.state = applyEvent(state.currentHand!!.state, event)
-            state
-        }
-        is PlayerCheckedEvent -> {
-            state!!.currentHand!!.state = applyEvent(state.currentHand!!.state, event)
-            state
-        }
-        is PlayerForceCheckedEvent -> {
-            state!!.currentHand!!.state = applyEvent(state.currentHand!!.state, event)
-            state
-        }
-        is PlayerFoldedEvent -> {
-            state!!.currentHand!!.state = applyEvent(state.currentHand!!.state, event)
-            state
-        }
-        is PlayerForceFoldedEvent -> {
-            state!!.currentHand!!.state = applyEvent(state.currentHand!!.state, event)
-            state
-        }
-        is PlayerRaisedEvent -> {
-            state!!.currentHand!!.state = applyEvent(state.currentHand!!.state, event)
-            state
-        }
-        is FlopCardsDealtEvent -> {
-            state!!.currentHand!!.state = applyEvent(state.currentHand!!.state, event)
-            state
-        }
-        is TurnCardDealtEvent -> {
-            state!!.currentHand!!.state = applyEvent(state.currentHand!!.state, event)
-            state
-        }
-        is RiverCardDealtEvent -> {
-            state!!.currentHand!!.state = applyEvent(state.currentHand!!.state, event)
-            state
-        }
-        is PotAmountIncreasedEvent -> {
-            state!!.currentHand!!.state = applyEvent(state.currentHand!!.state, event)
-            state
-        }
-        is PotClosedEvent -> {
-            state!!.currentHand!!.state = applyEvent(state.currentHand!!.state, event)
-            state
-        }
-        is PotCreatedEvent -> {
-            state!!.currentHand!!.state = applyEvent(state.currentHand!!.state, event)
-            state
-        }
-        is RoundCompletedEvent -> {
-            state!!.currentHand!!.state = applyEvent(state.currentHand!!.state, event)
-            state
-        }
-        is ActionOnChangedEvent -> {
-            state!!.currentHand!!.state = applyEvent(state.currentHand!!.state, event)
-            state
-        }
-        is LastToActChangedEvent -> {
-            state!!.currentHand!!.state = applyEvent(state.currentHand!!.state, event)
-            state
-        }
-        is WinnersDeterminedEvent -> {
-            state!!.currentHand!!.state = applyEvent(state.currentHand!!.state, event)
-            state
-        }
+        is PlayerCalledEvent -> state!!.copy(currentHand = applyEvent(state.currentHand!!, event))
+        is PlayerCheckedEvent -> state!!.copy(currentHand = applyEvent(state.currentHand!!, event))
+        is PlayerForceCheckedEvent -> state!!.copy(currentHand = applyEvent(state.currentHand!!, event))
+        is PlayerFoldedEvent -> state!!.copy(currentHand = applyEvent(state.currentHand!!, event))
+        is PlayerForceFoldedEvent -> state!!.copy(currentHand = applyEvent(state.currentHand!!, event))
+        is PlayerRaisedEvent -> state!!.copy(currentHand = applyEvent(state.currentHand!!, event))
+        is FlopCardsDealtEvent -> state!!.copy(currentHand = applyEvent(state.currentHand!!, event))
+        is TurnCardDealtEvent -> state!!.copy(currentHand = applyEvent(state.currentHand!!, event))
+        is RiverCardDealtEvent -> state!!.copy(currentHand = applyEvent(state.currentHand!!, event))
+        is PotAmountIncreasedEvent -> state!!.copy(currentHand = applyEvent(state.currentHand!!, event))
+        is PotClosedEvent -> state!!.copy(currentHand = applyEvent(state.currentHand!!, event))
+        is PotCreatedEvent -> state!!.copy(currentHand = applyEvent(state.currentHand!!, event))
+        is RoundCompletedEvent -> state!!.copy(currentHand = applyEvent(state.currentHand!!, event))
+        is ActionOnChangedEvent -> state!!.copy(currentHand = applyEvent(state.currentHand!!, event))
+        is LastToActChangedEvent -> state!!.copy(currentHand = applyEvent(state.currentHand!!, event))
+        is WinnersDeterminedEvent -> state!!.copy(currentHand = applyEvent(state.currentHand!!, event))
         is HandCompletedEvent -> state!!.copy(currentHand = null, chipsInBack = event.playerToChipsAtTableMap)
         is TablePausedEvent -> state!!.copy(paused = true)
         is TableResumedEvent -> state!!.copy(paused = false)
