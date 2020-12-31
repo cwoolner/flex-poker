@@ -33,7 +33,6 @@ import com.flexpoker.table.command.events.TableResumedEvent
 import com.flexpoker.table.command.events.TurnCardDealtEvent
 import com.flexpoker.table.command.events.WinnersDeterminedEvent
 import com.flexpoker.util.toPMap
-import org.pcollections.HashTreePMap
 import org.pcollections.HashTreePSet
 import org.pcollections.PMap
 import org.pcollections.PSet
@@ -45,7 +44,7 @@ data class TableState(
     val gameId: UUID,
     val seatMap: PMap<Int, UUID?>,
     val startingNumberOfChips: Int,
-    val chipsInBack: PMap<UUID, Int> = HashTreePMap.empty(),
+    val chipsInBack: PMap<UUID, Int>,
     val buttonOnPosition: Int = 0,
     val smallBlindPosition: Int = 0,
     val bigBlindPosition: Int = 0,
@@ -92,10 +91,24 @@ data class PotState(
     val handEvaluations: PSet<HandEvaluation>
 )
 
+fun applyEvents(events: List<TableEvent>): TableState {
+    return applyEvents(null, *events.toTypedArray())
+}
+
+fun applyEvents(state: TableState?, vararg events: TableEvent): TableState {
+    return events.fold(state, { acc, event -> applyEvent(acc, event) })!!
+}
+
 fun applyEvent(state: TableState?, event: TableEvent): TableState {
     require(state != null || event is TableCreatedEvent)
     return when (event) {
-        is TableCreatedEvent -> state!!
+        is TableCreatedEvent -> {
+            val chipsInBack = event.seatPositionToPlayerMap.values
+                .filterNotNull()
+                .associateWith { event.startingNumberOfChips }.toPMap()
+            TableState(event.aggregateId, event.gameId, event.seatPositionToPlayerMap,
+                event.startingNumberOfChips, chipsInBack)
+        }
         is CardsShuffledEvent -> state!!
         is HandDealtEvent ->
             state!!.copy(

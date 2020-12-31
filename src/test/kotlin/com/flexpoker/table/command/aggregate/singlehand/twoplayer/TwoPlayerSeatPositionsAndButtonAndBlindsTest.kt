@@ -1,6 +1,6 @@
 package com.flexpoker.table.command.aggregate.singlehand.twoplayer
 
-import com.flexpoker.table.command.aggregate.testhelpers.TableTestUtils
+import com.flexpoker.table.command.aggregate.testhelpers.createBasicTableAndStartHand
 import com.flexpoker.table.command.events.HandDealtEvent
 import com.flexpoker.table.command.events.TableCreatedEvent
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -14,10 +14,10 @@ class TwoPlayerSeatPositionsAndButtonAndBlindsTest {
         val tableId = UUID.randomUUID()
         val player1Id = UUID.randomUUID()
         val player2Id = UUID.randomUUID()
-        val table = TableTestUtils.createBasicTableAndStartHand(tableId, player1Id, player2Id)
+        val events = createBasicTableAndStartHand(tableId, player1Id, player2Id)
 
         // check seat positions
-        val seatPositionToPlayerIdMap = (table.fetchNewEvents()[0] as TableCreatedEvent)
+        val seatPositionToPlayerIdMap = (events[0] as TableCreatedEvent)
             .seatPositionToPlayerMap.filter { it.value != null }
         val player1MatchList = seatPositionToPlayerIdMap.values.filter { it == player1Id }
         val player2MatchList = seatPositionToPlayerIdMap.values.filter { it == player2Id }
@@ -33,17 +33,21 @@ class TwoPlayerSeatPositionsAndButtonAndBlindsTest {
         // check blinds
         val player1Position = seatPositionToPlayerIdMap.entries.first { it.value == player1Id }.key
         val player2Position = seatPositionToPlayerIdMap.entries.first { it.value == player2Id }.key
-        val (_, _, _, _, _, _, buttonOnPosition, smallBlindPosition, bigBlindPosition) = table.fetchNewEvents()[2] as HandDealtEvent
-        if (player1Position == buttonOnPosition) {
-            assertEquals(player1Position, buttonOnPosition)
-            assertEquals(player1Position, smallBlindPosition)
-            assertEquals(player2Position, bigBlindPosition)
-        } else if (player2Position == buttonOnPosition) {
-            assertEquals(player2Position, buttonOnPosition)
-            assertEquals(player2Position, smallBlindPosition)
-            assertEquals(player1Position, bigBlindPosition)
-        } else {
-            throw IllegalStateException("for a new two-player hand, one of the players must be the button")
+        val (_, _, _, _, _, _, buttonOnPosition, smallBlindPosition, bigBlindPosition) = events[2] as HandDealtEvent
+        when {
+            player1Position == buttonOnPosition -> {
+                assertEquals(player1Position, buttonOnPosition)
+                assertEquals(player1Position, smallBlindPosition)
+                assertEquals(player2Position, bigBlindPosition)
+            }
+            player2Position == buttonOnPosition -> {
+                assertEquals(player2Position, buttonOnPosition)
+                assertEquals(player2Position, smallBlindPosition)
+                assertEquals(player1Position, bigBlindPosition)
+            }
+            else -> {
+                throw IllegalStateException("for a new two-player hand, one of the players must be the button")
+            }
         }
     }
 

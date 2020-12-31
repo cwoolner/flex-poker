@@ -2,8 +2,10 @@ package com.flexpoker.table.command.handlers
 
 import com.flexpoker.framework.command.CommandHandler
 import com.flexpoker.framework.event.EventPublisher
+import com.flexpoker.table.command.aggregate.applyEvents
+import com.flexpoker.table.command.aggregate.eventproducers.startNewHandForExistingTable
+import com.flexpoker.table.command.aggregate.numberOfPlayersAtTable
 import com.flexpoker.table.command.commands.StartNewHandForExistingTableCommand
-import com.flexpoker.table.command.factory.TableFactory
 import com.flexpoker.table.command.events.TableEvent
 import com.flexpoker.table.command.repository.TableEventRepository
 import com.flexpoker.table.command.service.CardService
@@ -14,7 +16,6 @@ import javax.inject.Inject
 
 @Component
 class StartNewHandForExistingTableCommandHandler @Inject constructor(
-    private val tableFactory: TableFactory,
     private val eventPublisher: EventPublisher<TableEvent>,
     private val tableEventRepository: TableEventRepository,
     private val cardService: CardService,
@@ -24,17 +25,16 @@ class StartNewHandForExistingTableCommandHandler @Inject constructor(
     @Async
     override fun handle(command: StartNewHandForExistingTableCommand) {
         val existingEvents = tableEventRepository.fetchAll(command.tableId)
-        val table = tableFactory.createFrom(existingEvents)
+        val state = applyEvents(existingEvents)
         val shuffledDeckOfCards = cardService.createShuffledDeck()
-        val cardsUsedInHand = cardService.createCardsUsedInHand(shuffledDeckOfCards, table.numberOfPlayersAtTable)
+        val cardsUsedInHand = cardService.createCardsUsedInHand(shuffledDeckOfCards, numberOfPlayersAtTable(state))
         val possibleHandRankings = handEvaluatorService.determinePossibleHands(
             cardsUsedInHand.flopCards, cardsUsedInHand.turnCard, cardsUsedInHand.riverCard)
         val handEvaluations = handEvaluatorService.determineHandEvaluation(
             cardsUsedInHand.flopCards, cardsUsedInHand.turnCard, cardsUsedInHand.riverCard,
             cardsUsedInHand.pocketCards, possibleHandRankings)
-        table.startNewHandForExistingTable(command.smallBlind, command.bigBlind, shuffledDeckOfCards,
-            cardsUsedInHand, handEvaluations)
-        val newEvents = table.fetchNewEvents()
+        val newEvents = startNewHandForExistingTable(state, command.smallBlind, command.bigBlind,
+            shuffledDeckOfCards, cardsUsedInHand, handEvaluations)
         val newlySavedEventsWithVersions = tableEventRepository.setEventVersionsAndSave(existingEvents.size, newEvents)
         newlySavedEventsWithVersions.forEach { eventPublisher.publish(it) }
     }

@@ -1,8 +1,11 @@
 package com.flexpoker.table.command.aggregate.generic
 
 import com.flexpoker.exception.FlexPokerException
-import com.flexpoker.table.command.aggregate.testhelpers.TableTestUtils.createBasicTable
+import com.flexpoker.table.command.aggregate.eventproducers.pause
+import com.flexpoker.table.command.aggregate.eventproducers.resume
+import com.flexpoker.table.command.aggregate.testhelpers.createBasicTable
 import com.flexpoker.table.command.events.TableResumedEvent
+import com.flexpoker.test.util.TableEventProducerApplierBuilder
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
@@ -12,24 +15,31 @@ class ResumeTableTest {
 
     @Test
     fun testResumeSuccess() {
-        val table = createBasicTable(UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID())
-        table.pause()
-        table.resume()
-        assertEquals(TableResumedEvent::class.java, table.fetchNewEvents()[table.fetchNewEvents().size - 1].javaClass)
+        val initState = createBasicTable(UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID())
+        val (_, events) = TableEventProducerApplierBuilder()
+            .initState(initState)
+            .andRun { pause(it) }
+            .andRun { resume(it) }
+            .run()
+        assertEquals(2, events.size)
+        assertEquals(TableResumedEvent::class.java, events[1].javaClass)
     }
 
     @Test
     fun testResumeOnActiveTable() {
-        val table = createBasicTable(UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID())
-        assertThrows(FlexPokerException::class.java) { table.resume() }
+        val initState = createBasicTable(UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID())
+        assertThrows(FlexPokerException::class.java) { resume(initState) }
     }
 
     @Test
     fun testResumeTwice() {
-        val table = createBasicTable(UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID())
-        table.pause()
-        table.resume()
-        assertThrows(FlexPokerException::class.java) { table.resume() }
+        val initState = createBasicTable(UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID())
+        TableEventProducerApplierBuilder()
+            .initState(initState)
+            .andRun { pause(it) }
+            .andRun { resume(it) }
+            .andRunThrows(FlexPokerException::class.java) { resume(it) }
+            .run()
     }
 
 }

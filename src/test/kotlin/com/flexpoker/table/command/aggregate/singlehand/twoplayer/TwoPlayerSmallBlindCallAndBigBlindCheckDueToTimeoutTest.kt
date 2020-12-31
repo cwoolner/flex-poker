@@ -1,6 +1,11 @@
 package com.flexpoker.table.command.aggregate.singlehand.twoplayer
 
-import com.flexpoker.table.command.aggregate.testhelpers.TableTestUtils
+import com.flexpoker.table.command.aggregate.applyEvents
+import com.flexpoker.table.command.aggregate.eventproducers.call
+import com.flexpoker.table.command.aggregate.eventproducers.check
+import com.flexpoker.table.command.aggregate.eventproducers.expireActionOn
+import com.flexpoker.table.command.aggregate.testhelpers.blindPlayerIds
+import com.flexpoker.table.command.aggregate.testhelpers.createBasicTableAndStartHand
 import com.flexpoker.table.command.events.ActionOnChangedEvent
 import com.flexpoker.table.command.events.CardsShuffledEvent
 import com.flexpoker.table.command.events.FlopCardsDealtEvent
@@ -17,7 +22,8 @@ import com.flexpoker.table.command.events.RoundCompletedEvent
 import com.flexpoker.table.command.events.TableCreatedEvent
 import com.flexpoker.table.command.events.TurnCardDealtEvent
 import com.flexpoker.table.command.events.WinnersDeterminedEvent
-import com.flexpoker.test.util.CommonAssertions.verifyAppliedAndNewEventsForAggregate
+import com.flexpoker.test.util.CommonAssertions.verifyNewEvents
+import com.flexpoker.test.util.TableEventProducerApplierBuilder
 import org.junit.jupiter.api.Test
 import java.util.UUID
 
@@ -26,27 +32,25 @@ class TwoPlayerSmallBlindCallAndBigBlindCheckDueToTimeoutTest {
     @Test
     fun test() {
         val tableId = UUID.randomUUID()
-        val table = TableTestUtils.createBasicTableAndStartHand(tableId, UUID.randomUUID(), UUID.randomUUID())
+        val events = createBasicTableAndStartHand(tableId, UUID.randomUUID(), UUID.randomUUID())
+        val initState = applyEvents(events)
 
-        // use the info in action on event to simulate the expire
-        val smallBlindAndButtonPlayerId = (table.fetchNewEvents()[4] as ActionOnChangedEvent).playerId
-        table.call(smallBlindAndButtonPlayerId)
-        val (_, _, handId, bigBlindPlayerId) = table.fetchNewEvents()[6] as ActionOnChangedEvent
-        table.expireActionOn(handId, bigBlindPlayerId)
+        val (_, smallBlindPlayerId, bigBlindPlayerId) = blindPlayerIds(initState)
+        val handId = initState.currentHand!!.entityId
 
-        // post-flop
-        table.check(bigBlindPlayerId)
-        table.check(smallBlindAndButtonPlayerId)
+        val (_, newEvents) = TableEventProducerApplierBuilder()
+            .initState(initState)
+            .andRun { call(it, smallBlindPlayerId) }
+            .andRun { expireActionOn(it, handId, bigBlindPlayerId) }
+            .andRun { check(it, bigBlindPlayerId) }
+            .andRun { check(it, smallBlindPlayerId) }
+            .andRun { check(it, bigBlindPlayerId) }
+            .andRun { check(it, smallBlindPlayerId) }
+            .andRun { check(it, bigBlindPlayerId) }
+            .andRun { check(it, smallBlindPlayerId) }
+            .run()
 
-        // post-turn
-        table.check(bigBlindPlayerId)
-        table.check(smallBlindAndButtonPlayerId)
-
-        // post-river
-        table.check(bigBlindPlayerId)
-        table.check(smallBlindAndButtonPlayerId)
-        verifyAppliedAndNewEventsForAggregate(
-            table,
+        verifyNewEvents(tableId, events + newEvents,
             TableCreatedEvent::class.java,
             CardsShuffledEvent::class.java,
             HandDealtEvent::class.java,

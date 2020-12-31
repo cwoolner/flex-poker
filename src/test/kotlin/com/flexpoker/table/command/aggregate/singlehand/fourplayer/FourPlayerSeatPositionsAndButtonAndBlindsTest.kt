@@ -1,6 +1,6 @@
 package com.flexpoker.table.command.aggregate.singlehand.fourplayer
 
-import com.flexpoker.table.command.aggregate.testhelpers.TableTestUtils
+import com.flexpoker.table.command.aggregate.testhelpers.createBasicTableAndStartHand
 import com.flexpoker.table.command.events.HandDealtEvent
 import com.flexpoker.table.command.events.TableCreatedEvent
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -19,10 +19,10 @@ class FourPlayerSeatPositionsAndButtonAndBlindsTest {
         val player2Id = UUID.randomUUID()
         val player3Id = UUID.randomUUID()
         val player4Id = UUID.randomUUID()
-        val table = TableTestUtils.createBasicTableAndStartHand(tableId, player1Id, player2Id, player3Id, player4Id)
+        val events = createBasicTableAndStartHand(tableId, player1Id, player2Id, player3Id, player4Id)
 
         // check seat positions
-        val seatPositionToPlayerIdMap = (table.fetchNewEvents()[0] as TableCreatedEvent)
+        val seatPositionToPlayerIdMap = (events[0] as TableCreatedEvent)
             .seatPositionToPlayerMap.filter { it.value != null }
         val player1MatchList = seatPositionToPlayerIdMap.values.filter { it == player1Id }
         val player2MatchList = seatPositionToPlayerIdMap.values.filter { it == player2Id }
@@ -40,7 +40,7 @@ class FourPlayerSeatPositionsAndButtonAndBlindsTest {
             .filter { x: UUID? -> x != player3Id }.filter { x: UUID? -> x != player4Id }
             .distinct().count()
         assertEquals(0, numberOfOtherPlayerPositions)
-        val (_, _, _, _, _, _, buttonOnPosition, smallBlindPosition, bigBlindPosition) = table.fetchNewEvents()[2] as HandDealtEvent
+        val (_, _, _, _, _, _, buttonOnPosition, smallBlindPosition, bigBlindPosition) = events[2] as HandDealtEvent
         assertFalse(buttonOnPosition == smallBlindPosition)
         assertFalse(smallBlindPosition == bigBlindPosition)
         assertFalse(buttonOnPosition == bigBlindPosition)

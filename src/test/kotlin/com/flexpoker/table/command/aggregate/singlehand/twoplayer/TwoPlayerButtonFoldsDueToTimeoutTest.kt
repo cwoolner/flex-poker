@@ -1,7 +1,11 @@
 package com.flexpoker.table.command.aggregate.singlehand.twoplayer
 
 import com.flexpoker.table.command.aggregate.HandDealerState
-import com.flexpoker.table.command.aggregate.testhelpers.TableTestUtils
+import com.flexpoker.table.command.aggregate.applyEvents
+import com.flexpoker.table.command.aggregate.eventproducers.expireActionOn
+import com.flexpoker.table.command.aggregate.testhelpers.createBasicTableAndStartHand
+import com.flexpoker.table.command.aggregate.testhelpers.fetchIdForBigBlind
+import com.flexpoker.table.command.aggregate.testhelpers.fetchIdForButton
 import com.flexpoker.table.command.events.ActionOnChangedEvent
 import com.flexpoker.table.command.events.CardsShuffledEvent
 import com.flexpoker.table.command.events.HandCompletedEvent
@@ -12,7 +16,8 @@ import com.flexpoker.table.command.events.PotCreatedEvent
 import com.flexpoker.table.command.events.RoundCompletedEvent
 import com.flexpoker.table.command.events.TableCreatedEvent
 import com.flexpoker.table.command.events.WinnersDeterminedEvent
-import com.flexpoker.test.util.CommonAssertions.verifyAppliedAndNewEventsForAggregate
+import com.flexpoker.test.util.CommonAssertions.verifyNewEvents
+import com.flexpoker.test.util.TableEventProducerApplierBuilder
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -24,20 +29,24 @@ class TwoPlayerButtonFoldsDueToTimeoutTest {
     @Test
     fun test() {
         val tableId = UUID.randomUUID()
-        val table = TableTestUtils.createBasicTableAndStartHand(tableId, UUID.randomUUID(), UUID.randomUUID())
+        val events = createBasicTableAndStartHand(tableId, UUID.randomUUID(), UUID.randomUUID())
+        val initState = applyEvents(events)
 
-        // use the info in action on event to simulate the expire
-        val (_, _, handId, playerId) = table.fetchNewEvents()[4] as ActionOnChangedEvent
-        table.expireActionOn(handId, playerId)
-        val newEvents = table.fetchNewEvents()
-        val tableCreatedEvent = newEvents[0] as TableCreatedEvent
-        val handDealtEvent = newEvents[2] as HandDealtEvent
-        val (_, _, _, _, playersInvolved) = newEvents[3] as PotCreatedEvent
-        val (_, _, _, _, amountIncreased) = newEvents[6] as PotAmountIncreasedEvent
-        val (_, _, _, _, amountIncreased1) = newEvents[7] as PotAmountIncreasedEvent
-        val (_, _, _, nextHandDealerState) = newEvents[8] as RoundCompletedEvent
-        val buttonPlayerId = TableTestUtils.fetchIdForButton(tableCreatedEvent, handDealtEvent)
-        val bigBlindPlayerId = TableTestUtils.fetchIdForBigBlind(tableCreatedEvent, handDealtEvent)
+        val (_, _, handId, playerId) = events[4] as ActionOnChangedEvent
+
+        val (_, newEvents) = TableEventProducerApplierBuilder()
+            .initState(initState)
+            .andRun { expireActionOn(it, handId, playerId) }
+            .run()
+
+        val tableCreatedEvent = events[0] as TableCreatedEvent
+        val handDealtEvent = events[2] as HandDealtEvent
+        val (_, _, _, _, playersInvolved) = events[3] as PotCreatedEvent
+        val (_, _, _, _, amountIncreased) = newEvents[1] as PotAmountIncreasedEvent
+        val (_, _, _, _, amountIncreased1) = newEvents[2] as PotAmountIncreasedEvent
+        val (_, _, _, nextHandDealerState) = newEvents[3] as RoundCompletedEvent
+        val buttonPlayerId = fetchIdForButton(tableCreatedEvent, handDealtEvent)
+        val bigBlindPlayerId = fetchIdForBigBlind(tableCreatedEvent, handDealtEvent)
 
         assertEquals(10, handDealtEvent.callAmountsMap[buttonPlayerId]!!.toInt())
         assertEquals(0, handDealtEvent.callAmountsMap[bigBlindPlayerId]!!.toInt())
@@ -52,12 +61,12 @@ class TwoPlayerButtonFoldsDueToTimeoutTest {
         assertEquals(20, amountIncreased)
         assertEquals(10, amountIncreased1)
         assertEquals(HandDealerState.COMPLETE, nextHandDealerState)
-        val (_, _, _, playersToShowCards, playersToChipsWonMap) = newEvents[9] as WinnersDeterminedEvent
+        val (_, _, _, playersToShowCards, playersToChipsWonMap) = newEvents[4] as WinnersDeterminedEvent
         assertNull(playersToChipsWonMap[buttonPlayerId])
         assertEquals(30, playersToChipsWonMap[bigBlindPlayerId]!!.toInt())
         assertTrue(playersToShowCards.isEmpty())
-        verifyAppliedAndNewEventsForAggregate(
-            table,
+
+        verifyNewEvents(tableId, events + newEvents,
             TableCreatedEvent::class.java, CardsShuffledEvent::class.java,
             HandDealtEvent::class.java, PotCreatedEvent::class.java,
             ActionOnChangedEvent::class.java, PlayerForceFoldedEvent::class.java,

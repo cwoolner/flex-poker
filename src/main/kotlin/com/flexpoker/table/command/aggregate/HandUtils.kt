@@ -17,3 +17,9 @@ fun checkPerformAction(state: HandState, playerId: UUID, playerAction: PlayerAct
         throw FlexPokerException("not allowed to $playerAction")
     }
 }
+
+fun checkHandIsBeingPlayed(state: TableState) {
+    if (state.currentHand == null) {
+        throw FlexPokerException("no hand in progress")
+    }
+}

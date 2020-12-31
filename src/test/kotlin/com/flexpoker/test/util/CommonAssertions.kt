@@ -1,7 +1,8 @@
 package com.flexpoker.test.util
 
 import com.flexpoker.framework.event.Event
-import com.flexpoker.table.command.aggregate.Table
+import com.flexpoker.table.command.aggregate.TableState
+import com.flexpoker.table.command.events.TableEvent
 import org.junit.jupiter.api.Assertions.assertArrayEquals
 import org.junit.jupiter.api.Assertions.assertEquals
 import java.util.UUID
@@ -19,11 +20,14 @@ object CommonAssertions {
         assertArrayEquals(eventClasses, events.map { it.javaClass }.toTypedArray())
     }
 
-    fun verifyAppliedAndNewEventsForAggregate(table: Table, vararg eventClasses: Class<out Event>) {
-        verifyEventIds(table.state.aggregateId, table.fetchAppliedEvents())
-        verifyEventIds(table.state.aggregateId, table.fetchNewEvents())
-        verifyNumberOfEventsAndEntireOrderByType(table.fetchAppliedEvents(), *eventClasses)
-        verifyNumberOfEventsAndEntireOrderByType(table.fetchNewEvents(), *eventClasses)
+    fun verifyAppliedAndNewEventsForAggregate(state: TableState, events: List<Event>, vararg eventClasses: Class<out Event>) {
+        verifyEventIds(state.aggregateId, events)
+        verifyNumberOfEventsAndEntireOrderByType(events, *eventClasses)
+    }
+
+    fun verifyNewEvents(aggregateId: UUID, events: List<TableEvent>, vararg eventClasses: Class<out Event>) {
+        verifyEventIds(aggregateId, events)
+        verifyNumberOfEventsAndEntireOrderByType(events, *eventClasses)
     }
 
 }

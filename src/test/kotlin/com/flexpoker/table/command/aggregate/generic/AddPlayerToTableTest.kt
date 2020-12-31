@@ -1,7 +1,7 @@
 package com.flexpoker.table.command.aggregate.generic
 
-import com.flexpoker.exception.FlexPokerException
-import com.flexpoker.table.command.aggregate.testhelpers.TableTestUtils.createBasicTable
+import com.flexpoker.table.command.aggregate.eventproducers.addPlayer
+import com.flexpoker.table.command.aggregate.testhelpers.createBasicTable
 import com.flexpoker.table.command.events.PlayerAddedEvent
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertThrows
@@ -12,16 +12,16 @@ class AddPlayerToTableTest {
 
     @Test
     fun testAddPlayerSuccess() {
-        val table = createBasicTable(UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID())
-        table.addPlayer(UUID.randomUUID(), 100)
-        assertEquals(PlayerAddedEvent::class.java, table.fetchNewEvents()[table.fetchNewEvents().size - 1].javaClass)
+        val initState = createBasicTable(UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID())
+        val events = addPlayer(initState, UUID.randomUUID(), 100)
+        assertEquals(PlayerAddedEvent::class.java, events[0].javaClass)
     }
 
     @Test
     fun testAddingExistingPlayer() {
         val existingPlayer = UUID.randomUUID()
-        val table = createBasicTable(UUID.randomUUID(), UUID.randomUUID(), existingPlayer)
-        assertThrows(FlexPokerException::class.java) { table.addPlayer(existingPlayer, 100) }
+        val initState = createBasicTable(UUID.randomUUID(), UUID.randomUUID(), existingPlayer)
+        assertThrows(IllegalArgumentException::class.java) { addPlayer(initState, existingPlayer, 100) }
     }
 
 }
