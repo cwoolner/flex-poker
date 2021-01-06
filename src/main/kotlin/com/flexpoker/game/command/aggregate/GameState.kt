@@ -34,10 +34,10 @@ data class GameState(
 )
 
 fun applyEvents(events: List<GameEvent>): GameState {
-    return applyEvents(null, *events.toTypedArray())
+    return applyEvents(null, events)
 }
 
-fun applyEvents(state: GameState?, vararg events: GameEvent): GameState {
+fun applyEvents(state: GameState?, events: List<GameEvent>): GameState {
     return events.fold(state, { acc, event -> applyEvent(acc, event) })!!
 }
 

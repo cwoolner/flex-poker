@@ -13,17 +13,17 @@ fun handleEndOfRound(state: TableState): List<TableEvent> {
     var updatedState = state
 
     val potAndRoundCompletedEvents = handlePotAndRoundCompleted(updatedState.currentHand!!)
-    updatedState = applyEvents(updatedState, *potAndRoundCompletedEvents.toTypedArray())
+    updatedState = applyEvents(updatedState, potAndRoundCompletedEvents)
     val changeActionOnEvents = changeActionOn(updatedState.currentHand!!)
-    updatedState = applyEvents(updatedState, *changeActionOnEvents.toTypedArray())
+    updatedState = applyEvents(updatedState, changeActionOnEvents)
     val dealCommonCardsEvents = dealCommonCardsIfAppropriate(updatedState.currentHand!!)
-    updatedState = applyEvents(updatedState, *dealCommonCardsEvents.toTypedArray())
+    updatedState = applyEvents(updatedState, dealCommonCardsEvents)
     val determineWinnersEvents = determineWinnersIfAppropriate(updatedState.currentHand!!)
-    updatedState = applyEvents(updatedState, *determineWinnersEvents.toTypedArray())
+    updatedState = applyEvents(updatedState, determineWinnersEvents)
     val bustedPlayersEvents = removeAnyBustedPlayers(updatedState)
-    updatedState = applyEvents(updatedState, *bustedPlayersEvents.toTypedArray())
+    updatedState = applyEvents(updatedState, bustedPlayersEvents)
     val finishHandEvents = finishHandIfAppropriate(updatedState)
-    updatedState = applyEvents(updatedState, *finishHandEvents.toTypedArray())
+    updatedState = applyEvents(updatedState, finishHandEvents)
 
     return potAndRoundCompletedEvents
         .plus(changeActionOnEvents)

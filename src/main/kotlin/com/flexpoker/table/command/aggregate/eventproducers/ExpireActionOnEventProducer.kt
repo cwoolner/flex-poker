@@ -14,7 +14,7 @@ fun expireActionOn(state: TableState, handId: UUID?, playerId: UUID): List<Table
         emptyList<TableEvent>()
     }
     val forcedActionOnExpiredEvents = expireActionOn(state.currentHand, playerId)
-    val endOfRoundEvents = handleEndOfRound(applyEvents(state, *forcedActionOnExpiredEvents.toTypedArray()))
+    val endOfRoundEvents = handleEndOfRound(applyEvents(state, forcedActionOnExpiredEvents))
     return forcedActionOnExpiredEvents.plus(endOfRoundEvents)
 }
 

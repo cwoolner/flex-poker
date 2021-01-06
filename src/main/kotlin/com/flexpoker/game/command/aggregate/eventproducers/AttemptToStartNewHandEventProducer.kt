@@ -19,13 +19,13 @@ fun attemptToStartNewHand(state: GameState, tableId: UUID, playerToChipsAtTableM
 
     val bustedGameEvents = playerToChipsAtTableMap.filterValues { it == 0 }.map { it.key }.map { bustPlayer(state, it) }
     events.addAll(bustedGameEvents)
-    var updatedState = applyEvents(state, *bustedGameEvents.toTypedArray())
+    var updatedState = applyEvents(state, bustedGameEvents)
 
     val bustedPlayers = updatedState.tableIdToPlayerIdsMap[tableId]!!
         .filter { !playerToChipsAtTableMap.keys.contains(it) }.toSet()
     val addlBustedGameEvents = bustedPlayers.map { bustPlayer(updatedState, it) }
     events.addAll(addlBustedGameEvents)
-    updatedState = applyEvents(updatedState, *addlBustedGameEvents.toTypedArray())
+    updatedState = applyEvents(updatedState, addlBustedGameEvents)
 
     if (updatedState.tableIdToPlayerIdsMap.flatMap { it.value }.count() == 1) {
         // TODO: do something for the winner

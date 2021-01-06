@@ -23,7 +23,7 @@ class AddPlayerToTableTest {
             UUID.randomUUID()), TestRandomNumberGenerator(4)))
 
         val newEvents1 = addPlayer(initState, player1Id, 100, TestRandomNumberGenerator(2))
-        val updatedState = applyEvents(initState, *newEvents1.toTypedArray())
+        val updatedState = applyEvents(initState, newEvents1)
         val player1AddedEvent = newEvents1[0] as PlayerAddedEvent
         assertEquals(1, newEvents1.size)
         assertEquals(PlayerAddedEvent(tableId, gameId, player1Id, 100, 2), player1AddedEvent)
@@ -31,7 +31,7 @@ class AddPlayerToTableTest {
         assertEquals(3, updatedState.seatMap.values.filterNotNull().size)
 
         val newEvents2 = addPlayer(updatedState, player2Id, 150, TestRandomNumberGenerator(0))
-        val updatedState2 = applyEvents(updatedState, *newEvents2.toTypedArray())
+        val updatedState2 = applyEvents(updatedState, newEvents2)
         val player2AddedEvent = newEvents2[0] as PlayerAddedEvent
         assertEquals(1, newEvents2.size)
         assertEquals(PlayerAddedEvent(tableId, gameId, player2Id, 150, 0), player2AddedEvent)

@@ -16,7 +16,7 @@ import java.util.UUID
 fun check(state: TableState, playerId: UUID): List<TableEvent> {
     checkHandIsBeingPlayed(state)
     val playerCheckedEvents = check(state.currentHand!!, playerId, false)
-    val endOfRoundEvents = handleEndOfRound(applyEvents(state, *playerCheckedEvents.toTypedArray()))
+    val endOfRoundEvents = handleEndOfRound(applyEvents(state, playerCheckedEvents))
     return playerCheckedEvents.plus(endOfRoundEvents)
 }
 

@@ -92,10 +92,10 @@ data class PotState(
 )
 
 fun applyEvents(events: List<TableEvent>): TableState {
-    return applyEvents(null, *events.toTypedArray())
+    return applyEvents(null, events)
 }
 
-fun applyEvents(state: TableState?, vararg events: TableEvent): TableState {
+fun applyEvents(state: TableState?, events: List<TableEvent>): TableState {
     return events.fold(state, { acc, event -> applyEvent(acc, event) })!!
 }
 

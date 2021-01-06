@@ -38,7 +38,7 @@ class TableEventProducerApplierBuilder {
         return funsToRun.fold(Pair(initState!!, emptyList()), { (accState, accEvents), funToRun ->
             val newEvents = funToRun(accState)
             Pair(
-                applyEvents(accState, *newEvents.toTypedArray()),
+                applyEvents(accState, newEvents),
                 accEvents + newEvents
             )
         })

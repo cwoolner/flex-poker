@@ -16,7 +16,7 @@ import java.util.UUID
 fun fold(state: TableState, playerId: UUID): List<TableEvent> {
     checkHandIsBeingPlayed(state)
     val playerFoldedEvents = fold(state.currentHand!!, playerId, false)
-    val endOfRoundEvents = handleEndOfRound(applyEvents(state, *playerFoldedEvents.toTypedArray()))
+    val endOfRoundEvents = handleEndOfRound(applyEvents(state, playerFoldedEvents))
     return playerFoldedEvents + endOfRoundEvents
 }
 

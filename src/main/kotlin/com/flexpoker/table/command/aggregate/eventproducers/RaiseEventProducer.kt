@@ -15,7 +15,7 @@ import java.util.UUID
 fun raise(state: TableState, playerId: UUID, raiseToAmount: Int): List<TableEvent> {
     checkHandIsBeingPlayed(state)
     val playerRaisedEvents = raise(state.currentHand!!, playerId, raiseToAmount)
-    val changeActionOnEvents = changeActionOnIfAppropriate(applyEvents(state, *playerRaisedEvents.toTypedArray()))
+    val changeActionOnEvents = changeActionOnIfAppropriate(applyEvents(state, playerRaisedEvents))
     return playerRaisedEvents + changeActionOnEvents
 }
 
