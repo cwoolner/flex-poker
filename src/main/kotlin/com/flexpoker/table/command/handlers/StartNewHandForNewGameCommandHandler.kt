@@ -2,6 +2,7 @@ package com.flexpoker.table.command.handlers
 
 import com.flexpoker.framework.command.CommandHandler
 import com.flexpoker.framework.event.EventPublisher
+import com.flexpoker.table.command.aggregate.DefaultRandomNumberGenerator
 import com.flexpoker.table.command.aggregate.applyEvents
 import com.flexpoker.table.command.aggregate.eventproducers.startNewHandForNewGame
 import com.flexpoker.table.command.aggregate.numberOfPlayersAtTable
@@ -34,7 +35,7 @@ class StartNewHandForNewGameCommandHandler @Inject constructor(
             cardsUsedInHand.flopCards, cardsUsedInHand.turnCard, cardsUsedInHand.riverCard,
             cardsUsedInHand.pocketCards, possibleHandRankings)
         val newEvents = startNewHandForNewGame(state, command.smallBlind, command.bigBlind,
-            shuffledDeckOfCards, cardsUsedInHand, handEvaluations)
+            shuffledDeckOfCards, cardsUsedInHand, handEvaluations, DefaultRandomNumberGenerator())
         val newlySavedEventsWithVersions = tableEventRepository.setEventVersionsAndSave(existingEvents.size, newEvents)
         newlySavedEventsWithVersions.forEach { eventPublisher.publish(it) }
     }

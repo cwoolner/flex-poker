@@ -1,12 +1,13 @@
 package com.flexpoker.table.command.aggregate.eventproducers
 
+import com.flexpoker.table.command.aggregate.RandomNumberGenerator
 import com.flexpoker.table.command.events.TableCreatedEvent
 import com.flexpoker.table.command.events.TableEvent
 import com.flexpoker.util.toPMap
 import java.util.UUID
-import kotlin.random.Random
 
-fun createTable(tableId: UUID, gameId: UUID, numberOfPlayersPerTable: Int, playerIds: Set<UUID>): List<TableEvent> {
+fun createTable(tableId: UUID, gameId: UUID, numberOfPlayersPerTable: Int,
+                playerIds: Set<UUID>, randomNumberGenerator: RandomNumberGenerator): List<TableEvent> {
     require(playerIds.size >= 2) { "must have at least two players" }
     require(playerIds.size <= numberOfPlayersPerTable) { "player list can't be larger than the number of players per table" }
 
@@ -14,7 +15,7 @@ fun createTable(tableId: UUID, gameId: UUID, numberOfPlayersPerTable: Int, playe
     (0 until numberOfPlayersPerTable).forEach { seatMap[it] = null }
     playerIds.forEach {
         do {
-            val attemptedSeatPosition = Random.nextInt(playerIds.size)
+            val attemptedSeatPosition = randomNumberGenerator.int(numberOfPlayersPerTable)
             if (seatMap[attemptedSeatPosition] == null) {
                 seatMap[attemptedSeatPosition] = it
             }

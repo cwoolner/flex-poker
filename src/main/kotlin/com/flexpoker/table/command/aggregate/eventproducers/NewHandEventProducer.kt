@@ -7,6 +7,7 @@ import com.flexpoker.table.command.PocketCards
 import com.flexpoker.table.command.aggregate.HandDealerState
 import com.flexpoker.table.command.aggregate.HandEvaluation
 import com.flexpoker.table.command.aggregate.HandState
+import com.flexpoker.table.command.aggregate.RandomNumberGenerator
 import com.flexpoker.table.command.aggregate.TableState
 import com.flexpoker.table.command.aggregate.applyEvent
 import com.flexpoker.table.command.aggregate.numberOfPlayersAtTable
@@ -18,13 +19,13 @@ import com.flexpoker.util.toPVector
 import org.pcollections.HashTreePMap
 import org.pcollections.HashTreePSet
 import java.util.UUID
-import kotlin.random.Random
 
 fun startNewHandForNewGame(state: TableState, smallBlind: Int, bigBlind: Int, shuffledDeckOfCards: List<Card>,
-                           cardsUsedInHand: CardsUsedInHand, handEvaluations: Map<PocketCards, HandEvaluation>
+                           cardsUsedInHand: CardsUsedInHand, handEvaluations: Map<PocketCards, HandEvaluation>,
+                           randomNumberGenerator: RandomNumberGenerator
 ): List<TableEvent> {
     var updatedState = state
-    updatedState = updatedState.copy(buttonOnPosition = assignButtonOnForNewGame(updatedState))
+    updatedState = updatedState.copy(buttonOnPosition = assignButtonOnForNewGame(updatedState, randomNumberGenerator))
     updatedState = updatedState.copy(smallBlindPosition = assignSmallBlindForNewGame(updatedState))
     updatedState = updatedState.copy(bigBlindPosition = assignBigBlindForNewGame(updatedState))
     return performNewHandCommonLogic(updatedState, smallBlind, bigBlind, shuffledDeckOfCards, cardsUsedInHand,
@@ -42,9 +43,9 @@ fun startNewHandForExistingTable(state: TableState, smallBlind: Int, bigBlind: I
         handEvaluations, assignActionOnForNewHand(updatedState))
 }
 
-private fun assignButtonOnForNewGame(state: TableState): Int {
+private fun assignButtonOnForNewGame(state: TableState, randomNumberGenerator: RandomNumberGenerator): Int {
     while (true) {
-        val potentialButtonOnPosition = Random.nextInt(state.seatMap.size)
+        val potentialButtonOnPosition = randomNumberGenerator.int(state.seatMap.size)
         if (state.seatMap[potentialButtonOnPosition] != null) {
             return potentialButtonOnPosition
         }

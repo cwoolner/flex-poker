@@ -4,6 +4,7 @@ import com.flexpoker.table.command.Card
 import com.flexpoker.table.command.CardRank
 import com.flexpoker.table.command.HandRanking
 import com.flexpoker.table.command.PocketCards
+import com.flexpoker.table.command.aggregate.DefaultRandomNumberGenerator
 import com.flexpoker.table.command.aggregate.HandEvaluation
 import com.flexpoker.table.command.aggregate.TableState
 import com.flexpoker.table.command.aggregate.applyEvents
@@ -23,7 +24,8 @@ import java.util.UUID
 fun createBasicTable(tableId: UUID, vararg playerIdsArray: UUID): TableState {
     val playerIds = setOf(*playerIdsArray)
     val command = CreateTableCommand(tableId, UUID.randomUUID(), playerIds, 6)
-    return applyEvents(createTable(command.tableId, command.gameId, command.numberOfPlayersPerTable, command.playerIds))
+    return applyEvents(createTable(command.tableId, command.gameId, command.numberOfPlayersPerTable,
+        command.playerIds, DefaultRandomNumberGenerator()))
 }
 
 fun createBasicTableAndStartHand(tableId: UUID?, vararg playerIdsArray: UUID): List<TableEvent> {
@@ -45,9 +47,11 @@ fun createBasicTableAndStartHand(tableId: UUID?, vararg playerIdsArray: UUID): L
     handEvaluations[createPocketCards2()] = handEvaluation2
 
     val command = CreateTableCommand(tableId!!, UUID.randomUUID(), playerIds, 6)
-    val initEvents = createTable(command.tableId, command.gameId, command.numberOfPlayersPerTable, command.playerIds)
+    val initEvents = createTable(command.tableId, command.gameId, command.numberOfPlayersPerTable,
+        command.playerIds, DefaultRandomNumberGenerator())
     val initState = applyEvents(initEvents)
-    val events = startNewHandForNewGame(initState, smallBlind, bigBlind, shuffledDeckOfCards, cardsUsedInHand, handEvaluations)
+    val events = startNewHandForNewGame(initState, smallBlind, bigBlind, shuffledDeckOfCards, cardsUsedInHand,
+        handEvaluations, DefaultRandomNumberGenerator())
 
     return initEvents + events
 }
