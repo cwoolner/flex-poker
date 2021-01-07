@@ -48,6 +48,3 @@ private fun finishHandIfAppropriate(state: TableState): List<TableEvent> {
     }
 }
 
-fun numberOfPlayersAtTable(state: TableState): Int {
-    return state.seatMap.values.filterNotNull().count()
-}
