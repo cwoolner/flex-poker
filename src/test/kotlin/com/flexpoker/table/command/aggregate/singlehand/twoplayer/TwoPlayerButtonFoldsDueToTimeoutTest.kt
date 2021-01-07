@@ -1,6 +1,6 @@
 package com.flexpoker.table.command.aggregate.singlehand.twoplayer
 
-import com.flexpoker.table.command.aggregate.HandDealerState
+import com.flexpoker.table.command.HandDealerState
 import com.flexpoker.table.command.aggregate.applyEvents
 import com.flexpoker.table.command.aggregate.eventproducers.expireActionOn
 import com.flexpoker.table.command.aggregate.testhelpers.createBasicTableAndStartHand

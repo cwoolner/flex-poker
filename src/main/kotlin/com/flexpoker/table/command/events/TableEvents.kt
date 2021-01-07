@@ -5,11 +5,11 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo
 import com.flexpoker.framework.event.Event
 import com.flexpoker.table.command.Card
 import com.flexpoker.table.command.FlopCards
+import com.flexpoker.table.command.HandDealerState
 import com.flexpoker.table.command.PlayerAction
 import com.flexpoker.table.command.PocketCards
 import com.flexpoker.table.command.RiverCard
 import com.flexpoker.table.command.TurnCard
-import com.flexpoker.table.command.aggregate.HandDealerState
 import com.flexpoker.table.command.aggregate.HandEvaluation
 import org.pcollections.PMap
 import org.pcollections.PSet

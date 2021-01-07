@@ -1,6 +1,7 @@
 package com.flexpoker.table.command.aggregate
 
 import com.flexpoker.table.command.FlopCards
+import com.flexpoker.table.command.HandDealerState
 import com.flexpoker.table.command.PlayerAction
 import com.flexpoker.table.command.PocketCards
 import com.flexpoker.table.command.RiverCard

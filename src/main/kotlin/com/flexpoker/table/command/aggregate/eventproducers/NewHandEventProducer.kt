@@ -2,9 +2,9 @@ package com.flexpoker.table.command.aggregate.eventproducers
 
 import com.flexpoker.table.command.Card
 import com.flexpoker.table.command.CardsUsedInHand
+import com.flexpoker.table.command.HandDealerState
 import com.flexpoker.table.command.PlayerAction
 import com.flexpoker.table.command.PocketCards
-import com.flexpoker.table.command.aggregate.HandDealerState
 import com.flexpoker.table.command.aggregate.HandEvaluation
 import com.flexpoker.table.command.aggregate.HandState
 import com.flexpoker.table.command.aggregate.RandomNumberGenerator

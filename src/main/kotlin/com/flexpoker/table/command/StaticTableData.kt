@@ -8,6 +8,10 @@ enum class PlayerAction {
     CHECK, FOLD, CALL, RAISE
 }
 
+enum class HandDealerState {
+    NONE, POCKET_CARDS_DEALT, FLOP_DEALT, TURN_DEALT, RIVER_DEALT, COMPLETE
+}
+
 data class Card (val id: Int, val cardRank: CardRank, val cardSuit: CardSuit) : Comparable<Card> {
     override fun compareTo(other: Card): Int {
         return cardRank.compareTo(other.cardRank)
