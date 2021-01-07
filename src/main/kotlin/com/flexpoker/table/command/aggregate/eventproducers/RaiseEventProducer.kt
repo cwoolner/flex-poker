@@ -4,7 +4,6 @@ import com.flexpoker.table.command.PlayerAction
 import com.flexpoker.table.command.aggregate.HandState
 import com.flexpoker.table.command.aggregate.TableState
 import com.flexpoker.table.command.aggregate.applyEvents
-import com.flexpoker.table.command.aggregate.changeActionOnIfAppropriate
 import com.flexpoker.table.command.aggregate.checkActionOnPlayer
 import com.flexpoker.table.command.aggregate.checkHandIsBeingPlayed
 import com.flexpoker.table.command.aggregate.checkPerformAction
@@ -15,7 +14,7 @@ import java.util.UUID
 fun raise(state: TableState, playerId: UUID, raiseToAmount: Int): List<TableEvent> {
     checkHandIsBeingPlayed(state)
     val playerRaisedEvents = raise(state.currentHand!!, playerId, raiseToAmount)
-    val changeActionOnEvents = changeActionOnIfAppropriate(applyEvents(state, playerRaisedEvents))
+    val changeActionOnEvents = changeActionOn(applyEvents(state, playerRaisedEvents).currentHand!!)
     return playerRaisedEvents + changeActionOnEvents
 }
 
