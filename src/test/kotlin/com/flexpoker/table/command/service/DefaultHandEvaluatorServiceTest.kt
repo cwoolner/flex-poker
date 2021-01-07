@@ -8,7 +8,6 @@ import com.flexpoker.table.command.HandRanking
 import com.flexpoker.table.command.PocketCards
 import com.flexpoker.table.command.RiverCard
 import com.flexpoker.table.command.TurnCard
-import com.flexpoker.table.command.aggregate.CommonCards
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import java.util.ArrayList

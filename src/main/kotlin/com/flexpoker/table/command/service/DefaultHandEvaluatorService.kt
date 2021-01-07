@@ -8,13 +8,17 @@ import com.flexpoker.table.command.HandRanking
 import com.flexpoker.table.command.PocketCards
 import com.flexpoker.table.command.RiverCard
 import com.flexpoker.table.command.TurnCard
-import com.flexpoker.table.command.aggregate.CommonCards
 import com.flexpoker.table.command.aggregate.HandEvaluation
 import org.springframework.stereotype.Service
 import java.util.ArrayList
 import java.util.Arrays
 import java.util.HashMap
 import java.util.HashSet
+
+data class CommonCards(val flopCards: FlopCards, val turnCard: TurnCard, val riverCard: RiverCard) {
+    val cards: List<Card>
+        get() = listOf(flopCards.card1, flopCards.card2, flopCards.card3, turnCard.card, riverCard.card)
+}
 
 @Service
 class DefaultHandEvaluatorService : HandEvaluatorService {
