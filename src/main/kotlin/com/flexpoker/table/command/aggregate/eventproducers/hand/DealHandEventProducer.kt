@@ -1,4 +1,4 @@
-package com.flexpoker.table.command.aggregate.eventproducers
+package com.flexpoker.table.command.aggregate.eventproducers.hand
 
 import com.flexpoker.table.command.HandDealerState
 import com.flexpoker.table.command.PlayerAction

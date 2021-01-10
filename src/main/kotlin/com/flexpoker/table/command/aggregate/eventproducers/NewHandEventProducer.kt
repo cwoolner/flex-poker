@@ -10,7 +10,7 @@ import com.flexpoker.table.command.aggregate.HandState
 import com.flexpoker.table.command.aggregate.RandomNumberGenerator
 import com.flexpoker.table.command.aggregate.TableState
 import com.flexpoker.table.command.aggregate.applyEvent
-import com.flexpoker.table.command.aggregate.numberOfPlayersAtTable
+import com.flexpoker.table.command.aggregate.eventproducers.hand.dealHand
 import com.flexpoker.table.command.events.CardsShuffledEvent
 import com.flexpoker.table.command.events.TableEvent
 import com.flexpoker.util.toPMap

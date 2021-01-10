@@ -1,6 +1,7 @@
-package com.flexpoker.table.command.aggregate
+package com.flexpoker.table.command.aggregate.eventproducers.hand
 
 import com.flexpoker.table.command.PlayerAction
+import com.flexpoker.table.command.aggregate.HandState
 import java.util.UUID
 
 

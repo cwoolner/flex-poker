@@ -10,6 +10,8 @@ import com.flexpoker.table.command.PlayerAction
 import com.flexpoker.table.command.PocketCards
 import com.flexpoker.table.command.RiverCard
 import com.flexpoker.table.command.TurnCard
+import com.flexpoker.table.command.aggregate.eventproducers.hand.checkActionOnPlayer
+import com.flexpoker.table.command.aggregate.eventproducers.hand.checkPerformAction
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
 import org.pcollections.HashTreePMap

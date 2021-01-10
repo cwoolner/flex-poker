@@ -1,5 +1,7 @@
 package com.flexpoker.table.command.aggregate
 
+import com.flexpoker.table.command.aggregate.eventproducers.checkHandIsBeingPlayed
+import com.flexpoker.table.command.aggregate.eventproducers.numberOfPlayersAtTable
 import com.flexpoker.table.command.aggregate.testhelpers.createBasicTable
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertThrows

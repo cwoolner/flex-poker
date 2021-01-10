@@ -1,4 +1,4 @@
-package com.flexpoker.table.command.aggregate.eventproducers
+package com.flexpoker.table.command.aggregate.eventproducers.hand
 
 import com.flexpoker.table.command.HandDealerState
 import com.flexpoker.table.command.aggregate.HandState
@@ -8,11 +8,12 @@ import com.flexpoker.table.command.events.TableEvent
 import com.flexpoker.table.command.events.WinnersDeterminedEvent
 
 fun determineWinnersIfAppropriate(state: HandState): List<TableEvent> {
-    if (state.handDealerState === HandDealerState.COMPLETE) {
+    return if (state.handDealerState === HandDealerState.COMPLETE) {
         val playersRequiredToShowCards = fetchPlayersRequiredToShowCards(state.pots, state.playersStillInHand)
         val playersToChipsWonMap = fetchChipsWon(state.pots, state.playersStillInHand)
-        return listOf(WinnersDeterminedEvent(state.tableId, state.gameId, state.entityId,
+        listOf(WinnersDeterminedEvent(state.tableId, state.gameId, state.entityId,
             playersRequiredToShowCards, playersToChipsWonMap))
+    } else {
+        emptyList()
     }
-    return emptyList()
 }

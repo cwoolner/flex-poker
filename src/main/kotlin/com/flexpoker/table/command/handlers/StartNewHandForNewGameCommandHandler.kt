@@ -5,7 +5,7 @@ import com.flexpoker.framework.event.EventPublisher
 import com.flexpoker.table.command.aggregate.DefaultRandomNumberGenerator
 import com.flexpoker.table.command.aggregate.applyEvents
 import com.flexpoker.table.command.aggregate.eventproducers.startNewHandForNewGame
-import com.flexpoker.table.command.aggregate.numberOfPlayersAtTable
+import com.flexpoker.table.command.aggregate.eventproducers.numberOfPlayersAtTable
 import com.flexpoker.table.command.commands.StartNewHandForNewGameCommand
 import com.flexpoker.table.command.events.TableEvent
 import com.flexpoker.table.command.repository.TableEventRepository

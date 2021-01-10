@@ -1,11 +1,13 @@
-package com.flexpoker.table.command.aggregate
+package com.flexpoker.table.command.aggregate.eventproducers
 
-import com.flexpoker.table.command.aggregate.eventproducers.autoMoveHandForward
-import com.flexpoker.table.command.aggregate.eventproducers.changeActionOn
-import com.flexpoker.table.command.aggregate.eventproducers.dealCommonCardsIfAppropriate
-import com.flexpoker.table.command.aggregate.eventproducers.determineWinnersIfAppropriate
-import com.flexpoker.table.command.aggregate.eventproducers.finishHandIfAppropriate
-import com.flexpoker.table.command.aggregate.eventproducers.handlePotAndRoundCompleted
+import com.flexpoker.table.command.aggregate.TableState
+import com.flexpoker.table.command.aggregate.applyEvents
+import com.flexpoker.table.command.aggregate.eventproducers.hand.autoMoveHandForward
+import com.flexpoker.table.command.aggregate.eventproducers.hand.changeActionOn
+import com.flexpoker.table.command.aggregate.eventproducers.hand.dealCommonCardsIfAppropriate
+import com.flexpoker.table.command.aggregate.eventproducers.hand.determineWinnersIfAppropriate
+import com.flexpoker.table.command.aggregate.eventproducers.hand.finishHandIfAppropriate
+import com.flexpoker.table.command.aggregate.eventproducers.hand.handlePotAndRoundCompleted
 import com.flexpoker.table.command.events.PlayerBustedTableEvent
 import com.flexpoker.table.command.events.TableEvent
 
