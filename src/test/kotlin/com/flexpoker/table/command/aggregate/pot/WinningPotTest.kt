@@ -97,7 +97,7 @@ class WinningPotTest {
         handEvaluation3.playerId = player3
         handEvaluation3.handRanking = HandRanking.STRAIGHT
         handEvaluation3.primaryCardRank = CardRank.KING
-        val potId = UUID.fromString("8eb094f7-459f-4dba-b0d1-1ef3d48161af")
+        val potId = UUID.fromString("8eb094f7-459f-4dba-b0d1-1ef3d48161ae")
         var pots = addNewPot(HashTreePSet.empty(), listOf(handEvaluation1, handEvaluation2, handEvaluation3),
             potId, setOf(player1, player2, player3))
         pots = addToPot(pots, potId, 61)

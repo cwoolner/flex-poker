@@ -100,7 +100,7 @@ private fun recalculateWinners(pot: PotState): PMap<UUID, Int> {
     val bonusChips = pot.amount % numberOfWinners
     winners.forEach { chipsForPlayerToWin[it] = baseNumberOfChips }
     if (bonusChips >= 1) {
-        val randomNumber = DefaultRandomNumberGenerator().int(pot.id, winners.size)
+        val randomNumber = DefaultRandomNumberGenerator().pseudoRandomIntBasedOnUUID(pot.id, winners.size)
         chipsForPlayerToWin.compute(winners[randomNumber]) { _: UUID, chips: Int? -> chips!! + bonusChips }
     }
     return chipsForPlayerToWin.toPMap()
