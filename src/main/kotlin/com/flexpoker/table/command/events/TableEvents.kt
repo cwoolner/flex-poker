@@ -46,7 +46,7 @@ import java.util.UUID
     JsonSubTypes.Type(value = TurnCardDealtEvent::class, name = "TurnCardDealt"),
     JsonSubTypes.Type(value = WinnersDeterminedEvent::class, name = "WinnersDetermined")
 )
-interface TableEvent : Event
+sealed interface TableEvent : Event
 
 sealed class BaseTableEvent(override val aggregateId: UUID) : TableEvent {
     override var version = 0

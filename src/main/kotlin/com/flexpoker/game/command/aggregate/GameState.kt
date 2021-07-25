@@ -77,7 +77,6 @@ fun applyEvent(state: GameState?, event: GameEvent): GameState {
             val playerIds = state.tableIdToPlayerIdsMap[tableId]!!.minus(event.playerId)
             state.copy(tableIdToPlayerIdsMap = state.tableIdToPlayerIdsMap.plus(tableId, playerIds))
         }
-        else -> throw IllegalArgumentException("invalid event to apply $event")
     }
 
 }

@@ -162,7 +162,6 @@ fun applyEvent(state: TableState?, event: TableEvent): TableState {
                 chipsInBack = state.chipsInBack.minus(event.playerId)
             )
         }
-        else -> throw IllegalArgumentException("invalid event to apply $event")
     }
 }
 

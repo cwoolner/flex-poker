@@ -26,7 +26,7 @@ import java.util.UUID
     JsonSubTypes.Type(value = TableRemovedEvent::class, name = "TableRemoved"),
     JsonSubTypes.Type(value = TableResumedAfterBalancingEvent::class, name = "TableResumedAfterBalancing")
 )
-interface GameEvent : Event
+sealed interface GameEvent : Event
 
 sealed class BaseGameEvent(override val aggregateId: UUID) : GameEvent {
     override var version = 0
