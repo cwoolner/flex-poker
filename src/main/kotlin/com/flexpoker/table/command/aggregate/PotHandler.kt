@@ -8,8 +8,6 @@ import com.flexpoker.util.toPMap
 import com.flexpoker.util.toPSet
 import org.pcollections.PMap
 import org.pcollections.PSet
-import java.util.HashMap
-import java.util.HashSet
 import java.util.UUID
 import java.util.function.Consumer
 
@@ -94,6 +92,7 @@ private fun recalculateWinners(pot: PotState): PMap<UUID, Int> {
             acc
         })
         .map { it.playerId!! }
+        .sorted()
 
     val numberOfWinners = winners.size
     val baseNumberOfChips = pot.amount / numberOfWinners

@@ -13,7 +13,6 @@ import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.pcollections.HashTreePSet
-import java.util.ArrayList
 import java.util.UUID
 
 class WinningPotTest {
@@ -82,9 +81,9 @@ class WinningPotTest {
 
     @Test
     fun testThreePersonPotHasTwoWinnersWithBonus() {
-        val player1 = UUID.randomUUID()
-        val player2 = UUID.randomUUID()
-        val player3 = UUID.randomUUID()
+        val player1 = UUID.fromString("a97f5601-422a-4232-8853-8a8c64b14fa1")
+        val player2 = UUID.fromString("a97f5601-422a-4232-8853-8a8c64b14fa2")
+        val player3 = UUID.fromString("a97f5601-422a-4232-8853-8a8c64b14fa3")
         val handEvaluation1 = HandEvaluation()
         handEvaluation1.playerId = player1
         handEvaluation1.handRanking = HandRanking.STRAIGHT
