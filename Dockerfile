@@ -1,4 +1,4 @@
-FROM openjdk:17.0.1-jdk-slim-buster
+FROM openjdk:17.0.2-jdk-slim-buster
 
 RUN apt update
 RUN apt install curl xz-utils -y
@@ -23,7 +23,7 @@ RUN npm install
 RUN mvn package
 
 
-FROM openjdk:17.0.1-jdk-slim-buster
+FROM openjdk:17.0.2-jdk-slim-buster
 
 COPY --from=0 /flex-poker/target/flexpoker.war .
 
