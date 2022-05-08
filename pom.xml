@@ -23,6 +23,7 @@
     <kotlin.version>1.7.10</kotlin.version>
     <kotlin.compiler.incremental>true</kotlin.compiler.incremental>
     <pcollections.version>3.2.0</pcollections.version>
+    <archunit.version>1.0.1</archunit.version>
   </properties>
 
   <build>
@@ -217,6 +218,12 @@
     <dependency>
       <groupId>org.junit.platform</groupId>
       <artifactId>junit-platform-launcher</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.tngtech.archunit</groupId>
+      <artifactId>archunit-junit5</artifactId>
+      <version>${archunit.version}</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
