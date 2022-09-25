@@ -17,6 +17,7 @@ const ACTION_ON_TICK_RECEIVED = 'ACTION_ON_TICK_RECEIVED'
 const POCKET_CARDS_RECEIVED = 'POCKET_CARDS_RECEIVED'
 const REDIRECT_TO_GAME = 'REDIRECT_TO_GAME'
 const REDIRECT_TO_TABLE = 'REDIRECT_TO_TABLE'
+const CLEAR_REDIRECT = 'CLEAR_REDIRECT'
 
 export const initOpenGameTabs = openGameTabs => ({ type: INIT_OPEN_GAME_TABS, openGameTabs })
 export const updateOpenGameTabs = openGameTabs => ({ type: UPDATE_OPEN_GAME_TABS, openGameTabs })
@@ -35,6 +36,7 @@ export const actionOnTickReceived = (gameId, tableId, actionOnTick) => ({ type: 
 export const pocketCardsReceived = (handId, pocketCards) => ({ type: POCKET_CARDS_RECEIVED, handId, pocketCards })
 export const redirectToGame = gameId => ({ type: REDIRECT_TO_GAME, gameId })
 export const redirectToTable = (gameId, tableId) => ({ type: REDIRECT_TO_TABLE, gameId, tableId })
+export const clearRedirect = () => ({ type: CLEAR_REDIRECT })
 
 export default (state = {
   openGameTabs: [],
@@ -111,6 +113,8 @@ export default (state = {
       return { ...state, redirectUrl: `/game/${action.gameId}` }
     case REDIRECT_TO_TABLE:
       return { ...state, redirectUrl: `/game/${action.gameId}/table/${action.tableId}` }
+    case CLEAR_REDIRECT:
+      return { ...state, redirectUrl: null }
     default:
       return state
   }

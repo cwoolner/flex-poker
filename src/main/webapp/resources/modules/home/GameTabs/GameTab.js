@@ -1,12 +1,12 @@
 import React from 'react'
 import NavDropdown from 'react-bootstrap/NavDropdown'
 import Dropdown from 'react-bootstrap/Dropdown'
-import { IndexLinkContainer } from 'react-router-bootstrap'
+import { LinkContainer } from 'react-router-bootstrap'
 
 const DropdownLink = ({ link, text }) =>
-  <IndexLinkContainer to={link}>
+  <LinkContainer to={link}>
     <Dropdown.Item>{text}</Dropdown.Item>
-  </IndexLinkContainer>
+  </LinkContainer>
 
 const MyTableItem = ({ openGameTab }) =>
   openGameTab.myTableId
