@@ -1,5 +1,5 @@
 import React from 'react'
-import { render } from 'react-dom'
+import { createRoot } from 'react-dom/client'
 import { createStore } from 'redux'
 import { Provider } from 'react-redux'
 import reducer from './reducers'
@@ -14,8 +14,11 @@ staticSubscriptions(store.dispatch)
 store.subscribe(chatMessageSubscriber(store.dispatch)(store))
 store.subscribe(tableStateSubscriber(store.dispatch)(store))
 
-render((
+const container = document.getElementById('app')
+const root = createRoot(container)
+
+root.render((
   <Provider store={store}>
     <App />
   </Provider>
-), document.getElementById('app'))
+))
