@@ -9,9 +9,9 @@ RUN mkdir -p /usr/share/maven /usr/share/maven/ref \
   && rm -f /tmp/apache-maven.tar.gz \
   && ln -s /usr/share/maven/bin/mvn /usr/bin/mvn
 
-RUN curl https://nodejs.org/dist/v12.14.1/node-v12.14.1-linux-x64.tar.xz > node-v12.14.1-linux-x64.tar.xz
-RUN tar xvf node-v12.14.1-linux-x64.tar.xz -C /
-ENV PATH="${PATH}:/node-v12.14.1-linux-x64/bin"
+RUN curl https://nodejs.org/dist/v18.12.1/node-v18.12.1-linux-x64.tar.xz > node-v18.12.1-linux-x64.tar.xz
+RUN tar xvf node-v18.12.1-linux-x64.tar.xz -C /
+ENV PATH="${PATH}:/node-v18.12.1-linux-x64/bin"
 
 RUN mkdir flex-poker
 
