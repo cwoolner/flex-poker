@@ -13,7 +13,7 @@ export default () => {
     method: 'POST',
     headers: myHeaders,
     cache: 'no-cache',
-    redirect: 'manual',
+    redirect: 'follow',
     credentials: 'same-origin'
   }
 

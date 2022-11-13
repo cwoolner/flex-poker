@@ -6,7 +6,6 @@ import GameTabs from './GameTabs'
 import Lobby from '../lobby/Lobby'
 import GamePage from '../game/GamePage'
 import TablePage from '../table/TablePage'
-import Logout from './Logout'
 import Chat from './Chat'
 import InterceptorRedirect from './InterceptRedirect'
 
@@ -23,7 +22,6 @@ export default () => {
           <Route exact path="/" element={wrapRedirect(<Lobby />)} />
           <Route exact path="/game/:gameId" element={wrapRedirect(<GamePage />)} />
           <Route exact path="/game/:gameId/table/:tableId" element={wrapRedirect(<TablePage />)} />
-          <Route exact path="/logout" element={wrapRedirect(<Logout />)} />
         </Routes>
         <Chat />
       </div>
