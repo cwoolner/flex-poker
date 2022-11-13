@@ -1,11 +1,11 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="en">
 <head>
 <jsp:include page="common-header-tags.jsp"></jsp:include>
 <title>Sign Up</title>
 </head>
-<body>
+<body class="text-center">
 <jsp:include page="generic-header.jsp"></jsp:include>
 
 <div class="container">
