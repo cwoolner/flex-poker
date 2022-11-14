@@ -8,21 +8,31 @@
 <body class="text-center">
 <jsp:include page="generic-header.jsp"></jsp:include>
 
-<div class="container">
-  <form class="standard-form" action="<c:url value='sign-up' />" method='POST'>
-    <h4>Sign Up</h4>
+<main class="container">
+  <form class="standard-form" action="<c:url value='sign-up' />" method="POST">
+    <h1 class="h3 mb-3 fw-normal">Sign Up</h1>
+
     <c:if test="${error != null}">
       <p class=" error-message">${error}</p>
     </c:if>
-    <input type="text" name="username" class="form-control" placeholder="Username" required autofocus />
-    <input type="password" name="password" class="form-control" placeholder="Password" required />
-    <input type="email" name="emailAddress" class="form-control" placeholder="Email" required />
-    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
-    <div class="row-top-buffer">
-      <input name="submit" type="submit" class="btn btn-lg btn-primary btn-block" value="Sign Up" />
+
+    <div class="form-floating">
+      <input type="text" name="username" id="floatingUsername" class="form-control" placeholder="Username" required autofocus />
+      <label for="floatingUsername">Username</label>
     </div>
+    <div class="form-floating">
+      <input type="password" name="password" id="floatingPassword" class="form-control" placeholder="Password" required />
+      <label for="floatingPassword">Password</label>
+    </div>
+    <div class="form-floating mb-3">
+      <input type="email" name="emailAddress" id="floatingEmail" class="form-control" placeholder="Email" required />
+      <label for="floatingEmail">Email</label>
+    </div>
+
+    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+    <button type="submit" class="w-100 btn btn-lg btn-primary">Sign Up</button>
   </form>
-</div>
+</main>
 <jsp:include page="footer.jsp"></jsp:include>
 </body>
 </html>

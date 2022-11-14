@@ -8,23 +8,29 @@
 <body class="text-center">
 <jsp:include page="generic-header.jsp"></jsp:include>
 
-<div class="container">
-  <form class="standard-form" action="/login" method="POST">
-    <h4>Log in to Flex Poker</h4>
+<main class="container">
+  <form class="standard-form" action="<c:url value='login' />" method="POST">
+    <h1 class="h3 mb-3 fw-normal">Log in to Flex Poker</h1>
 
     <c:if test="${param.error != null}">
       <p class="alert alert-danger">Invalid username and password.</p>
     </c:if>
 
-    <input type="text" name="username" class="form-control" placeholder="Username" required autofocus />
-    <input type="password" name="password" class="form-control" placeholder="Password" required />
+    <div class="form-floating">
+      <input type="text" name="username" id="flaotingUsername" class="form-control" placeholder="Username" required autofocus />
+      <label for="floatingUsername">Username</label>
+    </div>
+    <div class="form-floating mb-3">
+      <input type="password" name="password" id="floatingPassword" class="form-control" placeholder="Password" required />
+      <label for="floatingPassword">Password</label>
+    </div>
 
-    <div style="margin-top: 10px;">
+    <div class="checkbox mb-3">
       <label><input type="checkbox" value="remember-me" style="margin-right: 6px;">Remember me</label>
     </div>
 
     <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
-    <input type="submit" class="btn btn-lg btn-primary btn-block" value="Log In" />
+    <button type="submit" class="w-100 btn btn-lg btn-primary">Log In</button>
   </form>
 
   <div class="row row-top-buffer">
@@ -33,7 +39,7 @@
     </div>
   </div>
 
-</div>
+</main>
 <jsp:include page="footer.jsp"></jsp:include>
 </body>
 </html>

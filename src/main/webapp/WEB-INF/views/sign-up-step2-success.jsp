@@ -8,12 +8,11 @@
 <body class="text-center">
 <jsp:include page="generic-header.jsp"></jsp:include>
 
-<div class="container">
-  <h4 class="text-center">Confirmed!</h4>
-
+<main class="container">
+  <h1 class="h3 mb-3 fw-normal">Confirmed!</h1>
   <c:url value="/login" var="loginUrl" />
-  <p class="text-center"><a href="${loginUrl}">Go to Login</a></p>
-</div>
+  <p><a href="${loginUrl}">Go to Login</a></p>
+</main>
 <jsp:include page="footer.jsp"></jsp:include>
 </body>
 </html>

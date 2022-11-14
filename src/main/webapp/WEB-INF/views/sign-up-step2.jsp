@@ -8,20 +8,25 @@
 <body class="text-center">
 <jsp:include page="generic-header.jsp"></jsp:include>
 
-<div class="container">
-  <form class="standard-form" action="<c:url value='sign-up-confirm' />" method='POST'>
-    <h4>Sign Up</h4>
+<main class="container">
+  <form class="standard-form" action="<c:url value='sign-up-confirm' />" method="POST">
+    <h1 class="h3 mb-3 fw-normal">Sign Up</h1>
+
     <c:if test="${error != null}">
       <p class=" error-message">${error}</p>
     </c:if>
-    <input type="text" name="username" class="form-control" placeholder="Username" required autofocus />
+
+    <div class="form-floating mb-3">
+      <input type="text" name="username" id="floatingUsername" class="form-control" placeholder="Username" required autofocus />
+      <label for="floatingUsername">Username</label>
+    </div>
+
     <input type="hidden" name="signUpCode" value="${signUpCode}" />
     <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
-    <div class="row-top-buffer">
-      <input name="submit" type="submit" class="btn btn-lg btn-primary btn-block" value="Confirm Sign Up" />
-    </div>
+
+    <button name="submit" type="submit" class="w-100 btn btn-lg btn-primary">Confirm Sign Up</button>
   </form>
-</div>
+</main>
 <jsp:include page="footer.jsp"></jsp:include>
 </body>
 </html>

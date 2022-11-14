@@ -8,14 +8,14 @@
 <body class="text-center">
 <jsp:include page="generic-header.jsp"></jsp:include>
 
-<div class="container">
-  <h4 class="text-center">Confirm your sign up</h4>
+<main class="container">
+  <h1 class="h3 mb-3 fw-normal">Confirm your sign up</h1>
 
-  <p class="text-center">Email sent to <c:out value="${email}" /> (TODO: not working yet)</p>
+  <p>Email sent to <c:out value="${email}" /> (TODO: not working yet)</p>
 
   <c:url value="/sign-up-confirm?username=${username}" var="signUpConfirmUrl" />
-  <p class="text-center"><a href="${signUpConfirmUrl}">Click here to confirm</a></p>
-</div>
+  <p><a href="${signUpConfirmUrl}">Click here to confirm</a></p>
+</main>
 <jsp:include page="footer.jsp"></jsp:include>
 </body>
 </html>
