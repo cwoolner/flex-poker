@@ -1,6 +1,6 @@
 package com.flexpoker.game.command.aggregate
 
-import com.flexpoker.game.query.dto.GameStage
+import com.flexpoker.game.command.GameStage
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test

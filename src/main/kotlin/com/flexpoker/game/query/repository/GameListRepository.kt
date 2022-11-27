@@ -1,7 +1,7 @@
 package com.flexpoker.game.query.repository
 
 import com.flexpoker.game.query.dto.GameInListDTO
-import com.flexpoker.game.query.dto.GameStage
+import com.flexpoker.game.command.GameStage
 import java.util.UUID
 
 interface GameListRepository {

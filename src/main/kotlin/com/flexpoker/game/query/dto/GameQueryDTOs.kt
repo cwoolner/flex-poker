@@ -1,5 +1,6 @@
 package com.flexpoker.game.query.dto
 
+import com.flexpoker.game.command.GameStage
 import java.util.UUID
 
 data class GameInListDTO (val id: UUID, val name: String, val stage: String,

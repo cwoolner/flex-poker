@@ -4,7 +4,7 @@ import com.flexpoker.chat.service.ChatService
 import com.flexpoker.framework.event.EventHandler
 import com.flexpoker.framework.pushnotifier.PushNotificationPublisher
 import com.flexpoker.game.command.events.GameMovedToStartingStageEvent
-import com.flexpoker.game.query.dto.GameStage
+import com.flexpoker.game.command.GameStage
 import com.flexpoker.game.query.repository.GameListRepository
 import com.flexpoker.game.query.repository.GamePlayerRepository
 import com.flexpoker.game.query.repository.OpenGameForPlayerRepository

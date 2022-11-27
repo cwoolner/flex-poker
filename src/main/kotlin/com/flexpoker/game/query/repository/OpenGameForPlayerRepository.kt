@@ -1,6 +1,6 @@
 package com.flexpoker.game.query.repository
 
-import com.flexpoker.game.query.dto.GameStage
+import com.flexpoker.game.command.GameStage
 import com.flexpoker.game.query.dto.OpenGameForUser
 import java.util.UUID
 

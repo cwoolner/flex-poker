@@ -7,7 +7,7 @@ import com.flexpoker.game.command.events.GameJoinedEvent
 import com.flexpoker.game.command.events.GameMovedToStartingStageEvent
 import com.flexpoker.game.command.events.GameStartedEvent
 import com.flexpoker.game.command.events.GameTablesCreatedAndPlayersAssociatedEvent
-import com.flexpoker.game.query.dto.GameStage
+import com.flexpoker.game.command.GameStage
 import com.flexpoker.util.toPMap
 import org.pcollections.HashTreePSet
 import org.pcollections.PMap

@@ -8,7 +8,7 @@ import com.flexpoker.game.command.aggregate.currentBlindAmounts
 import com.flexpoker.game.command.events.GameEvent
 import com.flexpoker.game.command.events.NewHandIsClearedToStartEvent
 import com.flexpoker.game.command.events.PlayerBustedGameEvent
-import com.flexpoker.game.query.dto.GameStage
+import com.flexpoker.game.command.GameStage
 import java.util.Optional
 import java.util.UUID
 

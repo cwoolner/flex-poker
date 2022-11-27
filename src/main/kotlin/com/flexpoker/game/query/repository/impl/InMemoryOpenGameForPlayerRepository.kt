@@ -1,7 +1,7 @@
 package com.flexpoker.game.query.repository.impl
 
 import com.flexpoker.config.ProfileNames
-import com.flexpoker.game.query.dto.GameStage
+import com.flexpoker.game.command.GameStage
 import com.flexpoker.game.query.dto.OpenGameForUser
 import com.flexpoker.game.query.repository.OpenGameForPlayerRepository
 import org.springframework.context.annotation.Profile

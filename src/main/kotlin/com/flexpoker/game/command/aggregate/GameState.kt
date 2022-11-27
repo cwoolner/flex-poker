@@ -1,5 +1,6 @@
 package com.flexpoker.game.command.aggregate
 
+import com.flexpoker.game.command.GameStage
 import com.flexpoker.game.command.events.BlindsIncreasedEvent
 import com.flexpoker.game.command.events.GameCreatedEvent
 import com.flexpoker.game.command.events.GameEvent
@@ -15,7 +16,6 @@ import com.flexpoker.game.command.events.TablePausedForBalancingEvent
 import com.flexpoker.game.command.events.TableRemovedEvent
 import com.flexpoker.game.command.events.TableResumedAfterBalancingEvent
 import com.flexpoker.game.command.events.dto.BlindScheduleDTO
-import com.flexpoker.game.query.dto.GameStage
 import org.pcollections.HashTreePMap
 import org.pcollections.HashTreePSet
 import org.pcollections.PMap

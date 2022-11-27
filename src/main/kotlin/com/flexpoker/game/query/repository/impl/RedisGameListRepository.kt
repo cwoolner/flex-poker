@@ -2,7 +2,7 @@ package com.flexpoker.game.query.repository.impl
 
 import com.flexpoker.config.ProfileNames
 import com.flexpoker.game.query.dto.GameInListDTO
-import com.flexpoker.game.query.dto.GameStage
+import com.flexpoker.game.command.GameStage
 import com.flexpoker.game.query.repository.GameListRepository
 import org.springframework.context.annotation.Profile
 import org.springframework.data.redis.core.RedisTemplate
