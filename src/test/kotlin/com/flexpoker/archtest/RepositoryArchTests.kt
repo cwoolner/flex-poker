@@ -1,8 +1,7 @@
 package com.flexpoker.archtest
 
+import com.flexpoker.archtest.Utils.classesUnderTest
 import com.tngtech.archunit.core.domain.JavaClass
-import com.tngtech.archunit.core.importer.ClassFileImporter
-import com.tngtech.archunit.core.importer.ImportOption
 import com.tngtech.archunit.lang.syntax.ArchRuleDefinition.classes
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
@@ -10,17 +9,13 @@ import org.springframework.stereotype.Repository
 
 class RepositoryArchTests {
 
-    private val cut = ClassFileImporter()
-        .withImportOption(ImportOption.DoNotIncludeTests())
-        .importPackages("com.flexpoker")
-
     @Test
     fun testAnnotations() {
         val classesHaveRepositoryAnnotation = classes().that()
             .areNotInterfaces().and()
             .haveNameMatching(".*Repository")
             .should().beAnnotatedWith(Repository::class.java)
-        classesHaveRepositoryAnnotation.check(cut)
+        classesHaveRepositoryAnnotation.check(classesUnderTest)
     }
 
     @Test
@@ -29,12 +24,12 @@ class RepositoryArchTests {
             .areNotInterfaces().and()
             .haveNameMatching(".*Redis.*Repository")
             .should().dependOnClassesThat().haveSimpleName("RedisTemplate")
-        redisReposDependOnRedisTemplate.check(cut)
+        redisReposDependOnRedisTemplate.check(classesUnderTest)
     }
 
     @Test
     fun testRedisRepositoriesUseCorrectProfileAnnotation() {
-        val redisRepos = cut
+        val redisRepos = classesUnderTest
             .filter { !it.isInterface }
             .filter { it.isTopLevelClass }
             .filter { it.name.contains(".*Redis.*Repository".toRegex()) }
@@ -50,7 +45,7 @@ class RepositoryArchTests {
 
     @Test
     fun testInMemoryRepositoriesUseCorrectProfileAnnotation() {
-        val inMemoryRepos = cut
+        val inMemoryRepos = classesUnderTest
             .filter { !it.isInterface }
             .filter { it.isTopLevelClass }
             .filter { it.name.contains(".*InMemory.*Repository".toRegex()) }

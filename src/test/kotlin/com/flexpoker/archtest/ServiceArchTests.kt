@@ -1,16 +1,11 @@
 package com.flexpoker.archtest
 
-import com.tngtech.archunit.core.importer.ClassFileImporter
-import com.tngtech.archunit.core.importer.ImportOption
+import com.flexpoker.archtest.Utils.classesUnderTest
 import com.tngtech.archunit.lang.syntax.ArchRuleDefinition.classes
 import org.junit.jupiter.api.Test
 import org.springframework.stereotype.Service
 
 class ServiceArchTests {
-
-    private val cut = ClassFileImporter()
-        .withImportOption(ImportOption.DoNotIncludeTests())
-        .importPackages("com.flexpoker")
 
     @Test
     fun testAnnotations() {
@@ -18,14 +13,14 @@ class ServiceArchTests {
             .areNotInterfaces().and()
             .haveNameMatching(".*Service")
             .should().beAnnotatedWith(Service::class.java)
-        classesHaveServiceAnnotation.check(cut)
+        classesHaveServiceAnnotation.check(classesUnderTest)
     }
 
     @Test
     fun testDependencies() {
         val dependencyRule = classes().that().resideInAPackage("..command.service..")
             .should().onlyBeAccessed().byAnyPackage("..command.service..", "..command.handlers..")
-        dependencyRule.check(cut)
+        dependencyRule.check(classesUnderTest)
     }
 
 }
