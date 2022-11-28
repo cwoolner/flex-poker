@@ -1,13 +1,17 @@
 package com.flexpoker.archtest
 
+import com.flexpoker.archtest.Utils.checkAnnotationContainsValue
 import com.flexpoker.archtest.Utils.classesUnderTest
-import com.tngtech.archunit.core.domain.JavaClass
+import com.flexpoker.archtest.Utils.nonInterfaceTopLevelClasses
 import com.tngtech.archunit.lang.syntax.ArchRuleDefinition.classes
-import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.springframework.stereotype.Repository
 
 class RepositoryArchTests {
+
+    private val redisRepositoryClasses = nonInterfaceTopLevelClasses(".*Redis.*Repository")
+
+    private val inMemoryRepositoryClasses = nonInterfaceTopLevelClasses(".*InMemory.*Repository")
 
     @Test
     fun testAnnotations() {
@@ -20,43 +24,23 @@ class RepositoryArchTests {
 
     @Test
     fun testRedisRepositoriesDependOnRedisTemplate() {
-        val redisReposDependOnRedisTemplate = classes().that()
-            .areNotInterfaces().and()
-            .haveNameMatching(".*Redis.*Repository")
+        val redisReposDependOnRedisTemplate = classes().that(redisRepositoryClasses)
             .should().dependOnClassesThat().haveSimpleName("RedisTemplate")
         redisReposDependOnRedisTemplate.check(classesUnderTest)
     }
 
     @Test
     fun testRedisRepositoriesUseCorrectProfileAnnotation() {
-        val redisRepos = classesUnderTest
-            .filter { !it.isInterface }
-            .filter { it.isTopLevelClass }
-            .filter { it.name.contains(".*Redis.*Repository".toRegex()) }
-        assertTrue(redisRepos.isNotEmpty())
-
-        redisRepos.forEach {
-            val profileAnnotationValues = it.annotations
-                .first { a -> (a.type as JavaClass).simpleName == "Profile" }
-                .get("value").get() as Array<String>
-            assertTrue(profileAnnotationValues.contains("redis"))
-        }
+        val redisAnnotationRule = classes().that(redisRepositoryClasses)
+            .should(checkAnnotationContainsValue("Profile", "redis"))
+        redisAnnotationRule.check(classesUnderTest)
     }
 
     @Test
     fun testInMemoryRepositoriesUseCorrectProfileAnnotation() {
-        val inMemoryRepos = classesUnderTest
-            .filter { !it.isInterface }
-            .filter { it.isTopLevelClass }
-            .filter { it.name.contains(".*InMemory.*Repository".toRegex()) }
-        assertTrue(inMemoryRepos.isNotEmpty())
-
-        inMemoryRepos.forEach {
-            val profileAnnotationValues = it.annotations
-                .first { a -> (a.type as JavaClass).simpleName == "Profile" }
-                .get("value").get() as Array<String>
-            assertTrue(profileAnnotationValues.contains("default"))
-        }
+        val inMemoryAnnotationRule = classes().that(inMemoryRepositoryClasses)
+            .should(checkAnnotationContainsValue("Profile", "default"))
+        inMemoryAnnotationRule.check(classesUnderTest)
     }
 
 }
