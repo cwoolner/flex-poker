@@ -41,14 +41,9 @@ Flex Poker is a poker-playing (Texas hold 'em) web app.  It was originally writt
 * Spring Data Redis
 * Spring Security
 
-# Dev environment setup
-
-* Just been using Eclipse, so to generate the .classpath file, from the top-level directory: `mvn eclipse:eclipse`
-* While developing, running `npm start` launches webpack in watch mode
-
 # Testing
 
-The basic unit tests run as part of a normal Maven lifecycle.  No external systems are hit.
+The basic unit tests and arch tests run as part of a normal Maven lifecycle.  No external systems are hit.
 
 Been recently playing around with mutation testing.  The PIT plugin has been included.  To run (after building): `mvn org.pitest:pitest-maven:mutationCoverage`
 
