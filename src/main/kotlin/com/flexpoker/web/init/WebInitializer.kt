@@ -3,9 +3,9 @@ package com.flexpoker.web.init
 import com.flexpoker.config.ForceHttpsFilter
 import com.flexpoker.config.WebConfig
 import com.flexpoker.config.WebSocketConfig
+import jakarta.servlet.ServletContext
+import jakarta.servlet.ServletRegistration
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer
-import javax.servlet.ServletContext
-import javax.servlet.ServletRegistration
 
 class WebInitializer : AbstractAnnotationConfigDispatcherServletInitializer() {
 

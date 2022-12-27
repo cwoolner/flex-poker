@@ -2,6 +2,7 @@ package com.flexpoker.login.repository
 
 import com.flexpoker.config.ProfileNames
 import com.flexpoker.util.PasswordUtils
+import jakarta.annotation.PostConstruct
 import org.springframework.context.annotation.Profile
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.User
@@ -10,7 +11,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.stereotype.Repository
 import java.util.Optional
 import java.util.UUID
-import javax.annotation.PostConstruct
 
 @Profile(ProfileNames.DEFAULT, ProfileNames.LOGIN_INMEMORY)
 @Repository

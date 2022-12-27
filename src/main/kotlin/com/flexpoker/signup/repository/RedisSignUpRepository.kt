@@ -3,6 +3,7 @@ package com.flexpoker.signup.repository
 import com.flexpoker.config.ProfileNames
 import com.flexpoker.exception.FlexPokerException
 import com.flexpoker.signup.SignUpUser
+import jakarta.annotation.PostConstruct
 import org.springframework.context.annotation.Profile
 import org.springframework.data.redis.core.RedisCallback
 import org.springframework.data.redis.core.RedisOperations
@@ -13,7 +14,6 @@ import org.springframework.stereotype.Repository
 import java.io.IOException
 import java.util.UUID
 import java.util.concurrent.TimeUnit
-import javax.annotation.PostConstruct
 import javax.inject.Inject
 
 @Profile(ProfileNames.REDIS, ProfileNames.SIGNUP_REDIS)
