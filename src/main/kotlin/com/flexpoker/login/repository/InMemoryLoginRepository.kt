@@ -8,7 +8,6 @@ import org.springframework.security.core.userdetails.User
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.stereotype.Repository
-import java.util.HashMap
 import java.util.Optional
 import java.util.UUID
 import javax.annotation.PostConstruct

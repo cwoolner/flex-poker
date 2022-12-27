@@ -4,8 +4,6 @@ import com.flexpoker.framework.event.Event
 import com.flexpoker.framework.event.EventHandler
 import org.springframework.context.annotation.Scope
 import org.springframework.stereotype.Component
-import java.util.Comparator
-import java.util.HashMap
 import java.util.UUID
 import java.util.concurrent.PriorityBlockingQueue
 

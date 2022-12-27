@@ -19,7 +19,6 @@ import com.flexpoker.game.command.events.TableRemovedEvent
 import com.flexpoker.game.command.events.TableResumedAfterBalancingEvent
 import org.springframework.scheduling.annotation.Async
 import org.springframework.stereotype.Component
-import java.util.HashMap
 import java.util.Timer
 import java.util.TimerTask
 import javax.inject.Inject

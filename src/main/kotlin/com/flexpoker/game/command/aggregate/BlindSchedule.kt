@@ -2,14 +2,13 @@ package com.flexpoker.game.command.aggregate
 
 import com.flexpoker.game.command.events.dto.BlindAmountsDTO
 import com.flexpoker.game.command.events.dto.BlindScheduleDTO
-import java.util.Map
 
-private val levelToAmountsMap = Map.of(
-    1, validateBlindAmounts(10, 20),
-    2, validateBlindAmounts(20, 40),
-    3, validateBlindAmounts(40, 80),
-    4, validateBlindAmounts(80, 160),
-    5, validateBlindAmounts(160, 320)
+private val levelToAmountsMap = mapOf(
+    1 to validateBlindAmounts(10, 20),
+    2 to validateBlindAmounts(20, 40),
+    3 to validateBlindAmounts(40, 80),
+    4 to validateBlindAmounts(80, 160),
+    5 to validateBlindAmounts(160, 320)
 )
 
 fun blindSchedule(numberOfMinutesBetweenLevels: Int): BlindScheduleDTO {

@@ -32,7 +32,6 @@ import com.flexpoker.table.command.events.TurnCardDealtEvent
 import com.flexpoker.table.command.events.WinnersDeterminedEvent
 import org.springframework.scheduling.annotation.Async
 import org.springframework.stereotype.Component
-import java.util.HashMap
 import javax.inject.Inject
 
 @Component("tableEventSubscriber")

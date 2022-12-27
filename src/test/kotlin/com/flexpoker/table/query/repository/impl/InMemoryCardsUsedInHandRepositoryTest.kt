@@ -10,7 +10,6 @@ import com.flexpoker.table.command.TurnCard
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
-import java.util.HashMap
 import java.util.UUID
 
 class InMemoryCardsUsedInHandRepositoryTest {

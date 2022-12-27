@@ -6,8 +6,6 @@ import com.flexpoker.game.query.dto.OpenGameForUser
 import com.flexpoker.game.query.repository.OpenGameForPlayerRepository
 import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Repository
-import java.util.Comparator
-import java.util.HashMap
 import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
 import java.util.stream.Collectors

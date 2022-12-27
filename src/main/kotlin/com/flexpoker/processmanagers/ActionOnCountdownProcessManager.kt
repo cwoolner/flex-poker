@@ -9,7 +9,6 @@ import com.flexpoker.table.command.commands.TickActionOnTimerCommand
 import com.flexpoker.table.command.events.ActionOnChangedEvent
 import org.springframework.scheduling.annotation.Async
 import org.springframework.stereotype.Component
-import java.util.HashMap
 import java.util.UUID
 import java.util.concurrent.ScheduledFuture
 import java.util.concurrent.ScheduledThreadPoolExecutor

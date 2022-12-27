@@ -7,8 +7,6 @@ import com.flexpoker.game.command.events.GameFinishedEvent
 import com.flexpoker.game.command.events.GameJoinedEvent
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
-import java.util.ArrayList
-import java.util.HashMap
 import java.util.UUID
 
 class InMemoryThreadSafeEventSubscriberHelperTest {

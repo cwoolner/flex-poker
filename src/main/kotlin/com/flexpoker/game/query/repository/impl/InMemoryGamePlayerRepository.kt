@@ -4,8 +4,6 @@ import com.flexpoker.config.ProfileNames
 import com.flexpoker.game.query.repository.GamePlayerRepository
 import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Repository
-import java.util.HashMap
-import java.util.HashSet
 import java.util.UUID
 
 @Profile(ProfileNames.DEFAULT, ProfileNames.GAME_QUERY_INMEMORY)

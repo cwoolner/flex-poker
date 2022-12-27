@@ -17,8 +17,6 @@ import com.flexpoker.table.command.events.TableEvent
 import com.flexpoker.test.util.datageneration.CardGenerator.createPocketCards1
 import com.flexpoker.test.util.datageneration.CardGenerator.createPocketCards2
 import com.flexpoker.test.util.datageneration.DeckGenerator.createDeck
-import java.util.ArrayList
-import java.util.HashMap
 import java.util.UUID
 
 fun createBasicTable(tableId: UUID, vararg playerIdsArray: UUID): TableState {

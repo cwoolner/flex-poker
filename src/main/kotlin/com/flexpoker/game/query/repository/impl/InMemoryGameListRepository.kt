@@ -6,7 +6,6 @@ import com.flexpoker.game.command.GameStage
 import com.flexpoker.game.query.repository.GameListRepository
 import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Repository
-import java.util.ArrayList
 import java.util.UUID
 
 @Profile(ProfileNames.DEFAULT, ProfileNames.GAME_QUERY_INMEMORY)

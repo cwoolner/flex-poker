@@ -9,7 +9,6 @@ import com.flexpoker.test.util.CommonAssertions.verifyNewEvents
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
-import java.util.HashSet
 import java.util.UUID
 
 class CreateNewTableTest {

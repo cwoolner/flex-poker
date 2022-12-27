@@ -4,7 +4,6 @@ import com.flexpoker.util.toPMap
 import com.flexpoker.util.toPSet
 import org.pcollections.PMap
 import org.pcollections.PSet
-import java.util.HashMap
 import java.util.UUID
 
 object TableBalancerTestUtils {

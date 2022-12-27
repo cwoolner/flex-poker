@@ -10,7 +10,6 @@ import com.flexpoker.table.command.RiverCard
 import com.flexpoker.table.command.TurnCard
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
-import java.util.ArrayList
 import java.util.UUID
 
 class DefaultHandEvaluatorServiceTest {

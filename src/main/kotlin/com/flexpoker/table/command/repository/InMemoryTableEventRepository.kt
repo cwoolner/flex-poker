@@ -5,8 +5,6 @@ import com.flexpoker.exception.FlexPokerException
 import com.flexpoker.table.command.events.TableEvent
 import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Repository
-import java.util.ArrayList
-import java.util.HashMap
 import java.util.UUID
 
 @Profile(ProfileNames.DEFAULT, ProfileNames.TABLE_COMMAND_INMEMORY)
