@@ -25,10 +25,6 @@
       <label for="floatingPassword">Password</label>
     </div>
 
-    <div class="checkbox mb-3">
-      <label><input type="checkbox" value="remember-me" style="margin-right: 6px;">Remember me</label>
-    </div>
-
     <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
     <button type="submit" class="w-100 btn btn-lg btn-primary">Log In</button>
   </form>

@@ -21,13 +21,12 @@ class SecurityConfig @Inject constructor(private val loginRepository: LoginRepos
 
     @Bean
     fun httpSecurity(http: HttpSecurity): SecurityFilterChain {
-        http.authorizeRequests()
-            .antMatchers("/resources/**").permitAll()
-            .antMatchers("/admin/**").hasRole("ADMIN")
-            .antMatchers("/sign-up**").anonymous()
-            .anyRequest().hasRole("USER")
-            .and().formLogin().loginPage("/login").defaultSuccessUrl("/", true).permitAll()
-            .and().rememberMe()
+        http.authorizeHttpRequests {
+            it.requestMatchers("/").authenticated()
+            it.anyRequest().permitAll()
+        }.formLogin {
+            it.loginPage("/login").permitAll()
+        }
         return http.build()
     }
 
