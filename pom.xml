@@ -20,7 +20,7 @@
     <pitest.maven.version>1.10.3</pitest.maven.version>
     <pitest.junit5.plugin>1.1.0</pitest.junit5.plugin>
     <spring.boot.dependencies.bom.version>2.7.7</spring.boot.dependencies.bom.version>
-    <kotlin.version>1.7.22</kotlin.version>
+    <kotlin.version>1.8.0</kotlin.version>
     <kotlin.compiler.incremental>true</kotlin.compiler.incremental>
     <pcollections.version>4.0.1</pcollections.version>
     <archunit.version>1.0.1</archunit.version>
