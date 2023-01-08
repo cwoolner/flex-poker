@@ -2,36 +2,33 @@ package com.flexpoker.config
 
 import com.flexpoker.login.repository.LoginRepository
 import com.flexpoker.util.PasswordUtils
+import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
-import org.springframework.security.config.annotation.web.builders.WebSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
+import org.springframework.security.crypto.password.PasswordEncoder
+import org.springframework.security.web.SecurityFilterChain
 import javax.inject.Inject
 
 @Configuration
 @EnableWebSecurity
-class SecurityConfig : WebSecurityConfigurerAdapter() {
+class SecurityConfig @Inject constructor(private val loginRepository: LoginRepository) {
 
-    @Inject
-    private val loginRepository: LoginRepository? = null
-
-    override fun configure(auth: AuthenticationManagerBuilder) {
-        auth.userDetailsService(loginRepository).passwordEncoder(PasswordUtils.encoder)
+    @Bean
+    fun passwordEncoder(): PasswordEncoder {
+        return PasswordUtils.encoder
     }
 
-    override fun configure(http: HttpSecurity) {
+    @Bean
+    fun httpSecurity(http: HttpSecurity): SecurityFilterChain {
         http.authorizeRequests()
+            .antMatchers("/resources/**").permitAll()
             .antMatchers("/admin/**").hasRole("ADMIN")
             .antMatchers("/sign-up**").anonymous()
             .anyRequest().hasRole("USER")
             .and().formLogin().loginPage("/login").defaultSuccessUrl("/", true).permitAll()
             .and().rememberMe()
-    }
-
-    override fun configure(web: WebSecurity) {
-        web.ignoring().antMatchers("/resources/**")
+        return http.build()
     }
 
 }
