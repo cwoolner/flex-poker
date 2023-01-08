@@ -27,6 +27,8 @@ class RedisSignUpRepository @Inject constructor(private val redisTemplate: Redis
         private const val EXISTING_USERNAME_KEY = (SIGN_UP_NAMESPACE + "existingusernames")
         private const val SIGN_UP_CODE_NAMESPACE = (SIGN_UP_NAMESPACE + "signupcode:")
         private const val SIGN_UP_USER_NAMESPACE = (SIGN_UP_NAMESPACE + "signupuser:")
+        private val SIGNUP_CODE_SCAN_OPTIONS: ScanOptions = ScanOptions.scanOptions()
+            .match("signup:signupcode*").build()
     }
 
     override fun usernameExists(username: String): Boolean {
@@ -69,10 +71,10 @@ class RedisSignUpRepository @Inject constructor(private val redisTemplate: Redis
     override fun findSignUpCodeByUsername(username: String): UUID {
         val foundSignUpCodeKey = redisTemplate.execute(RedisCallback { connection ->
             try {
-                connection.scan(ScanOptions.scanOptions().match("signup:signupcode*").build()).use { cursor ->
+                connection.keyCommands().scan(SIGNUP_CODE_SCAN_OPTIONS).use { cursor ->
                     while (cursor.hasNext()) {
                         val key = String(cursor.next(), charset("UTF-8"))
-                        val usernameFromRedis = redisTemplate.opsForHash<Any, Any>()[key, "username"] as String
+                        val usernameFromRedis = redisTemplate.opsForHash<String, String>()[key, "username"]
                         if (username == usernameFromRedis) {
                             return@RedisCallback key
                         }
@@ -82,7 +84,7 @@ class RedisSignUpRepository @Inject constructor(private val redisTemplate: Redis
                 throw FlexPokerException("error in Redis")
             }
             throw FlexPokerException("could not find username in Redis")
-        })
+        })!!
         return UUID.fromString(foundSignUpCodeKey.split(":").toTypedArray()[2])
     }
 

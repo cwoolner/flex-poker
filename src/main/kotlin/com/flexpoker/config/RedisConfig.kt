@@ -137,9 +137,7 @@ class RedisConfig {
     }
 
     private fun getJacksonSerializer(clazz: Class<*>): Jackson2JsonRedisSerializer<*> {
-        val valueSerializer = Jackson2JsonRedisSerializer(clazz)
-        valueSerializer.setObjectMapper(defaultObjectMapper())
-        return valueSerializer
+        return Jackson2JsonRedisSerializer(defaultObjectMapper(), clazz)
     }
 
 }
