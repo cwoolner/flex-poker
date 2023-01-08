@@ -29,7 +29,7 @@ class InMemoryAsyncGameEventPublisher @Inject constructor(
 ) : EventPublisher<GameEvent> {
 
     companion object {
-        private val NOOP = EventHandler { x: GameEvent -> }
+        private val NOOP = EventHandler { _: GameEvent -> }
     }
 
     override fun publish(event: GameEvent) {

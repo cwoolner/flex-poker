@@ -32,15 +32,15 @@ class RedisChatRepository @Inject constructor(private val redisTemplate: RedisTe
     }
 
     override fun fetchAllLobbyChatMessages(): List<OutgoingChatMessageDTO> {
-        return redisTemplate.opsForList().range(LOBBY_CHAT_NAMESPACE, 0, Long.MAX_VALUE)
+        return redisTemplate.opsForList().range(LOBBY_CHAT_NAMESPACE, 0, Long.MAX_VALUE)!!
     }
 
     override fun fetchAllGameChatMessages(gameId: UUID): List<OutgoingChatMessageDTO> {
-        return redisTemplate.opsForList().range(GAME_CHAT_NAMESPACE + gameId, 0, Long.MAX_VALUE)
+        return redisTemplate.opsForList().range(GAME_CHAT_NAMESPACE + gameId, 0, Long.MAX_VALUE)!!
     }
 
     override fun fetchAllTableChatMessages(tableId: UUID): List<OutgoingChatMessageDTO> {
-        return redisTemplate.opsForList().range(TABLE_CHAT_NAMESPACE + tableId, 0, Long.MAX_VALUE)
+        return redisTemplate.opsForList().range(TABLE_CHAT_NAMESPACE + tableId, 0, Long.MAX_VALUE)!!
     }
 
 }

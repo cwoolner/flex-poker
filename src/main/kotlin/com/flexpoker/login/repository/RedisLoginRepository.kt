@@ -59,7 +59,7 @@ class RedisLoginRepository @Inject constructor(private val redisTemplate: RedisT
     }
 
     private fun addUserIfDoesNotExist(username: String) {
-        if (!redisTemplate.opsForValue().operations.hasKey(LOGIN_PASSWORD_NAMESPACE + username)) {
+        if (!redisTemplate.hasKey(LOGIN_PASSWORD_NAMESPACE + username)) {
             saveUsernameAndPassword(username, PasswordUtils.encode(username))
             saveAggregateIdAndUsername(UUID.randomUUID(), username)
         }

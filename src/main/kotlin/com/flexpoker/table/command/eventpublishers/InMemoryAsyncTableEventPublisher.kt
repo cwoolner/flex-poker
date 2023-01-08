@@ -20,7 +20,7 @@ class InMemoryAsyncTableEventPublisher @Inject constructor(
 ) : EventPublisher<TableEvent> {
 
     companion object {
-        private val NOOP = EventHandler { x: TableEvent -> }
+        private val NOOP = EventHandler { _: TableEvent -> }
     }
 
     override fun publish(event: TableEvent) {

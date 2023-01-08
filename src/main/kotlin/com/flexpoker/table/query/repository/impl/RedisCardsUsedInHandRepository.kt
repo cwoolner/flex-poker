@@ -47,15 +47,15 @@ class RedisCardsUsedInHandRepository @Inject constructor(
     }
 
     override fun fetchFlopCards(handId: UUID): FlopCards {
-        return redisTemplateFlopCards.opsForValue()[FLOP_CARDS_NAMESPACE + handId]
+        return redisTemplateFlopCards.opsForValue()[FLOP_CARDS_NAMESPACE + handId]!!
     }
 
     override fun fetchTurnCard(handId: UUID): TurnCard {
-        return redisTemplateTurnCard.opsForValue()[TURN_CARD_NAMESPACE + handId]
+        return redisTemplateTurnCard.opsForValue()[TURN_CARD_NAMESPACE + handId]!!
     }
 
     override fun fetchRiverCard(handId: UUID): RiverCard {
-        return redisTemplateRiverCard.opsForValue()[RIVER_CARD_NAMESPACE + handId]
+        return redisTemplateRiverCard.opsForValue()[RIVER_CARD_NAMESPACE + handId]!!
     }
 
     override fun fetchPocketCards(handId: UUID, playerId: UUID): PocketCards {
@@ -73,8 +73,8 @@ class RedisCardsUsedInHandRepository @Inject constructor(
     }
 
     private fun fetchPocketCardsForHand(handId: UUID): Map<UUID, PocketCards> {
-        return redisTemplatePocketCards
-            .opsForHash<Any, Any>().entries(HAND_POCKET_CARDS_NAMESPACE + handId) as Map<UUID, PocketCards>
+        return redisTemplatePocketCards.opsForHash<UUID, PocketCards>()
+            .entries(HAND_POCKET_CARDS_NAMESPACE + handId)
     }
 
 }

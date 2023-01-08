@@ -86,7 +86,7 @@ private fun isTableOutOfBalance(tableId: UUID, tableToPlayersMap: Map<UUID, Muta
 }
 
 private fun getTotalNumberOfPlayers(tableToPlayersMap: Map<UUID, MutableSet<UUID>>): Int {
-    return tableToPlayersMap.values.sumBy { it.size }
+    return tableToPlayersMap.values.sumOf { it.size }
 }
 
 private fun getRequiredNumberOfTables(maxPlayersPerTable: Int, totalNumberOfPlayers: Int): Int {

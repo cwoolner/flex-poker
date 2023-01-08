@@ -34,7 +34,7 @@ class InMemoryAsyncGameEventSubscriber @Inject constructor(
 ) : EventSubscriber<GameEvent> {
 
     companion object {
-        private val NOOP = EventHandler { x: GameEvent -> }
+        private val NOOP = EventHandler { _: GameEvent -> }
     }
 
     init {

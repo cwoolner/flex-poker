@@ -16,7 +16,7 @@ class InMemoryOpenGameForPlayerRepository : OpenGameForPlayerRepository {
 
     private val openGameForUserMap: MutableMap<UUID?, MutableMap<UUID?, OpenGameForUser>> = ConcurrentHashMap()
 
-    override fun fetchAllOpenGamesForPlayer(playerId: UUID): List<OpenGameForUser>? {
+    override fun fetchAllOpenGamesForPlayer(playerId: UUID): List<OpenGameForUser> {
         return openGameForUserMap.getOrDefault(playerId, emptyMap())
             .values
             .stream()

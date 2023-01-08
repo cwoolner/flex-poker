@@ -20,7 +20,7 @@ class RedisTableEventRepository @Inject constructor(
     }
 
     override fun fetchAll(id: UUID): List<TableEvent> {
-        return redisTemplate.opsForList().range(TABLE_EVENT_NAMESPACE + id, 0, Long.MAX_VALUE)
+        return redisTemplate.opsForList().range(TABLE_EVENT_NAMESPACE + id, 0, Long.MAX_VALUE)!!
     }
 
     override fun setEventVersionsAndSave(basedOnVersion: Int, events: List<TableEvent>): List<TableEvent> {

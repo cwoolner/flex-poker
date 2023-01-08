@@ -35,9 +35,9 @@ class DefaultHandEvaluatorService : HandEvaluatorService {
     }
 
     override fun determineHandEvaluation(flopCards: FlopCards, turnCard: TurnCard, riverCard: RiverCard,
-                                         pocketCardsList: List<PocketCards>, possibleHandRankings: List<HandRanking>): Map<PocketCards, HandEvaluation> {
+                                         pocketCards: List<PocketCards>, possibleHandRankings: List<HandRanking>): Map<PocketCards, HandEvaluation> {
         val commonCards = CommonCards(flopCards, turnCard, riverCard)
-        return pocketCardsList.associateWith {
+        return pocketCards.associateWith {
             val cardList = commonCards.cards.plus(it.card1).plus(it.card2)
             val handEvaluation = HandEvaluation()
             fillInHandEvaluation(handEvaluation, cardList, possibleHandRankings)

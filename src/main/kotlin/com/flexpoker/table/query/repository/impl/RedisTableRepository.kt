@@ -20,7 +20,7 @@ class RedisTableRepository @Inject constructor(
     }
 
     override fun fetchById(tableId: UUID): TableDTO {
-        return redisTemplateTableDTO.opsForValue()[TABLE_DTO_NAMESPACE + tableId]
+        return redisTemplateTableDTO.opsForValue()[TABLE_DTO_NAMESPACE + tableId]!!
     }
 
     override fun save(tableDTO: TableDTO) {
