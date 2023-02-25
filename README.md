@@ -65,6 +65,7 @@ It would be nice to actually make a fully usable product at some point, but so f
 * 2013 - Angular, WebSocket
 * 2015 - ES6, WebComponents
 * 2016 - React
+* 2023 - TypeScript
 
 # Persistence
 
