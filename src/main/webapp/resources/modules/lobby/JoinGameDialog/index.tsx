@@ -3,6 +3,7 @@ import JoinGameDialog from './JoinGameDialog'
 import { useDispatch, useSelector } from 'react-redux'
 import { hideJoinGameModal, redirectToGame } from '../../../reducers'
 import WebSocketService from '../../webSocket/WebSocketService'
+import { RootState } from '../../..'
 
 const joinGameFormSubmitted = (hideDialogCallback, redirectToGame, gameId, evt) => {
   evt.preventDefault()
@@ -12,8 +13,8 @@ const joinGameFormSubmitted = (hideDialogCallback, redirectToGame, gameId, evt) 
 }
 
 export default () => {
-  const gameId = useSelector(state => state.joinGameId)
-  const showModal = useSelector(state => state.showJoinGameModal)
+  const gameId = useSelector((state: RootState) => state.joinGameId)
+  const showModal = useSelector((state: RootState) => state.showJoinGameModal)
 
   const dispatch = useDispatch()
   const dispatchHideJoinGameModal = () => dispatch(hideJoinGameModal())

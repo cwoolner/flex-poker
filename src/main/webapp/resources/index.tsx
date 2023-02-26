@@ -10,6 +10,9 @@ import tableStateSubscriber from './modules/table/tableStateSubscriber'
 
 const store = createStore(reducer)
 
+export type RootState = ReturnType<typeof store.getState>
+export type AppDispatch = typeof store.dispatch
+
 staticSubscriptions(store.dispatch)
 store.subscribe(chatMessageSubscriber(store.dispatch)(store))
 store.subscribe(tableStateSubscriber(store.dispatch)(store))

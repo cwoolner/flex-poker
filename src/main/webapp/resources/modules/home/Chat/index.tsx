@@ -4,6 +4,7 @@ import WebSocketService from '../../webSocket/WebSocketService'
 import { useSelector } from 'react-redux'
 import ChatLine from './ChatLine'
 import { getChats } from './selectors'
+import { RootState } from '../../..'
 
 const displayAreaMutationObserverCallback = (displayArea, mutations) => {
   for (let mutation of mutations) {
@@ -30,7 +31,7 @@ export default () => {
 
   const displayArea = useRef(null)
 
-  const activeChatStream = useSelector(state => state.activeChatStream)
+  const activeChatStream = useSelector((state: RootState) => state.activeChatStream)
   const chats = useSelector(state => getChats(state))
 
   useEffect(() => {

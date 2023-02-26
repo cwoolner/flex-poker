@@ -3,12 +3,12 @@ const path = require('path');
 
 module.exports = {
   entry: {
-    app: './src/main/webapp/resources/index.js'
+    app: './src/main/webapp/resources/index.tsx',
   },
 
   output: {
-    path: path.join(__dirname, "src/main/webapp/resources"),
-    filename: '[name].bundle.js'
+    path: path.join(__dirname, 'src/main/webapp/resources'),
+    filename: '[name].bundle.js',
   },
 
   optimization: {
@@ -25,29 +25,30 @@ module.exports = {
     }
   },
 
+  resolve: {
+    extensions: ['.tsx', '.ts', '.js'],
+  },
+
   module: {
     rules: [
       {
-        test: /\.js$/,
-        exclude: /node_modules/,
-        use: [{
-          loader: 'babel-loader',
-          options: {
-            presets: [
-              '@babel/react',
-              [
-                '@babel/preset-env',
-                {
-                  "targets": {
-                    "esmodules": true
-                  },
-                  "modules": false,
-                  "useBuiltIns": "entry"
-                }
-              ]
-            ]
+        test: /\.tsx?$/,
+        use: [
+          {
+            loader: 'ts-loader',
+            options: {
+    //          transpileOnly: true,
+            }
           }
-        }]
+        ],
+        exclude: [
+          '/node_modules/',
+          '/documentation/',
+          '/bin/',
+          '/target/',
+          '/output/',
+          '/dist/',
+        ]
       }
     ]
   }

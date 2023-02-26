@@ -19,9 +19,9 @@ export default () => {
       <div>
         <GameTabs />
         <Routes>
-          <Route exact path="/" element={wrapRedirect(<Lobby />)} />
-          <Route exact path="/game/:gameId" element={wrapRedirect(<GamePage />)} />
-          <Route exact path="/game/:gameId/table/:tableId" element={wrapRedirect(<TablePage />)} />
+          <Route path="/" element={wrapRedirect(<Lobby />)} />
+          <Route path="/game/:gameId" element={wrapRedirect(<GamePage />)} />
+          <Route path="/game/:gameId/table/:tableId" element={wrapRedirect(<TablePage />)} />
         </Routes>
         <Chat />
       </div>

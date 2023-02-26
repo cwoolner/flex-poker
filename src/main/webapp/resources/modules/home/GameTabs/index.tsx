@@ -3,9 +3,10 @@ import Nav from 'react-bootstrap/Nav'
 import { useSelector } from 'react-redux'
 import GameTab from './GameTab'
 import { LinkContainer } from 'react-router-bootstrap'
+import { RootState } from '../../..'
 
 export default () => {
-  const openGameTabs = useSelector(state => state.openGameTabs)
+  const openGameTabs = useSelector((state: RootState) => state.openGameTabs)
 
   return (
     <Nav variant="tabs">

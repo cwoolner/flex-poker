@@ -9,12 +9,13 @@ import _ from 'lodash'
 import { useDispatch, useSelector } from 'react-redux'
 import { changeChatMsgStream, changeTable } from '../../reducers'
 import { useParams } from 'react-router-dom'
+import { RootState } from '../..'
 
 export default () => {
 
   const { gameId, tableId } = useParams()
 
-  const { totalPot, visibleCommonCards, seats, tableVersion, pots, cardId1, cardId2 } = useSelector(state => {
+  const { totalPot, visibleCommonCards, seats, tableVersion, pots, cardId1, cardId2 } = useSelector((state: RootState) => {
     const tableData = state.tables.get(state.activeTable.gameId, Map()).get(state.activeTable.tableId)
       || { totalPot: 0, visibleCommonCards: [], seats: [], tableVersion: 0, pots: [] }
     const pocketCardData = state.pocketCards.get(tableData.currentHandId)
@@ -36,6 +37,7 @@ export default () => {
     dispatch(changeTable(gameId, tableId))
   }, [gameId, tableId])
 
+  // @ts-expect-error
   const username = window.username
   const mySeat = seats.find(seat => seat.name === username)
 
@@ -44,7 +46,7 @@ export default () => {
       <div className="poker-table">
         <div>{totalPot}</div>
         <CommonCards visibleCommonCards={visibleCommonCards} />
-        <SeatContainer gameId={gameId} tableId={tableId} mySeat={mySeat} seats={seats} />
+        <SeatContainer mySeat={mySeat} seats={seats} />
       </div>
 
       {pots.map(pot => {
