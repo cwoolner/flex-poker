@@ -17,10 +17,10 @@
     <maven.compiler.target>17</maven.compiler.target>
     <maven.war.plugin.version>3.3.2</maven.war.plugin.version>
     <maven.surefire.plugin.version>2.22.2</maven.surefire.plugin.version>
-    <pitest.maven.version>1.11.1</pitest.maven.version>
+    <pitest.maven.version>1.13.0</pitest.maven.version>
     <pitest.junit5.plugin>1.1.2</pitest.junit5.plugin>
-    <spring.boot.dependencies.bom.version>3.0.3</spring.boot.dependencies.bom.version>
-    <kotlin.version>1.8.10</kotlin.version>
+    <spring.boot.dependencies.bom.version>3.0.6</spring.boot.dependencies.bom.version>
+    <kotlin.version>1.8.20</kotlin.version>
     <kotlin.compiler.incremental>true</kotlin.compiler.incremental>
     <pcollections.version>4.0.1</pcollections.version>
     <archunit.version>1.0.1</archunit.version>
