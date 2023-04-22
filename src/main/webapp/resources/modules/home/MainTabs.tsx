@@ -1,4 +1,3 @@
-import React from 'react'
 import _ from 'lodash'
 import { BrowserRouter } from 'react-router-dom'
 import { Route, Routes } from 'react-router'

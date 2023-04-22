@@ -1,4 +1,3 @@
-import React from 'react'
 import ActionOnTimer from './ActionOnTimer'
 
 export default ({mySeat, seat, actionOnTick}) => {

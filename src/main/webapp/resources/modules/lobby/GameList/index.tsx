@@ -1,4 +1,3 @@
-import React from 'react'
 import GameList from './GameList'
 import { useSelector, useDispatch } from 'react-redux'
 import { showJoinGameModal, showCreateGameModal } from '../../../reducers'

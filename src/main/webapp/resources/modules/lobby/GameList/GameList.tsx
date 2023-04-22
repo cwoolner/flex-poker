@@ -1,6 +1,4 @@
-import React from 'react'
-import Button from 'react-bootstrap/Button'
-import Table from 'react-bootstrap/Table'
+import { Button, Table } from 'react-bootstrap'
 import moment from 'moment-timezone'
 
 export default ({gameList, gameOpenedCallback, openCreateGameModalCallback}) => {

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import { useEffect } from 'react';
 import { useDispatch } from 'react-redux'
 import { changeChatMsgStream } from '../../reducers'
 import { useParams } from 'react-router-dom'

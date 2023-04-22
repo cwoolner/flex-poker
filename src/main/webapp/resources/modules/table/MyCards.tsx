@@ -1,4 +1,3 @@
-import React from 'react'
 import CardData from './CardData'
 
 export default ({myLeftCardId, myRightCardId}) => {

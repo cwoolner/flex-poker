@@ -1,5 +1,3 @@
-import React from 'react'
-
 const displayChat = chat => {
   return chat.systemMessage
     ? `System: ${chat.message}`

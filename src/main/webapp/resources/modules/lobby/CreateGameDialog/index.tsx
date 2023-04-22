@@ -1,4 +1,3 @@
-import React from 'react'
 import WebSocketService from '../../webSocket/WebSocketService'
 import { useSelector, useDispatch } from 'react-redux'
 import { hideCreateGameModal } from '../../../reducers'

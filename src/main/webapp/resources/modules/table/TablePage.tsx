@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import { useEffect } from 'react';
 import { Map } from 'immutable'
 import CommonCards from './CommonCards'
 import MyCards from './MyCards'

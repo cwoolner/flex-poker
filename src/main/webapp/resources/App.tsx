@@ -1,5 +1,4 @@
-import React from 'react'
-import Container from 'react-bootstrap/Container'
+import { Container } from 'react-bootstrap'
 import Navigation from './modules/home/Navigation'
 import MainTabs from './modules/home/MainTabs'
 

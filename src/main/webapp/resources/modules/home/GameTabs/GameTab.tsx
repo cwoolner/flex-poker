@@ -1,6 +1,4 @@
-import React from 'react'
-import NavDropdown from 'react-bootstrap/NavDropdown'
-import Dropdown from 'react-bootstrap/Dropdown'
+import { NavDropdown, Dropdown } from 'react-bootstrap'
 import { LinkContainer } from 'react-router-bootstrap'
 
 const DropdownLink = ({ link, text }) =>

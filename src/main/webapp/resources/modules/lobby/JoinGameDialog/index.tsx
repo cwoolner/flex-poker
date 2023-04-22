@@ -1,4 +1,3 @@
-import React from 'react'
 import JoinGameDialog from './JoinGameDialog'
 import { useDispatch, useSelector } from 'react-redux'
 import { hideJoinGameModal, redirectToGame } from '../../../reducers'

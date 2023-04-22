@@ -1,5 +1,5 @@
-import React, { useEffect, useRef } from 'react'
-import Form from 'react-bootstrap/Form'
+import { useEffect, useRef } from 'react';
+import { Form } from 'react-bootstrap'
 import WebSocketService from '../../webSocket/WebSocketService'
 import { useSelector } from 'react-redux'
 import ChatLine from './ChatLine'

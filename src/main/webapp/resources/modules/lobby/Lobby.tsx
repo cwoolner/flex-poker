@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import { useEffect } from 'react';
 import CreateGameDialog from './CreateGameDialog'
 import JoinGameDialog from './JoinGameDialog'
 import GameList from './GameList'
