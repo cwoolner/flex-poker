@@ -18,6 +18,7 @@ COPY / /flex-poker/
 WORKDIR /flex-poker
 
 RUN npm install
+RUN npm run prod
 RUN mvn package
 
 

@@ -6,8 +6,8 @@
     "node": "18.12.1"
   },
   "scripts": {
-    "start": "webpack --mode=development --watch",
-    "postinstall": "webpack --mode=production"
+    "dev": "webpack --mode=development --watch",
+    "prod": "webpack --mode=production"
   },
   "author": "",
   "license": "ISC",
