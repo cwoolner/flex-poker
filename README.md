@@ -6,18 +6,18 @@ Flex Poker is a poker-playing (Texas hold 'em) web app.  It was originally writt
 
 ### w/ Docker
 1. NOTE: Requires docker >= 17.05 due to using a multi-stage build.  This runs the default dev version, which just uses an in-memory database
-2. `docker build -t flex-poker:1.0-SNAPSHOT .`
-3. `docker run -d -p 8080:8080 flex-poker:1.0-SNAPSHOT`
-4. Hit [http://localhost:8080/](http://localhost:8080/)
-5. Users created by default: player1/player1, player2/player2, player3/player3, player4/player4
+1. `docker build -t flex-poker:1.0-SNAPSHOT .`
+1. `docker run -d -p 8080:8080 flex-poker:1.0-SNAPSHOT`
+1. Hit [http://localhost:8080/](http://localhost:8080/)
+1. Users created by default: player1/player1, player2/player2, player3/player3, player4/player4
 
 ### w/o Docker
 1. `npm install`
-2. Run the server:
+1. Run the server:
    * Default version (JDK 17 required): `mvn spring-boot:run`
    * Redis version (Redis and JDK 17 required): `mvn -Dspring-boot.run.profiles=redis spring-boot:run`
-3. Hit [http://localhost:8080/](http://localhost:8080/)
-4. Users created by default: player1/player1, player2/player2, player3/player3, player4/player4
+1. Hit [http://localhost:8080/](http://localhost:8080/)
+1. Users created by default: player1/player1, player2/player2, player3/player3, player4/player4
 
 # Technologies
 
