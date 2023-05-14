@@ -10,17 +10,15 @@ import { useDispatch, useSelector } from 'react-redux'
 import { changeChatMsgStream, changeTable } from '../../reducers'
 import { useParams } from 'react-router-dom'
 import { RootState } from '../..'
+import { DEFAULT_GAME, DEFAULT_TABLE } from '../../reducers/types';
 
 export default () => {
 
   const { gameId, tableId } = useParams()
 
-  const { totalPot, visibleCommonCards, seats, tableVersion, pots, cardId1, cardId2 } = useSelector((state: RootState) => {
-    const tableData = state.tables.get(state.activeTable.gameId, Map()).get(state.activeTable.tableId)
-      || { totalPot: 0, visibleCommonCards: [], seats: [], tableVersion: 0, pots: [] }
+  const { totalPot, visibleCommonCards, seats, pots, cardId1, cardId2 } = useSelector((state: RootState) => {
+    const tableData = state.tables.get(state.activeTable.gameId, DEFAULT_GAME).get(state.activeTable.tableId, DEFAULT_TABLE)
     const pocketCardData = state.pocketCards.get(tableData.currentHandId)
-      || { cardId1: null, cardId2: null }
-
     return {
       ...tableData,
       ...pocketCardData
@@ -51,7 +49,7 @@ export default () => {
 
       {pots.map(pot => {
         return(
-          <div key={pot}>
+          <div key={pot.toString()}>
             <div>{pot.seats}</div>
             <div>{pot.amount}</div>
             <div>{pot.winners}</div>

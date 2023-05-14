@@ -1,4 +1,5 @@
 import { List, Map } from 'immutable'
+import { DEFAULT_GAME, DEFAULT_TABLE, INITITAL_APP_STATE } from './types'
 
 const INIT_OPEN_GAME_TABS = 'INIT_OPEN_GAME_TABS'
 const UPDATE_OPEN_GAME_TABS = 'UPDATE_OPEN_GAME_TABS'
@@ -38,25 +39,7 @@ export const redirectToGame = gameId => ({ type: REDIRECT_TO_GAME, gameId })
 export const redirectToTable = (gameId, tableId) => ({ type: REDIRECT_TO_TABLE, gameId, tableId })
 export const clearRedirect = () => ({ type: CLEAR_REDIRECT })
 
-export default (state = {
-  openGameTabs: [],
-  openGameList: [],
-  showJoinGameModal: false,
-  joinGameId: null,
-  showCreateGameModal: false,
-  activeChatStream: { gameId: null, tableId: null },
-  chatMessages: {
-    lobbyMessages: List(),
-    gameMessages: Map(),
-    tableMessages: Map()
-  },
-  activeTable: { gameId: null, tableId: null },
-  tables: Map(),
-  actionOnTicks: Map(),
-  pocketCards: Map(),
-  redirectUrl: null
-}, action) => {
-
+export default (state = INITITAL_APP_STATE, action) => {
   switch (action.type) {
     case INIT_OPEN_GAME_TABS:
       return { ...state, openGameTabs: action.openGameTabs }
@@ -80,24 +63,24 @@ export default (state = {
           : state.chatMessages.lobbyMessages.push(action.chatMessage)
       return { ...state, chatMessages: { ...state.chatMessages, lobbyMessages }}
     case GAME_CHAT_MSG_RECEIVED:
-      const singleGameMessages = Array.isArray(action.chatMessage)
+      const singleGameMessages: List<string> = Array.isArray(action.chatMessage)
           ? List(action.chatMessage)
-          : state.chatMessages.gameMessages.get(action.gameId, List()).push(action.chatMessage)
+          : state.chatMessages.gameMessages.get(action.gameId, List<string>()).push(action.chatMessage)
       const gameMessages = state.chatMessages.gameMessages.set(action.gameId, singleGameMessages)
       return { ...state, chatMessages: { ...state.chatMessages, gameMessages }}
     case TABLE_CHAT_MSG_RECEIVED:
-      const singleTableMessages = Array.isArray(action.chatMessage)
+      const singleTableMessages: List<string> = Array.isArray(action.chatMessage)
           ? List(action.chatMessage)
-          : state.chatMessages.tableMessages.get(action.tableId, List()).push(action.chatMessage)
+          : state.chatMessages.tableMessages.get(action.tableId, List<string>()).push(action.chatMessage)
       const tableMessages = state.chatMessages.tableMessages.set(action.tableId, singleTableMessages)
       return { ...state, chatMessages: { ...state.chatMessages, tableMessages }}
     case CHANGE_TABLE:
       return { ...state, activeTable: { gameId: action.gameId, tableId: action.tableId }}
     case TABLE_UPDATE_RECEIVED:
-      const currentVersion = state.tables.get(action.gameId, Map()).get(action.tableId, {}).version || 0
+      const currentVersion = state.tables.get(action.gameId, DEFAULT_GAME).get(action.tableId, DEFAULT_TABLE).version || 0
       const updatedVersion = action.tableState.version
       if (updatedVersion > currentVersion) {
-        const gameTables = state.tables.get(action.gameId, Map()).set(action.tableId, action.tableState)
+        const gameTables: Map<string, any> = state.tables.get(action.gameId, DEFAULT_GAME).set(action.tableId, action.tableState)
         const updatedTables = state.tables.set(action.gameId, gameTables)
         return { ...state, tables: updatedTables }
       } else {

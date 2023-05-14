@@ -3,13 +3,13 @@ import WebSocketService from '../webSocket/WebSocketService'
 export default () => {
   WebSocketService.disconnect()
 
-  const header = document.querySelector("meta[name='_csrf_header']").content
-  const token = document.querySelector("meta[name='_csrf']").content
+  const headerElem: HTMLMetaElement = document.querySelector("meta[name='_csrf_header']")
+  const tokenElem: HTMLMetaElement = document.querySelector("meta[name='_csrf']")
 
   const myHeaders = new Headers()
-  myHeaders.append(header, token)
+  myHeaders.append(headerElem.content, tokenElem.content)
 
-  const myInit = {
+  const myInit: RequestInit = {
     method: 'POST',
     headers: myHeaders,
     cache: 'no-cache',

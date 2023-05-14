@@ -1,6 +1,7 @@
 import { createSelector } from 'reselect'
 import WebSocketSubscriptionManager from '../webSocket/WebSocketSubscriptionManager'
 import { tableUpdateReceived, actionOnTickReceived } from '../../reducers'
+import { Store } from 'redux'
 
 export default dispatch => {
 
@@ -28,7 +29,7 @@ export default dispatch => {
     }
   }
 
-  return store => () => {
+  return (store: Store) => () => {
     activeTableSelector(store.getState())
   }
 
