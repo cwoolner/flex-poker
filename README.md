@@ -46,7 +46,7 @@ Flex Poker is a poker-playing (Texas hold 'em) web app.  It was originally writt
 
 The basic unit tests and arch tests run as part of a normal Maven lifecycle.  No external systems are hit.
 
-Been recently playing around with mutation testing.  The PIT plugin has been included.  To run (after building): `mvn org.pitest:pitest-maven:mutationCoverage`
+Been recently playing around with mutation testing.  The PIT plugin has been included.  To run (after building): `mvn test-compile org.pitest:pitest-maven:mutationCoverage`
 
 # Motivation
 
