@@ -17,15 +17,8 @@ fun attemptToStartNewHand(state: GameState, tableId: UUID, playerToChipsAtTableM
 
     val events = mutableListOf<GameEvent>()
 
-    val bustedGameEvents = playerToChipsAtTableMap.filterValues { it == 0 }.map { it.key }.map { bustPlayer(state, it) }
-    events.addAll(bustedGameEvents)
-    var updatedState = applyEvents(state, bustedGameEvents)
-
-    val bustedPlayers = updatedState.tableIdToPlayerIdsMap[tableId]!!
-        .filter { !playerToChipsAtTableMap.keys.contains(it) }.toSet()
-    val addlBustedGameEvents = bustedPlayers.map { bustPlayer(updatedState, it) }
-    events.addAll(addlBustedGameEvents)
-    updatedState = applyEvents(updatedState, addlBustedGameEvents)
+    var (updatedState, bustedEvents) = bustedEvents(state, tableId, playerToChipsAtTableMap)
+    events.addAll(bustedEvents)
 
     if (updatedState.tableIdToPlayerIdsMap.flatMap { it.value }.count() == 1) {
         // TODO: do something for the winner
@@ -48,6 +41,22 @@ fun attemptToStartNewHand(state: GameState, tableId: UUID, playerToChipsAtTableM
     }
 
     return events
+}
+
+private fun bustedEvents(state: GameState, tableId: UUID, playerToChipsAtTableMap: Map<UUID, Int>): Pair<GameState, List<GameEvent>> {
+    val events = mutableListOf<GameEvent>()
+
+    val noChipsBustedEvents = playerToChipsAtTableMap.filterValues { it == 0 }.map { it.key }.map { bustPlayer(state, it) }
+    events.addAll(noChipsBustedEvents)
+    var updatedState = applyEvents(state, noChipsBustedEvents)
+
+    val inGameButMissingFromTablePlayers = updatedState.tableIdToPlayerIdsMap[tableId]!!
+        .filter { !playerToChipsAtTableMap.keys.contains(it) }.toSet()
+    val inGameButMissingFromTableBustedEvents = inGameButMissingFromTablePlayers.map { bustPlayer(updatedState, it) }
+    events.addAll(inGameButMissingFromTableBustedEvents)
+    updatedState = applyEvents(updatedState, inGameButMissingFromTableBustedEvents)
+
+    return Pair(updatedState, events)
 }
 
 private fun bustPlayer(state: GameState, playerId: UUID): PlayerBustedGameEvent {
