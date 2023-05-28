@@ -1,5 +1,7 @@
-package com.flexpoker.game.command.aggregate
+package com.flexpoker.game.command.aggregate.attempttostartnewhand
 
+import com.flexpoker.game.command.aggregate.applyEvents
+import com.flexpoker.game.command.aggregate.blindSchedule
 import com.flexpoker.game.command.aggregate.eventproducers.attemptToStartNewHand
 import com.flexpoker.game.command.events.GameCreatedEvent
 import com.flexpoker.game.command.events.GameJoinedEvent

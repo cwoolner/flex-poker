@@ -1,4 +1,4 @@
-package com.flexpoker.game.command.aggregate
+package com.flexpoker.game.command.aggregate.attempttostartnewhand
 
 import com.flexpoker.game.command.aggregate.eventproducers.attemptToStartNewHand
 import com.flexpoker.game.command.aggregate.eventproducers.createGame
