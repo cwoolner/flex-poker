@@ -92,6 +92,9 @@
           <avoidCallsTo>
             <avoidCallsTo>kotlin.jvm.internal</avoidCallsTo>
           </avoidCallsTo>
+          <mutators>
+            <mutator>ALL</mutator>
+          </mutators>
         </configuration>
       </plugin>
       <plugin>

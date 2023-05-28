@@ -1,5 +1,6 @@
 package com.flexpoker.game.command.aggregate.eventproducers
 
+import com.flexpoker.game.command.GameStage
 import com.flexpoker.game.command.aggregate.GameState
 import com.flexpoker.game.command.aggregate.applyEvent
 import com.flexpoker.game.command.aggregate.applyEvents
@@ -8,7 +9,6 @@ import com.flexpoker.game.command.aggregate.currentBlindAmounts
 import com.flexpoker.game.command.events.GameEvent
 import com.flexpoker.game.command.events.NewHandIsClearedToStartEvent
 import com.flexpoker.game.command.events.PlayerBustedGameEvent
-import com.flexpoker.game.command.GameStage
 import java.util.Optional
 import java.util.UUID
 
@@ -25,7 +25,7 @@ fun attemptToStartNewHand(state: GameState, tableId: UUID, playerToChipsAtTableM
     } else {
         var singleBalancingEvent: Optional<GameEvent>?
         do {
-            singleBalancingEvent = createSingleBalancingEvent(updatedState.aggregateId, updatedState.maxNumberOfPlayers, tableId,
+            singleBalancingEvent = createSingleBalancingEvent(updatedState.aggregateId, updatedState.numberOfPlayersPerTable, tableId,
                 updatedState.pausedTablesForBalancing, updatedState.tableIdToPlayerIdsMap, playerToChipsAtTableMap)
             if (singleBalancingEvent.isPresent) {
                 events.add(singleBalancingEvent.get())

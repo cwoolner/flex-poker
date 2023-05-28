@@ -67,7 +67,7 @@ fun applyEvent(state: GameState?, event: GameEvent): GameState {
             state!!.copy(pausedTablesForBalancing = state.pausedTablesForBalancing.minus(event.tableId))
         is PlayerMovedToNewTableEvent -> {
             val fromPlayerIds = state!!.tableIdToPlayerIdsMap[event.fromTableId]!!.minus(event.playerId)
-            val toPlayerIds = state.tableIdToPlayerIdsMap[event.fromTableId]!!.plus(event.playerId)
+            val toPlayerIds = state.tableIdToPlayerIdsMap[event.toTableId]!!.plus(event.playerId)
             state.copy(tableIdToPlayerIdsMap = state.tableIdToPlayerIdsMap
                 .plus(event.fromTableId, fromPlayerIds)
                 .plus(event.toTableId, toPlayerIds))

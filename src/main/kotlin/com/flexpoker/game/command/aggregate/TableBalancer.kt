@@ -41,7 +41,8 @@ fun createSingleBalancingEvent(gameId: UUID, maxPlayersPerTable: Int, subjectTab
 
         // in the min case, pause the table since it needs to get another player
         if (tableSize == tableToPlayersMap.values.map { it.size }.minOrNull()) {
-            return Optional.of(TablePausedForBalancingEvent(gameId, subjectTableId))
+            return if (pausedTablesForBalancing.contains(subjectTableId)) Optional.empty()
+            else Optional.of(TablePausedForBalancingEvent(gameId, subjectTableId))
         }
 
         // only move a player if the out of balance table has the max number
@@ -79,10 +80,14 @@ private fun findNonSubjectMinTableId(subjectTableId: UUID, tableToPlayersMap: Ma
 }
 
 private fun isTableOutOfBalance(tableId: UUID, tableToPlayersMap: Map<UUID, MutableSet<UUID>>): Boolean {
-    val tableSize = tableToPlayersMap[tableId]!!.size
-    return if (tableSize == 1) {
-        true
-    } else tableToPlayersMap.values.any { it.size >= tableSize + 2 || it.size <= tableSize - 2 }
+    // the subject table could have already been removed, so check first
+    return if (tableToPlayersMap.containsKey(tableId)) {
+        val tableSize = tableToPlayersMap[tableId]!!.size
+        if (tableSize == 1) true
+        else tableToPlayersMap.values.any { it.size >= tableSize + 2 || it.size <= tableSize - 2 }
+    } else {
+        false
+    }
 }
 
 private fun getTotalNumberOfPlayers(tableToPlayersMap: Map<UUID, MutableSet<UUID>>): Int {
