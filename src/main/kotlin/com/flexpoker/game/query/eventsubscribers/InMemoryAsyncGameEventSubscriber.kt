@@ -17,6 +17,7 @@ import com.flexpoker.game.command.events.PlayerMovedToNewTableEvent
 import com.flexpoker.game.command.events.TablePausedForBalancingEvent
 import com.flexpoker.game.command.events.TableRemovedEvent
 import com.flexpoker.game.command.events.TableResumedAfterBalancingEvent
+import com.flexpoker.game.query.handlers.BlindsIncreasedEventHandler
 import org.springframework.scheduling.annotation.Async
 import org.springframework.stereotype.Component
 import java.util.Timer
@@ -26,6 +27,7 @@ import javax.inject.Inject
 @Component("gameEventSubscriber")
 class InMemoryAsyncGameEventSubscriber @Inject constructor(
     private val inMemoryThreadSafeEventSubscriberHelper: InMemoryThreadSafeEventSubscriberHelper<GameEvent>,
+    private val blindsIncreasedEventHandler: BlindsIncreasedEventHandler,
     private val gameCreatedEventHandler: EventHandler<GameCreatedEvent>,
     private val gameJoinedEventHandler: EventHandler<GameJoinedEvent>,
     private val gameMovedToStartingStageEventHandler: EventHandler<GameMovedToStartingStageEvent>,
@@ -49,7 +51,7 @@ class InMemoryAsyncGameEventSubscriber @Inject constructor(
 
     private fun createEventHandlerMap(): Map<Class<out GameEvent>, EventHandler<out GameEvent>> {
         val eventHandlerMap = HashMap<Class<out GameEvent>, EventHandler<out GameEvent>>()
-        eventHandlerMap[BlindsIncreasedEvent::class.java] = NOOP
+        eventHandlerMap[BlindsIncreasedEvent::class.java] = blindsIncreasedEventHandler
         eventHandlerMap[GameCreatedEvent::class.java] = gameCreatedEventHandler
         eventHandlerMap[GameFinishedEvent::class.java] = NOOP
         eventHandlerMap[GameJoinedEvent::class.java] = gameJoinedEventHandler
