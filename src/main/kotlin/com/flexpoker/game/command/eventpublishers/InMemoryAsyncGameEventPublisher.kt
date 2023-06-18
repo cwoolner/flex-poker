@@ -38,14 +38,15 @@ class InMemoryAsyncGameEventPublisher @Inject constructor(
             is GameTablesCreatedAndPlayersAssociatedEvent -> createInitialTablesForGameProcessManager.handle(event)
             is GameStartedEvent -> {
                 val localStartFirstHandProcessManager = startFirstHandProcessManager
+                val localIncrementBlindsCountdownProcessManager = incrementBlindsCountdownProcessManager
                 val timer = Timer()
                 val timerTask: TimerTask = object : TimerTask() {
                     override fun run() {
+                        localIncrementBlindsCountdownProcessManager.handle(event)
                         localStartFirstHandProcessManager.handle(event)
                     }
                 }
                 timer.schedule(timerTask, 10000)
-                incrementBlindsCountdownProcessManager.handle(event)
             }
             is NewHandIsClearedToStartEvent -> startNewHandForExistingTableProcessManager.handle(event)
             is PlayerMovedToNewTableEvent -> movePlayerBetweenTablesProcessManager.handle(event)
