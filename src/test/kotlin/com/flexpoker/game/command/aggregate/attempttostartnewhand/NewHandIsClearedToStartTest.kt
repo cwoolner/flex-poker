@@ -1,7 +1,7 @@
 package com.flexpoker.game.command.aggregate.attempttostartnewhand
 
+import com.flexpoker.game.command.aggregate.BlindSchedule
 import com.flexpoker.game.command.aggregate.applyEvents
-import com.flexpoker.game.command.aggregate.blindSchedule
 import com.flexpoker.game.command.aggregate.eventproducers.attemptToStartNewHand
 import com.flexpoker.game.command.events.GameCreatedEvent
 import com.flexpoker.game.command.events.GameJoinedEvent
@@ -34,7 +34,7 @@ class NewHandIsClearedToStartTest {
             GameJoinedEvent(gameId, player2Id),
             GameMovedToStartingStageEvent(gameId),
             GameTablesCreatedAndPlayersAssociatedEvent(gameId, tableToPlayersMap, 2),
-            GameStartedEvent(gameId, tableIds, blindSchedule(10))
+            GameStartedEvent(gameId, tableIds, BlindSchedule.init(10))
         )
         val playersToChipsMap = mapOf(player1Id to 100, player2Id to 100)
 

@@ -25,7 +25,7 @@ class IncrementBlindsCountdownProcessManager @Inject constructor(
                 gameCommandSender.send(command)
             }
         }
-        val blindIncrementInMilliseconds = event.blindScheduleDTO.numberOfMinutesBetweenLevels * 60000
+        val blindIncrementInMilliseconds = event.blindSchedule.numberOfMinutesBetweenLevels * 60000
         actionOnTimer.scheduleAtFixedRate(
             timerTask,
             blindIncrementInMilliseconds.toLong(),

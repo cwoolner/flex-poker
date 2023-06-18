@@ -17,7 +17,7 @@ class StartNewHandForExistingTableProcessManager @Inject constructor(
     @Async
     override fun handle(event: NewHandIsClearedToStartEvent) {
         val command = StartNewHandForExistingTableCommand(event.tableId, event.aggregateId,
-            event.blindAmountsDTO.smallBlind, event.blindAmountsDTO.bigBlind)
+            event.blinds.smallBlind, event.blinds.bigBlind)
         tableCommandSender.send(command)
     }
 

@@ -5,7 +5,6 @@ import com.flexpoker.game.command.aggregate.GameState
 import com.flexpoker.game.command.aggregate.applyEvent
 import com.flexpoker.game.command.aggregate.applyEvents
 import com.flexpoker.game.command.aggregate.createSingleBalancingEvent
-import com.flexpoker.game.command.aggregate.currentBlindAmounts
 import com.flexpoker.game.command.events.GameEvent
 import com.flexpoker.game.command.events.NewHandIsClearedToStartEvent
 import com.flexpoker.game.command.events.PlayerBustedGameEvent
@@ -34,7 +33,7 @@ fun attemptToStartNewHand(state: GameState, tableId: UUID, playerToChipsAtTableM
         } while (singleBalancingEvent!!.isPresent)
 
         if (updatedState.tableIdToPlayerIdsMap.containsKey(tableId) && !updatedState.pausedTablesForBalancing.contains(tableId)) {
-            val event = NewHandIsClearedToStartEvent(updatedState.aggregateId, tableId, currentBlindAmounts(updatedState))
+            val event = NewHandIsClearedToStartEvent(updatedState.aggregateId, tableId, updatedState.blindSchedule.currentBlinds())
             events.add(event)
             updatedState = applyEvent(updatedState, event)
         }

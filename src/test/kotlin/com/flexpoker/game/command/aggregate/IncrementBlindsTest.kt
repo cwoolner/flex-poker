@@ -26,7 +26,7 @@ class IncrementBlindsTest {
             GameJoinedEvent(gameId, UUID.randomUUID()),
             GameMovedToStartingStageEvent(gameId),
             GameTablesCreatedAndPlayersAssociatedEvent(gameId, tableIdToPlayerIdsMap, 2),
-            GameStartedEvent(gameId, tableIds, blindSchedule(10))
+            GameStartedEvent(gameId, tableIds, BlindSchedule.init(10))
         )
         val state = applyEvents(events)
         val newEvents = increaseBlinds(state)
@@ -44,7 +44,7 @@ class IncrementBlindsTest {
             GameJoinedEvent(gameId, UUID.randomUUID()),
             GameMovedToStartingStageEvent(gameId),
             GameTablesCreatedAndPlayersAssociatedEvent(gameId, tableIdToPlayerIdsMap, 2),
-            GameStartedEvent(gameId, tableIds, blindSchedule(10))
+            GameStartedEvent(gameId, tableIds, BlindSchedule.init(10))
         )
         val (_, newEvents) = GameEventProducerApplierBuilder()
             .initState(applyEvents(events))

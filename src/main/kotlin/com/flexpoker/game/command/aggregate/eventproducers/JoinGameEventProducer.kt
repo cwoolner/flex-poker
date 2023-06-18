@@ -57,7 +57,7 @@ private fun createGameTablesCreatedAndPlayersAssociatedEvent(state: GameState): 
 private fun createGameStartedEvent(state: GameState): GameStartedEvent {
     require(state.stage === GameStage.STARTING) { "to move to STARTED, the game stage must be STARTING" }
     require (state.tableIdToPlayerIdsMap.isNotEmpty()) { "tableToPlayerIdsMap should be filled at this point" }
-    return GameStartedEvent(state.aggregateId, state.tableIdToPlayerIdsMap.keys, state.blindScheduleDTO)
+    return GameStartedEvent(state.aggregateId, state.tableIdToPlayerIdsMap.keys, state.blindSchedule)
 }
 
 private fun createTableToPlayerMap(state: GameState): PMap<UUID, PSet<UUID>> {

@@ -16,11 +16,10 @@ class StartFirstHandProcessManager @Inject constructor(
 
     @Async
     override fun handle(event: GameStartedEvent) {
-        val currentLevel = event.blindScheduleDTO.currentLevel
-        val blindAmounts = event.blindScheduleDTO.levelToAmountsMap[currentLevel]
+        val blinds = event.blindSchedule.currentBlinds()
         event.tableIds.forEach {
             val startNewHandForNewGameCommand = StartNewHandForNewGameCommand(
-                it, event.aggregateId, blindAmounts!!.smallBlind, blindAmounts.bigBlind)
+                it, event.aggregateId, blinds.smallBlind, blinds.bigBlind)
             tableCommandSender.send(startNewHandForNewGameCommand)
         }
     }
