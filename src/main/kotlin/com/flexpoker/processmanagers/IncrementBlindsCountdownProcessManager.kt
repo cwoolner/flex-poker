@@ -9,6 +9,7 @@ import org.springframework.scheduling.annotation.Async
 import org.springframework.stereotype.Component
 import java.util.Timer
 import java.util.TimerTask
+import java.util.concurrent.atomic.AtomicInteger
 import javax.inject.Inject
 
 @Component
@@ -20,9 +21,16 @@ class IncrementBlindsCountdownProcessManager @Inject constructor(
     override fun handle(event: GameStartedEvent) {
         val actionOnTimer = Timer()
         val timerTask: TimerTask = object : TimerTask() {
+            val numberOfTimesToRun = event.blindSchedule.maxLevel() - 1
+            val numberOfExecutions: AtomicInteger = AtomicInteger(0)
+
             override fun run() {
                 val command = IncrementBlindsCommand(event.aggregateId)
                 gameCommandSender.send(command)
+
+                if (numberOfExecutions.incrementAndGet() == numberOfTimesToRun) {
+                    actionOnTimer.cancel()
+                }
             }
         }
         val blindIncrementInMilliseconds = event.blindSchedule.numberOfMinutesBetweenLevels * 60000

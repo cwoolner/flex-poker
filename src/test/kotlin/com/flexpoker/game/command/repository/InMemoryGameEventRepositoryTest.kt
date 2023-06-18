@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Assertions.assertThrows
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import java.util.UUID
 
@@ -82,6 +83,13 @@ class InMemoryGameEventRepositoryTest {
         assertEquals(GameJoinedEvent::class.java, repository.fetchAll(gameId)[1].javaClass)
         assertEquals(3, repository.fetchAll(gameId)[2].version)
         assertEquals(GameJoinedEvent::class.java, repository.fetchAll(gameId)[2].javaClass)
+    }
+
+    @Test
+    fun testSetEventVersionsAndSaveEmptyList() {
+        val repository = InMemoryGameEventRepository()
+        val eventsWithVersions = repository.setEventVersionsAndSave(0, emptyList())
+        assertTrue(eventsWithVersions.isEmpty())
     }
 
 }

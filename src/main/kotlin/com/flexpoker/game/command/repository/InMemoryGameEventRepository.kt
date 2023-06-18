@@ -19,19 +19,23 @@ class InMemoryGameEventRepository : GameEventRepository {
     }
 
     override fun setEventVersionsAndSave(basedOnVersion: Int, events: List<GameEvent>): List<GameEvent> {
-        val aggregateId = events[0].aggregateId
-        if (!gameEventMap.containsKey(aggregateId)) {
-            gameEventMap[aggregateId] = ArrayList()
+        if (events.isEmpty()) {
+            return emptyList()
+        } else {
+            val aggregateId = events[0].aggregateId
+            if (!gameEventMap.containsKey(aggregateId)) {
+                gameEventMap[aggregateId] = ArrayList()
+            }
+            val existingEvents: List<GameEvent> = gameEventMap[aggregateId]!!
+            if (existingEvents.size != basedOnVersion) {
+                throw FlexPokerException("events to save are based on a different version of the aggregate")
+            }
+            for (i in events.indices) {
+                events[i].version = basedOnVersion + i + 1
+            }
+            gameEventMap[aggregateId]!!.addAll(events)
+            return events
         }
-        val existingEvents: List<GameEvent> = gameEventMap[aggregateId]!!
-        if (existingEvents.size != basedOnVersion) {
-            throw FlexPokerException("events to save are based on a different version of the aggregate")
-        }
-        for (i in events.indices) {
-            events[i].version = basedOnVersion + i + 1
-        }
-        gameEventMap[aggregateId]!!.addAll(events)
-        return events
     }
 
     override fun fetchGameCreatedEvent(gameId: UUID): GameCreatedEvent? {
