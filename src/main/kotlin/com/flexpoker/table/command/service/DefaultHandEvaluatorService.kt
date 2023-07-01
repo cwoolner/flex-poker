@@ -35,12 +35,12 @@ class DefaultHandEvaluatorService : HandEvaluatorService {
     }
 
     override fun determineHandEvaluation(flopCards: FlopCards, turnCard: TurnCard, riverCard: RiverCard,
-                                         pocketCards: List<PocketCards>, possibleHandRankings: List<HandRanking>): Map<PocketCards, HandEvaluation> {
+                                         pocketCards: List<PocketCards>): Map<PocketCards, HandEvaluation> {
         val commonCards = CommonCards(flopCards, turnCard, riverCard)
         return pocketCards.associateWith {
             val cardList = commonCards.cards.plus(it.card1).plus(it.card2)
             val handEvaluation = HandEvaluation()
-            fillInHandEvaluation(handEvaluation, cardList, possibleHandRankings)
+            fillInHandEvaluation(handEvaluation, cardList)
             handEvaluation
         }
     }
@@ -53,8 +53,8 @@ class DefaultHandEvaluatorService : HandEvaluatorService {
         NOT_POSSIBLE, POSSIBLE, BOARD
     }
 
-    private fun fillInHandEvaluation(handEvaluation: HandEvaluation, cardList: List<Card>, possibleHandRankings: List<HandRanking>) {
-        possibleHandRankings.sorted().reversed().forEach {
+    private fun fillInHandEvaluation(handEvaluation: HandEvaluation, cardList: List<Card>) {
+        HandRanking.values().reversed().forEach {
             when (it) {
                 HandRanking.STRAIGHT_FLUSH -> if (evaluateStraightFlush(handEvaluation, cardList)) {
                     handEvaluation.handRanking = HandRanking.STRAIGHT_FLUSH

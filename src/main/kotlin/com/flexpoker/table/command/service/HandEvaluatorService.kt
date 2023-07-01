@@ -10,5 +10,5 @@ import com.flexpoker.table.command.aggregate.HandEvaluation
 interface HandEvaluatorService {
     fun determinePossibleHands(flopCards: FlopCards, turnCard: TurnCard, riverCard: RiverCard): List<HandRanking>
     fun determineHandEvaluation(flopCards: FlopCards, turnCard: TurnCard, riverCard: RiverCard,
-                                pocketCards: List<PocketCards>, possibleHandRankings: List<HandRanking>): Map<PocketCards, HandEvaluation>
+                                pocketCards: List<PocketCards>): Map<PocketCards, HandEvaluation>
 }

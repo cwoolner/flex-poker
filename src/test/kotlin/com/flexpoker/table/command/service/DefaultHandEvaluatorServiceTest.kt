@@ -50,7 +50,6 @@ class DefaultHandEvaluatorServiceTest {
         val flopCards = FlopCards(card1, card3, card4)
         val turnCard = TurnCard(card5)
         val riverCard = RiverCard(card2)
-        val possibleHandRankings = bso.determinePossibleHands(flopCards, turnCard, riverCard)
         val id1 = UUID.randomUUID()
         val id2 = UUID.randomUUID()
         val id3 = UUID.randomUUID()
@@ -94,9 +93,7 @@ class DefaultHandEvaluatorServiceTest {
         pocketCardsList.add(pocketCards5)
         pocketCardsList.add(pocketCards6)
         pocketCardsList.add(pocketCards8)
-        val handEvaluations = bso.determineHandEvaluation(
-            flopCards, turnCard, riverCard, pocketCardsList, possibleHandRankings
-        )
+        val handEvaluations = bso.determineHandEvaluation(flopCards, turnCard, riverCard, pocketCardsList)
         val handEvaluation1 = handEvaluations[pocketCards1]
         val handEvaluation2 = handEvaluations[pocketCards2]
         val handEvaluation3 = handEvaluations[pocketCards3]
@@ -157,7 +154,6 @@ class DefaultHandEvaluatorServiceTest {
         val flopCards = FlopCards(card1, card3, card4)
         val turnCard = TurnCard(card5)
         val riverCard = RiverCard(card2)
-        val possibleHandRankings = bso.determinePossibleHands(flopCards, turnCard, riverCard)
         val id1 = UUID.randomUUID()
         val id2 = UUID.randomUUID()
         val id3 = UUID.randomUUID()
@@ -177,9 +173,7 @@ class DefaultHandEvaluatorServiceTest {
         pocketCardsList.add(pocketCards1)
         pocketCardsList.add(pocketCards2)
         pocketCardsList.add(pocketCards3)
-        val handEvaluations = bso.determineHandEvaluation(
-            flopCards, turnCard, riverCard, pocketCardsList, possibleHandRankings
-        )
+        val handEvaluations = bso.determineHandEvaluation(flopCards, turnCard, riverCard, pocketCardsList)
         val handEvaluation1 = handEvaluations[pocketCards1]
         val handEvaluation2 = handEvaluations[pocketCards2]
         val handEvaluation3 = handEvaluations[pocketCards3]
@@ -206,7 +200,6 @@ class DefaultHandEvaluatorServiceTest {
         val flopCards = FlopCards(card1, card3, card4)
         val turnCard = TurnCard(card5)
         val riverCard = RiverCard(card2)
-        val possibleHandRankings = bso.determinePossibleHands(flopCards, turnCard, riverCard)
         val id1 = UUID.randomUUID()
         val id2 = UUID.randomUUID()
         val id3 = UUID.randomUUID()
@@ -223,9 +216,7 @@ class DefaultHandEvaluatorServiceTest {
         pocketCardsList.add(pocketCards1)
         pocketCardsList.add(pocketCards2)
         pocketCardsList.add(pocketCards3)
-        val handEvaluations = bso.determineHandEvaluation(
-            flopCards, turnCard, riverCard, pocketCardsList, possibleHandRankings
-        )
+        val handEvaluations = bso.determineHandEvaluation(flopCards, turnCard, riverCard, pocketCardsList)
         val handEvaluation1 = handEvaluations[pocketCards1]
         val handEvaluation2 = handEvaluations[pocketCards2]
         val handEvaluation3 = handEvaluations[pocketCards3]
@@ -255,7 +246,6 @@ class DefaultHandEvaluatorServiceTest {
         val flopCards = FlopCards(card1, card3, card4)
         val turnCard = TurnCard(card5)
         val riverCard = RiverCard(card2)
-        val possibleHandRankings = bso.determinePossibleHands(flopCards, turnCard, riverCard)
         val id1 = UUID.randomUUID()
         val id2 = UUID.randomUUID()
         val pocketCardsList = ArrayList<PocketCards>()
@@ -267,9 +257,7 @@ class DefaultHandEvaluatorServiceTest {
         )
         pocketCardsList.add(pocketCards1)
         pocketCardsList.add(pocketCards2)
-        val handEvaluations = bso.determineHandEvaluation(
-            flopCards, turnCard, riverCard, pocketCardsList, possibleHandRankings
-        )
+        val handEvaluations = bso.determineHandEvaluation(flopCards, turnCard, riverCard, pocketCardsList)
         val handEvaluation1 = handEvaluations[pocketCards1]
         val handEvaluation2 = handEvaluations[pocketCards2]
         handEvaluation1!!.playerId = id1
