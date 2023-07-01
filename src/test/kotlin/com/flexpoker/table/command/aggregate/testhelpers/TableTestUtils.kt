@@ -32,14 +32,16 @@ fun createBasicTableAndStartHand(tableId: UUID?, vararg playerIdsArray: UUID): L
     val bigBlind = 20
     val shuffledDeckOfCards = ArrayList<Card>()
     val cardsUsedInHand = createDeck()
-    val handEvaluation1 = HandEvaluation()
-    handEvaluation1.playerId = playerIdsArray[0]
-    handEvaluation1.handRanking = HandRanking.FLUSH
-    handEvaluation1.primaryCardRank = CardRank.KING
-    val handEvaluation2 = HandEvaluation()
-    handEvaluation2.playerId = playerIdsArray[1]
-    handEvaluation2.handRanking = HandRanking.STRAIGHT
-    handEvaluation2.primaryCardRank = CardRank.KING
+    val handEvaluation1 = HandEvaluation(
+        playerId = playerIdsArray[0],
+        handRanking = HandRanking.FLUSH,
+        primaryCardRank = CardRank.KING,
+    )
+    val handEvaluation2 = HandEvaluation(
+        playerId = playerIdsArray[1],
+        handRanking = HandRanking.STRAIGHT,
+        primaryCardRank = CardRank.KING,
+    )
     val handEvaluations = HashMap<PocketCards, HandEvaluation>()
     handEvaluations[createPocketCards1()] = handEvaluation1
     handEvaluations[createPocketCards2()] = handEvaluation2

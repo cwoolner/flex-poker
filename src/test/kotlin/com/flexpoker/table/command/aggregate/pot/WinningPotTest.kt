@@ -21,21 +21,20 @@ class WinningPotTest {
     fun testBasicTwoPersonPotHasSingleWinner() {
         val player1 = UUID.randomUUID()
         val player2 = UUID.randomUUID()
-        val handEvaluation1 = HandEvaluation()
-        handEvaluation1.playerId = player1
-        handEvaluation1.handRanking = HandRanking.FLUSH
-        handEvaluation1.primaryCardRank = CardRank.EIGHT
-        handEvaluation1.firstKicker = CardRank.SEVEN
-        handEvaluation1.secondKicker = CardRank.FOUR
-        handEvaluation1.thirdKicker = CardRank.THREE
-        handEvaluation1.fourthKicker = CardRank.TWO
-        val handEvaluation2 = HandEvaluation()
-        handEvaluation2.playerId = player2
-        handEvaluation2.handRanking = HandRanking.STRAIGHT
-        handEvaluation2.primaryCardRank = CardRank.KING
-        val winningHands = ArrayList<Any>()
-        winningHands.add(handEvaluation1)
-        winningHands.add(handEvaluation2)
+        val handEvaluation1 = HandEvaluation(
+            playerId = player1,
+            handRanking = HandRanking.FLUSH,
+            primaryCardRank = CardRank.EIGHT,
+            firstKicker = CardRank.SEVEN,
+            secondKicker = CardRank.FOUR,
+            thirdKicker = CardRank.THREE,
+            fourthKicker = CardRank.TWO,
+        )
+        val handEvaluation2 = HandEvaluation(
+            playerId = player2,
+            handRanking = HandRanking.STRAIGHT,
+            primaryCardRank = CardRank.KING,
+        )
         val potId = UUID.randomUUID()
         var pots = addNewPot(HashTreePSet.empty(), listOf(handEvaluation1, handEvaluation2),
             potId, setOf(player1, player2))
@@ -53,18 +52,21 @@ class WinningPotTest {
         val player1 = UUID.randomUUID()
         val player2 = UUID.randomUUID()
         val player3 = UUID.randomUUID()
-        val handEvaluation1 = HandEvaluation()
-        handEvaluation1.playerId = player1
-        handEvaluation1.handRanking = HandRanking.STRAIGHT
-        handEvaluation1.primaryCardRank = CardRank.EIGHT
-        val handEvaluation2 = HandEvaluation()
-        handEvaluation2.playerId = player2
-        handEvaluation2.handRanking = HandRanking.STRAIGHT
-        handEvaluation2.primaryCardRank = CardRank.KING
-        val handEvaluation3 = HandEvaluation()
-        handEvaluation3.playerId = player3
-        handEvaluation3.handRanking = HandRanking.STRAIGHT
-        handEvaluation3.primaryCardRank = CardRank.KING
+        val handEvaluation1 = HandEvaluation(
+            playerId = player1,
+            handRanking = HandRanking.STRAIGHT,
+            primaryCardRank = CardRank.EIGHT,
+        )
+        val handEvaluation2 = HandEvaluation(
+            playerId = player2,
+            handRanking = HandRanking.STRAIGHT,
+            primaryCardRank = CardRank.KING,
+        )
+        val handEvaluation3 = HandEvaluation(
+            playerId = player3,
+            handRanking = HandRanking.STRAIGHT,
+            primaryCardRank = CardRank.KING,
+        )
         val potId = UUID.randomUUID()
         var pots = addNewPot(HashTreePSet.empty(), listOf(handEvaluation1, handEvaluation2, handEvaluation3),
             potId, setOf(player1, player2, player3))
@@ -84,18 +86,21 @@ class WinningPotTest {
         val player1 = UUID.fromString("a97f5601-422a-4232-8853-8a8c64b14fa1")
         val player2 = UUID.fromString("a97f5601-422a-4232-8853-8a8c64b14fa2")
         val player3 = UUID.fromString("a97f5601-422a-4232-8853-8a8c64b14fa3")
-        val handEvaluation1 = HandEvaluation()
-        handEvaluation1.playerId = player1
-        handEvaluation1.handRanking = HandRanking.STRAIGHT
-        handEvaluation1.primaryCardRank = CardRank.EIGHT
-        val handEvaluation2 = HandEvaluation()
-        handEvaluation2.playerId = player2
-        handEvaluation2.handRanking = HandRanking.STRAIGHT
-        handEvaluation2.primaryCardRank = CardRank.KING
-        val handEvaluation3 = HandEvaluation()
-        handEvaluation3.playerId = player3
-        handEvaluation3.handRanking = HandRanking.STRAIGHT
-        handEvaluation3.primaryCardRank = CardRank.KING
+        val handEvaluation1 = HandEvaluation(
+            playerId = player1,
+            handRanking = HandRanking.STRAIGHT,
+            primaryCardRank = CardRank.EIGHT,
+        )
+        val handEvaluation2 = HandEvaluation(
+            playerId = player2,
+            handRanking = HandRanking.STRAIGHT,
+            primaryCardRank = CardRank.KING,
+        )
+        val handEvaluation3 = HandEvaluation(
+            playerId = player3,
+            handRanking = HandRanking.STRAIGHT,
+            primaryCardRank = CardRank.KING,
+        )
         val potId = UUID.fromString("8eb094f7-459f-4dba-b0d1-1ef3d48161ae")
         var pots = addNewPot(HashTreePSet.empty(), listOf(handEvaluation1, handEvaluation2, handEvaluation3),
             potId, setOf(player1, player2, player3))
@@ -115,18 +120,21 @@ class WinningPotTest {
         val player1 = UUID.randomUUID()
         val player2 = UUID.randomUUID()
         val player3 = UUID.randomUUID()
-        val handEvaluation1 = HandEvaluation()
-        handEvaluation1.playerId = player1
-        handEvaluation1.handRanking = HandRanking.STRAIGHT
-        handEvaluation1.primaryCardRank = CardRank.EIGHT
-        val handEvaluation2 = HandEvaluation()
-        handEvaluation2.playerId = player2
-        handEvaluation2.handRanking = HandRanking.STRAIGHT
-        handEvaluation2.primaryCardRank = CardRank.KING
-        val handEvaluation3 = HandEvaluation()
-        handEvaluation3.playerId = player3
-        handEvaluation3.handRanking = HandRanking.STRAIGHT
-        handEvaluation3.primaryCardRank = CardRank.KING
+        val handEvaluation1 = HandEvaluation(
+            playerId = player1,
+            handRanking = HandRanking.STRAIGHT,
+            primaryCardRank = CardRank.EIGHT,
+        )
+        val handEvaluation2 = HandEvaluation(
+            playerId = player2,
+            handRanking = HandRanking.STRAIGHT,
+            primaryCardRank = CardRank.KING,
+        )
+        val handEvaluation3 = HandEvaluation(
+            playerId = player3,
+            handRanking = HandRanking.STRAIGHT,
+            primaryCardRank = CardRank.KING,
+        )
         val potId = UUID.randomUUID()
         var pots = addNewPot(HashTreePSet.empty(), listOf(handEvaluation1, handEvaluation2, handEvaluation3),
             potId, setOf(player1, player2, player3))
