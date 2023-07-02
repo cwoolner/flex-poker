@@ -19,136 +19,32 @@ fun evaluateStraightFlush(cardList: List<Card>): HandEvaluation? {
 }
 
 fun evaluateFourOfAKind(cardList: List<Card>): HandEvaluation? {
-    val sortedCardList = cardList.sorted()
-    val cardRank1 = sortedCardList[0].cardRank
-    val cardRank2 = sortedCardList[1].cardRank
-    val cardRank3 = sortedCardList[2].cardRank
-    val cardRank4 = sortedCardList[3].cardRank
-    val cardRank5 = sortedCardList[4].cardRank
-    val cardRank6 = sortedCardList[5].cardRank
-    val cardRank7 = sortedCardList[6].cardRank
-    if (cardRank1 === cardRank4) {
-        return HandEvaluation(
+    val cardRanks = cardList.map { it.cardRank }.sorted()
+    val fourOfAKindIndex = (3 downTo 0).firstNotNullOfOrNull { getMatchingIndex(cardRanks, it, 4) }
+    return if (fourOfAKindIndex != null) {
+        val cardRanksMinusFourOfAKind = removeCardRanksStartingAtIndex(cardRanks, fourOfAKindIndex, 4)
+        HandEvaluation(
             handRanking = HandRanking.FOUR_OF_A_KIND,
-            primaryCardRank = cardRank1,
-            firstKicker = cardRank7,
+            primaryCardRank = cardRanks[fourOfAKindIndex],
+            firstKicker = cardRanksMinusFourOfAKind[2],
         )
-    } else if (cardRank2 === cardRank5) {
-        return HandEvaluation(
-            handRanking = HandRanking.FOUR_OF_A_KIND,
-            primaryCardRank = cardRank2,
-            firstKicker = cardRank7,
-        )
-    } else if (cardRank3 === cardRank6) {
-        return HandEvaluation(
-            handRanking = HandRanking.FOUR_OF_A_KIND,
-            primaryCardRank = cardRank3,
-            firstKicker = cardRank7,
-        )
-    } else if (cardRank4 === cardRank7) {
-        return HandEvaluation(
-            handRanking = HandRanking.FOUR_OF_A_KIND,
-            primaryCardRank = cardRank4,
-            firstKicker = cardRank3,
-        )
-    } else {
-        return null
-    }
+    } else null
 }
 
 fun evaluateFullHouse(cardList: List<Card>): HandEvaluation? {
-    val sortedCardList = cardList.sorted()
-    val cardRank1 = sortedCardList[0].cardRank
-    val cardRank2 = sortedCardList[1].cardRank
-    val cardRank3 = sortedCardList[2].cardRank
-    val cardRank4 = sortedCardList[3].cardRank
-    val cardRank5 = sortedCardList[4].cardRank
-    val cardRank6 = sortedCardList[5].cardRank
-    val cardRank7 = sortedCardList[6].cardRank
-    if (cardRank5 === cardRank7) {
-        if (cardRank3 === cardRank4) {
-            return HandEvaluation(
+    val cardRanks =  cardList.map { it.cardRank }.sorted()
+    val matchingThreeOfAKindIndex = (4 downTo 0).firstNotNullOfOrNull { getMatchingIndex(cardRanks, it, 3) }
+    return if (matchingThreeOfAKindIndex != null) {
+        val cardRanksMinusThreeOfAKind = removeCardRanksStartingAtIndex(cardRanks, matchingThreeOfAKindIndex, 3)
+        val matchingPairIndex = (2 downTo 0).firstNotNullOfOrNull { getMatchingIndex(cardRanksMinusThreeOfAKind, it, 2) }
+        if (matchingPairIndex != null) {
+            HandEvaluation(
                 handRanking = HandRanking.FULL_HOUSE,
-                primaryCardRank = cardRank5,
-                secondaryCardRank = cardRank3,
+                primaryCardRank = cardRanks[matchingThreeOfAKindIndex],
+                secondaryCardRank = cardRanksMinusThreeOfAKind[matchingPairIndex],
             )
-        } else if (cardRank2 === cardRank3) {
-            return HandEvaluation(
-                handRanking = HandRanking.FULL_HOUSE,
-                primaryCardRank = cardRank5,
-                secondaryCardRank = cardRank2,
-            )
-        } else if (cardRank1 === cardRank2) {
-            return HandEvaluation(
-                handRanking = HandRanking.FULL_HOUSE,
-                primaryCardRank = cardRank5,
-                secondaryCardRank = cardRank1
-            )
-        }
-    } else if (cardRank4 === cardRank6) {
-        if (cardRank2 === cardRank3) {
-            return HandEvaluation(
-                handRanking = HandRanking.FULL_HOUSE,
-                primaryCardRank = cardRank4,
-                secondaryCardRank = cardRank2,
-            )
-        } else if (cardRank1 === cardRank2) {
-            return HandEvaluation(
-                handRanking = HandRanking.FULL_HOUSE,
-                primaryCardRank = cardRank4,
-                secondaryCardRank = cardRank1,
-            )
-        }
-    } else if (cardRank3 === cardRank5) {
-        if (cardRank6 === cardRank7) {
-            return HandEvaluation(
-                handRanking = HandRanking.FULL_HOUSE,
-                primaryCardRank = cardRank3,
-                secondaryCardRank = cardRank6,
-            )
-        } else if (cardRank1 === cardRank2) {
-            return HandEvaluation(
-                handRanking = HandRanking.FULL_HOUSE,
-                primaryCardRank = cardRank3,
-                secondaryCardRank = cardRank1,
-            )
-        }
-    } else if (cardRank2 === cardRank4) {
-        if (cardRank6 === cardRank7) {
-            return HandEvaluation(
-                handRanking = HandRanking.FULL_HOUSE,
-                primaryCardRank = cardRank2,
-                secondaryCardRank = cardRank6,
-            )
-        } else if (cardRank5 === cardRank6) {
-            return HandEvaluation(
-                handRanking = HandRanking.FULL_HOUSE,
-                primaryCardRank = cardRank2,
-                secondaryCardRank = cardRank5,
-            )
-        }
-    } else if (cardRank1 === cardRank3) {
-        if (cardRank6 === cardRank7) {
-            return HandEvaluation(
-                handRanking = HandRanking.FULL_HOUSE,
-                primaryCardRank = cardRank1,
-                secondaryCardRank = cardRank6,
-            )
-        } else if (cardRank5 === cardRank6) {
-            return HandEvaluation(
-                handRanking = HandRanking.FULL_HOUSE,
-                primaryCardRank = cardRank1,
-                secondaryCardRank = cardRank5,
-            )
-        } else if (cardRank4 === cardRank5) {
-            return HandEvaluation(
-                handRanking = HandRanking.FULL_HOUSE,
-                primaryCardRank = cardRank1,
-                secondaryCardRank = cardRank4,
-            )
-        }
-    }
-    return null
+        } else null
+    } else null
 }
 
 fun evaluateFlush(cardList: List<Card>): HandEvaluation? {
@@ -156,14 +52,14 @@ fun evaluateFlush(cardList: List<Card>): HandEvaluation? {
     if (cards.size < 5) {
         return null
     }
-    val sortedCardList = cards.sorted()
+    val flushCardRanks = cards.map { it.cardRank }.sorted()
     return HandEvaluation(
         handRanking = HandRanking.FLUSH,
-        primaryCardRank = sortedCardList[cards.size - 1].cardRank,
-        firstKicker = sortedCardList[cards.size - 2].cardRank,
-        secondKicker = sortedCardList[cards.size - 3].cardRank,
-        thirdKicker = sortedCardList[cards.size - 4].cardRank,
-        fourthKicker = sortedCardList[cards.size - 5].cardRank,
+        primaryCardRank = flushCardRanks[cards.size - 1],
+        firstKicker = flushCardRanks[cards.size - 2],
+        secondKicker = flushCardRanks[cards.size - 3],
+        thirdKicker = flushCardRanks[cards.size - 4],
+        fourthKicker = flushCardRanks[cards.size - 5],
     )
 }
 
@@ -176,216 +72,61 @@ fun evaluateStraight(cardList: List<Card>): HandEvaluation? {
 }
 
 fun evaluateThreeOfAKind(cardList: List<Card>): HandEvaluation? {
-    val sortedCardList = cardList.sorted()
-    val cardRank1 = sortedCardList[0].cardRank
-    val cardRank2 = sortedCardList[1].cardRank
-    val cardRank3 = sortedCardList[2].cardRank
-    val cardRank4 = sortedCardList[3].cardRank
-    val cardRank5 = sortedCardList[4].cardRank
-    val cardRank6 = sortedCardList[5].cardRank
-    val cardRank7 = sortedCardList[6].cardRank
-    if (cardRank5 === cardRank7) {
-        return HandEvaluation(
+    val cardRanks = cardList.map { it.cardRank }.sorted()
+    val threeOfAKindIndex = (4 downTo 0).firstNotNullOfOrNull { getMatchingIndex(cardRanks, it, 3) }
+    return if (threeOfAKindIndex != null) {
+        val cardRanksMinusThreeOfAKind = removeCardRanksStartingAtIndex(cardRanks, threeOfAKindIndex, 3)
+        HandEvaluation(
             handRanking = HandRanking.THREE_OF_A_KIND,
-            primaryCardRank = cardRank5,
-            firstKicker = cardRank4,
-            secondKicker = cardRank3,
+            primaryCardRank = cardRanks[threeOfAKindIndex],
+            firstKicker = cardRanksMinusThreeOfAKind[3],
+            secondKicker = cardRanksMinusThreeOfAKind[2],
         )
-    } else if (cardRank4 === cardRank6) {
-        return HandEvaluation(
-            handRanking = HandRanking.THREE_OF_A_KIND,
-            primaryCardRank = cardRank4,
-            firstKicker = cardRank7,
-            secondKicker = cardRank3,
-        )
-    } else if (cardRank3 === cardRank5) {
-        return HandEvaluation(
-            handRanking = HandRanking.THREE_OF_A_KIND,
-            primaryCardRank = cardRank3,
-            firstKicker = cardRank7,
-            secondKicker = cardRank6,
-        )
-    } else  if (cardRank2 === cardRank4) {
-        return HandEvaluation(
-            handRanking = HandRanking.THREE_OF_A_KIND,
-            primaryCardRank = cardRank2,
-            firstKicker = cardRank7,
-            secondKicker = cardRank6,
-        )
-    } else if (cardRank1 === cardRank3) {
-        return HandEvaluation(
-            handRanking = HandRanking.THREE_OF_A_KIND,
-            primaryCardRank = cardRank1,
-            firstKicker = cardRank7,
-            secondKicker = cardRank6,
-        )
-    } else {
-        return null
-    }
+    } else null
 }
 
 fun evaluateTwoPair(cardList: List<Card>): HandEvaluation? {
-    val sortedCardList =  cardList.sorted()
-    val cardRank1 = sortedCardList[0].cardRank
-    val cardRank2 = sortedCardList[1].cardRank
-    val cardRank3 = sortedCardList[2].cardRank
-    val cardRank4 = sortedCardList[3].cardRank
-    val cardRank5 = sortedCardList[4].cardRank
-    val cardRank6 = sortedCardList[5].cardRank
-    val cardRank7 = sortedCardList[6].cardRank
-    if (cardRank6 === cardRank7) {
-        if (cardRank4 === cardRank5) {
-            return HandEvaluation(
+    val cardRanks =  cardList.map { it.cardRank }.sorted()
+    val matchingTopPairIndex = (5 downTo 2).firstNotNullOfOrNull { getMatchingIndex(cardRanks, it, 2) }
+    return if (matchingTopPairIndex != null) {
+        val cardRanksMinusTopPair = removeCardRanksStartingAtIndex(cardRanks, matchingTopPairIndex, 2)
+        val matchingSecondPairIndex = (3 downTo 0).firstNotNullOfOrNull { getMatchingIndex(cardRanksMinusTopPair, it, 2) }
+        if (matchingSecondPairIndex != null) {
+            val cardRanksMinusBothPairs = removeCardRanksStartingAtIndex(cardRanksMinusTopPair, matchingSecondPairIndex, 2)
+            HandEvaluation(
                 handRanking = HandRanking.TWO_PAIR,
-                primaryCardRank = cardRank6,
-                secondaryCardRank = cardRank4,
-                firstKicker = cardRank3,
+                primaryCardRank = cardRanks[matchingTopPairIndex],
+                secondaryCardRank = cardRanksMinusTopPair[matchingSecondPairIndex],
+                firstKicker = cardRanksMinusBothPairs[2],
             )
-        } else if (cardRank3 === cardRank4) {
-            return HandEvaluation(
-                handRanking = HandRanking.TWO_PAIR,
-                primaryCardRank = cardRank6,
-                secondaryCardRank = cardRank3,
-                firstKicker = cardRank5,
-            )
-        } else if (cardRank2 === cardRank3) {
-            return HandEvaluation(
-                handRanking = HandRanking.TWO_PAIR,
-                primaryCardRank = cardRank6,
-                secondaryCardRank = cardRank2,
-                firstKicker = cardRank5,
-            )
-        } else if (cardRank1 === cardRank2) {
-            return HandEvaluation(
-                handRanking = HandRanking.TWO_PAIR,
-                primaryCardRank = cardRank6,
-                secondaryCardRank = cardRank1,
-                firstKicker = cardRank5,
-            )
-        }
-    } else if (cardRank5 === cardRank6) {
-        if (cardRank3 === cardRank4) {
-            return HandEvaluation(
-                handRanking = HandRanking.TWO_PAIR,
-                primaryCardRank = cardRank5,
-                secondaryCardRank = cardRank3,
-                firstKicker = cardRank7,
-            )
-        } else if (cardRank2 === cardRank3) {
-            return HandEvaluation(
-                handRanking = HandRanking.TWO_PAIR,
-                primaryCardRank = cardRank5,
-                secondaryCardRank = cardRank2,
-                firstKicker = cardRank7,
-            )
-        } else if (cardRank1 === cardRank2) {
-            return HandEvaluation(
-                handRanking = HandRanking.TWO_PAIR,
-                primaryCardRank = cardRank5,
-                secondaryCardRank = cardRank1,
-                firstKicker = cardRank7,
-            )
-        }
-    } else if (cardRank4 === cardRank5) {
-        if (cardRank2 === cardRank3) {
-            return HandEvaluation(
-                handRanking = HandRanking.TWO_PAIR,
-                primaryCardRank = cardRank4,
-                secondaryCardRank = cardRank2,
-                firstKicker = cardRank7,
-            )
-        } else if (cardRank1 === cardRank2) {
-            return HandEvaluation(
-                handRanking = HandRanking.TWO_PAIR,
-                primaryCardRank = cardRank4,
-                secondaryCardRank = cardRank1,
-                firstKicker = cardRank7,
-            )
-        }
-    } else if (cardRank3 === cardRank4) {
-        if (cardRank1 === cardRank2) {
-            return HandEvaluation(
-                handRanking = HandRanking.TWO_PAIR,
-                primaryCardRank = cardRank4,
-                secondaryCardRank = cardRank1,
-                firstKicker = cardRank7,
-            )
-        }
-    }
-    return null
+        } else null
+    } else null
 }
 
 fun evaluateOnePair(cardList: List<Card>): HandEvaluation? {
-    val sortedCardList = cardList.sorted()
-    val cardRank1 = sortedCardList[0].cardRank
-    val cardRank2 = sortedCardList[1].cardRank
-    val cardRank3 = sortedCardList[2].cardRank
-    val cardRank4 = sortedCardList[3].cardRank
-    val cardRank5 = sortedCardList[4].cardRank
-    val cardRank6 = sortedCardList[5].cardRank
-    val cardRank7 = sortedCardList[6].cardRank
-    if (cardRank6 === cardRank7) {
-        return HandEvaluation(
+    val cardRanks = cardList.map { it.cardRank }.sorted()
+    val matchingIndex = (5 downTo 0).firstNotNullOfOrNull { getMatchingIndex(cardRanks, it, 2) }
+    return if (matchingIndex != null) {
+        val cardRanksMinusPair = removeCardRanksStartingAtIndex(cardRanks, matchingIndex, 2)
+        HandEvaluation(
             handRanking = HandRanking.ONE_PAIR,
-            primaryCardRank = cardRank6,
-            firstKicker = cardRank5,
-            secondKicker = cardRank4,
-            thirdKicker = cardRank3,
+            primaryCardRank = cardRanks[matchingIndex],
+            firstKicker = cardRanksMinusPair[4],
+            secondKicker = cardRanksMinusPair[3],
+            thirdKicker = cardRanksMinusPair[2],
         )
-    } else if (cardRank5 === cardRank6) {
-        return HandEvaluation(
-            handRanking = HandRanking.ONE_PAIR,
-            primaryCardRank = cardRank5,
-            firstKicker = cardRank7,
-            secondKicker = cardRank4,
-            thirdKicker = cardRank3,
-        )
-    } else if (cardRank4 === cardRank5) {
-        return HandEvaluation(
-            handRanking = HandRanking.ONE_PAIR,
-            primaryCardRank = cardRank4,
-            firstKicker = cardRank7,
-            secondKicker = cardRank6,
-            thirdKicker = cardRank3,
-        )
-    } else if (cardRank3 === cardRank4) {
-        return HandEvaluation(
-            handRanking = HandRanking.ONE_PAIR,
-            primaryCardRank = cardRank3,
-            firstKicker = cardRank7,
-            secondKicker = cardRank6,
-            thirdKicker = cardRank5,
-        )
-    } else if (cardRank2 === cardRank3) {
-        return HandEvaluation(
-            handRanking = HandRanking.ONE_PAIR,
-            primaryCardRank = cardRank2,
-            firstKicker = cardRank7,
-            secondKicker = cardRank6,
-            thirdKicker = cardRank5,
-        )
-    } else if (cardRank1 === cardRank2) {
-        return HandEvaluation(
-            handRanking = HandRanking.ONE_PAIR,
-            primaryCardRank = cardRank1,
-            firstKicker = cardRank7,
-            secondKicker = cardRank6,
-            thirdKicker = cardRank5,
-        )
-    } else {
-        return null
-    }
+    } else null
 }
 
 fun evaluateHighCard(cardList: List<Card>): HandEvaluation {
-    val sortedCardList = cardList.sorted()
+    val cardRanks = cardList.map { it.cardRank }.sorted()
     return HandEvaluation(
         handRanking = HandRanking.HIGH_CARD,
-        primaryCardRank = sortedCardList[6].cardRank,
-        firstKicker = sortedCardList[5].cardRank,
-        secondKicker = sortedCardList[4].cardRank,
-        thirdKicker = sortedCardList[3].cardRank,
-        fourthKicker = sortedCardList[2].cardRank,
+        primaryCardRank = cardRanks[6],
+        firstKicker = cardRanks[5],
+        secondKicker = cardRanks[4],
+        thirdKicker = cardRanks[3],
+        fourthKicker = cardRanks[2],
     )
 }
 
@@ -402,29 +143,32 @@ private fun findCardsInLargestSuit(cards: List<Card>): List<Card> {
     return suitMap.values.maxBy { it.size }
 }
 
+private val straightCardRanks = mapOf(
+    CardRank.ACE to listOf(CardRank.TEN, CardRank.JACK, CardRank.QUEEN, CardRank.KING, CardRank.ACE),
+    CardRank.KING to listOf(CardRank.NINE, CardRank.TEN, CardRank.JACK, CardRank.QUEEN, CardRank.KING),
+    CardRank.QUEEN to listOf(CardRank.EIGHT, CardRank.NINE, CardRank.TEN, CardRank.JACK, CardRank.QUEEN),
+    CardRank.JACK to listOf(CardRank.SEVEN, CardRank.EIGHT, CardRank.NINE, CardRank.TEN, CardRank.JACK),
+    CardRank.TEN to listOf(CardRank.SIX, CardRank.SEVEN, CardRank.EIGHT, CardRank.NINE, CardRank.TEN),
+    CardRank.NINE to listOf(CardRank.FIVE, CardRank.SIX, CardRank.SEVEN, CardRank.EIGHT, CardRank.NINE),
+    CardRank.EIGHT to listOf(CardRank.FOUR, CardRank.FIVE, CardRank.SIX, CardRank.SEVEN, CardRank.EIGHT),
+    CardRank.SEVEN to listOf(CardRank.THREE, CardRank.FOUR, CardRank.FIVE, CardRank.SIX, CardRank.SEVEN),
+    CardRank.SIX to listOf(CardRank.TWO, CardRank.THREE, CardRank.FOUR, CardRank.FIVE, CardRank.SIX),
+    CardRank.FIVE to listOf(CardRank.ACE, CardRank.TWO, CardRank.THREE, CardRank.FOUR, CardRank.FIVE),
+)
+
 private fun findCardRankOfHighestStraight(cardList: List<Card>): CardRank? {
     val cardRanks = cardList.map { it.cardRank }
-    if (cardRanks.containsAll(listOf(CardRank.TEN, CardRank.JACK, CardRank.QUEEN, CardRank.KING, CardRank.ACE))) {
-        return CardRank.ACE
-    } else if (cardRanks.containsAll(listOf(CardRank.NINE, CardRank.TEN, CardRank.JACK, CardRank.QUEEN, CardRank.KING))) {
-        return CardRank.KING
-    } else if (cardRanks.containsAll(listOf(CardRank.EIGHT, CardRank.NINE, CardRank.TEN, CardRank.JACK, CardRank.QUEEN))) {
-        return CardRank.QUEEN
-    } else if (cardRanks.containsAll(listOf(CardRank.SEVEN, CardRank.EIGHT, CardRank.NINE, CardRank.TEN, CardRank.JACK))) {
-        return CardRank.JACK
-    } else if (cardRanks.containsAll(listOf(CardRank.SIX, CardRank.SEVEN, CardRank.EIGHT, CardRank.NINE, CardRank.TEN))) {
-        return CardRank.TEN
-    } else if (cardRanks.containsAll(listOf(CardRank.FIVE, CardRank.SIX, CardRank.SEVEN, CardRank.EIGHT, CardRank.NINE))) {
-        return CardRank.NINE
-    } else if (cardRanks.containsAll(listOf(CardRank.FOUR, CardRank.FIVE, CardRank.SIX, CardRank.SEVEN, CardRank.EIGHT))) {
-        return CardRank.EIGHT
-    } else if (cardRanks.containsAll(listOf(CardRank.THREE, CardRank.FOUR, CardRank.FIVE, CardRank.SIX, CardRank.SEVEN))) {
-        return CardRank.SEVEN
-    } else if (cardRanks.containsAll(listOf(CardRank.TWO, CardRank.THREE, CardRank.FOUR, CardRank.FIVE, CardRank.SIX))) {
-        return CardRank.SIX
-    } else if (cardRanks.containsAll(listOf(CardRank.ACE, CardRank.TWO, CardRank.THREE, CardRank.FOUR, CardRank.FIVE))) {
-        return CardRank.FIVE
-    } else {
-        return null
-    }
+    return straightCardRanks.entries.firstOrNull { cardRanks.containsAll(it.value) }?.key
+}
+
+private fun getMatchingIndex(cardList: List<CardRank>, startIndex: Int, numberOfMatches: Int): Int? {
+    return if (cardList[startIndex] === cardList[startIndex + (numberOfMatches - 1)]) {
+        startIndex
+    } else null
+}
+
+private fun removeCardRanksStartingAtIndex(cardRanks: List<CardRank>, startIndex: Int, numberToRemove: Int): List<CardRank> {
+    val mutableCardRanks = cardRanks.toMutableList()
+    (1..numberToRemove).forEach { _ -> mutableCardRanks.removeAt(startIndex) }
+    return mutableCardRanks
 }
