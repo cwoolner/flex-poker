@@ -2,10 +2,11 @@ package com.flexpoker.game.command.aggregate
 
 import com.flexpoker.game.command.aggregate.eventproducers.joinGame
 import com.flexpoker.game.command.events.GameCreatedEvent
+import com.flexpoker.game.command.events.GameEvent
 import com.flexpoker.game.command.events.GameMovedToStartingStageEvent
 import com.flexpoker.game.command.events.GameStartedEvent
 import com.flexpoker.game.command.events.GameTablesCreatedAndPlayersAssociatedEvent
-import com.flexpoker.test.util.GameEventProducerApplierBuilder
+import com.flexpoker.test.util.EventProducerApplierBuilder
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import java.util.UUID
@@ -16,7 +17,7 @@ class JoinGameTest {
     fun testJoinGameSuccessFirstPlayerJoins() {
         val gameCreatedEvent = GameCreatedEvent(UUID.randomUUID(), "test", 2, 2,
             UUID.randomUUID(), 10, 20)
-        val (_, events) = GameEventProducerApplierBuilder()
+        val (_, events) = EventProducerApplierBuilder<GameState, GameEvent>()
             .initState(gameCreatedEvent)
             .andRun { joinGame(it, UUID.randomUUID()) }
             .run()
@@ -28,7 +29,7 @@ class JoinGameTest {
         val gameCreatedEvent = GameCreatedEvent(UUID.randomUUID(), "test", 2,
             2, UUID.randomUUID(), 10, 20)
 
-        val (_, events) = GameEventProducerApplierBuilder()
+        val (_, events) = EventProducerApplierBuilder<GameState, GameEvent>()
             .initState(gameCreatedEvent)
             .andRun { joinGame(it, UUID.randomUUID()) }
             .andRun { joinGame(it, UUID.randomUUID()) }
@@ -46,7 +47,7 @@ class JoinGameTest {
             2, UUID.randomUUID(), 10, 20)
         val playerId = UUID.randomUUID()
 
-        GameEventProducerApplierBuilder()
+        EventProducerApplierBuilder<GameState, GameEvent>()
             .initState(gameCreatedEvent)
             .andRun { joinGame(it, playerId) }
             .andRunThrows(IllegalArgumentException::class.java) { joinGame(it, playerId) }
@@ -57,7 +58,7 @@ class JoinGameTest {
     fun testJoinGameAttemptToJoinMoreThanMax() {
         val gameCreatedEvent = GameCreatedEvent(UUID.randomUUID(), "test", 2,
             2, UUID.randomUUID(), 10, 20)
-        GameEventProducerApplierBuilder()
+        EventProducerApplierBuilder<GameState, GameEvent>()
             .initState(gameCreatedEvent)
             .andRun { joinGame(it, UUID.randomUUID()) }
             .andRun { joinGame(it, UUID.randomUUID()) }

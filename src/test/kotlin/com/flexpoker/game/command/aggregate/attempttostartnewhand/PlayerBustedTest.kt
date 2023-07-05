@@ -1,11 +1,13 @@
 package com.flexpoker.game.command.aggregate.attempttostartnewhand
 
+import com.flexpoker.game.command.aggregate.GameState
 import com.flexpoker.game.command.aggregate.eventproducers.attemptToStartNewHand
 import com.flexpoker.game.command.aggregate.eventproducers.createGame
 import com.flexpoker.game.command.aggregate.eventproducers.joinGame
+import com.flexpoker.game.command.events.GameEvent
 import com.flexpoker.game.command.events.GameTablesCreatedAndPlayersAssociatedEvent
 import com.flexpoker.game.command.events.PlayerBustedGameEvent
-import com.flexpoker.test.util.GameEventProducerApplierBuilder
+import com.flexpoker.test.util.EventProducerApplierBuilder
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -23,7 +25,7 @@ class PlayerBustedTest {
         val gameCreatedEvent = createGame("test", 3, 3, player1Id,
             1, 20).first()
 
-        val (state, events) = GameEventProducerApplierBuilder()
+        val (state, events) = EventProducerApplierBuilder<GameState, GameEvent>()
             .initState(gameCreatedEvent)
             .andRun { joinGame(it, player1Id) }
             .andRun { joinGame(it, player2Id) }
@@ -49,7 +51,7 @@ class PlayerBustedTest {
         val gameCreatedEvent = createGame("test", 3, 3, player1Id,
             1, 20).first()
 
-        val (state, events) = GameEventProducerApplierBuilder()
+        val (state, events) = EventProducerApplierBuilder<GameState, GameEvent>()
             .initState(gameCreatedEvent)
             .andRun { joinGame(it, player1Id) }
             .andRun { joinGame(it, player2Id) }
@@ -75,7 +77,7 @@ class PlayerBustedTest {
         val gameCreatedEvent = createGame("test", 3, 3, player1Id,
             1, 20).first()
 
-        val (state, events) = GameEventProducerApplierBuilder()
+        val (state, events) = EventProducerApplierBuilder<GameState, GameEvent>()
             .initState(gameCreatedEvent)
             .andRun { joinGame(it, player1Id) }
             .andRun { joinGame(it, player2Id) }
@@ -107,7 +109,7 @@ class PlayerBustedTest {
         val gameCreatedEvent = createGame("test", 3, 3, player1Id,
             1, 20).first()
 
-        val (state, events) = GameEventProducerApplierBuilder()
+        val (state, events) = EventProducerApplierBuilder<GameState, GameEvent>()
             .initState(gameCreatedEvent)
             .andRun { joinGame(it, player1Id) }
             .andRun { joinGame(it, player2Id) }
@@ -130,7 +132,7 @@ class PlayerBustedTest {
         val gameCreatedEvent = createGame("test", 3, 3, player1Id,
             1, 20).first()
 
-        val (state, events) = GameEventProducerApplierBuilder()
+        val (state, events) = EventProducerApplierBuilder<GameState, GameEvent>()
             .initState(gameCreatedEvent)
             .andRun { joinGame(it, player1Id) }
             .andRun { joinGame(it, player2Id) }
@@ -142,7 +144,7 @@ class PlayerBustedTest {
         val playerToChipsMapFirst = mapOf(player1Id to 0, player2Id to 0, player3Id to 100)
         val playerToChipsMapSecond = mapOf(player1Id to 0, player2Id to 0, player3Id to 100)
 
-        val (_, _) = GameEventProducerApplierBuilder()
+        val (_, _) = EventProducerApplierBuilder<GameState, GameEvent>()
             .initState(state)
             .andRun { attemptToStartNewHand(it, tableId, playerToChipsMapFirst) }
             .andRunThrows(IllegalArgumentException::class.java) { attemptToStartNewHand(it, tableId, playerToChipsMapSecond) }

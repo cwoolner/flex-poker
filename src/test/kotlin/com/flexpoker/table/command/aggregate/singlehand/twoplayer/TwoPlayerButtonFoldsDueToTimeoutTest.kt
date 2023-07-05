@@ -1,6 +1,7 @@
 package com.flexpoker.table.command.aggregate.singlehand.twoplayer
 
 import com.flexpoker.table.command.HandDealerState
+import com.flexpoker.table.command.aggregate.TableState
 import com.flexpoker.table.command.aggregate.applyEvents
 import com.flexpoker.table.command.aggregate.eventproducers.expireActionOn
 import com.flexpoker.table.command.aggregate.testhelpers.createBasicTableAndStartHand
@@ -15,9 +16,10 @@ import com.flexpoker.table.command.events.PotAmountIncreasedEvent
 import com.flexpoker.table.command.events.PotCreatedEvent
 import com.flexpoker.table.command.events.RoundCompletedEvent
 import com.flexpoker.table.command.events.TableCreatedEvent
+import com.flexpoker.table.command.events.TableEvent
 import com.flexpoker.table.command.events.WinnersDeterminedEvent
 import com.flexpoker.test.util.CommonAssertions.verifyNewEvents
-import com.flexpoker.test.util.TableEventProducerApplierBuilder
+import com.flexpoker.test.util.EventProducerApplierBuilder
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -34,7 +36,7 @@ class TwoPlayerButtonFoldsDueToTimeoutTest {
 
         val (_, _, handId, playerId) = events[4] as ActionOnChangedEvent
 
-        val (_, newEvents) = TableEventProducerApplierBuilder()
+        val (_, newEvents) = EventProducerApplierBuilder<TableState, TableEvent>()
             .initState(initState)
             .andRun { expireActionOn(it, handId, playerId) }
             .run()

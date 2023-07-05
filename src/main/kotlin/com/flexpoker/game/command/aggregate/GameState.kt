@@ -1,5 +1,6 @@
 package com.flexpoker.game.command.aggregate
 
+import com.flexpoker.framework.command.DomainState
 import com.flexpoker.game.command.GameStage
 import com.flexpoker.game.command.events.BlindsIncreasedEvent
 import com.flexpoker.game.command.events.GameCreatedEvent
@@ -30,7 +31,7 @@ data class GameState(
     val registeredPlayerIds: PSet<UUID> = HashTreePSet.empty(),
     val tableIdToPlayerIdsMap: PMap<UUID, PSet<UUID>> = HashTreePMap.empty(),
     val pausedTablesForBalancing: PSet<UUID> = HashTreePSet.empty()
-)
+) : DomainState
 
 private val levelToBlindsMap = mapOf(
     1 to validateBlinds(10, 20),

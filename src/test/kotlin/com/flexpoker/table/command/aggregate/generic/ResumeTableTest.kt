@@ -1,11 +1,13 @@
 package com.flexpoker.table.command.aggregate.generic
 
 import com.flexpoker.exception.FlexPokerException
+import com.flexpoker.table.command.aggregate.TableState
 import com.flexpoker.table.command.aggregate.eventproducers.pause
 import com.flexpoker.table.command.aggregate.eventproducers.resume
 import com.flexpoker.table.command.aggregate.testhelpers.createBasicTable
+import com.flexpoker.table.command.events.TableEvent
 import com.flexpoker.table.command.events.TableResumedEvent
-import com.flexpoker.test.util.TableEventProducerApplierBuilder
+import com.flexpoker.test.util.EventProducerApplierBuilder
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
@@ -16,7 +18,7 @@ class ResumeTableTest {
     @Test
     fun testResumeSuccess() {
         val initState = createBasicTable(UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID())
-        val (_, events) = TableEventProducerApplierBuilder()
+        val (_, events) = EventProducerApplierBuilder<TableState, TableEvent>()
             .initState(initState)
             .andRun { pause(it) }
             .andRun { resume(it) }
@@ -34,7 +36,7 @@ class ResumeTableTest {
     @Test
     fun testResumeTwice() {
         val initState = createBasicTable(UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID())
-        TableEventProducerApplierBuilder()
+        EventProducerApplierBuilder<TableState, TableEvent>()
             .initState(initState)
             .andRun { pause(it) }
             .andRun { resume(it) }

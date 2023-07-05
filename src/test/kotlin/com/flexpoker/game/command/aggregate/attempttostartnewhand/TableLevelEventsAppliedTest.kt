@@ -1,11 +1,13 @@
 package com.flexpoker.game.command.aggregate.attempttostartnewhand
 
+import com.flexpoker.game.command.aggregate.GameState
 import com.flexpoker.game.command.aggregate.applyEvents
 import com.flexpoker.game.command.aggregate.eventproducers.attemptToStartNewHand
 import com.flexpoker.game.command.aggregate.eventproducers.createGame
 import com.flexpoker.game.command.aggregate.eventproducers.joinGame
+import com.flexpoker.game.command.events.GameEvent
 import com.flexpoker.game.command.events.GameTablesCreatedAndPlayersAssociatedEvent
-import com.flexpoker.test.util.GameEventProducerApplierBuilder
+import com.flexpoker.test.util.EventProducerApplierBuilder
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
@@ -23,7 +25,7 @@ class TableLevelEventsAppliedTest {
         val gameCreatedEvent = createGame("test", 4, 2, player1Id,
             1, 20).first()
 
-        val (state, events) = GameEventProducerApplierBuilder()
+        val (state, events) = EventProducerApplierBuilder<GameState, GameEvent>()
             .initState(gameCreatedEvent)
             .andRun { joinGame(it, player1Id) }
             .andRun { joinGame(it, player2Id) }

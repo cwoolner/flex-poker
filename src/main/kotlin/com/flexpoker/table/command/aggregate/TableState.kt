@@ -1,5 +1,6 @@
 package com.flexpoker.table.command.aggregate
 
+import com.flexpoker.framework.command.DomainState
 import com.flexpoker.table.command.FlopCards
 import com.flexpoker.table.command.HandDealerState
 import com.flexpoker.table.command.PlayerAction
@@ -51,7 +52,7 @@ data class TableState(
     val bigBlindPosition: Int = 0,
     val currentHand: HandState? = null,
     val paused: Boolean = false
-)
+) : DomainState
 
 data class HandState(
     val gameId: UUID,

@@ -11,3 +11,5 @@ fun interface CommandReceiver<T> {
 fun interface CommandSender<T> {
     fun send(command: T)
 }
+
+interface DomainState {}

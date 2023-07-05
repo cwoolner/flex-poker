@@ -1,15 +1,17 @@
 package com.flexpoker.game.command.aggregate.attempttostartnewhand
 
 import com.flexpoker.game.command.aggregate.BlindSchedule
+import com.flexpoker.game.command.aggregate.GameState
 import com.flexpoker.game.command.aggregate.applyEvents
 import com.flexpoker.game.command.aggregate.eventproducers.attemptToStartNewHand
 import com.flexpoker.game.command.events.GameCreatedEvent
+import com.flexpoker.game.command.events.GameEvent
 import com.flexpoker.game.command.events.GameJoinedEvent
 import com.flexpoker.game.command.events.GameMovedToStartingStageEvent
 import com.flexpoker.game.command.events.GameStartedEvent
 import com.flexpoker.game.command.events.GameTablesCreatedAndPlayersAssociatedEvent
 import com.flexpoker.game.command.events.NewHandIsClearedToStartEvent
-import com.flexpoker.test.util.GameEventProducerApplierBuilder
+import com.flexpoker.test.util.EventProducerApplierBuilder
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.pcollections.HashTreePMap
@@ -38,7 +40,7 @@ class NewHandIsClearedToStartTest {
         )
         val playersToChipsMap = mapOf(player1Id to 100, player2Id to 100)
 
-        val (_, newEvents) = GameEventProducerApplierBuilder()
+        val (_, newEvents) = EventProducerApplierBuilder<GameState, GameEvent>()
             .initState(applyEvents(events))
             .andRun { attemptToStartNewHand(it, tableId, playersToChipsMap) }
             .run()

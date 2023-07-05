@@ -1,5 +1,6 @@
 package com.flexpoker.table.command.aggregate.singlehand.fourplayer
 
+import com.flexpoker.table.command.aggregate.TableState
 import com.flexpoker.table.command.aggregate.applyEvents
 import com.flexpoker.table.command.aggregate.eventproducers.expireActionOn
 import com.flexpoker.table.command.aggregate.testhelpers.blindPlayerIds
@@ -13,9 +14,10 @@ import com.flexpoker.table.command.events.PotAmountIncreasedEvent
 import com.flexpoker.table.command.events.PotCreatedEvent
 import com.flexpoker.table.command.events.RoundCompletedEvent
 import com.flexpoker.table.command.events.TableCreatedEvent
+import com.flexpoker.table.command.events.TableEvent
 import com.flexpoker.table.command.events.WinnersDeterminedEvent
 import com.flexpoker.test.util.CommonAssertions.verifyNewEvents
-import com.flexpoker.test.util.TableEventProducerApplierBuilder
+import com.flexpoker.test.util.EventProducerApplierBuilder
 import org.junit.jupiter.api.Test
 import java.util.UUID
 
@@ -36,7 +38,7 @@ class FourPlayerThreeFoldsDueToTimeoutTest {
         val rightOfButtonOnPlayerId = setOf(player1Id, player2Id, player3Id, player4Id)
             .subtract(setOf(buttonOnPlayerId, smallBlindPlayerId, bigBlindPlayerId)).first()
 
-        val (_, newEvents) = TableEventProducerApplierBuilder()
+        val (_, newEvents) = EventProducerApplierBuilder<TableState, TableEvent>()
             .initState(initState)
             .andRun { expireActionOn(it, handId, rightOfButtonOnPlayerId) }
             .andRun { expireActionOn(it, handId, buttonOnPlayerId) }

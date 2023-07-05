@@ -1,5 +1,6 @@
 package com.flexpoker.table.command.aggregate.singlehand.twoplayer
 
+import com.flexpoker.table.command.aggregate.TableState
 import com.flexpoker.table.command.aggregate.applyEvents
 import com.flexpoker.table.command.aggregate.eventproducers.call
 import com.flexpoker.table.command.aggregate.eventproducers.check
@@ -18,10 +19,11 @@ import com.flexpoker.table.command.events.PotCreatedEvent
 import com.flexpoker.table.command.events.RiverCardDealtEvent
 import com.flexpoker.table.command.events.RoundCompletedEvent
 import com.flexpoker.table.command.events.TableCreatedEvent
+import com.flexpoker.table.command.events.TableEvent
 import com.flexpoker.table.command.events.TurnCardDealtEvent
 import com.flexpoker.table.command.events.WinnersDeterminedEvent
 import com.flexpoker.test.util.CommonAssertions.verifyNewEvents
-import com.flexpoker.test.util.TableEventProducerApplierBuilder
+import com.flexpoker.test.util.EventProducerApplierBuilder
 import org.junit.jupiter.api.Test
 import java.util.UUID
 
@@ -35,7 +37,7 @@ class TwoPlayerSmallBlindCallAndChecksUntilTheEndTest {
 
         val (_, smallBlindPlayerId, bigBlindPlayerId) = blindPlayerIds(initState)
 
-        val (_, newEvents) = TableEventProducerApplierBuilder()
+        val (_, newEvents) = EventProducerApplierBuilder<TableState, TableEvent>()
             .initState(initState)
             .andRun { call(it, smallBlindPlayerId) }
             .andRun { check(it, bigBlindPlayerId) }

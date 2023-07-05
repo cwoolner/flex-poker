@@ -4,7 +4,7 @@ import com.flexpoker.game.command.aggregate.eventproducers.joinGame
 import com.flexpoker.game.command.events.GameCreatedEvent
 import com.flexpoker.game.command.events.GameEvent
 import com.flexpoker.game.command.events.GameTablesCreatedAndPlayersAssociatedEvent
-import com.flexpoker.test.util.GameEventProducerApplierBuilder
+import com.flexpoker.test.util.EventProducerApplierBuilder
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -32,7 +32,7 @@ class TableAssignmentTest {
             val player3Id = UUID.fromString("17755923-95b4-4ae7-9f45-b67a8e7929fe")
             val player4Id = UUID.fromString("17755923-95b4-4ae7-9f45-b67a8e7929ff")
 
-            val (_, events) = GameEventProducerApplierBuilder()
+            val (_, events) = EventProducerApplierBuilder<GameState, GameEvent>()
                 .initState(createdEvent)
                 .andRun { joinGame(it, player1Id) }
                 .andRun { joinGame(it, player2Id) }
@@ -146,7 +146,7 @@ class TableAssignmentTest {
     ): Pair<GameState, List<GameEvent>> {
         val createdEvent = GameCreatedEvent(UUID.randomUUID(), "test", numberOfPlayers,
             numberOfPlayersPerTable, UUID.randomUUID(), 10, 20)
-        val builder = GameEventProducerApplierBuilder().initState(createdEvent)
+        val builder = EventProducerApplierBuilder<GameState, GameEvent>().initState(createdEvent)
         repeat(numberOfPlayers) { builder.andRun { joinGame(it, UUID.randomUUID()) } }
         val (state, newEvents) = builder.run()
         return Pair(state, listOf(createdEvent) + newEvents)

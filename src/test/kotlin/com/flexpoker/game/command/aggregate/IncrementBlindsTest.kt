@@ -2,11 +2,12 @@ package com.flexpoker.game.command.aggregate
 
 import com.flexpoker.game.command.aggregate.eventproducers.increaseBlinds
 import com.flexpoker.game.command.events.GameCreatedEvent
+import com.flexpoker.game.command.events.GameEvent
 import com.flexpoker.game.command.events.GameJoinedEvent
 import com.flexpoker.game.command.events.GameMovedToStartingStageEvent
 import com.flexpoker.game.command.events.GameStartedEvent
 import com.flexpoker.game.command.events.GameTablesCreatedAndPlayersAssociatedEvent
-import com.flexpoker.test.util.GameEventProducerApplierBuilder
+import com.flexpoker.test.util.EventProducerApplierBuilder
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.pcollections.HashTreePMap
@@ -46,7 +47,7 @@ class IncrementBlindsTest {
             GameTablesCreatedAndPlayersAssociatedEvent(gameId, tableIdToPlayerIdsMap, 2),
             GameStartedEvent(gameId, tableIds, BlindSchedule.init(10))
         )
-        val (_, newEvents) = GameEventProducerApplierBuilder()
+        val (_, newEvents) = EventProducerApplierBuilder<GameState, GameEvent>()
             .initState(applyEvents(events))
             .andRun { increaseBlinds(it) }
             .andRun { increaseBlinds(it) }
@@ -68,7 +69,7 @@ class IncrementBlindsTest {
             GameMovedToStartingStageEvent(gameId),
             GameTablesCreatedAndPlayersAssociatedEvent(gameId, tableIdToPlayerIdsMap, 2)
         )
-        val (_, _) = GameEventProducerApplierBuilder()
+        val (_, _) = EventProducerApplierBuilder<GameState, GameEvent>()
             .initState(applyEvents(events))
             .andRunThrows(IllegalArgumentException::class.java) { increaseBlinds(it) }
             .run()
