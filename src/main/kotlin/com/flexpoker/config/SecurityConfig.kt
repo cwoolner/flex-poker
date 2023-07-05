@@ -22,8 +22,16 @@ class SecurityConfig @Inject constructor(private val loginRepository: LoginRepos
     @Bean
     fun httpSecurity(http: HttpSecurity): SecurityFilterChain {
         http.authorizeHttpRequests {
-            it.requestMatchers("/").authenticated()
-            it.anyRequest().permitAll()
+            it.requestMatchers(
+                "/",
+                "/login",
+                "/sign-up",
+                "/sign-up-confirm",
+                "/game/*",
+                "/game/*/table/*",
+            ).permitAll()
+            it.requestMatchers("/resources/**").permitAll()
+            it.anyRequest().authenticated()
         }.formLogin {
             it.loginPage("/login").permitAll()
         }

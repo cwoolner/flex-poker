@@ -4,11 +4,15 @@ import com.flexpoker.login.repository.LoginRepository
 import com.flexpoker.signup.SignUpUser
 import com.flexpoker.signup.repository.SignUpRepository
 import com.flexpoker.util.PasswordUtils.encode
+import org.springframework.core.io.ClassPathResource
+import org.springframework.http.MediaType
 import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestParam
+import org.springframework.web.bind.annotation.ResponseBody
 import org.springframework.web.servlet.ModelAndView
+import java.nio.charset.Charset
 import java.util.UUID
 import javax.inject.Inject
 
@@ -17,9 +21,10 @@ class SignUpController @Inject constructor(
     private val signUpRepository: SignUpRepository,
     private val loginRepository: LoginRepository) {
 
-    @GetMapping("/sign-up")
+    @GetMapping("/sign-up", produces = [MediaType.TEXT_HTML_VALUE])
+    @ResponseBody
     fun index(): String {
-        return "sign-up-step1"
+        return ClassPathResource("index.html").getContentAsString(Charset.defaultCharset())
     }
 
     @PostMapping("/sign-up")
