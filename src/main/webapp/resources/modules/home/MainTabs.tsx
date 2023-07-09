@@ -1,5 +1,4 @@
 import _ from 'lodash'
-import { BrowserRouter } from 'react-router-dom'
 import { Route, Routes } from 'react-router'
 import GameTabs from './GameTabs'
 import Lobby from '../lobby/Lobby'
@@ -14,16 +13,14 @@ const wrapRedirect = (component) => {
 
 export default () => {
   return (
-    <BrowserRouter>
-      <div>
-        <GameTabs />
-        <Routes>
-          <Route path="/" element={wrapRedirect(<Lobby />)} />
-          <Route path="/game/:gameId" element={wrapRedirect(<GamePage />)} />
-          <Route path="/game/:gameId/table/:tableId" element={wrapRedirect(<TablePage />)} />
-        </Routes>
-        <Chat />
-      </div>
-    </BrowserRouter>
+    <>
+      <GameTabs />
+      <Routes>
+        <Route path="/" element={wrapRedirect(<Lobby />)} />
+        <Route path="/game/:gameId" element={wrapRedirect(<GamePage />)} />
+        <Route path="/game/:gameId/table/:tableId" element={wrapRedirect(<TablePage />)} />
+      </Routes>
+      <Chat />
+    </>
   )
 }

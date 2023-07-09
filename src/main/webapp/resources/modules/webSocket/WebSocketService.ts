@@ -1,9 +1,8 @@
-import webstomp, { Message } from 'webstomp-client'
+import webstomp, { Client, Message } from 'webstomp-client'
 import SockJS from 'sockjs-client'
 
 const WebSocketService = () => {
-  const client = webstomp.over(new SockJS('/application'), {debug: false})
-  client.connect({}, frame => document.dispatchEvent(new Event('webSocketConnected')))
+  let client: Client;
 
   const registerSubscription = (location: string, subscription: (message: Message) => any) => {
     return new Promise((resolve, reject) => {
@@ -19,9 +18,14 @@ const WebSocketService = () => {
 
   const send = (location: string, objectToSend) => client.send(location, JSON.stringify(objectToSend))
 
+  const connect = () => {
+    client = webstomp.over(new SockJS('/application'), {debug: false})
+    client.connect({}, frame => document.dispatchEvent(new Event('webSocketConnected')))
+  }
+
   const disconnect = () => client.disconnect()
 
-  return { registerSubscription, send, disconnect }
+  return { registerSubscription, send, connect, disconnect }
 }
 
 export default WebSocketService()

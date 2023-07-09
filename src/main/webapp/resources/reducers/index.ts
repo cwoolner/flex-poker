@@ -19,6 +19,8 @@ const POCKET_CARDS_RECEIVED = 'POCKET_CARDS_RECEIVED'
 const REDIRECT_TO_GAME = 'REDIRECT_TO_GAME'
 const REDIRECT_TO_TABLE = 'REDIRECT_TO_TABLE'
 const CLEAR_REDIRECT = 'CLEAR_REDIRECT'
+const LOGIN_USER = 'LOGIN_USER'
+const LOGOUT_USER = 'LOGOUT_USER'
 
 export const initOpenGameTabs = openGameTabs => ({ type: INIT_OPEN_GAME_TABS, openGameTabs })
 export const updateOpenGameTabs = openGameTabs => ({ type: UPDATE_OPEN_GAME_TABS, openGameTabs })
@@ -38,6 +40,8 @@ export const pocketCardsReceived = (handId, pocketCards) => ({ type: POCKET_CARD
 export const redirectToGame = gameId => ({ type: REDIRECT_TO_GAME, gameId })
 export const redirectToTable = (gameId, tableId) => ({ type: REDIRECT_TO_TABLE, gameId, tableId })
 export const clearRedirect = () => ({ type: CLEAR_REDIRECT })
+export const loginUser = username => ({ type: LOGIN_USER, username })
+export const logoutUser = () => ({ type: LOGOUT_USER })
 
 export default (state = INITITAL_APP_STATE, action) => {
   switch (action.type) {
@@ -98,6 +102,10 @@ export default (state = INITITAL_APP_STATE, action) => {
       return { ...state, redirectUrl: `/game/${action.gameId}/table/${action.tableId}` }
     case CLEAR_REDIRECT:
       return { ...state, redirectUrl: null }
+    case LOGIN_USER:
+      return { ...state, userInfo: { username: action.username, loggedIn: true }}
+    case LOGOUT_USER:
+      return { ...state, userInfo: { username: null, loggedIn: false }}
     default:
       return state
   }

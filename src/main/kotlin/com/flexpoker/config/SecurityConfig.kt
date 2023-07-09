@@ -23,18 +23,16 @@ class SecurityConfig @Inject constructor(private val loginRepository: LoginRepos
     fun httpSecurity(http: HttpSecurity): SecurityFilterChain {
         http.authorizeHttpRequests {
             it.requestMatchers(
-                "/",
                 "/login",
                 "/sign-up",
                 "/sign-up-confirm",
-                "/game/*",
-                "/game/*/table/*",
+                "/userinfo",
             ).permitAll()
             it.requestMatchers("/resources/**").permitAll()
             it.anyRequest().authenticated()
         }.formLogin {
             it.loginPage("/login").permitAll()
-        }
+        }.csrf { it.disable() }
         return http.build()
     }
 
