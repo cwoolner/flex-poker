@@ -47,7 +47,13 @@ export interface OpenTableForUser {
     tableId: string;
 }
 
+export interface UserInfo {
+    username: string;
+    loggedIn: boolean;
+}
+
 export interface AppState {
+    userInfo: UserInfo;
     openGameTabs: [];
     openGameList: [];
     showJoinGameModal: boolean;
@@ -85,6 +91,7 @@ export const DEFAULT_POCKET_CARDS = {
 }
 
 export const INITITAL_APP_STATE: AppState = {
+    userInfo: { username: null, loggedIn: false },
     openGameTabs: [],
     openGameList: [],
     showJoinGameModal: false,

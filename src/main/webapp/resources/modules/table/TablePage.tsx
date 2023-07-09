@@ -16,12 +16,13 @@ export default () => {
 
   const { gameId, tableId } = useParams()
 
-  const { totalPot, visibleCommonCards, seats, pots, cardId1, cardId2 } = useSelector((state: RootState) => {
+  const { totalPot, visibleCommonCards, seats, pots, cardId1, cardId2, username } = useSelector((state: RootState) => {
     const tableData = state.tables.get(state.activeTable.gameId, DEFAULT_GAME).get(state.activeTable.tableId, DEFAULT_TABLE)
     const pocketCardData = state.pocketCards.get(tableData.currentHandId)
     return {
       ...tableData,
-      ...pocketCardData
+      ...pocketCardData,
+      ...state.userInfo,
     }
   })
 
@@ -35,8 +36,6 @@ export default () => {
     dispatch(changeTable(gameId, tableId))
   }, [gameId, tableId])
 
-  // @ts-expect-error
-  const username = window.username
   const mySeat = seats.find(seat => seat.name === username)
 
   return (
