@@ -11,6 +11,8 @@ import Login from './modules/login'
 import { Route, Routes } from 'react-router-dom'
 import { useEffect } from 'react'
 import { loginUser, logoutUser } from './reducers'
+import SignUpStep1 from './modules/signup/sign-up-step-1'
+import SignUpStep2 from './modules/signup/sign-up-step-2'
 
 export default () => {
   const { username, loggedIn } = useSelector((state: RootState) => state.userInfo)
@@ -42,6 +44,8 @@ export default () => {
             ? <MainTabs />
             : <Routes>
                 <Route path="/login" element={<Login />} />
+                <Route path="/sign-up" element={<SignUpStep1 />} />
+                <Route path="/sign-up-confirm" element={<SignUpStep2 />} />
               </Routes>
         }
       </Container>

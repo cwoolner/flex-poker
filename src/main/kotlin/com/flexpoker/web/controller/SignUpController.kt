@@ -5,13 +5,15 @@ import com.flexpoker.signup.SignUpUser
 import com.flexpoker.signup.repository.SignUpRepository
 import com.flexpoker.util.PasswordUtils.encode
 import org.springframework.core.io.ClassPathResource
+import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
+import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.ResponseBody
-import org.springframework.web.servlet.ModelAndView
 import java.nio.charset.Charset
 import java.util.UUID
 import javax.inject.Inject
@@ -23,65 +25,63 @@ class SignUpController @Inject constructor(
 
     @GetMapping("/sign-up", produces = [MediaType.TEXT_HTML_VALUE])
     @ResponseBody
-    fun index(): String {
-        return ClassPathResource("index.html").getContentAsString(Charset.defaultCharset())
-    }
+    fun index(): String = ClassPathResource("index.html").getContentAsString(Charset.defaultCharset())
 
     @PostMapping("/sign-up")
-    fun signUpStep1Post(username: String, emailAddress: String, password: String): ModelAndView {
+    fun signUpStep1Post(@RequestBody model: Map<String, String>): ResponseEntity<Map<String, Any>> {
+        val username = model["username"]!!
+        val password = model["password"]!!
+        val emailAddress = model["emailAddress"]!!
         val usernameExists = signUpRepository.usernameExists(username)
         if (usernameExists) {
-            val modelAndView = ModelAndView("sign-up-step1")
-            modelAndView.addObject("error", "Username already exists")
-            return modelAndView
+            return ResponseEntity(mapOf("error" to "Username already exists"), HttpStatus.UNPROCESSABLE_ENTITY)
         }
         val aggregateId = UUID.randomUUID()
         val signUpCode = UUID.randomUUID()
         val encryptedPassword = encode(password)
         signUpRepository.saveSignUpUser(
-            SignUpUser(aggregateId, signUpCode, emailAddress, username, encryptedPassword))
+            SignUpUser(aggregateId, signUpCode, emailAddress, username, encryptedPassword)
+        )
         signUpRepository.storeSignUpInformation(aggregateId, username, signUpCode)
-        val modelAndView = ModelAndView("sign-up-step1-success")
-        modelAndView.viewName = "sign-up-step1-success"
-        modelAndView.addObject("email", emailAddress)
-        // TODO: remove this once emails can be sent
-        modelAndView.addObject("username", username)
-        return modelAndView
+
+        // TODO: return a generic success once emails can be sent
+        return ResponseEntity(mapOf("email" to emailAddress, "username" to username), HttpStatus.OK)
     }
 
-    @GetMapping("/sign-up-confirm")
-    fun signUpStep2Get(@RequestParam username: String?): ModelAndView {
+    @GetMapping("/sign-up-confirm", produces = [MediaType.TEXT_HTML_VALUE])
+    @ResponseBody
+    fun signUpConfirm(): String = ClassPathResource("index.html").getContentAsString(Charset.defaultCharset())
 
+    @GetMapping("/confirm-sign-up")
+    fun signUpStep2Get(@RequestParam username: String): ResponseEntity<Map<String, Any>> {
         // TODO: signUpCode should be sent in once email works, username is temporary
         val signUpCode = signUpRepository.findSignUpCodeByUsername(username!!)
         val signUpCodeExists = signUpRepository.signUpCodeExists(signUpCode)
-        val modelAndView = ModelAndView("sign-up-step2")
-        if (signUpCodeExists) {
-            modelAndView.addObject("signUpCode", signUpCode)
-        } else {
-            // TODO: show error for invalid sign-up code
+        if (!signUpCodeExists) {
+            return ResponseEntity(mapOf("error" to "signup code is invalid"), HttpStatus.UNPROCESSABLE_ENTITY)
         }
-        return modelAndView
+        return ResponseEntity(mapOf("signUpCode" to signUpCode), HttpStatus.OK)
     }
 
     @PostMapping("/sign-up-confirm")
-    fun signUpStep2Post(username: String, @RequestParam signUpCode: UUID): ModelAndView {
+    fun signUpStep2Post(@RequestBody model: Map<String, String>): ResponseEntity<Map<String, Any>> {
+        val username = model["username"]!!
+        val signUpCode = UUID.fromString(model["signUpCode"]!!)
+
         val aggregateId = signUpRepository.findAggregateIdByUsernameAndSignUpCode(username, signUpCode)
-        if (aggregateId == null) {
-            val modelAndView = ModelAndView("sign-up-step2")
-            modelAndView.addObject("signUpCode", signUpCode)
-            modelAndView.addObject("error", "Invalid username and sign up code combination")
-            return modelAndView
-        }
+            ?: return ResponseEntity(mapOf(
+                "error" to "Invalid username and sign up code combination",
+                "signUpCode" to signUpCode
+            ), HttpStatus.UNPROCESSABLE_ENTITY)
+
         val signUpUser = signUpRepository.fetchSignUpUser(aggregateId)
         signUpUser!!.confirmSignedUpUser(username, signUpCode)
         signUpRepository.saveSignUpUser(signUpUser)
         signUpRepository.storeNewlyConfirmedUsername(username)
         loginRepository.saveUsernameAndPassword(username, signUpUser.encryptedPassword)
         loginRepository.saveAggregateIdAndUsername(aggregateId, username)
-        val modelAndView = ModelAndView("sign-up-step2-success")
-        modelAndView.addObject("username", username)
-        return modelAndView
+
+        return ResponseEntity(mapOf("username" to username), HttpStatus.OK)
     }
 
 }

@@ -26,6 +26,7 @@ class SecurityConfig @Inject constructor(private val loginRepository: LoginRepos
                 "/login",
                 "/sign-up",
                 "/sign-up-confirm",
+                "/confirm-sign-up",
                 "/userinfo",
             ).permitAll()
             it.requestMatchers("/resources/**").permitAll()
