@@ -37,14 +37,8 @@ class RedisGameEventRepository @Inject constructor(
         return events
     }
 
-    override fun fetchGameCreatedEvent(gameId: UUID): GameCreatedEvent? {
-        val gameEvents = fetchAll(gameId)
-        for (gameEvent in gameEvents) {
-            if (gameEvent.javaClass == GameCreatedEvent::class.java) {
-                return gameEvent as GameCreatedEvent
-            }
-        }
-        return null
+    override fun fetchGameCreatedEvent(gameId: UUID): GameCreatedEvent {
+        return fetchAll(gameId).first { it.javaClass === GameCreatedEvent::class.java } as GameCreatedEvent
     }
 
 }

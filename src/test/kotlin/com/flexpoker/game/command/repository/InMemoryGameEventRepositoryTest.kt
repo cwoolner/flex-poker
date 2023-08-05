@@ -5,7 +5,6 @@ import com.flexpoker.game.command.events.GameCreatedEvent
 import com.flexpoker.game.command.events.GameJoinedEvent
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
-import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
@@ -41,8 +40,7 @@ class InMemoryGameEventRepositoryTest {
         val repository = InMemoryGameEventRepository()
         val gameId = UUID.randomUUID()
         repository.setEventVersionsAndSave(0, listOf(GameJoinedEvent(gameId, UUID.randomUUID())))
-        val event = repository.fetchGameCreatedEvent(gameId)
-        assertNull(event)
+        assertThrows(NoSuchElementException::class.java) { repository.fetchGameCreatedEvent(gameId) }
     }
 
     @Test

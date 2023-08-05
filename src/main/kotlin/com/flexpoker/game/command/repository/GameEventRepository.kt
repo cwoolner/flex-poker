@@ -7,5 +7,5 @@ import java.util.UUID
 interface GameEventRepository {
     fun fetchAll(id: UUID): List<GameEvent>
     fun setEventVersionsAndSave(basedOnVersion: Int, events: List<GameEvent>): List<GameEvent>
-    fun fetchGameCreatedEvent(gameId: UUID): GameCreatedEvent?
+    fun fetchGameCreatedEvent(gameId: UUID): GameCreatedEvent
 }
