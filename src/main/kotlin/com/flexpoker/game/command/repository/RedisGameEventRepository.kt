@@ -25,16 +25,20 @@ class RedisGameEventRepository @Inject constructor(
     }
 
     override fun setEventVersionsAndSave(basedOnVersion: Int, events: List<GameEvent>): List<GameEvent> {
-        val aggregateId = events[0].aggregateId
-        val existingEvents = fetchAll(aggregateId)
-        if (existingEvents.size != basedOnVersion) {
-            throw FlexPokerException("events to save are based on a different version of the aggregate")
+        if (events.isEmpty()) {
+            return emptyList()
+        } else {
+            val aggregateId = events[0].aggregateId
+            val existingEvents = fetchAll(aggregateId)
+            if (existingEvents.size != basedOnVersion) {
+                throw FlexPokerException("events to save are based on a different version of the aggregate")
+            }
+            for (i in events.indices) {
+                events[i].version = basedOnVersion + i + 1
+            }
+            redisTemplate.opsForList().rightPushAll(GAME_EVENT_NAMESPACE + aggregateId, events)
+            return events
         }
-        for (i in events.indices) {
-            events[i].version = basedOnVersion + i + 1
-        }
-        redisTemplate.opsForList().rightPushAll(GAME_EVENT_NAMESPACE + aggregateId, events)
-        return events
     }
 
     override fun fetchGameCreatedEvent(gameId: UUID): GameCreatedEvent {
