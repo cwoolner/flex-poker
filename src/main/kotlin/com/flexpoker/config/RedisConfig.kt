@@ -15,8 +15,7 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Primary
 import org.springframework.context.annotation.Profile
-import org.springframework.data.redis.connection.RedisStandaloneConfiguration
-import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory
+import org.springframework.data.redis.connection.RedisConnectionFactory
 import org.springframework.data.redis.core.RedisTemplate
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer
 import org.springframework.data.redis.serializer.StringRedisSerializer
@@ -35,11 +34,6 @@ import java.util.UUID
 class RedisConfig {
 
     @Bean
-    fun lettuceConnectionFactory(): LettuceConnectionFactory {
-        return LettuceConnectionFactory(RedisStandaloneConfiguration("localhost", 6379))
-    }
-
-    @Bean
     fun defaultObjectMapper(): ObjectMapper {
         val objectMapper = ObjectMapper()
         objectMapper.findAndRegisterModules()
@@ -48,91 +42,98 @@ class RedisConfig {
 
     @Bean
     @Primary
-    fun redisStringTemplate(): RedisTemplate<String, String> {
+    fun redisStringTemplate(connectionFactory: RedisConnectionFactory): RedisTemplate<String, String> {
         val redisTemplate = RedisTemplate<String, String>()
-        setupDefaultKeyValueRedisTemplate(redisTemplate, String::class.java)
+        setupDefaultKeyValueRedisTemplate(connectionFactory, redisTemplate, String::class.java)
         return redisTemplate
     }
 
     @Bean
-    fun redisTemplateGameInList(): RedisTemplate<String, GameInListDTO> {
+    fun redisTemplateGameInList(connectionFactory: RedisConnectionFactory): RedisTemplate<String, GameInListDTO> {
         val redisTemplate = RedisTemplate<String, GameInListDTO>()
-        setupDefaultKeyValueRedisTemplate(redisTemplate, GameInListDTO::class.java)
+        setupDefaultKeyValueRedisTemplate(connectionFactory, redisTemplate, GameInListDTO::class.java)
         return redisTemplate
     }
 
     @Bean
-    fun redisTemplateTableEvent(): RedisTemplate<String, TableEvent> {
+    fun redisTemplateTableEvent(connectionFactory: RedisConnectionFactory): RedisTemplate<String, TableEvent> {
         val redisTemplate = RedisTemplate<String, TableEvent>()
-        setupDefaultKeyValueRedisTemplate(redisTemplate, TableEvent::class.java)
+        setupDefaultKeyValueRedisTemplate(connectionFactory, redisTemplate, TableEvent::class.java)
         return redisTemplate
     }
 
     @Bean
-    fun redisTemplateGameEvent(): RedisTemplate<String, GameEvent> {
+    fun redisTemplateGameEvent(connectionFactory: RedisConnectionFactory): RedisTemplate<String, GameEvent> {
         val redisTemplate = RedisTemplate<String, GameEvent>()
-        setupDefaultKeyValueRedisTemplate(redisTemplate, GameEvent::class.java)
+        setupDefaultKeyValueRedisTemplate(connectionFactory, redisTemplate, GameEvent::class.java)
         return redisTemplate
     }
 
     @Bean
-    fun redisTemplateOpenGameForUser(): RedisTemplate<String, OpenGameForUser> {
+    fun redisTemplateOpenGameForUser(connectionFactory: RedisConnectionFactory): RedisTemplate<String, OpenGameForUser> {
         val redisTemplate = RedisTemplate<String, OpenGameForUser>()
-        setupDefaultKeyValueRedisTemplate(redisTemplate, OpenGameForUser::class.java)
+        setupDefaultKeyValueRedisTemplate(connectionFactory, redisTemplate, OpenGameForUser::class.java)
         return redisTemplate
     }
 
     @Bean
-    fun redisTemplateFlopCards(): RedisTemplate<String, FlopCards> {
+    fun redisTemplateFlopCards(connectionFactory: RedisConnectionFactory): RedisTemplate<String, FlopCards> {
         val redisTemplate = RedisTemplate<String, FlopCards>()
-        setupDefaultKeyValueRedisTemplate(redisTemplate, FlopCards::class.java)
+        setupDefaultKeyValueRedisTemplate(connectionFactory, redisTemplate, FlopCards::class.java)
         return redisTemplate
     }
 
     @Bean
-    fun redisTemplateTurnCard(): RedisTemplate<String, TurnCard> {
+    fun redisTemplateTurnCard(connectionFactory: RedisConnectionFactory): RedisTemplate<String, TurnCard> {
         val redisTemplate = RedisTemplate<String, TurnCard>()
-        setupDefaultKeyValueRedisTemplate(redisTemplate, TurnCard::class.java)
+        setupDefaultKeyValueRedisTemplate(connectionFactory, redisTemplate, TurnCard::class.java)
         return redisTemplate
     }
 
     @Bean
-    fun redisTemplateRiverCard(): RedisTemplate<String, RiverCard> {
+    fun redisTemplateRiverCard(connectionFactory: RedisConnectionFactory): RedisTemplate<String, RiverCard> {
         val redisTemplate = RedisTemplate<String, RiverCard>()
-        setupDefaultKeyValueRedisTemplate(redisTemplate, RiverCard::class.java)
+        setupDefaultKeyValueRedisTemplate(connectionFactory, redisTemplate, RiverCard::class.java)
         return redisTemplate
     }
 
     @Bean
-    fun redisTemplatePocketCards(): RedisTemplate<String, Map<UUID, PocketCards>> {
+    fun redisTemplatePocketCards(connectionFactory: RedisConnectionFactory): RedisTemplate<String, Map<UUID, PocketCards>> {
         val redisTemplate = RedisTemplate<String, Map<UUID, PocketCards>>()
-        setupConnectionAndKeySerializerRedisTemplate(redisTemplate)
+        setupConnectionAndKeySerializerRedisTemplate(connectionFactory, redisTemplate)
         redisTemplate.hashKeySerializer = getJacksonSerializer(UUID::class.java)
         redisTemplate.hashValueSerializer = getJacksonSerializer(PocketCards::class.java)
         return redisTemplate
     }
 
     @Bean
-    fun redisTemplateTableDTO(): RedisTemplate<String, TableDTO> {
+    fun redisTemplateTableDTO(connectionFactory: RedisConnectionFactory): RedisTemplate<String, TableDTO> {
         val redisTemplate = RedisTemplate<String, TableDTO>()
-        setupDefaultKeyValueRedisTemplate(redisTemplate, TableDTO::class.java)
+        setupDefaultKeyValueRedisTemplate(connectionFactory, redisTemplate, TableDTO::class.java)
         return redisTemplate
     }
 
     @Bean
-    fun redisTemplateChatMessageDTO(): RedisTemplate<String, OutgoingChatMessageDTO> {
+    fun redisTemplateChatMessageDTO(connectionFactory: RedisConnectionFactory): RedisTemplate<String, OutgoingChatMessageDTO> {
         val redisTemplate = RedisTemplate<String, OutgoingChatMessageDTO>()
-        setupDefaultKeyValueRedisTemplate(redisTemplate, OutgoingChatMessageDTO::class.java)
+        setupDefaultKeyValueRedisTemplate(connectionFactory, redisTemplate, OutgoingChatMessageDTO::class.java)
         return redisTemplate
     }
 
-    private fun setupDefaultKeyValueRedisTemplate(redisTemplate: RedisTemplate<*, *>, clazz: Class<*>) {
-        setupConnectionAndKeySerializerRedisTemplate(redisTemplate)
+    private fun setupDefaultKeyValueRedisTemplate(
+        connectionFactory: RedisConnectionFactory,
+        redisTemplate: RedisTemplate<*, *>,
+        clazz: Class<*>
+    ) {
+        setupConnectionAndKeySerializerRedisTemplate(connectionFactory, redisTemplate)
         redisTemplate.valueSerializer = getJacksonSerializer(clazz)
     }
 
-    private fun setupConnectionAndKeySerializerRedisTemplate(redisTemplate: RedisTemplate<*, *>) {
-        redisTemplate.connectionFactory = lettuceConnectionFactory()
+    private fun setupConnectionAndKeySerializerRedisTemplate(
+        connectionFactory: RedisConnectionFactory,
+        redisTemplate: RedisTemplate<*, *>
+    ) {
+        redisTemplate.connectionFactory = connectionFactory
         redisTemplate.keySerializer = StringRedisSerializer()
     }
 
