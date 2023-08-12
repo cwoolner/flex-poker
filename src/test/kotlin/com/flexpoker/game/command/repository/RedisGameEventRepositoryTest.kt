@@ -51,6 +51,11 @@ class RedisGameEventRepositoryTest {
     }
 
     @Test
+    fun testSetEventVersionsAndSaveTwoJoinsInOneRequest() {
+        sharedTestSetEventVersionsAndSaveTwoJoinsInOneRequest(repository)
+    }
+
+    @Test
     fun testSetEventVersionsAndSaveEmptyList() {
         sharedTestSetEventVersionsAndSaveEmptyList(repository)
     }

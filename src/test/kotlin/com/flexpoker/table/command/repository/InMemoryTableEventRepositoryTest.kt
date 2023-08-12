@@ -11,6 +11,21 @@ class InMemoryTableEventRepositoryTest {
     private lateinit var repository: TableEventRepository
 
     @Test
+    fun testFetchAll() {
+        sharedTestFetchAll(repository)
+    }
+
+    @Test
+    fun testSetEventVersionsAndSaveBadBasedOnVersion1() {
+        sharedTestSetEventVersionsAndSaveBadBasedOnVersion1(repository)
+    }
+
+    @Test
+    fun testSetEventVersionsAndSaveTwoJoinsInOneRequest() {
+        sharedTestSetEventVersionsAndSaveTwoFakeEventsInOneRequest(repository)
+    }
+
+    @Test
     fun testSetEventVersionsAndSaveEmptyList() {
         sharedTestSetEventVersionsAndSaveEmptyList(repository)
     }
