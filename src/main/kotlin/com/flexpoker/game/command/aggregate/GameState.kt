@@ -68,7 +68,7 @@ data class BlindSchedule (
         return levelToBlindsMap.keys.maxOrNull()!!
     }
 
-    fun isMaxLevel(): Boolean {
+    fun atMaxLevel(): Boolean {
         return currentLevel == maxLevel()
     }
 
@@ -77,7 +77,7 @@ data class BlindSchedule (
     }
 
     fun incrementBlinds(): BlindSchedule {
-        return if (isMaxLevel()) this
+        return if (atMaxLevel()) this
         else copy(currentLevel = currentLevel.inc())
     }
 

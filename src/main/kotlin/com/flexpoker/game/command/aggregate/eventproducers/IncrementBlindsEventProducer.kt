@@ -7,5 +7,5 @@ import com.flexpoker.game.command.events.GameEvent
 
 fun increaseBlinds(state: GameState): List<GameEvent> {
     require(state.stage === GameStage.INPROGRESS) { "cannot increase blinds if the game isn't in progress" }
-    return if (!state.blindSchedule.isMaxLevel()) listOf(BlindsIncreasedEvent(state.aggregateId)) else emptyList()
+    return if (!state.blindSchedule.atMaxLevel()) listOf(BlindsIncreasedEvent(state.aggregateId)) else emptyList()
 }
