@@ -11,15 +11,19 @@ import com.flexpoker.table.command.TurnCard
 import com.flexpoker.table.command.events.TableEvent
 import com.flexpoker.table.query.dto.TableDTO
 import com.flexpoker.web.dto.OutgoingChatMessageDTO
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Primary
 import org.springframework.context.annotation.Profile
+import org.springframework.core.io.Resource
 import org.springframework.data.redis.connection.RedisConnectionFactory
 import org.springframework.data.redis.core.RedisTemplate
+import org.springframework.data.redis.core.script.RedisScript
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer
 import org.springframework.data.redis.serializer.StringRedisSerializer
 import java.util.UUID
+
 
 @Configuration
 @Profile(
@@ -118,6 +122,14 @@ class RedisConfig {
         val redisTemplate = RedisTemplate<String, OutgoingChatMessageDTO>()
         setupDefaultKeyValueRedisTemplate(connectionFactory, redisTemplate, OutgoingChatMessageDTO::class.java)
         return redisTemplate
+    }
+
+    @Value("classpath:redis-scripts/check-and-set.lua")
+    private lateinit var scriptResource: Resource
+
+    @Bean
+    fun checkAndSetScript(): RedisScript<Boolean?>? {
+        return RedisScript.of(scriptResource, Boolean::class.java)
     }
 
     private fun setupDefaultKeyValueRedisTemplate(
