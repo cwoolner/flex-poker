@@ -27,7 +27,7 @@ class BlindScheduleTest {
     @Test
     fun testMaxLevel() {
         val blindSchedule = BlindSchedule.init(10).incrementBlinds().incrementBlinds().incrementBlinds().incrementBlinds()
-        assertTrue(blindSchedule.isMaxLevel())
+        assertTrue(blindSchedule.atMaxLevel())
         assertEquals(5, blindSchedule.currentLevel)
         assertEquals(5, blindSchedule.incrementBlinds().currentLevel)
     }
