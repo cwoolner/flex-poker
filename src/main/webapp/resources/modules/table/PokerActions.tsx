@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import WebSocketService from '../webSocket/WebSocketService'
-import _ from 'lodash'
 
 const check = (gameId, tableId, setCurrentRaiseTo) => {
   WebSocketService.send('/app/check', { gameId, tableId })
@@ -18,7 +17,7 @@ const fold = (gameId, tableId, setCurrentRaiseTo) => {
 }
 
 const validRaise = (minRaiseTo, maxRaiseTo, currentRaiseTo) => {
-  return _.inRange(currentRaiseTo, minRaiseTo, maxRaiseTo + 1)
+  return currentRaiseTo >= minRaiseTo && currentRaiseTo <= maxRaiseTo
 }
 
 const raise = (gameId, tableId, minRaiseTo, maxRaiseTo, currentRaiseTo, setCurrentRaiseTo) => {

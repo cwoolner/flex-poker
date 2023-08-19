@@ -13,7 +13,6 @@
   "license": "ISC",
   "dependencies": {
     "immutable": "4.3.2",
-    "lodash": "4.17.21",
     "moment": "2.29.4",
     "moment-timezone": "0.5.43",
     "react": "18.2.0",
@@ -31,7 +30,6 @@
     "http-server": "14.1.1",
     "ts-loader": "9.4.4",
     "typescript": "5.1.6",
-    "@types/lodash": "4.14.196",
     "@types/sockjs-client": "1.5.1",
     "webpack": "5.88.2",
     "webpack-cli": "5.1.4"

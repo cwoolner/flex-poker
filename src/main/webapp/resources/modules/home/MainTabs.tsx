@@ -1,4 +1,3 @@
-import _ from 'lodash'
 import { Route, Routes } from 'react-router'
 import GameTabs from './GameTabs'
 import Lobby from '../lobby/Lobby'

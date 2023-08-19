@@ -1,11 +1,8 @@
 import { useEffect } from 'react';
-import { Map } from 'immutable'
 import CommonCards from './CommonCards'
 import MyCards from './MyCards'
-import Seat from './Seat'
 import PokerActions from './PokerActions'
 import SeatContainer from './SeatContainer'
-import _ from 'lodash'
 import { useDispatch, useSelector } from 'react-redux'
 import { changeChatMsgStream, changeTable } from '../../reducers'
 import { useParams } from 'react-router-dom'
@@ -59,15 +56,15 @@ export default () => {
 
       <MyCards myLeftCardId={cardId1} myRightCardId={cardId2} />
       {
-        _.isNil(mySeat)
-          ? null
-          : <PokerActions
+        mySeat
+          ? <PokerActions
               gameId={gameId}
               tableId={tableId}
               actionOn={mySeat.isActionOn}
               callAmount={mySeat.callAmount}
               minRaiseTo={mySeat.raiseTo}
               maxRaiseTo={mySeat.chipsInBack + mySeat.chipsInFront} />
+          : null
       }
     </>
   )
