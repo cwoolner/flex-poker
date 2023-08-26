@@ -25,7 +25,17 @@ class InMemoryOpenGameForPlayerRepository : OpenGameForPlayerRepository {
     }
 
     override fun deleteOpenGameForPlayer(playerId: UUID, gameId: UUID) {
+        val openGameForPlayer = openGameForUserMap[playerId]!![gameId]!!
         openGameForUserMap[playerId]!!.remove(gameId)
+        val removedOrdinal = openGameForPlayer.ordinal
+        val gamesToDecrementOrdinal = fetchAllOpenGamesForPlayer(playerId)
+            .stream()
+            .filter { it.ordinal > removedOrdinal }
+            .map { it.copy(ordinal = it.ordinal - 1) }
+            .collect(Collectors.toList())
+        for (decrementedOrdinal in gamesToDecrementOrdinal) {
+            openGameForUserMap[playerId]!![decrementedOrdinal.gameId] = decrementedOrdinal
+        }
     }
 
     override fun addOpenGameForUser(playerId: UUID, gameId: UUID, gameName: String) {

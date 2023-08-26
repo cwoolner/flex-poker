@@ -31,8 +31,6 @@ class RedisGamePlayerRepository @Inject constructor(private val redisTemplate: R
             .collect(Collectors.toSet())
     }
 
-    private fun redisKey(gameId: UUID): String {
-        return GAME_PLAYER_NAMESPACE + gameId
-    }
+    private fun redisKey(gameId: UUID): String = GAME_PLAYER_NAMESPACE + gameId
 
 }

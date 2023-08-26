@@ -7,7 +7,6 @@ import com.flexpoker.game.query.repository.OpenGameForPlayerRepository
 import org.springframework.context.annotation.Profile
 import org.springframework.data.redis.core.RedisTemplate
 import org.springframework.stereotype.Repository
-import java.util.Comparator
 import java.util.UUID
 import java.util.stream.Collectors
 import java.util.stream.IntStream
@@ -15,8 +14,9 @@ import javax.inject.Inject
 
 @Profile(ProfileNames.REDIS, ProfileNames.GAME_QUERY_REDIS)
 @Repository
-class RedisOpenGameForPlayerRepository @Inject constructor(private val redisTemplate: RedisTemplate<String, OpenGameForUser>) :
-    OpenGameForPlayerRepository {
+class RedisOpenGameForPlayerRepository @Inject constructor(
+    private val redisTemplate: RedisTemplate<String, OpenGameForUser>,
+) : OpenGameForPlayerRepository {
 
     companion object {
         private const val OPEN_GAME_FOR_PLAYER_NAMESPACE = "open-game-for-player:"
@@ -46,9 +46,6 @@ class RedisOpenGameForPlayerRepository @Inject constructor(private val redisTemp
     }
 
     override fun addOpenGameForUser(playerId: UUID, gameId: UUID, gameName: String) {
-        check(fetchOpenGameForPlayer(playerId, gameId) == null) {
-            "gameId: $gameId already exists for playerId: $playerId"
-        }
         val openGamesForPlayer = fetchAllOpenGamesForPlayer(playerId)
         val openGameForUser = OpenGameForUser(gameId, null, gameName, GameStage.REGISTERING,
             openGamesForPlayer.size, emptyList())
@@ -82,10 +79,7 @@ class RedisOpenGameForPlayerRepository @Inject constructor(private val redisTemp
         val index = IntStream.range(0, openGames.size)
             .filter { openGames[it].gameId == openGameForPlayer.gameId }
             .findFirst()
-            .orElseThrow {
-                IllegalStateException("gameId: " + openGameForPlayer.gameId
-                        + " is not in the list to update for playerId: " + playerId)
-            }
+            .asInt
         redisTemplate.opsForList()[redisKey(playerId), index.toLong()] = openGameForPlayer
     }
 

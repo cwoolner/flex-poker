@@ -6,6 +6,7 @@ import com.flexpoker.game.query.dto.GameInListDTO
 import com.flexpoker.game.query.repository.GameListRepository
 import org.springframework.context.annotation.Profile
 import org.springframework.data.redis.core.RedisTemplate
+import org.springframework.data.redis.core.ScanOptions
 import org.springframework.stereotype.Repository
 import java.util.UUID
 import javax.inject.Inject
@@ -20,12 +21,22 @@ class RedisGameListRepository @Inject constructor(private val redisTemplate: Red
     }
 
     override fun saveNew(gameInListDTO: GameInListDTO) {
-        redisTemplate.opsForValue()[GAME_LIST_NAMESPACE + gameInListDTO.id] = gameInListDTO
+        redisTemplate.opsForValue().setIfAbsent(GAME_LIST_NAMESPACE + gameInListDTO.id, gameInListDTO)
     }
 
     override fun fetchAll(): List<GameInListDTO> {
-        val allKeys = redisTemplate.keys("$GAME_LIST_NAMESPACE*")
-        return redisTemplate.opsForValue().multiGet(allKeys)!!
+        val scanOptions = ScanOptions.scanOptions()
+            .match("$GAME_LIST_NAMESPACE*")
+            .count(100)
+            .build()
+        val cursor = redisTemplate.scan(scanOptions)
+
+        val keys = mutableListOf<String>()
+        while (cursor.hasNext()) {
+            keys.add(cursor.next())
+        }
+
+        return redisTemplate.opsForValue().multiGet(keys)
     }
 
     override fun incrementRegisteredPlayers(aggregateId: UUID) {
