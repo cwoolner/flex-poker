@@ -3,7 +3,7 @@ package com.flexpoker.web.controller
 import com.flexpoker.login.repository.LoginRepository
 import com.flexpoker.signup.SignUpUser
 import com.flexpoker.signup.repository.SignUpRepository
-import com.flexpoker.util.PasswordUtils.encode
+import com.flexpoker.util.encodePassword
 import org.springframework.core.io.ClassPathResource
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
@@ -38,7 +38,7 @@ class SignUpController @Inject constructor(
         }
         val aggregateId = UUID.randomUUID()
         val signUpCode = UUID.randomUUID()
-        val encryptedPassword = encode(password)
+        val encryptedPassword = encodePassword(password)
         signUpRepository.saveSignUpUser(
             SignUpUser(aggregateId, signUpCode, emailAddress, username, encryptedPassword)
         )

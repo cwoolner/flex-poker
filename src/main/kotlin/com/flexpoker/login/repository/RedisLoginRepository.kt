@@ -1,7 +1,7 @@
 package com.flexpoker.login.repository
 
 import com.flexpoker.config.ProfileNames
-import com.flexpoker.util.PasswordUtils
+import com.flexpoker.util.encodePassword
 import jakarta.annotation.PostConstruct
 import org.springframework.context.annotation.Profile
 import org.springframework.data.redis.core.RedisTemplate
@@ -60,7 +60,7 @@ class RedisLoginRepository @Inject constructor(private val redisTemplate: RedisT
 
     private fun addUserIfDoesNotExist(username: String) {
         if (!redisTemplate.hasKey(LOGIN_PASSWORD_NAMESPACE + username)) {
-            saveUsernameAndPassword(username, PasswordUtils.encode(username))
+            saveUsernameAndPassword(username, encodePassword(username))
             saveAggregateIdAndUsername(UUID.randomUUID(), username)
         }
     }

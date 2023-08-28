@@ -1,7 +1,7 @@
 package com.flexpoker.login.repository
 
 import com.flexpoker.config.ProfileNames
-import com.flexpoker.util.PasswordUtils
+import com.flexpoker.util.encodePassword
 import jakarta.annotation.PostConstruct
 import org.springframework.context.annotation.Profile
 import org.springframework.security.core.authority.SimpleGrantedAuthority
@@ -46,10 +46,10 @@ class InMemoryLoginRepository : LoginRepository {
 
     @PostConstruct
     private fun addDefaultUsers() {
-        saveUsernameAndPassword("player1", PasswordUtils.encode("player1"))
-        saveUsernameAndPassword("player2", PasswordUtils.encode("player2"))
-        saveUsernameAndPassword("player3", PasswordUtils.encode("player3"))
-        saveUsernameAndPassword("player4", PasswordUtils.encode("player4"))
+        saveUsernameAndPassword("player1", encodePassword("player1"))
+        saveUsernameAndPassword("player2", encodePassword("player2"))
+        saveUsernameAndPassword("player3", encodePassword("player3"))
+        saveUsernameAndPassword("player4", encodePassword("player4"))
         saveAggregateIdAndUsername(UUID.randomUUID(), "player1")
         saveAggregateIdAndUsername(UUID.randomUUID(), "player2")
         saveAggregateIdAndUsername(UUID.randomUUID(), "player3")

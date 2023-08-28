@@ -1,7 +1,7 @@
 package com.flexpoker.config
 
 import com.flexpoker.login.repository.LoginRepository
-import com.flexpoker.util.PasswordUtils
+import com.flexpoker.util.passwordEncoder
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
@@ -16,7 +16,7 @@ class SecurityConfig @Inject constructor(private val loginRepository: LoginRepos
 
     @Bean
     fun passwordEncoder(): PasswordEncoder {
-        return PasswordUtils.encoder
+        return passwordEncoder
     }
 
     @Bean

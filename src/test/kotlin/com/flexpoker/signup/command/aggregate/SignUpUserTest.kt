@@ -2,7 +2,7 @@ package com.flexpoker.signup.command.aggregate
 
 import com.flexpoker.exception.FlexPokerException
 import com.flexpoker.signup.SignUpUser
-import com.flexpoker.util.PasswordUtils.encode
+import com.flexpoker.util.encodePassword
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
@@ -14,7 +14,7 @@ class SignUpUserTest {
         private const val VALID_EMAIL_ADDRESS = "unique@test.com"
         private const val VALID_USERNAME = "unique"
         private const val VALID_PASSWORD = "123456"
-        private val VALID_ENCRYPTED_PASSWORD = encode(VALID_PASSWORD)
+        private val VALID_ENCRYPTED_PASSWORD = encodePassword(VALID_PASSWORD)
         private val VALID_AGGREGATE_ID = UUID.randomUUID()
         private val VALID_SIGN_UP_CODE = UUID.randomUUID()
     }
