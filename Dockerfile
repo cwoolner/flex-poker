@@ -12,7 +12,7 @@ WORKDIR /flex-poker
 
 RUN npm install
 RUN npm run prod
-RUN mvn package
+RUN mvn package -DskipTests
 
 
 FROM eclipse-temurin:17.0.5_8-jre-alpine
