@@ -24,7 +24,7 @@ class FlopCardsDealtEventHandler @Inject constructor(
 
     private fun handleUpdatingTable(event: FlopCardsDealtEvent) {
         val tableDTO = tableRepository.fetchById(event.aggregateId)
-        val (card1, card2, card3) = cardsUsedInHandRepository.fetchFlopCards(event.handId)
+        val (card1, card2, card3) = cardsUsedInHandRepository.fetchFlopCards(event.handId)!!
         val visibleCommonCards = listOf(CardDTO(card1.id), CardDTO(card2.id), CardDTO(card3.id))
         val updatedTable = tableDTO.copy(version = event.version, visibleCommonCards = visibleCommonCards)
         tableRepository.save(updatedTable)

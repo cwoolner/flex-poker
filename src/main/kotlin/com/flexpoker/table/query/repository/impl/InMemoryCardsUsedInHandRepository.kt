@@ -35,26 +35,33 @@ class InMemoryCardsUsedInHandRepository : CardsUsedInHandRepository {
         handIdToPocketCardsMap[handId] = playerToPocketCardsMap
     }
 
-    override fun fetchFlopCards(handId: UUID): FlopCards {
-        return handIdToFlopCardsMap[handId]!!
+    override fun fetchFlopCards(handId: UUID): FlopCards? {
+        return handIdToFlopCardsMap[handId]
     }
 
-    override fun fetchTurnCard(handId: UUID): TurnCard {
-        return handIdToTurnCardMap[handId]!!
+    override fun fetchTurnCard(handId: UUID): TurnCard? {
+        return handIdToTurnCardMap[handId]
     }
 
-    override fun fetchRiverCard(handId: UUID): RiverCard {
-        return handIdToRiverCardMap[handId]!!
+    override fun fetchRiverCard(handId: UUID): RiverCard? {
+        return handIdToRiverCardMap[handId]
     }
 
-    override fun fetchPocketCards(handId: UUID, playerId: UUID): PocketCards {
-        return handIdToPocketCardsMap[handId]!![playerId]!!
+    override fun fetchPocketCards(handId: UUID, playerId: UUID): PocketCards? {
+        return handIdToPocketCardsMap[handId]?.get(playerId)
     }
 
     override fun fetchAllPocketCardsForUser(playerId: UUID): Map<UUID, PocketCards> {
         return handIdToPocketCardsMap
             .filter { it.value.containsKey(playerId) }
             .mapValues { it.value[playerId]!! }
+    }
+
+    override fun removeHand(handId: UUID) {
+        handIdToFlopCardsMap.remove(handId)
+        handIdToTurnCardMap.remove(handId)
+        handIdToRiverCardMap.remove(handId)
+        handIdToPocketCardsMap.remove(handId)
     }
 
 }

@@ -24,7 +24,7 @@ class RiverCardDealtEventHandler @Inject constructor(
 
     private fun handleUpdatingTable(event: RiverCardDealtEvent) {
         val tableDTO = tableRepository.fetchById(event.aggregateId)
-        val riverCard = cardsUsedInHandRepository.fetchRiverCard(event.handId)
+        val riverCard = cardsUsedInHandRepository.fetchRiverCard(event.handId)!!
         val visibleCommonCards = tableDTO.visibleCommonCards!!.plus(CardDTO(riverCard.card.id))
         val updatedTable = tableDTO.copy(version = event.version, visibleCommonCards = visibleCommonCards)
         tableRepository.save(updatedTable)

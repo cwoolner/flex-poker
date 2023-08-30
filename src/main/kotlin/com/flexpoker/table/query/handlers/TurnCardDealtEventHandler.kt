@@ -24,7 +24,7 @@ class TurnCardDealtEventHandler @Inject constructor(
 
     private fun handleUpdatingTable(event: TurnCardDealtEvent) {
         val tableDTO = tableRepository.fetchById(event.aggregateId)
-        val turnCard = cardsUsedInHandRepository.fetchTurnCard(event.handId)
+        val turnCard = cardsUsedInHandRepository.fetchTurnCard(event.handId)!!
         val visibleCommonCards = tableDTO.visibleCommonCards!!.plus(CardDTO(turnCard.card.id))
         val updatedTable = tableDTO.copy(version = event.version, visibleCommonCards = visibleCommonCards)
         tableRepository.save(updatedTable)

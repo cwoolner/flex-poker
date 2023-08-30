@@ -45,4 +45,9 @@ class RedisCardsUsedInHandRepositoryTest {
         sharedTestFetchAllPocketCardsForUser(repository)
     }
 
+    @Test
+    fun testRemoveHand() {
+        sharedTestRemoveHand(repository)
+    }
+
 }

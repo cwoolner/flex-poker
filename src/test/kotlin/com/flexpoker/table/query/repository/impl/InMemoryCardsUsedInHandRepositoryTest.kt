@@ -36,4 +36,9 @@ class InMemoryCardsUsedInHandRepositoryTest {
         sharedTestFetchAllPocketCardsForUser(repository)
     }
 
+    @Test
+    fun testRemoveHand() {
+        sharedTestRemoveHand(repository)
+    }
+
 }

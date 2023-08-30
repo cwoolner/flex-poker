@@ -46,20 +46,20 @@ class RedisCardsUsedInHandRepository @Inject constructor(
             .putAll(HAND_POCKET_CARDS_NAMESPACE + handId, playerToPocketCardsMap)
     }
 
-    override fun fetchFlopCards(handId: UUID): FlopCards {
-        return redisTemplateFlopCards.opsForValue()[FLOP_CARDS_NAMESPACE + handId]!!
+    override fun fetchFlopCards(handId: UUID): FlopCards? {
+        return redisTemplateFlopCards.opsForValue()[FLOP_CARDS_NAMESPACE + handId]
     }
 
-    override fun fetchTurnCard(handId: UUID): TurnCard {
-        return redisTemplateTurnCard.opsForValue()[TURN_CARD_NAMESPACE + handId]!!
+    override fun fetchTurnCard(handId: UUID): TurnCard? {
+        return redisTemplateTurnCard.opsForValue()[TURN_CARD_NAMESPACE + handId]
     }
 
-    override fun fetchRiverCard(handId: UUID): RiverCard {
-        return redisTemplateRiverCard.opsForValue()[RIVER_CARD_NAMESPACE + handId]!!
+    override fun fetchRiverCard(handId: UUID): RiverCard? {
+        return redisTemplateRiverCard.opsForValue()[RIVER_CARD_NAMESPACE + handId]
     }
 
-    override fun fetchPocketCards(handId: UUID, playerId: UUID): PocketCards {
-        return fetchPocketCardsForHand(handId)[playerId]!!
+    override fun fetchPocketCards(handId: UUID, playerId: UUID): PocketCards? {
+        return fetchPocketCardsForHand(handId)[playerId]
     }
 
     override fun fetchAllPocketCardsForUser(playerId: UUID): Map<UUID, PocketCards> {
@@ -70,6 +70,13 @@ class RedisCardsUsedInHandRepository @Inject constructor(
             .associateWith { fetchPocketCardsForHand(it) }
             .filter { it.value.containsKey(playerId) }
             .mapValues { it.value[playerId]!! }
+    }
+
+    override fun removeHand(handId: UUID) {
+        redisTemplateFlopCards.opsForValue().getAndDelete(FLOP_CARDS_NAMESPACE + handId)
+        redisTemplateTurnCard.opsForValue().getAndDelete(TURN_CARD_NAMESPACE + handId)
+        redisTemplateRiverCard.opsForValue().getAndDelete(RIVER_CARD_NAMESPACE + handId)
+        redisTemplatePocketCards.opsForHash<UUID, PocketCards>().operations.delete(HAND_POCKET_CARDS_NAMESPACE + handId)
     }
 
     private fun fetchPocketCardsForHand(handId: UUID): Map<UUID, PocketCards> {
