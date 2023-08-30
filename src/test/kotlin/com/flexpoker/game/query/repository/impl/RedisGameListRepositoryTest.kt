@@ -8,7 +8,6 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection
 import org.springframework.data.redis.connection.RedisConnectionFactory
-import org.springframework.test.annotation.DirtiesContext
 import org.testcontainers.junit.jupiter.Container
 
 @RedisTestClass
@@ -32,37 +31,31 @@ class RedisGameListRepositoryTest {
     }
 
     @Test
-    @DirtiesContext
     fun testSaveNew() {
         sharedTestSaveNew(repository)
     }
 
     @Test
-    @DirtiesContext
     fun testFetchAllEmpty() {
         sharedTestFetchAllEmpty(repository)
     }
 
     @Test
-    @DirtiesContext
     fun testFetchAllTwoSaved() {
         sharedTestFetchAllTwoSaved(repository)
     }
 
     @Test
-    @DirtiesContext
     fun testIncrementRegisteredPlayers() {
         sharedTestIncrementRegisteredPlayers(repository)
     }
 
     @Test
-    @DirtiesContext
     fun testFetchGameName() {
         sharedTestFetchGameName(repository)
     }
 
     @Test
-    @DirtiesContext
     fun testChangeGameStage() {
         sharedTestChangeGameStage(repository)
     }
