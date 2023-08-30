@@ -54,7 +54,8 @@ class InMemoryAsyncTableEventSubscriber @Inject constructor(
     private val potAmountIncreasedEventHandler: EventHandler<PotAmountIncreasedEvent>,
     private val potClosedEventHandler: EventHandler<PotClosedEvent>,
     private val potCreatedEventHandler: EventHandler<PotCreatedEvent>,
-    private val winnersDeterminedEventHandler: EventHandler<WinnersDeterminedEvent>
+    private val winnersDeterminedEventHandler: EventHandler<WinnersDeterminedEvent>,
+    private val handCompletedEventHandler: EventHandler<HandCompletedEvent>,
 ) : EventSubscriber<TableEvent> {
 
     companion object {
@@ -77,7 +78,7 @@ class InMemoryAsyncTableEventSubscriber @Inject constructor(
         eventHandlerMap[AutoMoveHandForwardEvent::class.java] = NOOP
         eventHandlerMap[CardsShuffledEvent::class.java] = NOOP
         eventHandlerMap[FlopCardsDealtEvent::class.java] = flopCardsDealtEventHandler
-        eventHandlerMap[HandCompletedEvent::class.java] = NOOP
+        eventHandlerMap[HandCompletedEvent::class.java] = handCompletedEventHandler
         eventHandlerMap[HandDealtEvent::class.java] = handDealtEventHandler
         eventHandlerMap[LastToActChangedEvent::class.java] = NOOP
         eventHandlerMap[PlayerAddedEvent::class.java] = NOOP
