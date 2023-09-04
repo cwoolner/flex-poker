@@ -1,6 +1,5 @@
 package com.flexpoker.archtest
 
-import com.flexpoker.archtest.Utils.classesUnderTest
 import com.tngtech.archunit.lang.syntax.ArchRuleDefinition.classes
 import org.junit.jupiter.api.Test
 import org.springframework.stereotype.Service

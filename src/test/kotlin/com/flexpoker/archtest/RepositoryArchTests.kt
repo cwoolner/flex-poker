@@ -1,8 +1,5 @@
 package com.flexpoker.archtest
 
-import com.flexpoker.archtest.Utils.checkAnnotationContainsValue
-import com.flexpoker.archtest.Utils.classesUnderTest
-import com.flexpoker.archtest.Utils.nonInterfaceTopLevelClasses
 import com.tngtech.archunit.lang.syntax.ArchRuleDefinition.classes
 import org.junit.jupiter.api.Test
 import org.springframework.stereotype.Repository
