@@ -2,15 +2,17 @@ package com.flexpoker.archtest;
 
 import com.tngtech.archunit.lang.syntax.ArchRuleDefinition.classes
 import com.tngtech.archunit.lang.syntax.ArchRuleDefinition.noClasses
+import com.tngtech.archunit.library.GeneralCodingRules.NO_CLASSES_SHOULD_USE_FIELD_INJECTION
 import org.junit.jupiter.api.Test
 import org.springframework.stereotype.Controller
 
 class ControllerArchTests {
 
+    private val controllerClasses = nonInterfaceTopLevelClasses(".*Controller")
+
     @Test
     fun testAnnotations() {
-        val classesHaveControllerAnnotation = classes().that()
-            .haveNameMatching(".*Controller")
+        val classesHaveControllerAnnotation = classes().that(controllerClasses)
             .should().beAnnotatedWith(Controller::class.java)
         classesHaveControllerAnnotation.check(classesUnderTest)
     }
@@ -20,6 +22,11 @@ class ControllerArchTests {
         val dependencyRule = noClasses().that().resideInAPackage("com.flexpoker..")
             .should().dependOnClassesThat().resideInAPackage("com.flexpoker.web.controller")
         dependencyRule.check(classesUnderTest)
+    }
+
+    @Test
+    fun testNoFieldInjection() {
+        NO_CLASSES_SHOULD_USE_FIELD_INJECTION.check(classesUnderTest.that(controllerClasses))
     }
 
 }

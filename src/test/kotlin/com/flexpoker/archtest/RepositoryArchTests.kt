@@ -1,6 +1,7 @@
 package com.flexpoker.archtest
 
 import com.tngtech.archunit.lang.syntax.ArchRuleDefinition.classes
+import com.tngtech.archunit.library.GeneralCodingRules.NO_CLASSES_SHOULD_USE_FIELD_INJECTION
 import org.junit.jupiter.api.Test
 import org.springframework.stereotype.Repository
 
@@ -12,9 +13,8 @@ class RepositoryArchTests {
 
     @Test
     fun testAnnotations() {
-        val classesHaveRepositoryAnnotation = classes().that()
-            .areNotInterfaces().and()
-            .haveNameMatching(".*Repository")
+        val classesHaveRepositoryAnnotation = classes()
+            .that(redisRepositoryClasses).or(inMemoryRepositoryClasses)
             .should().beAnnotatedWith(Repository::class.java)
         classesHaveRepositoryAnnotation.check(classesUnderTest)
     }
@@ -38,6 +38,12 @@ class RepositoryArchTests {
         val inMemoryAnnotationRule = classes().that(inMemoryRepositoryClasses)
             .should(checkAnnotationContainsValue("Profile", "default"))
         inMemoryAnnotationRule.check(classesUnderTest)
+    }
+
+    @Test
+    fun testNoFieldInjection() {
+        NO_CLASSES_SHOULD_USE_FIELD_INJECTION.check(classesUnderTest.that(inMemoryRepositoryClasses))
+        NO_CLASSES_SHOULD_USE_FIELD_INJECTION.check(classesUnderTest.that(redisRepositoryClasses))
     }
 
 }
