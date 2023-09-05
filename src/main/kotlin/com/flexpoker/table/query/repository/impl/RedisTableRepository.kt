@@ -19,17 +19,19 @@ class RedisTableRepository @Inject constructor(
 ) : TableRepository {
 
     companion object {
-        private const val TABLE_DTO_NAMESPACE = "table-dto:"
+        private const val TABLE_DTO_NAMESPACE = "table-dto"
     }
 
+    private fun redisKey(tableId: UUID) = "$TABLE_DTO_NAMESPACE:$tableId"
+
     override fun fetchById(tableId: UUID): TableDTO {
-        return redisTemplateTableDTO.opsForValue()[TABLE_DTO_NAMESPACE + tableId]!!
+        return redisTemplateTableDTO.opsForValue()[redisKey(tableId)]!!
     }
 
     override fun save(tableDTO: TableDTO) {
         redisTemplateTableDTO.execute(
             checkAndSetScript,
-            listOf(TABLE_DTO_NAMESPACE + tableDTO.id),
+            listOf(redisKey(tableDTO.id)),
             tableDTO,
         )
     }

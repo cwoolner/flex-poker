@@ -13,20 +13,22 @@ import javax.inject.Inject
 @Profile(ProfileNames.REDIS, ProfileNames.TABLE_COMMAND_REDIS)
 @Repository
 class RedisGameEventRepository @Inject constructor(
-    private val redisTemplate: RedisTemplate<String, GameEvent>
+    private val redisTemplate: RedisTemplate<String, GameEvent>,
 ) : GameEventRepository {
 
     companion object {
-        private const val GAME_EVENT_NAMESPACE = "game-event:"
+        private const val GAME_EVENT_NAMESPACE = "game-event"
     }
 
+    private fun redisKey(gameId: UUID) = "$GAME_EVENT_NAMESPACE:$gameId"
+
     override fun fetchAll(id: UUID): List<GameEvent> {
-        return redisTemplate.opsForList().range(GAME_EVENT_NAMESPACE + id, 0, Long.MAX_VALUE)!!
+        return redisTemplate.opsForList().range(redisKey(id), 0, Long.MAX_VALUE)!!
     }
 
     override fun setEventVersionsAndSave(basedOnVersion: Int, events: List<GameEvent>): List<GameEvent> {
-        if (events.isEmpty()) {
-            return emptyList()
+        return if (events.isEmpty()) {
+            emptyList()
         } else {
             val aggregateId = events[0].aggregateId
             val existingEvents = fetchAll(aggregateId)
@@ -36,8 +38,8 @@ class RedisGameEventRepository @Inject constructor(
             for (i in events.indices) {
                 events[i].version = basedOnVersion + i + 1
             }
-            redisTemplate.opsForList().rightPushAll(GAME_EVENT_NAMESPACE + aggregateId, events)
-            return events
+            redisTemplate.opsForList().rightPushAll(redisKey(aggregateId), events)
+            events
         }
     }
 

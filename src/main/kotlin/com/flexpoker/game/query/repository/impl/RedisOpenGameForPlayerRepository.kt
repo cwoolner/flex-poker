@@ -19,8 +19,10 @@ class RedisOpenGameForPlayerRepository @Inject constructor(
 ) : OpenGameForPlayerRepository {
 
     companion object {
-        private const val OPEN_GAME_FOR_PLAYER_NAMESPACE = "open-game-for-player:"
+        private const val OPEN_GAME_FOR_PLAYER_NAMESPACE = "open-game-for-player"
     }
+
+    private fun redisKey(playerId: UUID) = "$OPEN_GAME_FOR_PLAYER_NAMESPACE:$playerId"
 
     override fun fetchAllOpenGamesForPlayer(playerId: UUID): List<OpenGameForUser> {
         return redisTemplate
@@ -63,8 +65,6 @@ class RedisOpenGameForPlayerRepository @Inject constructor(
         val updatedOpenGameForPlayer = openGameForPlayer.copy(myTableId = tableId)
         updateOpenGameForPlayer(playerId, updatedOpenGameForPlayer)
     }
-
-    private fun redisKey(playerId: UUID): String =  OPEN_GAME_FOR_PLAYER_NAMESPACE + playerId
 
     private fun fetchOpenGameForPlayer(playerId: UUID, gameId: UUID): OpenGameForUser? {
         return fetchAllOpenGamesForPlayer(playerId)

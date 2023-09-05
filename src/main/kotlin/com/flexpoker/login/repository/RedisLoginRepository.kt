@@ -16,38 +16,43 @@ import javax.inject.Inject
 
 @Profile(ProfileNames.REDIS, ProfileNames.LOGIN_REDIS)
 @Repository
-class RedisLoginRepository @Inject constructor(private val redisTemplate: RedisTemplate<String, String?>) :
-    LoginRepository {
+class RedisLoginRepository @Inject constructor(
+    private val redisTemplate: RedisTemplate<String, String?>,
+) : LoginRepository {
 
     companion object {
-        private const val LOGIN_PASSWORD_NAMESPACE = "login-password:"
-        private const val LOGIN_ID_NAMESPACE = "login-id:"
-        private const val AGGREGATE_ID_USERNAME_NAMESPACE = "aggregateid-username:"
+        private const val LOGIN_PASSWORD_NAMESPACE = "login-password"
+        private const val LOGIN_ID_NAMESPACE = "login-id"
+        private const val AGGREGATE_ID_USERNAME_NAMESPACE = "aggregateid-username"
     }
+
+    private fun loginPasswordRedisKey(username: String) = "$LOGIN_PASSWORD_NAMESPACE:$username"
+    private fun loginIdRedisKey(username: String) = "$LOGIN_ID_NAMESPACE:$username"
+    private fun aggregateIdUsernameRedisKey(aggregateId: UUID) = "$AGGREGATE_ID_USERNAME_NAMESPACE:$aggregateId"
 
     @Throws(UsernameNotFoundException::class)
     override fun loadUserByUsername(username: String): UserDetails {
-        return Optional.ofNullable(redisTemplate.opsForValue()[LOGIN_PASSWORD_NAMESPACE + username])
+        return Optional.ofNullable(redisTemplate.opsForValue()[loginPasswordRedisKey(username)])
             .map { password: String? -> User(username, password, setOf(SimpleGrantedAuthority("ROLE_USER"))) }
             .orElseThrow { UsernameNotFoundException(username) }
     }
 
     override fun saveUsernameAndPassword(username: String, encryptedPassword: String) {
-        redisTemplate.opsForValue()[LOGIN_PASSWORD_NAMESPACE + username] = encryptedPassword
+        redisTemplate.opsForValue()[loginPasswordRedisKey(username)] = encryptedPassword
     }
 
     override fun fetchAggregateIdByUsername(username: String): UUID {
-        val stringAggregateId = redisTemplate.opsForValue()[LOGIN_ID_NAMESPACE + username]
+        val stringAggregateId = redisTemplate.opsForValue()[loginIdRedisKey(username)]
         return UUID.fromString(stringAggregateId)
     }
 
     override fun saveAggregateIdAndUsername(aggregateId: UUID, username: String) {
-        redisTemplate.opsForValue()[LOGIN_ID_NAMESPACE + username] = aggregateId.toString()
-        redisTemplate.opsForValue()[AGGREGATE_ID_USERNAME_NAMESPACE + aggregateId] = username
+        redisTemplate.opsForValue()[loginIdRedisKey(username)] = aggregateId.toString()
+        redisTemplate.opsForValue()[aggregateIdUsernameRedisKey(aggregateId)] = username
     }
 
     override fun fetchUsernameByAggregateId(aggregateId: UUID): String {
-        return redisTemplate.opsForValue()[AGGREGATE_ID_USERNAME_NAMESPACE + aggregateId]!!
+        return redisTemplate.opsForValue()[aggregateIdUsernameRedisKey(aggregateId)]!!
     }
 
     @PostConstruct
@@ -59,7 +64,7 @@ class RedisLoginRepository @Inject constructor(private val redisTemplate: RedisT
     }
 
     private fun addUserIfDoesNotExist(username: String) {
-        if (!redisTemplate.hasKey(LOGIN_PASSWORD_NAMESPACE + username)) {
+        if (!redisTemplate.hasKey(loginPasswordRedisKey(username))) {
             saveUsernameAndPassword(username, encodePassword(username))
             saveAggregateIdAndUsername(UUID.randomUUID(), username)
         }

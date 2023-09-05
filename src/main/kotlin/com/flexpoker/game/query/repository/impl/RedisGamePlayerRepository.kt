@@ -11,12 +11,15 @@ import javax.inject.Inject
 
 @Profile(ProfileNames.REDIS, ProfileNames.GAME_QUERY_REDIS)
 @Repository
-class RedisGamePlayerRepository @Inject constructor(private val redisTemplate: RedisTemplate<String, String>) :
-    GamePlayerRepository {
+class RedisGamePlayerRepository @Inject constructor(
+    private val redisTemplate: RedisTemplate<String, String>,
+) : GamePlayerRepository {
 
     companion object {
-        private const val GAME_PLAYER_NAMESPACE = "game-player:"
+        private const val GAME_PLAYER_NAMESPACE = "game-player"
     }
+
+    private fun redisKey(gameId: UUID) = "$GAME_PLAYER_NAMESPACE:$gameId"
 
     override fun addPlayerToGame(playerId: UUID, gameId: UUID) {
         redisTemplate.opsForSet().add(redisKey(gameId), playerId.toString())
@@ -30,7 +33,5 @@ class RedisGamePlayerRepository @Inject constructor(private val redisTemplate: R
             .map { UUID.fromString(it) }
             .collect(Collectors.toSet())
     }
-
-    private fun redisKey(gameId: UUID): String = GAME_PLAYER_NAMESPACE + gameId
 
 }

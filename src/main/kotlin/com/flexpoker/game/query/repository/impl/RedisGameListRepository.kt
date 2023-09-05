@@ -13,23 +13,27 @@ import javax.inject.Inject
 
 @Profile(ProfileNames.REDIS, ProfileNames.GAME_QUERY_REDIS)
 @Repository
-class RedisGameListRepository @Inject constructor(private val redisTemplate: RedisTemplate<String, GameInListDTO>) :
-    GameListRepository {
+class RedisGameListRepository @Inject constructor(
+    private val redisTemplate: RedisTemplate<String, GameInListDTO>,
+) : GameListRepository {
 
     companion object {
-        private const val GAME_LIST_NAMESPACE = "game-list:"
+        private const val GAME_LIST_NAMESPACE = "game-list"
+
+        private val GAME_LIST_SCAN_OPTIONS = ScanOptions.scanOptions()
+            .match("$GAME_LIST_NAMESPACE:*")
+            .count(100)
+            .build()
     }
 
+    private fun redisKey(aggregateId: UUID) = "$GAME_LIST_NAMESPACE:$aggregateId"
+
     override fun saveNew(gameInListDTO: GameInListDTO) {
-        redisTemplate.opsForValue().setIfAbsent(GAME_LIST_NAMESPACE + gameInListDTO.id, gameInListDTO)
+        redisTemplate.opsForValue().setIfAbsent(redisKey(gameInListDTO.id), gameInListDTO)
     }
 
     override fun fetchAll(): List<GameInListDTO> {
-        val scanOptions = ScanOptions.scanOptions()
-            .match("$GAME_LIST_NAMESPACE*")
-            .count(100)
-            .build()
-        val cursor = redisTemplate.scan(scanOptions)
+        val cursor = redisTemplate.scan(GAME_LIST_SCAN_OPTIONS)
 
         val keys = mutableListOf<String>()
         while (cursor.hasNext()) {
@@ -59,11 +63,11 @@ class RedisGameListRepository @Inject constructor(private val redisTemplate: Red
     }
 
     private fun fetchById(aggregateId: UUID): GameInListDTO {
-        return redisTemplate.opsForValue()[GAME_LIST_NAMESPACE + aggregateId]!!
+        return redisTemplate.opsForValue()[redisKey(aggregateId)]!!
     }
 
     private fun removeGame(aggregateId: UUID) {
-        redisTemplate.delete(GAME_LIST_NAMESPACE + aggregateId)
+        redisTemplate.delete(redisKey(aggregateId))
     }
 
 }

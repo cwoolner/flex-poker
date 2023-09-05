@@ -12,15 +12,17 @@ import javax.inject.Inject
 @Profile(ProfileNames.REDIS, ProfileNames.TABLE_COMMAND_REDIS)
 @Repository
 class RedisTableEventRepository @Inject constructor(
-    private val redisTemplate: RedisTemplate<String, TableEvent>
+    private val redisTemplate: RedisTemplate<String, TableEvent>,
 ) : TableEventRepository {
 
     companion object {
-        private const val TABLE_EVENT_NAMESPACE = "table-event:"
+        private const val TABLE_EVENT_NAMESPACE = "table-event"
     }
 
+    private fun redisKey(tableId: UUID) = "$TABLE_EVENT_NAMESPACE:$tableId"
+
     override fun fetchAll(id: UUID): List<TableEvent> {
-        return redisTemplate.opsForList().range(TABLE_EVENT_NAMESPACE + id, 0, Long.MAX_VALUE)!!
+        return redisTemplate.opsForList().range(redisKey(id), 0, Long.MAX_VALUE)!!
     }
 
     override fun setEventVersionsAndSave(basedOnVersion: Int, events: List<TableEvent>): List<TableEvent> {
@@ -35,7 +37,7 @@ class RedisTableEventRepository @Inject constructor(
             for (i in events.indices) {
                 events[i].version = basedOnVersion + i + 1
             }
-            redisTemplate.opsForList().rightPushAll(TABLE_EVENT_NAMESPACE + aggregateId, events)
+            redisTemplate.opsForList().rightPushAll(redisKey(aggregateId), events)
             return events
         }
     }
