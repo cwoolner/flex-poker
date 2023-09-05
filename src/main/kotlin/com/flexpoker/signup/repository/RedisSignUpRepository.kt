@@ -3,6 +3,7 @@ package com.flexpoker.signup.repository
 import com.flexpoker.config.ProfileNames
 import com.flexpoker.exception.FlexPokerException
 import com.flexpoker.signup.SignUpUser
+import com.flexpoker.util.encodePassword
 import jakarta.annotation.PostConstruct
 import org.springframework.context.annotation.Profile
 import org.springframework.data.redis.core.RedisCallback
@@ -88,14 +89,6 @@ class RedisSignUpRepository @Inject constructor(private val redisTemplate: Redis
         return UUID.fromString(foundSignUpCodeKey.split(":").toTypedArray()[2])
     }
 
-    @PostConstruct
-    private fun addDefaultSignUps() {
-        storeNewlyConfirmedUsername("player1")
-        storeNewlyConfirmedUsername("player2")
-        storeNewlyConfirmedUsername("player3")
-        storeNewlyConfirmedUsername("player4")
-    }
-
     override fun fetchSignUpUser(signUpUserId: UUID): SignUpUser? {
         val signUpCodeKey = SIGN_UP_USER_NAMESPACE + signUpUserId
         val signUpUserObject = redisTemplate.opsForHash<Any, Any>().entries(signUpCodeKey) ?: return null
@@ -125,6 +118,22 @@ class RedisSignUpRepository @Inject constructor(private val redisTemplate: Redis
                 return redisTemplate.exec()
             }
         })
+    }
+
+    @PostConstruct
+    private fun addDefaultSignUps() {
+        addDefaultSignUp("player1")
+        addDefaultSignUp("player2")
+        addDefaultSignUp("player3")
+        addDefaultSignUp("player4")
+    }
+
+    private fun addDefaultSignUp(username: String) {
+        val id = UUID.randomUUID()
+        val signUpCode = UUID.randomUUID()
+        storeNewlyConfirmedUsername(username)
+        saveSignUpUser(SignUpUser(id, signUpCode, "$username@test.com", username, encodePassword(username)))
+        storeSignUpInformation(id, username, signUpCode)
     }
 
 }

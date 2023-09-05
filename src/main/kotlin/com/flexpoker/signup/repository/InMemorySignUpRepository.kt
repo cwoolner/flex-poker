@@ -2,6 +2,7 @@ package com.flexpoker.signup.repository
 
 import com.flexpoker.config.ProfileNames
 import com.flexpoker.signup.SignUpUser
+import com.flexpoker.util.encodePassword
 import jakarta.annotation.PostConstruct
 import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Repository
@@ -43,20 +44,28 @@ class InMemorySignUpRepository : SignUpRepository {
             .findAny().get().key
     }
 
-    @PostConstruct
-    private fun addDefaultSignUps() {
-        storeNewlyConfirmedUsername("player1")
-        storeNewlyConfirmedUsername("player2")
-        storeNewlyConfirmedUsername("player3")
-        storeNewlyConfirmedUsername("player4")
-    }
-
     override fun fetchSignUpUser(signUpUserId: UUID): SignUpUser? {
         return signUpUserMap[signUpUserId]
     }
 
     override fun saveSignUpUser(signUpUser: SignUpUser) {
         signUpUserMap[signUpUser.aggregateId] = signUpUser
+    }
+
+    @PostConstruct
+    private fun addDefaultSignUps() {
+        addDefaultSignUp("player1")
+        addDefaultSignUp("player2")
+        addDefaultSignUp("player3")
+        addDefaultSignUp("player4")
+    }
+
+    private fun addDefaultSignUp(username: String) {
+        val id = UUID.randomUUID()
+        val signUpCode = UUID.randomUUID()
+        storeNewlyConfirmedUsername(username)
+        saveSignUpUser(SignUpUser(id, signUpCode, "$username@test.com", username, encodePassword(username)))
+        storeSignUpInformation(id, username, signUpCode)
     }
 
 }
