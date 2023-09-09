@@ -8,11 +8,13 @@ import com.flexpoker.table.command.aggregate.testhelpers.createBasicTable
 import com.flexpoker.table.command.events.TableEvent
 import com.flexpoker.table.command.events.TableResumedEvent
 import com.flexpoker.test.util.EventProducerApplierBuilder
+import com.flexpoker.test.util.UnitTestClass
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
 import java.util.UUID
 
+@UnitTestClass
 class ResumeTableTest {
 
     @Test

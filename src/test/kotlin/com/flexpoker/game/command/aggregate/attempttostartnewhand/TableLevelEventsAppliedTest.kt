@@ -8,11 +8,13 @@ import com.flexpoker.game.command.aggregate.eventproducers.joinGame
 import com.flexpoker.game.command.events.GameEvent
 import com.flexpoker.game.command.events.GameTablesCreatedAndPlayersAssociatedEvent
 import com.flexpoker.test.util.EventProducerApplierBuilder
+import com.flexpoker.test.util.UnitTestClass
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import java.util.UUID
 
+@UnitTestClass
 class TableLevelEventsAppliedTest {
 
     @Test

@@ -1,8 +1,10 @@
 package com.flexpoker.archtest
 
+import com.flexpoker.test.util.ArchUnitTestClass
 import com.tngtech.archunit.lang.syntax.ArchRuleDefinition.noClasses
 import org.junit.jupiter.api.Test
 
+@ArchUnitTestClass
 class DomainBoundaryArchTests {
 
     @Test

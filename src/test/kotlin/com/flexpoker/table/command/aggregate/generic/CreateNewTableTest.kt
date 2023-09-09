@@ -6,11 +6,13 @@ import com.flexpoker.table.command.aggregate.testhelpers.TestRandomNumberGenerat
 import com.flexpoker.table.command.commands.CreateTableCommand
 import com.flexpoker.table.command.events.TableCreatedEvent
 import com.flexpoker.test.util.CommonAssertions.verifyNewEvents
+import com.flexpoker.test.util.UnitTestClass
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
 import java.util.UUID
 
+@UnitTestClass
 class CreateNewTableTest {
 
     @Test

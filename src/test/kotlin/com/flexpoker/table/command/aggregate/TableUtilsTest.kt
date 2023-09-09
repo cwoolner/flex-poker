@@ -3,12 +3,14 @@ package com.flexpoker.table.command.aggregate
 import com.flexpoker.table.command.aggregate.eventproducers.checkHandIsBeingPlayed
 import com.flexpoker.table.command.aggregate.eventproducers.numberOfPlayersAtTable
 import com.flexpoker.table.command.aggregate.testhelpers.createBasicTable
+import com.flexpoker.test.util.UnitTestClass
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
 import org.pcollections.HashTreePMap
 import java.util.UUID
 
+@UnitTestClass
 class CheckHandIsBeingPlayed {
 
     @Test
@@ -29,6 +31,7 @@ class CheckHandIsBeingPlayed {
 
 }
 
+@UnitTestClass
 class NumberOfPlayersAtTable {
 
     @Test

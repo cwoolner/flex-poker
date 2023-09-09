@@ -1,10 +1,12 @@
 package com.flexpoker.game.command.aggregate
 
+import com.flexpoker.test.util.UnitTestClass
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 
+@UnitTestClass
 class BlindScheduleTest {
 
     @Test

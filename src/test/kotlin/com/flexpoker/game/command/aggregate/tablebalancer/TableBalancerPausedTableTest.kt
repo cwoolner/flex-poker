@@ -3,10 +3,12 @@ package com.flexpoker.game.command.aggregate.tablebalancer
 import com.flexpoker.game.command.aggregate.createSingleBalancingEvent
 import com.flexpoker.game.command.events.PlayerMovedToNewTableEvent
 import com.flexpoker.game.command.events.TablePausedForBalancingEvent
+import com.flexpoker.test.util.UnitTestClass
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import java.util.UUID
 
+@UnitTestClass
 class TableBalancerPausedTableTest {
 
     @Test

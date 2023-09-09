@@ -18,9 +18,11 @@ import com.flexpoker.table.command.events.TableEvent
 import com.flexpoker.table.command.events.WinnersDeterminedEvent
 import com.flexpoker.test.util.CommonAssertions.verifyNewEvents
 import com.flexpoker.test.util.EventProducerApplierBuilder
+import com.flexpoker.test.util.UnitTestClass
 import org.junit.jupiter.api.Test
 import java.util.UUID
 
+@UnitTestClass
 class TwoPlayerSmallBlindFoldsThroughTwoHands {
 
     @Test

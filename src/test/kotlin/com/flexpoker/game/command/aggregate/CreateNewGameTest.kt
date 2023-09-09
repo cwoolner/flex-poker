@@ -3,11 +3,13 @@ package com.flexpoker.game.command.aggregate
 import com.flexpoker.game.command.aggregate.eventproducers.createGame
 import com.flexpoker.game.command.commands.CreateGameCommand
 import com.flexpoker.game.command.events.GameCreatedEvent
+import com.flexpoker.test.util.UnitTestClass
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Test
 import java.util.UUID
 
+@UnitTestClass
 class CreateNewGameTest {
 
     @Test

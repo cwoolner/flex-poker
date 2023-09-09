@@ -1,9 +1,11 @@
 package com.flexpoker.table.command.aggregate
 
+import com.flexpoker.test.util.UnitTestClass
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import java.util.UUID
 
+@UnitTestClass
 class DefaultRandomNumberGeneratorTest {
 
     @Test

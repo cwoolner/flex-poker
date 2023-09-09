@@ -5,10 +5,12 @@ import com.flexpoker.table.command.CardRank
 import com.flexpoker.table.command.CardSuit
 import com.flexpoker.table.command.HandRanking
 import com.flexpoker.table.command.aggregate.HandEvaluation
+import com.flexpoker.test.util.UnitTestClass
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Test
 
+@UnitTestClass
 class HandEvaluationUtilsTest {
 
     @Test

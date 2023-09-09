@@ -6,6 +6,7 @@ import com.flexpoker.table.command.aggregate.closePot
 import com.flexpoker.table.command.aggregate.fetchChipsWon
 import com.flexpoker.table.command.aggregate.fetchPlayersRequiredToShowCards
 import com.flexpoker.table.command.aggregate.removePlayerFromAllPots
+import com.flexpoker.test.util.UnitTestClass
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertNotNull
@@ -16,6 +17,7 @@ import org.junit.jupiter.api.Test
 import org.pcollections.HashTreePSet
 import java.util.UUID
 
+@UnitTestClass
 class BasicPotHandlerTest {
 
     @Test

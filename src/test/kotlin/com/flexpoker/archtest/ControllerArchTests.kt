@@ -1,11 +1,13 @@
 package com.flexpoker.archtest;
 
+import com.flexpoker.test.util.ArchUnitTestClass
 import com.tngtech.archunit.lang.syntax.ArchRuleDefinition.classes
 import com.tngtech.archunit.lang.syntax.ArchRuleDefinition.noClasses
 import com.tngtech.archunit.library.GeneralCodingRules.NO_CLASSES_SHOULD_USE_FIELD_INJECTION
 import org.junit.jupiter.api.Test
 import org.springframework.stereotype.Controller
 
+@ArchUnitTestClass
 class ControllerArchTests {
 
     private val controllerClasses = nonInterfaceTopLevelClasses(".*Controller")

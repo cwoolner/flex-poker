@@ -2,12 +2,14 @@ package com.flexpoker.signup.command.aggregate
 
 import com.flexpoker.exception.FlexPokerException
 import com.flexpoker.signup.SignUpUser
+import com.flexpoker.test.util.UnitTestClass
 import com.flexpoker.util.encodePassword
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import java.util.UUID
 
+@UnitTestClass
 class SignUpUserTest {
 
     companion object {

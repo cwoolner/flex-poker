@@ -1,9 +1,11 @@
 package com.flexpoker.table.command.service
 
+import com.flexpoker.test.util.UnitTestClass
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Test
 
+@UnitTestClass
 class DefaultCardServiceTest {
 
     @Test

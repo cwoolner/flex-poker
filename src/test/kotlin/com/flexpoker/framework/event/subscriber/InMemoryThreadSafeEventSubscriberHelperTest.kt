@@ -5,10 +5,12 @@ import com.flexpoker.framework.event.EventHandler
 import com.flexpoker.game.command.events.BlindsIncreasedEvent
 import com.flexpoker.game.command.events.GameFinishedEvent
 import com.flexpoker.game.command.events.GameJoinedEvent
+import com.flexpoker.test.util.UnitTestClass
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import java.util.UUID
 
+@UnitTestClass
 class InMemoryThreadSafeEventSubscriberHelperTest {
 
     @Test

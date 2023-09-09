@@ -5,6 +5,7 @@ import com.flexpoker.table.command.events.PotAmountIncreasedEvent
 import com.flexpoker.table.command.events.PotClosedEvent
 import com.flexpoker.table.command.events.PotCreatedEvent
 import com.flexpoker.test.util.CommonAssertions.verifyNumberOfEventsAndEntireOrderByType
+import com.flexpoker.test.util.UnitTestClass
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -12,6 +13,7 @@ import org.junit.jupiter.api.Test
 import org.pcollections.HashTreePSet
 import java.util.UUID
 
+@UnitTestClass
 class CalculatePotsPotHandlerTest {
 
     @Test

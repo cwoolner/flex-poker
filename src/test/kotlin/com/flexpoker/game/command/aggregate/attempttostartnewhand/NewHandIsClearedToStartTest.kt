@@ -12,6 +12,7 @@ import com.flexpoker.game.command.events.GameStartedEvent
 import com.flexpoker.game.command.events.GameTablesCreatedAndPlayersAssociatedEvent
 import com.flexpoker.game.command.events.NewHandIsClearedToStartEvent
 import com.flexpoker.test.util.EventProducerApplierBuilder
+import com.flexpoker.test.util.UnitTestClass
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.pcollections.HashTreePMap
@@ -19,6 +20,7 @@ import org.pcollections.HashTreePSet
 import org.pcollections.PSet
 import java.util.UUID
 
+@UnitTestClass
 class NewHandIsClearedToStartTest {
 
     @Test

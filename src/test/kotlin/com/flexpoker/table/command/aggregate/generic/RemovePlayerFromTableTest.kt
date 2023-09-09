@@ -5,11 +5,13 @@ import com.flexpoker.table.command.aggregate.eventproducers.removePlayer
 import com.flexpoker.table.command.aggregate.testhelpers.createBasicTable
 import com.flexpoker.table.command.aggregate.testhelpers.createBasicTableAndStartHand
 import com.flexpoker.table.command.events.PlayerRemovedEvent
+import com.flexpoker.test.util.UnitTestClass
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
 import java.util.UUID
 
+@UnitTestClass
 class RemovePlayerFromTableTest {
 
     @Test

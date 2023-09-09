@@ -44,7 +44,12 @@ Flex Poker is a poker-playing (Texas hold 'em) web app.  It was originally writt
 
 # Testing
 
-The basic unit tests, integration tests (redis using [testcontainers](https://testcontainers.com)), and arch tests run as part of a normal Maven lifecycle. `mvn test` should just work after a fresh clone.  As mentioned, the integration tests will spin up docker containers for redis, but no other external systems are hit.
+The basic unit tests, repository tests (redis using [testcontainers](https://testcontainers.com) and in-memory), and arch tests run as part of a normal Maven lifecycle. `mvn test` should just work after a fresh clone.  As mentioned, the integration tests will spin up docker containers for redis, but no other external systems are hit.
+
+The test classes are tagged, so running a specific subset is possible using the `-Dgroups` and `-DexcludedGroups` user properties:
+
+* Run just the fast unit tests: `mvn test -Dgroups=unit`
+* Run all except for the redis tests: `mvn test -DexcludedGroups=repository-redis`
 
 In addition to the tests above, the [PIT](https://pitest.org) plugin has been included for mutation testing.  To run: `mvn test-compile org.pitest:pitest-maven:mutationCoverage`
 

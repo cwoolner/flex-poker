@@ -1,5 +1,6 @@
 package com.flexpoker.game.command.aggregate.tablebalancer
 
+import com.flexpoker.test.util.UnitTestClass
 import com.flexpoker.util.toPMap
 import com.flexpoker.util.toPSet
 import org.pcollections.PMap

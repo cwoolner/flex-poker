@@ -3,12 +3,14 @@ package com.flexpoker.table.command.aggregate.singlehand.fourplayer
 import com.flexpoker.table.command.aggregate.testhelpers.createBasicTableAndStartHand
 import com.flexpoker.table.command.events.HandDealtEvent
 import com.flexpoker.table.command.events.TableCreatedEvent
+import com.flexpoker.test.util.UnitTestClass
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Test
 import java.util.UUID
 import java.util.stream.Collectors
 
+@UnitTestClass
 class FourPlayerSeatPositionsAndButtonAndBlindsTest {
 
     @Test

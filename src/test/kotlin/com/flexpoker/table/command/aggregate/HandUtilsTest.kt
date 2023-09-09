@@ -12,6 +12,7 @@ import com.flexpoker.table.command.RiverCard
 import com.flexpoker.table.command.TurnCard
 import com.flexpoker.table.command.aggregate.eventproducers.hand.checkActionOnPlayer
 import com.flexpoker.table.command.aggregate.eventproducers.hand.checkPerformAction
+import com.flexpoker.test.util.UnitTestClass
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
 import org.pcollections.HashTreePMap
@@ -19,6 +20,7 @@ import org.pcollections.HashTreePSet
 import org.pcollections.TreePVector
 import java.util.UUID
 
+@UnitTestClass
 class CheckActionOnPlayerTest {
 
     @Test
@@ -43,6 +45,7 @@ class CheckActionOnPlayerTest {
 
 }
 
+@UnitTestClass
 class CheckPerformAction {
 
     @Test
