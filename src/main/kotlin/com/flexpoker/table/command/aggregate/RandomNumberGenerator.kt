@@ -15,6 +15,6 @@ class DefaultRandomNumberGenerator : RandomNumberGenerator {
     }
 
     override fun pseudoRandomIntBasedOnUUID(uuid: UUID, exclusiveMax: Int): Int {
-        return uuid.leastSignificantBits.absoluteValue.toInt() % exclusiveMax
+        return (uuid.leastSignificantBits.absoluteValue.toDouble() % exclusiveMax).toInt()
     }
 }
