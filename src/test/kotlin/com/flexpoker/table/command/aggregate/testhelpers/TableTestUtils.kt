@@ -9,6 +9,7 @@ import com.flexpoker.table.command.aggregate.HandEvaluation
 import com.flexpoker.table.command.aggregate.TableState
 import com.flexpoker.table.command.aggregate.applyEvents
 import com.flexpoker.table.command.aggregate.eventproducers.createTable
+import com.flexpoker.table.command.aggregate.eventproducers.startNewHandForExistingTable
 import com.flexpoker.table.command.aggregate.eventproducers.startNewHandForNewGame
 import com.flexpoker.table.command.commands.CreateTableCommand
 import com.flexpoker.table.command.events.HandDealtEvent
@@ -54,6 +55,28 @@ fun createBasicTableAndStartHand(tableId: UUID?, vararg playerIdsArray: UUID): L
         handEvaluations, DefaultRandomNumberGenerator())
 
     return initEvents + events
+}
+
+fun startHandAtExistingTable(state: TableState): List<TableEvent> {
+    val smallBlind = 10
+    val bigBlind = 20
+    val shuffledDeckOfCards = ArrayList<Card>()
+    val cardsUsedInHand = createDeck()
+    val handEvaluation1 = HandEvaluation(
+        playerId = state.seatMap[state.smallBlindPosition],
+        handRanking = HandRanking.FLUSH,
+        primaryCardRank = CardRank.KING,
+    )
+    val handEvaluation2 = HandEvaluation(
+        playerId = state.seatMap[state.bigBlindPosition],
+        handRanking = HandRanking.STRAIGHT,
+        primaryCardRank = CardRank.KING,
+    )
+    val handEvaluations = HashMap<PocketCards, HandEvaluation>()
+    handEvaluations[createPocketCards1()] = handEvaluation1
+    handEvaluations[createPocketCards2()] = handEvaluation2
+
+    return startNewHandForExistingTable(state, smallBlind, bigBlind, shuffledDeckOfCards, cardsUsedInHand, handEvaluations)
 }
 
 fun fetchIdForButton(tableCreatedEvent: TableCreatedEvent, handDealtEvent: HandDealtEvent): UUID {
