@@ -1,8 +1,8 @@
-FROM eclipse-temurin:17.0.5_8-jdk-alpine
+FROM eclipse-temurin:21.0.1_12-jdk-alpine
 
-RUN apk add nodejs-current # v18.9.1
-RUN apk add npm # v8.10.0
-RUN apk add maven # v3.8.5
+RUN apk add nodejs-current # v20.8.1
+RUN apk add npm # v9.6.6
+RUN apk add maven # v3.9.2
 
 RUN mkdir flex-poker
 
@@ -15,7 +15,7 @@ RUN npm run prod
 RUN mvn package -DskipTests
 
 
-FROM eclipse-temurin:17.0.5_8-jre-alpine
+FROM eclipse-temurin:21.0.1_12-jre-alpine
 
 COPY --from=0 /flex-poker/target/flexpoker.war .
 
