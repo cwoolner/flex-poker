@@ -1,4 +1,4 @@
-import { NavDropdown, Dropdown } from 'react-bootstrap'
+import { NavDropdown, Dropdown, DropdownDivider } from 'react-bootstrap'
 import { LinkContainer } from 'react-router-bootstrap'
 
 const DropdownLink = ({ link, text }) =>
@@ -17,7 +17,7 @@ const GamePageItem = ({ openGameTab }) =>
 const OtherTableItems = ({ openGameTab }) => {
   return (
     <>
-      {openGameTab.viewingTables.length > 0 ? <Dropdown.Item divider /> : null}
+      {openGameTab.viewingTables.length > 0 ? <Dropdown.Divider /> : null}
       {openGameTab.viewingTables.map(viewingTable =>
         <DropdownLink link={`/game/${openGameTab.gameId}/table/${viewingTable}`} text={viewingTable} />)}
     </>
