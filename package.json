@@ -29,9 +29,13 @@
     "webstomp-client": "1.2.6"
   },
   "devDependencies": {
+    "@testing-library/dom": "^10.4.0",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.3.0",
     "@types/react-dom": "19.0.2",
     "@types/sockjs-client": "1.5.4",
     "http-server": "14.1.1",
+    "jsdom": "^26.1.0",
     "ts-loader": "9.5.1",
     "typescript": "5.6.2",
     "vitest": "^3.2.4",
