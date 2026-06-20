@@ -9,7 +9,10 @@
     "dev": "webpack --mode=development --watch",
     "prod": "webpack --mode=production",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "e2e": "bash scripts/playwright-env.sh npx playwright test",
+    "e2e:ui": "bash scripts/playwright-env.sh npx playwright test --ui",
+    "e2e:server": "bash scripts/e2e-server.sh"
   },
   "author": "",
   "license": "ISC",
@@ -29,6 +32,7 @@
     "webstomp-client": "1.2.6"
   },
   "devDependencies": {
+    "@playwright/test": "^1.52.0",
     "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.3.0",

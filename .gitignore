@@ -12,3 +12,9 @@ src/main/webapp/resources/vendor.bundle.js
 src/main/webapp/resources/vendor.bundle.js.LICENSE.txt
 bin/
 flexpoker.iml
+.npm-cache/
+.playwright-browsers/
+.tmp/
+test-results/
+playwright-report/
+blob-report/

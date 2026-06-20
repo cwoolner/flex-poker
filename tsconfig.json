@@ -5,5 +5,14 @@
     "jsx": "react-jsx",
     "moduleResolution": "Bundler",
     "allowSyntheticDefaultImports": true,
-  }
+  },
+  "exclude": [
+    "**/*.test.ts",
+    "**/*.test.tsx",
+    "e2e/**",
+    "src/main/webapp/resources/test-utils/**",
+    "vitest.config.ts",
+    "vitest.setup.ts",
+    "playwright.config.ts"
+  ]
 }

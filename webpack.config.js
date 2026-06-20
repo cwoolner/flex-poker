@@ -39,12 +39,15 @@ module.exports = {
           }
         ],
         exclude: [
-          '/node_modules/',
-          '/documentation/',
-          '/bin/',
-          '/target/',
-          '/output/',
-          '/dist/',
+          /node_modules/,
+          /\.test\.tsx?$/,
+          /test-utils/,
+          /documentation/,
+          /bin/,
+          /target/,
+          /output/,
+          /dist/,
+          /e2e/,
         ]
       }
     ]
