@@ -32,7 +32,7 @@ import com.flexpoker.table.command.events.TurnCardDealtEvent
 import com.flexpoker.table.command.events.WinnersDeterminedEvent
 import org.springframework.scheduling.annotation.Async
 import org.springframework.stereotype.Component
-import javax.inject.Inject
+import jakarta.inject.Inject
 
 @Component("tableEventSubscriber")
 class InMemoryAsyncTableEventSubscriber @Inject constructor(

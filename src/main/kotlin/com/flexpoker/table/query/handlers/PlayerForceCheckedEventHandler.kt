@@ -8,7 +8,7 @@ import com.flexpoker.pushnotifications.TableUpdatedPushNotification
 import com.flexpoker.table.command.events.PlayerForceCheckedEvent
 import com.flexpoker.table.query.repository.TableRepository
 import org.springframework.stereotype.Component
-import javax.inject.Inject
+import jakarta.inject.Inject
 
 @Component
 class PlayerForceCheckedEventHandler @Inject constructor(

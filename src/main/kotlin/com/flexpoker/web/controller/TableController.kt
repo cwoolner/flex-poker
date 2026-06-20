@@ -21,7 +21,7 @@ import org.springframework.messaging.simp.annotation.SubscribeMapping
 import org.springframework.stereotype.Controller
 import java.security.Principal
 import java.util.UUID
-import javax.inject.Inject
+import jakarta.inject.Inject
 
 @Controller
 class TableController @Inject constructor(

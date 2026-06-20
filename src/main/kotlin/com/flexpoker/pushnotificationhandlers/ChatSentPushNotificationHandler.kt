@@ -5,7 +5,7 @@ import com.flexpoker.pushnotifications.ChatSentPushNotification
 import org.springframework.messaging.simp.SimpMessageSendingOperations
 import org.springframework.scheduling.annotation.Async
 import org.springframework.stereotype.Component
-import javax.inject.Inject
+import jakarta.inject.Inject
 
 @Component
 class ChatSentPushNotificationHandler @Inject constructor(private val messagingTemplate: SimpMessageSendingOperations) :

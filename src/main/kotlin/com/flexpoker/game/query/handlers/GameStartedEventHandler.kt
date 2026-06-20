@@ -12,7 +12,7 @@ import com.flexpoker.pushnotifications.GameListUpdatedPushNotification
 import com.flexpoker.pushnotifications.OpenGamesForPlayerUpdatedPushNotification
 import org.springframework.stereotype.Component
 import java.util.UUID
-import javax.inject.Inject
+import jakarta.inject.Inject
 
 @Component
 class GameStartedEventHandler @Inject constructor(

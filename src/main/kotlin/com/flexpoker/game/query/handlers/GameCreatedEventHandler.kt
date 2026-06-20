@@ -9,7 +9,7 @@ import com.flexpoker.game.query.repository.GameListRepository
 import com.flexpoker.login.repository.LoginRepository
 import com.flexpoker.pushnotifications.GameListUpdatedPushNotification
 import org.springframework.stereotype.Component
-import javax.inject.Inject
+import jakarta.inject.Inject
 
 @Component
 class GameCreatedEventHandler @Inject constructor(

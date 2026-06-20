@@ -9,7 +9,7 @@ import com.flexpoker.table.command.events.AutoMoveHandForwardEvent
 import com.flexpoker.table.command.events.HandCompletedEvent
 import com.flexpoker.table.command.events.TableEvent
 import org.springframework.stereotype.Component
-import javax.inject.Inject
+import jakarta.inject.Inject
 
 @Component
 class InMemoryAsyncTableEventPublisher @Inject constructor(

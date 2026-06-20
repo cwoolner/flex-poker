@@ -11,7 +11,7 @@ import com.flexpoker.table.query.dto.SeatDTO
 import com.flexpoker.table.query.dto.TableDTO
 import com.flexpoker.table.query.repository.TableRepository
 import org.springframework.stereotype.Component
-import javax.inject.Inject
+import jakarta.inject.Inject
 
 @Component
 class TableCreatedEventHandler @Inject constructor(

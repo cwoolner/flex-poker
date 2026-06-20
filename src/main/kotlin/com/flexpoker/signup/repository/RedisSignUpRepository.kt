@@ -13,7 +13,7 @@ import org.springframework.data.redis.core.SessionCallback
 import org.springframework.stereotype.Repository
 import java.util.UUID
 import java.util.concurrent.TimeUnit
-import javax.inject.Inject
+import jakarta.inject.Inject
 
 @Profile(ProfileNames.REDIS, ProfileNames.SIGNUP_REDIS)
 @Repository

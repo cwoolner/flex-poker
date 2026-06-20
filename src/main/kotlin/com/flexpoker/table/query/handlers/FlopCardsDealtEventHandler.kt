@@ -8,7 +8,7 @@ import com.flexpoker.table.query.dto.CardDTO
 import com.flexpoker.table.query.repository.CardsUsedInHandRepository
 import com.flexpoker.table.query.repository.TableRepository
 import org.springframework.stereotype.Component
-import javax.inject.Inject
+import jakarta.inject.Inject
 
 @Component
 class FlopCardsDealtEventHandler @Inject constructor(

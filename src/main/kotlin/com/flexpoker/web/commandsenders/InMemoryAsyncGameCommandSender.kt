@@ -5,7 +5,7 @@ import com.flexpoker.framework.command.CommandSender
 import com.flexpoker.game.command.commands.GameCommand
 import org.springframework.context.annotation.Lazy
 import org.springframework.stereotype.Component
-import javax.inject.Inject
+import jakarta.inject.Inject
 
 @Component
 class InMemoryAsyncGameCommandSender @Lazy @Inject constructor(

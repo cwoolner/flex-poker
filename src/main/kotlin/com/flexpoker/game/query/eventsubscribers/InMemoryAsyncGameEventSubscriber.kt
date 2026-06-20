@@ -22,7 +22,7 @@ import org.springframework.scheduling.annotation.Async
 import org.springframework.stereotype.Component
 import java.util.Timer
 import java.util.TimerTask
-import javax.inject.Inject
+import jakarta.inject.Inject
 
 @Component("gameEventSubscriber")
 class InMemoryAsyncGameEventSubscriber @Inject constructor(

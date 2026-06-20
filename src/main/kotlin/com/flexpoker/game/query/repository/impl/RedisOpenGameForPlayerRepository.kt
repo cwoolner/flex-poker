@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository
 import java.util.UUID
 import java.util.stream.Collectors
 import java.util.stream.IntStream
-import javax.inject.Inject
+import jakarta.inject.Inject
 
 @Profile(ProfileNames.REDIS, ProfileNames.GAME_QUERY_REDIS)
 @Repository

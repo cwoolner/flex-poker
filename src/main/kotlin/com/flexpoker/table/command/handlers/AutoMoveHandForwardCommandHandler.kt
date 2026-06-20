@@ -9,7 +9,7 @@ import com.flexpoker.table.command.events.TableEvent
 import com.flexpoker.table.command.repository.TableEventRepository
 import org.springframework.scheduling.annotation.Async
 import org.springframework.stereotype.Component
-import javax.inject.Inject
+import jakarta.inject.Inject
 
 @Component
 class AutoMoveHandForwardCommandHandler @Inject constructor(

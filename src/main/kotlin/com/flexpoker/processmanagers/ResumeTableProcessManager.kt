@@ -7,7 +7,7 @@ import com.flexpoker.table.command.commands.ResumeCommand
 import com.flexpoker.table.command.commands.TableCommand
 import org.springframework.scheduling.annotation.Async
 import org.springframework.stereotype.Component
-import javax.inject.Inject
+import jakarta.inject.Inject
 
 @Component
 class ResumeTableProcessManager @Inject constructor(

@@ -11,7 +11,7 @@ import com.flexpoker.login.repository.LoginRepository
 import com.flexpoker.pushnotifications.GameListUpdatedPushNotification
 import com.flexpoker.pushnotifications.OpenGamesForPlayerUpdatedPushNotification
 import org.springframework.stereotype.Component
-import javax.inject.Inject
+import jakarta.inject.Inject
 
 @Component
 class GameJoinedEventHandler @Inject constructor(

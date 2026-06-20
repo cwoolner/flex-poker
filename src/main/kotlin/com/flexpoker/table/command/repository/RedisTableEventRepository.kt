@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Profile
 import org.springframework.data.redis.core.RedisTemplate
 import org.springframework.stereotype.Repository
 import java.util.UUID
-import javax.inject.Inject
+import jakarta.inject.Inject
 
 @Profile(ProfileNames.REDIS, ProfileNames.TABLE_COMMAND_REDIS)
 @Repository

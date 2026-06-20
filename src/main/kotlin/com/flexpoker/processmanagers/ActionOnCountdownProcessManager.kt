@@ -13,7 +13,7 @@ import java.util.UUID
 import java.util.concurrent.ScheduledFuture
 import java.util.concurrent.ScheduledThreadPoolExecutor
 import java.util.concurrent.TimeUnit
-import javax.inject.Inject
+import jakarta.inject.Inject
 
 @Component
 class ActionOnCountdownProcessManager @Inject constructor(

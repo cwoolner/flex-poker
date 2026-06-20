@@ -6,7 +6,7 @@ import com.flexpoker.game.command.aggregate.applyEvents
 import com.flexpoker.game.command.events.BlindsIncreasedEvent
 import com.flexpoker.game.command.repository.GameEventRepository
 import org.springframework.stereotype.Component
-import javax.inject.Inject
+import jakarta.inject.Inject
 
 @Component
 class BlindsIncreasedEventHandler @Inject constructor(

@@ -6,7 +6,7 @@ import com.flexpoker.framework.pushnotifier.PushNotificationPublisher
 import com.flexpoker.game.command.events.PlayerBustedGameEvent
 import com.flexpoker.login.repository.LoginRepository
 import org.springframework.stereotype.Component
-import javax.inject.Inject
+import jakarta.inject.Inject
 
 @Component
 class PlayerBustedGameEventHandler @Inject constructor(

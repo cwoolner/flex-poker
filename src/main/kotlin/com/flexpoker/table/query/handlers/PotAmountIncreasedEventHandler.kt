@@ -6,7 +6,7 @@ import com.flexpoker.pushnotifications.TableUpdatedPushNotification
 import com.flexpoker.table.command.events.PotAmountIncreasedEvent
 import com.flexpoker.table.query.repository.TableRepository
 import org.springframework.stereotype.Component
-import javax.inject.Inject
+import jakarta.inject.Inject
 
 @Component
 class PotAmountIncreasedEventHandler @Inject constructor(

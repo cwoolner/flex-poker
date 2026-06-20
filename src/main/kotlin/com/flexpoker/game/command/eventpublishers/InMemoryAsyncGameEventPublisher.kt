@@ -14,7 +14,7 @@ import com.flexpoker.game.command.events.TableResumedAfterBalancingEvent
 import org.springframework.stereotype.Component
 import java.util.Timer
 import java.util.TimerTask
-import javax.inject.Inject
+import jakarta.inject.Inject
 
 @Component
 class InMemoryAsyncGameEventPublisher @Inject constructor(

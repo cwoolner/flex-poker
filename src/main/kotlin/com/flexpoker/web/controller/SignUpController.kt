@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.ResponseBody
 import java.nio.charset.Charset
 import java.util.UUID
-import javax.inject.Inject
+import jakarta.inject.Inject
 
 @Controller
 class SignUpController @Inject constructor(

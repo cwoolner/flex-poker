@@ -5,7 +5,7 @@ import com.flexpoker.framework.event.EventHandler
 import com.flexpoker.login.repository.LoginRepository
 import com.flexpoker.table.command.events.PlayerBustedTableEvent
 import org.springframework.stereotype.Component
-import javax.inject.Inject
+import jakarta.inject.Inject
 
 @Component
 class PlayerBustedTableEventHandler @Inject constructor(
