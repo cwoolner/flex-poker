@@ -1,4 +1,6 @@
-FROM eclipse-temurin:25-jdk-alpine
+ARG ECLIPSE_TEMURIN_VERSION=25.0.3_9
+
+FROM eclipse-temurin:${ECLIPSE_TEMURIN_VERSION}-jdk-alpine AS builder
 
 RUN apk add nodejs-current # v20.8.1
 RUN apk add npm # v9.6.6
@@ -15,8 +17,8 @@ RUN npm run prod
 RUN mvn package -DskipTests
 
 
-FROM eclipse-temurin:25-jre-alpine
+FROM eclipse-temurin:${ECLIPSE_TEMURIN_VERSION}-jre-alpine
 
-COPY --from=0 /flex-poker/target/flexpoker.war .
+COPY --from=builder /flex-poker/target/flexpoker.war .
 
 ENTRYPOINT java -jar flexpoker.war
