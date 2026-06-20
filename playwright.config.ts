@@ -7,7 +7,7 @@ const browsersPath = process.env.PLAYWRIGHT_BROWSERS_PATH
 
 const chromiumExecutable = path.join(
   browsersPath,
-  'chromium-1169/chrome-linux/chrome',
+  'chromium-1228/chrome-linux/chrome',
 )
 
 const launchOptions = fs.existsSync(chromiumExecutable)
@@ -37,10 +37,4 @@ export default defineConfig({
       use: { ...devices['Desktop Chrome'] },
     },
   ],
-  webServer: {
-    command: 'npm run e2e:server',
-    url: `${baseURL}/login`,
-    reuseExistingServer: !process.env.CI,
-    timeout: 180_000,
-  },
 })

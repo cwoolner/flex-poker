@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "engines": {
-    "node": "20.10.0"
+    "node": ">=24"
   },
   "scripts": {
     "dev": "webpack --mode=development --watch",
@@ -13,7 +13,7 @@
     "e2e": "bash scripts/playwright-env.sh playwright test",
     "e2e:ui": "bash scripts/playwright-env.sh playwright test --ui",
     "e2e:report": "bash scripts/playwright-env.sh playwright show-report",
-    "e2e:server": "bash scripts/e2e-server.sh"
+    "playwright": "playwright"
   },
   "author": "",
   "license": "ISC",
@@ -33,7 +33,7 @@
     "webstomp-client": "1.2.6"
   },
   "devDependencies": {
-    "@playwright/test": "^1.52.0",
+    "@playwright/test": "^1.61.0",
     "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.3.0",
