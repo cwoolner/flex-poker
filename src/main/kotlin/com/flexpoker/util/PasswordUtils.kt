@@ -6,5 +6,5 @@ import org.springframework.security.crypto.password.DelegatingPasswordEncoder
 val passwordEncoder = DelegatingPasswordEncoder("bcrypt", mapOf("bcrypt" to BCryptPasswordEncoder()))
 
 fun encodePassword(password: String): String {
-    return passwordEncoder.encode(password)
+    return passwordEncoder.encode(password)!!
 }

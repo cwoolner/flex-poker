@@ -40,7 +40,7 @@ class RedisGameListRepository @Inject constructor(
             keys.add(cursor.next())
         }
 
-        return redisTemplate.opsForValue().multiGet(keys)
+        return redisTemplate.opsForValue().multiGet(keys).orEmpty().filterNotNull()
     }
 
     override fun incrementRegisteredPlayers(aggregateId: UUID) {

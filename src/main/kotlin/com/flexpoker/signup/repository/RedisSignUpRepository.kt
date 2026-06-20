@@ -59,12 +59,14 @@ class RedisSignUpRepository @Inject constructor(
     override fun storeSignUpInformation(aggregateId: UUID, username: String, signUpCode: UUID) {
         val signUpCodeKey = signUpCodeRedisKey(signUpCode)
         redisTemplate.execute(object : SessionCallback<List<Any>> {
-            override fun <K : Any?, V : Any?> execute(operations: RedisOperations<K, V>): List<Any>? {
+            override fun <K : Any, V : Any> execute(operations: RedisOperations<K, V>): List<Any> {
                 operations.multi()
-                operations.opsForHash<String, String>().put(signUpCodeKey as K, "username", username)
-                operations.opsForHash<String, String>().put(signUpCodeKey, "aggregateid", aggregateId.toString())
-                operations.expire(signUpCodeKey, EXPIRATION_IN_MINUTES.toLong(), TimeUnit.MINUTES)
-                return redisTemplate.exec()
+                @Suppress("UNCHECKED_CAST")
+                val key = signUpCodeKey as K
+                operations.opsForHash<String, String>().put(key, "username", username)
+                operations.opsForHash<String, String>().put(key, "aggregateid", aggregateId.toString())
+                operations.expire(key, EXPIRATION_IN_MINUTES.toLong(), TimeUnit.MINUTES)
+                return operations.exec() ?: emptyList()
             }
         })
     }
@@ -119,10 +121,12 @@ class RedisSignUpRepository @Inject constructor(
             "encryptedPassword" to signUpUser.encryptedPassword
         )
         redisTemplate.execute(object : SessionCallback<List<Any>> {
-            override fun <K : Any?, V : Any?> execute(operations: RedisOperations<K, V>): List<Any>? {
+            override fun <K : Any, V : Any> execute(operations: RedisOperations<K, V>): List<Any> {
                 operations.multi()
-                operations.opsForHash<String, Any>().putAll(signUpUserKey as K, signUpUserMap)
-                return redisTemplate.exec()
+                @Suppress("UNCHECKED_CAST")
+                val key = signUpUserKey as K
+                operations.opsForHash<String, Any>().putAll(key, signUpUserMap)
+                return operations.exec() ?: emptyList()
             }
         })
     }

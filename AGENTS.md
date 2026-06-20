@@ -49,7 +49,7 @@ When adding features:
 - `npm run prod` (production build)
 - `npm run dev` (watch mode for development)
 
-**Backend** (JDK 21 required):
+**Backend** (JDK 25 required):
 - `mvn spring-boot:run` — default (all in-memory)
 - `mvn -Dspring-boot.run.profiles=redis spring-boot:run` — full Redis
 - Docker: `docker build -t flex-poker:1.0-SNAPSHOT .` then `docker run -d -p 8080:8080 flex-poker:1.0-SNAPSHOT`

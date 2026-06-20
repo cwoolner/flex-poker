@@ -1,6 +1,7 @@
 package com.flexpoker.config
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.flexpoker.game.command.events.GameEvent
 import com.flexpoker.game.query.dto.GameInListDTO
 import com.flexpoker.game.query.dto.OpenGameForUser
@@ -39,9 +40,9 @@ class RedisConfig {
 
     @Bean
     fun defaultObjectMapper(): ObjectMapper {
-        val objectMapper = ObjectMapper()
-        objectMapper.findAndRegisterModules()
-        return objectMapper
+        return ObjectMapper()
+            .registerModule(JavaTimeModule())
+            .findAndRegisterModules()
     }
 
     @Bean
@@ -128,7 +129,7 @@ class RedisConfig {
     private lateinit var scriptResource: Resource
 
     @Bean
-    fun checkAndSetScript(): RedisScript<Boolean?>? {
+    fun checkAndSetScript(): RedisScript<Boolean> {
         return RedisScript.of(scriptResource, Boolean::class.java)
     }
 

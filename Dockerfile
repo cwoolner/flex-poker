@@ -1,4 +1,4 @@
-FROM eclipse-temurin:21.0.1_12-jdk-alpine
+FROM eclipse-temurin:25-jdk-alpine
 
 RUN apk add nodejs-current # v20.8.1
 RUN apk add npm # v9.6.6
@@ -15,7 +15,7 @@ RUN npm run prod
 RUN mvn package -DskipTests
 
 
-FROM eclipse-temurin:21.0.1_12-jre-alpine
+FROM eclipse-temurin:25-jre-alpine
 
 COPY --from=0 /flex-poker/target/flexpoker.war .
 

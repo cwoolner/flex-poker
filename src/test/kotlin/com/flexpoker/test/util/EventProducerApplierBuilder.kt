@@ -39,8 +39,9 @@ class EventProducerApplierBuilder<S: DomainState, E: Event> {
     fun run(): Pair<S, List<E>> {
         requireNotNull(initState) { "must call initState() before run()" }
         val runPairs = createStateEventPairs()
-        return if (exceptionClass != null) {
-            assertThrows(exceptionClass) { exceptionFunToRun!!(runPairs.first) }
+        val expectedException = exceptionClass
+        return if (expectedException != null) {
+            assertThrows(expectedException) { exceptionFunToRun!!(runPairs.first) }
             runPairs
         } else runPairs
     }
