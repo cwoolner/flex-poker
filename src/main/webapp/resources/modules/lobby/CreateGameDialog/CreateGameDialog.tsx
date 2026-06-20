@@ -8,23 +8,23 @@ export default ({showModal, hideDialogCallback, submitFormCallback}) => {
       </Modal.Header>
       <form id="create-game-form" onSubmit={submitFormCallback}>
         <Modal.Body>
-          <Form.Group>
+          <Form.Group controlId="create-game-name">
             <Form.Label>Name</Form.Label>
             <Form.Control type="text" name="name" autoFocus />
           </Form.Group>
-          <Form.Group>
+          <Form.Group controlId="create-game-players">
             <Form.Label>Number of Players (2 - 90)</Form.Label>
             <Form.Control type="number" name="players" min="2" max="90" />
           </Form.Group>
-          <Form.Group>
+          <Form.Group controlId="create-game-players-per-table">
             <Form.Label>Number of Players per Table (2 - 9)</Form.Label>
             <Form.Control type="number" name="playersPerTable" min="2" max="9" />
           </Form.Group>
-          <Form.Group>
+          <Form.Group controlId="create-game-blind-increment">
             <Form.Label>Blind increment in minutes (1 - 60)</Form.Label>
             <Form.Control type="number" name="numberOfMinutesBetweenBlindLevels" min="1" max="60" />
           </Form.Group>
-          <Form.Group>
+          <Form.Group controlId="create-game-action-on-timer">
             <Form.Label>Blind timer in seconds (1 - 60)</Form.Label>
             <Form.Control type="number" name="secondsForActionOnTimer" min="1" max="60" />
           </Form.Group>

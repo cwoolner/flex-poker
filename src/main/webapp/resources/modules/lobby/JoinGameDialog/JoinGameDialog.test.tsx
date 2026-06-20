@@ -29,9 +29,9 @@ describe('JoinGameDialog', () => {
     const dialog = screen.getByRole('dialog')
 
     expect(within(dialog).getByText('Join Game', { selector: '.modal-title' })).toBeInTheDocument()
-    expect(within(dialog).getByDisplayValue('100')).toBeInTheDocument()
-    expect(within(dialog).getByDisplayValue('10')).toBeInTheDocument()
-    expect(within(dialog).getByDisplayValue('90')).toBeInTheDocument()
+    expect(within(dialog).getByLabelText('Current Balance')).toHaveValue('100')
+    expect(within(dialog).getByLabelText('Cost')).toHaveValue('10')
+    expect(within(dialog).getByLabelText('Remaining Balance')).toHaveValue('90')
   })
 
   it('calls hideDialogCallback when Close is clicked', () => {

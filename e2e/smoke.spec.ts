@@ -25,6 +25,6 @@ test.describe('smoke', () => {
 
     await expect(page.getByRole('dialog')).toBeVisible()
     await expect(page.locator('.modal-title', { hasText: 'Create Game' })).toBeVisible()
-    await expect(page.locator('input[name="name"]')).toBeVisible()
+    await expect(page.getByLabel('Name')).toBeVisible()
   })
 })

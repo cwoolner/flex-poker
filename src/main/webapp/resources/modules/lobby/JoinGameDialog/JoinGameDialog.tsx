@@ -8,15 +8,15 @@ export default ({gameId, showModal, hideDialogCallback, submitFormCallback}) => 
       </Modal.Header>
       <form id="join-game-form" onSubmit={submitFormCallback}>
         <Modal.Body>
-          <Form.Group>
+          <Form.Group controlId="join-game-current-balance">
             <Form.Label>Current Balance</Form.Label>
             <Form.Control readOnly defaultValue="100" />
           </Form.Group>
-          <Form.Group>
+          <Form.Group controlId="join-game-cost">
             <Form.Label>Cost</Form.Label>
             <Form.Control readOnly defaultValue="10" />
           </Form.Group>
-          <Form.Group>
+          <Form.Group controlId="join-game-remaining-balance">
             <Form.Label>Remaining Balance</Form.Label>
             <Form.Control readOnly defaultValue="90" />
           </Form.Group>

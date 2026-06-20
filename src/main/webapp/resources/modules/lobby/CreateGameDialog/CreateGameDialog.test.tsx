@@ -27,11 +27,11 @@ describe('CreateGameDialog', () => {
     const dialog = screen.getByRole('dialog')
 
     expect(within(dialog).getByText('Create Game', { selector: '.modal-title' })).toBeInTheDocument()
-    expect(dialog.querySelector('input[name="name"]')).toBeInTheDocument()
-    expect(dialog.querySelector('input[name="players"]')).toBeInTheDocument()
-    expect(dialog.querySelector('input[name="playersPerTable"]')).toBeInTheDocument()
-    expect(dialog.querySelector('input[name="numberOfMinutesBetweenBlindLevels"]')).toBeInTheDocument()
-    expect(dialog.querySelector('input[name="secondsForActionOnTimer"]')).toBeInTheDocument()
+    expect(within(dialog).getByLabelText('Name')).toBeInTheDocument()
+    expect(within(dialog).getByLabelText('Number of Players (2 - 90)')).toBeInTheDocument()
+    expect(within(dialog).getByLabelText('Number of Players per Table (2 - 9)')).toBeInTheDocument()
+    expect(within(dialog).getByLabelText('Blind increment in minutes (1 - 60)')).toBeInTheDocument()
+    expect(within(dialog).getByLabelText('Blind timer in seconds (1 - 60)')).toBeInTheDocument()
   })
 
   it('calls hideDialogCallback when Close is clicked', () => {
