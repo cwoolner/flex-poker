@@ -1,7 +1,8 @@
 package com.flexpoker.config
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
+import tools.jackson.databind.json.JsonMapper
+import tools.jackson.datatype.pcollections.PCollectionsModule
+import tools.jackson.module.kotlin.KotlinModule
 import com.flexpoker.game.command.events.GameEvent
 import com.flexpoker.game.query.dto.GameInListDTO
 import com.flexpoker.game.query.dto.OpenGameForUser
@@ -21,7 +22,7 @@ import org.springframework.core.io.Resource
 import org.springframework.data.redis.connection.RedisConnectionFactory
 import org.springframework.data.redis.core.RedisTemplate
 import org.springframework.data.redis.core.script.RedisScript
-import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer
+import org.springframework.data.redis.serializer.JacksonJsonRedisSerializer
 import org.springframework.data.redis.serializer.StringRedisSerializer
 import java.util.UUID
 
@@ -39,10 +40,12 @@ import java.util.UUID
 class RedisConfig {
 
     @Bean
-    fun defaultObjectMapper(): ObjectMapper {
-        return ObjectMapper()
-            .registerModule(JavaTimeModule())
-            .findAndRegisterModules()
+    fun redisJsonMapper(): JsonMapper {
+        return JsonMapper.builder()
+            .addModule(KotlinModule.Builder().build())
+            .addModule(PCollectionsModule())
+            .findAndAddModules()
+            .build()
     }
 
     @Bean
@@ -150,8 +153,8 @@ class RedisConfig {
         redisTemplate.keySerializer = StringRedisSerializer()
     }
 
-    private fun getJacksonSerializer(clazz: Class<*>): Jackson2JsonRedisSerializer<*> {
-        return Jackson2JsonRedisSerializer(defaultObjectMapper(), clazz)
+    private fun getJacksonSerializer(clazz: Class<*>): JacksonJsonRedisSerializer<*> {
+        return JacksonJsonRedisSerializer(redisJsonMapper(), clazz)
     }
 
 }
