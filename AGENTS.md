@@ -66,6 +66,15 @@ When adding features:
   - `@InMemoryTestClass` → tag "repository-inmemory" (default profile)
   - `@RedisTestClass` → tag "repository-redis" (redis profile + Testcontainers)
 
+**Playwright E2E tests** (`e2e/` directory):
+- Start the full stack first: `npm run prod` then `mvn spring-boot:run` (server must be running on 8080; no automatic `webServer`).
+- Run with `npm run e2e` or `npm run e2e:ui`.
+- Organized into focused spec files: `smoke.spec.ts`, `lobby.spec.ts`, `table.spec.ts`.
+- Shared helpers in `e2e/helpers/` (e.g. `loginAs`, `createGame`, `joinGame`, `openJoinDialogForGame`).
+- Always use unique game names (incorporate `Date.now()`) because the backend shares in-memory state.
+- Multi-player / table tests use `browser.newContext()` + separate `Page` instances.
+- Prefer `getByRole` / `getByLabel` / `getByText` + `.toBeVisible()` waits to handle async WebSocket updates.
+
 Default login users (created at startup in both in-memory and Redis impls): `player1/player1`, `player2/player2`, etc.
 
 ## Coding Conventions

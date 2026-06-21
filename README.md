@@ -53,6 +53,17 @@ The test classes are tagged, so running a specific subset is possible using the 
 
 In addition to the tests above, the [PIT](https://pitest.org) plugin has been included for mutation testing.  To run: `mvn test-compile org.pitest:pitest-maven:mutationCoverage`
 
+Frontend tests:
+
+* Unit and component tests (Vitest + React Testing Library): `npm test` (or `npm run test:watch`)
+* E2E tests (Playwright against a running server):
+  * Build the frontend: `npm run prod`
+  * Start the backend (separate terminal): `mvn spring-boot:run`
+  * Run E2E: `npm run e2e`
+  * Interactive: `npm run e2e:ui`
+
+E2E tests (in `e2e/`) cover login, lobby, creating/joining games, and multi-player flows that reach the poker table.
+
 # Motivation
 
 It would be nice to actually make a fully usable product at some point, but so far the project has mostly served as a non-trivial project to learn new technologies and try out different design patterns.  That said, any contributions that move toward the goal of making something useful are most definitely welcomed.

@@ -27,4 +27,14 @@ test.describe('smoke', () => {
     await expect(page.locator('.modal-title', { hasText: 'Create Game' })).toBeVisible()
     await expect(page.getByLabel('Name')).toBeVisible()
   })
+
+  test('invalid login shows error message', async ({ page }) => {
+    await page.goto('/login')
+
+    await page.getByLabel('Username').fill('baduser')
+    await page.getByLabel('Password').fill('badpass')
+    await page.getByRole('button', { name: 'Log In' }).click()
+
+    await expect(page.getByText('Invalid username/password')).toBeVisible()
+  })
 })
